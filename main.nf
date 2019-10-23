@@ -1,24 +1,35 @@
 #!/usr/bin/env nextflow
-// General parameters
+
+/*
+          Generic Pipeline for Prokariotic Genome Annotation
+
+          This pipeline was built to make it easier for those
+          with minimum bioinformatics expertise to perform a
+          comprehensive genome annotation analysis.
+
+          Feel free to add more processes to this code if need.
+
+*/
+
+/*
+          Loading general parameters
+*/
 genome = file(params.genome)
 prefix = params.prefix
 outDir = params.outDir
 threads = params.threads
+// This parameter sets the minimum number of overlapping bases for gene merge.
 bedDistance = params.bedtools.merge.distance
-
-// Blast parameters
-percid_virulence = params.blast.percid.virulence
-qcovHspPerc_virulence = params.blast.qcovHspPerc.virulence
-percid_ices = params.blast.percid.ices
-qcovHspPerc_ices = params.blast.qcovHspPerc.ices
-minlen = params.blast.min.length
-eval = params.blast.eval
-bestHitOverhang = params.blast.bestHitOverhang
-bestHitScoreEdge = params.blast.bestHitScoreEdge
+// Diamond (blastx) parameters
+diamond.virulence.identity = params.diamond.virulence.identity
+diamond.virulence.queryCoverage = params.diamond.virulence.queryCoverage
+diamond.ices.identity = params.diamond.ices.identity
+diamond.ices.queryCoverage = params.diamond.ices.queryCoverage
+diamond.minimum.alignment.length = params.diamond.minimum.alignment.length
 
 /*
- * Pipeline executin begin
- */
+          Pipeline execution begins
+*/
 
 process MLST {
    publishDir "${outDir}/MLST", mode: 'copy'
@@ -165,19 +176,19 @@ process vfdb {
   # First step, with masked genome
   diamond blastx --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
-  --query $genome --query-cover $qcovHspPerc_virulence ;
+  --query $genome --query-cover $diamond.virulence.queryCoverage ;
 
   ## Convert it to gff
-  awk -v len=$minlen '{if (\$4 >= len) print }' blast_result.tmp > virulence_VFDB_maskedGenome.tsv ;
+  awk -v len=$diamond.minimum.alignment.length '{if (\$4 >= len) print }' blast_result.tmp > virulence_VFDB_maskedGenome.tsv ;
   python2 /usr/local/bin/blast2gff.py -b virulence_VFDB_maskedGenome.tsv -p vfdb -t virulence -F > ${prefix}_vfdb.gff ;
 
   # Second step, with predicted genes
   diamond blastx --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $qcovHspPerc_virulence ;
+  --query $genes --query-cover $diamond.virulence.queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$percid_virulence '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_vfdb_predictedGenes.tsv
+  awk -v id=$diamond.virulence.queryCoverage '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_vfdb_predictedGenes.tsv
   """
   else
   """
@@ -213,10 +224,10 @@ process victors {
   # Blast predicted genes
   diamond blastx --query-gencode 11 --db /work/victors/victors_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $qcovHspPerc_virulence ;
+  --query $genes --query-cover $diamond.virulence.queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$percid_virulence '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_victors_predictedGenes.tsv
+  awk -v id=$diamond.virulence.queryCoverage '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_victors_predictedGenes.tsv
   """
   else
   """
@@ -279,19 +290,19 @@ process phast {
   # First step, with masked genome
   diamond blastx --query-gencode 11 --db /work/phast/phast_prot -o blast_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
-  --query $genome --query-cover $qcovHspPerc_ices ;
+  --query $genome --query-cover $diamond.ices.queryCoverage ;
 
   ## Convert it to gff
-  awk -v len=$minlen '{if (\$4 >= len) print }' blast_result.tmp > prophage_phast_maskedGenome.tsv ;
+  awk -v len=$diamond.minimum.alignment.length '{if (\$4 >= len) print }' blast_result.tmp > prophage_phast_maskedGenome.tsv ;
   python2 /usr/local/bin/blast2gff.py -b prophage_phast_maskedGenome.tsv -p phast -t prophage -F > ${prefix}_phast.gff ;
 
   # Second step, with predicted genes
   diamond blastx --query-gencode 11 --db /work/phast/phast_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $qcovHspPerc_ices ;
+  --query $genes --query-cover $diamond.ices.queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$percid_ices '{if (\$3 >= id) print }' blast_result_genes.tmp > prophage_phast_predictedGenes.tsv
+  awk -v id=$diamond.ices.identity '{if (\$3 >= id) print }' blast_result_genes.tmp > prophage_phast_predictedGenes.tsv
   """
   else
   """
@@ -385,10 +396,10 @@ process iceberg {
   # Blast search
   diamond blastx --query-gencode 11 --db /work/iceberg/iceberg_prot -o blastprot2_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $qcovHspPerc_ices ;
+  --query $genes --query-cover $diamond.ices.queryCoverage ;
 
   ## Group it all
-  awk -v id=$percid_ices '{if (\$3 >= id) print }' blastprot2_result.tmp > ice_iceberg_predictedGenes.tsv
+  awk -v id=$diamond.ices.identity '{if (\$3 >= id) print }' blastprot2_result.tmp > ice_iceberg_predictedGenes.tsv
   """
   else
   """
@@ -428,11 +439,11 @@ process genes_blasted_to_gff {
   sed 's/\\s//' | sed 's/\\s/,/g') ; echo -e "\$id\\t\$ko" ; done < kofamscan.txt > formated.txt ;
 
   ## Add features
-  addBlast2Gff.R -i $blastVFDB -g gff -o gff -d vfdb -t virulence -c ${params.blast.qcovHspPerc.virulence};
+  addBlast2Gff.R -i $blastVFDB -g gff -o gff -d vfdb -t virulence -c ${params.diamond.virulence.queryCoverage};
   [ ! -s kofamscan.txt ] || addKO2Gff.R -i formated.txt -g gff -o gff -d KEGG ;
-  addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence -c ${params.blast.qcovHspPerc.virulence};
-  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice -c ${params.blast.qcovHspPerc.ices};
-  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage -c ${params.blast.qcovHspPerc.ices};
+  addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence -c ${params.diamond.virulence.queryCoverage};
+  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice -c ${params.diamond.ices.queryCoverage};
+  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage -c ${params.diamond.ices.queryCoverage};
   [ ! -s AMRFinder_output.tsv ] || addNCBIamr2Gff.R -g gff -i AMRFinder_output.tsv -o ${prefix}_blast_genes.gff -t resistance -d AMRFinderPlus ;
   [ -s AMRFinder_output.tsv ] || mv gff ${prefix}_blast_genes.gff ;
   """
@@ -866,8 +877,8 @@ process report {
   ## Generate Virulence Report
   Rscript -e 'rmarkdown::render("report_virulence.Rmd" , \
   params = list( vfdb_blast = "${vfdb_blast}", \
-                 blast_id = ${params.blast.percid.virulence} , \
-                 blast_cov = ${params.blast.qcovHspPerc.virulence},
+                 blast_id = ${params.diamond.virulence.identity} , \
+                 blast_cov = ${params.diamond.virulence.queryCoverage},
                  gff = "final.gff",
                  victors_blast = "${victors_blast}",
                  query = "${params.prefix}"))'
@@ -875,8 +886,8 @@ process report {
   ## Generate ICE Report
   Rscript -e 'rmarkdown::render("report_ices.Rmd" , params = list( \
                  ice_prot_blast = "${ice_blast}",
-                 blast_id = ${params.blast.percid.ices},
-                 blast_cov = ${params.blast.qcovHspPerc.ices},
+                 blast_id = ${params.diamond.ices.identity},
+                 blast_cov = ${params.diamond.ices.queryCoverage},
                  gff = "final.gff",
                  query = "${params.prefix}"))'
 
@@ -888,8 +899,8 @@ process report {
                  virsorter_csv = "${virsorter_csv}",
                  query = "${params.prefix}",
                  gff = "final.gff",
-                 blast_id = ${params.blast.percid.ices},
-                 blast_cov = ${params.blast.qcovHspPerc.ices},
+                 blast_id = ${params.diamond.ices.identity},
+                 blast_cov = ${params.diamond.ices.queryCoverage},
                  phast_blast = "${phast_blast}"))'
   """
 }
@@ -916,10 +927,10 @@ summary['Number of threads used'] = params.threads
 summary['Number of minimum overlapping bases needed to merge'] = params.bedtools.merge.distance
 summary['Blast % ID - Resistance Genes'] = params.blast.percid.resistance
 summary['Blast query coverage - Resistance Genes'] = params.blast.qcovHspPerc.resistance
-summary['Blast % ID - Virulence Genes'] = params.blast.percid.virulence
-summary['Blast query coverage - Virulence Genes'] = params.blast.qcovHspPerc.virulence
-summary['Blast % ID - ICEs and Phages'] = params.blast.percid.ices
-summary['Blast query coverage - ICEs and Phages'] = params.blast.qcovHspPerc.ices
+summary['Blast % ID - Virulence Genes'] = params.diamond.virulence.identity
+summary['Blast query coverage - Virulence Genes'] = params.diamond.virulence.queryCoverage
+summary['Blast % ID - ICEs and Phages'] = params.diamond.ices.identity
+summary['Blast query coverage - ICEs and Phages'] = params.diamond.ices.queryCoverage
 summary['Blast best hit overhang'] = params.blast.bestHitOverhang
 summary['Blast best hit score edge'] = params.blast.bestHitScoreEdge
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
