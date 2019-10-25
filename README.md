@@ -1,10 +1,10 @@
-# ngs-preprocess pipeline
+# bacannot pipeline
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3451406.svg)](https://doi.org/10.5281/zenodo.3451406) ![](https://travis-ci.com/fmalmeida/ngs-preprocess.svg?branch=master)
 
-ngs-preprocess pipeline is a nextflow docker-based wrapper around [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [TrimGalore](https://github.com/FelixKrueger/TrimGalore), [FLASH](https://ccb.jhu.edu/software/FLASH/), [Lighter](https://github.com/mourisl/Lighter), [Porechop](https://github.com/rrwick/Porechop), [pbh5tools](https://github.com/PacificBiosciences/pbh5tools/blob/master/doc/index.rst), [bam2fastq](https://github.com/PacificBiosciences/bam2fastx) and [NanoPack](https://github.com/wdecoster/nanopack).
+bacannot pipeline is a nextflow docker-based wrapper around a several tools that enables a better understanding of prokaryotic genomes. It uses [Prokka](https://github.com/tseemann/prokka) for generec annotation, [barrnap](https://github.com/tseemann/barrnap) for rRNA prediction. [mlst]https://github.com/tseemann/mlst) for classification within multilocus sequence types, [KofamScan](https://github.com/takaram/kofam_scan) for KO annotation, [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation, [DIAMOND](https://github.com/bbuchfink/diamond) for sequence similarity searches, [JBrowse](http://jbrowse.org/) for genome browser production, [bedtools](https://bedtools.readthedocs.io/en/latest/) for gene merge and [AMRFinderPlus](https://github.com/ncbi/amr/wiki) for antimicorbial genes annotation.
 
-This is an easy to use pipeline that uses state-of-art software for pre-procesing ngs reads of Illumina, Pacbio and Oxford Nanopore Technologies and has only two dependencies: [Docker](https://www.docker.com/) and [Nextflow](https://github.com/nextflow-io/nextflow).
+This is an easy to use pipeline that uses state-of-the-art software for prokaryotic genome annotation and has only two dependencies: [Docker](https://www.docker.com/) and [Nextflow](https://github.com/nextflow-io/nextflow).
 
 ## Table of contents
 
