@@ -34,9 +34,9 @@ This images have been kept separate to not create massive Docker image and to av
 
 1. If you don't have it already install Docker in your computer. Read more [here](https://docs.docker.com/).
     * You can give this [in-house script](https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh) a try.
-    * After installed, you need to download the required Docker image
+    * After installed, you need to download the required Docker images
 
-          docker pull fmalmeida/compgen:PREPROCESS
+          nextflow fmalmeida/bacannot --download_docker_images
 
 2. Install Nextflow (version 0.24.x or higher):
 
