@@ -22,18 +22,13 @@ This is an easy to use pipeline that uses state-of-the-art software for prokaryo
 * Unix-like operating system (Linux, macOS, etc)
 * Java 8
 * Docker
-  * `fmalmeida/compgen:AMRFINDER`
-  * `fmalmeida/compgen:ANOTBACDB`
-  * `fmalmeida/compgen:BARRNAP`
-  * `fmalmeida/compgen:EMBOSS`
+  * `fmalmeida/compgen:BACANNOT`
   * `fmalmeida/compgen:JBROWSE`
   * `fmalmeida/compgen:KOFAMSCAN`
-  * `fmalmeida/compgen:MLST`
-  * `fmalmeida/compgen:NANOPOLISH`
-  * `fmalmeida/compgen:PROKKA`
-  * `fmalmeida/compgen:PHIGARO`
   * `fmalmeida/compgen:RENV`
   * `fmalmeida/compgen:VIRSORTER`
+  
+This images have been kept separate to not create massive Docker image and to avoid dependencies conflits.
 
 ## Quickstart
 
