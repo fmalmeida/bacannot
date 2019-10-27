@@ -11,21 +11,138 @@
 
 */
 
+def helpMessage() {
+   log.info """
+
+   Usage:
+   nextflow run fmalmeida/bacannot [--help] [ -c nextflow.config ] [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
+
+   Comments:
+   This pipeline contains a massive amount of configuration variables and its usage as CLI parameters would
+   cause the command to be huge.
+
+   Therefore, it is extremely recommended to use the nextflow.config configuration file in order to make
+   parameterization easier and more readable.
+
+   Creating a configuration file:
+   nextflow run fmalmeida/bacannot [--get_config]
+
+   Show command line examples:
+   nextflow run fmalmeida/bacannot --examples
+
+   Execution Reports:
+   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-report
+   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-trace
+   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-timeline
+
+   OBS: These reports can also be enabled through the configuration file.
+
+   OPTIONS:
+
+            General Parameters - Mandatory
+
+    --outDir <string>                      Output directory name
+    --threads <int>                        Number of threads to use
+    --genome <string>                      Query Genome file
+    --bedtools_merge_distance              Minimum number of overlapping bases for gene merge
+                                           using bedtools merge.
+
+            Prokka complementary parameters
+
+    --prokka_center <string>               Your institude acronym to be used by prokka when
+                                           renaming contigs.
+    --prokka_kingdom <string>              Prokka annotation mode. Possibilities (default 'Bacteria'):
+                                           Archaea|Bacteria|Mitochondria|Viruses
+    --prokka_genetic_code <int>            Genetic Translation code. Must be set if kingdom is not
+                                           default (in blank).
+    --prokka_use_rnammer                   Tells prokka wheter to use rnammer instead of barrnap.
+    --prokka_genus <string>                Set only if you want to search only a specific genus database
+
+            Diamond (blastx) search parameters
+
+    --diamond_virulence_identity           Min. identity % for virulence annotation
+    --diamond_virulence_queryCoverage      Min. query coverage for virulence annotation
+    --diamond_MGEs_identity                Min. identity % for ICEs and prophage annotation
+    --diamond_MGEs_queryCoverage           Min. query coverage for ICEs and prophage annotation
+    --diamond_minimum_alignment_length     Min. alignment length for diamond annotation
+
+            Configure Optional processes
+
+    --virulence_search                     Tells wheter you want or not to execute virulence annotation
+    --vfdb_search                          Tells wheter you want or not to used VFDB database for virulence
+                                           annotation. It is useless if virulence_search is not true
+    --victors_search                       Tells wheter you want or not to used victors database for virulence
+                                           annotation. It is useless if virulence_search is not true
+    --resistance_search                    Tells wheter you want or not to execute resistance annotation
+    --ice_search                           Tells wheter you want or not to execute ICE annotation
+    --prophage_search                      Tells wheter you want or not to execute prophage annotation
+    --execute_kofamscan                    Tells wheter you want or not to execute KO annotation with kofamscan
+
+            Configure optional Methylation annotation with nanopolish
+            If left blank, it will not be executed. And, with both parameters are set
+            it will automatically execute nanopolish to call methylation
+
+    --nanopolish_fast5_dir <string>         Path to directory containing FAST5 files
+    --nanopolish_fastq_reads <string>       Path to fastq files (file related to FAST5 files above)
+
+
+   """.stripIndent()
+}
+
+def exampleMessage() {
+   log.info """
+
+   Example Usages:
+
+      Simple ecoli genome annotation using all pipeline's optional annotation processes
+
+./nextflow run fmalmeida/bacannot --threads 3 --outDir outputs/illumina_paired
+
+
+   """.stripIndent()
+}
+
+/*
+
+          Display Help Message
+
+*/
+
+params.help = false
+ // Show help emssage
+ if (params.help){
+   helpMessage()
+   file('work').deleteDir()
+   file('.nextflow').deleteDir()
+   exit 0
+}
+
+// CLI examples
+params.examples = false
+ // Show help emssage
+ if (params.examples){
+   exampleMessage()
+   exit 0
+}
+
+
+
 /*
           Loading general parameters
 */
+
 genome = file(params.genome)
 prefix = params.prefix
 outDir = params.outDir
 threads = params.threads
 // This parameter sets the minimum number of overlapping bases for gene merge.
-bedDistance = params.bedtools.merge.distance
+bedDistance = params.bedtools_merge_distance
 // Diamond (blastx) parameters
-diamond.virulence.identity = params.diamond.virulence.identity
-diamond.virulence.queryCoverage = params.diamond.virulence.queryCoverage
-diamond.ices.identity = params.diamond.ices.identity
-diamond.ices.queryCoverage = params.diamond.ices.queryCoverage
-diamond.minimum.alignment.length = params.diamond.minimum.alignment.length
+diamond_virulence_identity = params.diamond_virulence_identity
+diamond_virulence_queryCoverage = params.diamond_virulence_queryCoverage
+diamond_MGEs_identity = params.diamond_MGEs_identity
+diamond_MGEs_queryCoverage = params.diamond_MGEs_queryCoverage
+diamond_minimum_alignment_length = params.diamond_minimum_alignment_length
 
 /*
           Pipeline execution begins
@@ -33,7 +150,7 @@ diamond.minimum.alignment.length = params.diamond.minimum.alignment.length
 
 process MLST {
    publishDir "${outDir}/MLST", mode: 'copy'
-   container = 'fmalmeida/compgen:MLST'
+   container = 'fmalmeida/compgen:BACANNOT'
 
    input:
    file input from genome
@@ -44,13 +161,14 @@ process MLST {
 
    script:
    """
+   source activate MLST ;
    mlst --quiet --novel ${prefix}_novel_alleles.fasta $input > ${prefix}_mlst_analysis.txt
    """
 }
 
 process prokka {
     publishDir outDir, mode: 'copy'
-    container = 'fmalmeida/compgen:PROKKA'
+    container = 'fmalmeida/compgen:BACANNOT'
 
     input:
     file input from genome
@@ -63,19 +181,20 @@ process prokka {
     file "prokka/${prefix}*.ffn" into genes_sequences_vfdb, genes_sequences_iceberg, genes_nt_sql, genes_sequences_phast, genes_sequences_victors
 
     script:
-    kingdom = (params.prokka.kingdom) ? "--kingdom ${params.prokka.kingdom}" : ''
-    gcode = (params.prokka.genetic.code) ? "--gcode ${params.prokka.genetic.code}" : ''
-    rnammer = (params.prokka.use.rnammer) ? "--rnammer" : ''
-    genus = (params.prokka.genus) ? "--genus ${params.prokka.genus} --usegenus" : ''
+    kingdom = (params.prokka_kingdom) ? "--kingdom ${params.prokka_kingdom}" : ''
+    gcode = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}" : ''
+    rnammer = (params.prokka_use_rnammer) ? "--rnammer" : ''
+    genus = (params.prokka_genus) ? "--genus ${params.prokka_genus} --usegenus" : ''
     """
-    prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads --centre ${params.prokka.center} \
+    source activate PROKKA ;
+    prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads --centre ${params.prokka_center} \
     --mincontiglen 200 $genus --prefix $prefix $input
     """
 }
 
 process rRNA {
    publishDir "${outDir}/rRNA", mode: 'copy'
-   container = 'fmalmeida/compgen:BARRNAP'
+   container = 'fmalmeida/compgen:BACANNOT'
 
    input:
    file input from renamed_genome
@@ -96,7 +215,7 @@ process rRNA {
  */
 
 process masking_genome {
-  container 'fmalmeida/compgen:PROKKA'
+  container 'fmalmeida/compgen:BACANNOT'
 
   input:
   file input from renamed_genome
@@ -132,7 +251,7 @@ process kofamscan {
   file "KOfamscan/${prefix}_ko_forKEGGMapper.txt" into kofamscan_hits
 
   when:
-  ( params.execute.kofamscan )
+  ( params.execute_kofamscan )
 
   script:
   """
@@ -148,15 +267,15 @@ process kofamscan {
  */
 
 process vfdb {
-  if ( params.virulence.search && params.vfdb.search ) {
+  if ( params.virulence_search && params.vfdb_search ) {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
   }}
-  container 'fmalmeida/compgen:ANOTBACDB'
-  x = ( params.virulence.search && params.vfdb.search
+  container 'fmalmeida/compgen:BACANNOT'
+  x = ( params.virulence_search && params.vfdb_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -171,24 +290,24 @@ process vfdb {
   file "virulence_vfdb_predictedGenes.tsv" into vfdb_blast_genes, vfdb_blast_genes2
 
   script:
-  if ( params.virulence.search && params.vfdb.search )
+  if ( params.virulence_search && params.vfdb_search )
   """
   # First step, with masked genome
   diamond blastx --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
-  --query $genome --query-cover $diamond.virulence.queryCoverage ;
+  --query $genome --query-cover $diamond_virulence_queryCoverage ;
 
   ## Convert it to gff
-  awk -v len=$diamond.minimum.alignment.length '{if (\$4 >= len) print }' blast_result.tmp > virulence_VFDB_maskedGenome.tsv ;
+  awk -v len=$diamond_minimum_alignment_length '{if (\$4 >= len) print }' blast_result.tmp > virulence_VFDB_maskedGenome.tsv ;
   python2 /usr/local/bin/blast2gff.py -b virulence_VFDB_maskedGenome.tsv -p vfdb -t virulence -F > ${prefix}_vfdb.gff ;
 
   # Second step, with predicted genes
   diamond blastx --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond.virulence.queryCoverage ;
+  --query $genes --query-cover $diamond_virulence_queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$diamond.virulence.queryCoverage '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_vfdb_predictedGenes.tsv
+  awk -v id=$diamond_virulence_queryCoverage '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_vfdb_predictedGenes.tsv
   """
   else
   """
@@ -199,15 +318,15 @@ process vfdb {
 }
 
 process victors {
-  if ( params.virulence.search && params.victors.search ) {
+  if ( params.virulence_search && params.victors_search ) {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
 }}
-  container 'fmalmeida/compgen:ANOTBACDB'
-  x = ( params.virulence.search && params.victors.search
+  container 'fmalmeida/compgen:BACANNOT'
+  x = ( params.virulence_search && params.victors_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -219,15 +338,15 @@ process victors {
   file "virulence_victors_predictedGenes.tsv" into victors_blast_genes, victors_blast_genes2
 
   script:
-  if ( params.virulence.search && params.victors.search )
+  if ( params.virulence_search && params.victors_search )
   """
   # Blast predicted genes
   diamond blastx --query-gencode 11 --db /work/victors/victors_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond.virulence.queryCoverage ;
+  --query $genes --query-cover $diamond_virulence_queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$diamond.virulence.queryCoverage '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_victors_predictedGenes.tsv
+  awk -v id=$diamond_virulence_queryCoverage '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_victors_predictedGenes.tsv
   """
   else
   """
@@ -236,10 +355,10 @@ process victors {
 }
 
 process amrfinder {
-  if ( params.resistance.search ) {
+  if ( params.resistance_search ) {
   publishDir "${outDir}/AMRFinderPlus_table", mode: 'copy' }
-  container 'fmalmeida/compgen:AMRFINDER'
-  x = ( params.resistance.search
+  container 'fmalmeida/compgen:BACANNOT'
+  x = ( params.resistance_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -251,8 +370,9 @@ process amrfinder {
   file "AMRFinder_output.tsv" into amrfinder_output
 
   script:
-  if ( params.resistance.search )
+  if ( params.resistance_search )
   """
+  source activate AMRFINDERPLUS ;
   amrfinder -p $proteins --plus -o AMRFinder_output.tsv
   """
   else
@@ -262,15 +382,15 @@ process amrfinder {
 }
 
 process phast {
-  if ( params.prophage.search ) {
+  if ( params.prophage_search ) {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
 }}
-  container 'fmalmeida/compgen:ANOTBACDB'
-  x = ( params.prophage.search
+  container 'fmalmeida/compgen:BACANNOT'
+  x = ( params.prophage_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -285,24 +405,24 @@ process phast {
   file "prophage_phast_predictedGenes.tsv" into phast_blast_genes, phast_blast_genes2
 
   script:
-  if ( params.prophage.search )
+  if ( params.prophage_search )
   """
   # First step, with masked genome
   diamond blastx --query-gencode 11 --db /work/phast/phast_prot -o blast_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
-  --query $genome --query-cover $diamond.ices.queryCoverage ;
+  --query $genome --query-cover $diamond_MGEs_queryCoverage ;
 
   ## Convert it to gff
-  awk -v len=$diamond.minimum.alignment.length '{if (\$4 >= len) print }' blast_result.tmp > prophage_phast_maskedGenome.tsv ;
+  awk -v len=$diamond_minimum_alignment_length '{if (\$4 >= len) print }' blast_result.tmp > prophage_phast_maskedGenome.tsv ;
   python2 /usr/local/bin/blast2gff.py -b prophage_phast_maskedGenome.tsv -p phast -t prophage -F > ${prefix}_phast.gff ;
 
   # Second step, with predicted genes
   diamond blastx --query-gencode 11 --db /work/phast/phast_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond.ices.queryCoverage ;
+  --query $genes --query-cover $diamond_MGEs_queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$diamond.ices.identity '{if (\$3 >= id) print }' blast_result_genes.tmp > prophage_phast_predictedGenes.tsv
+  awk -v id=$diamond_MGEs_identity '{if (\$3 >= id) print }' blast_result_genes.tmp > prophage_phast_predictedGenes.tsv
   """
   else
   """
@@ -312,10 +432,10 @@ process phast {
 }
 
 process phigaro {
-  if ( params.prophage.search ) {
+  if ( params.prophage_search ) {
   publishDir "${outDir}/prophages/phigaro", mode: 'copy'}
-  container 'fmalmeida/compgen:PHIGARO'
-  x = ( params.prophage.search
+  container 'fmalmeida/compgen:BACANNOT'
+  x = ( params.prophage_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -329,7 +449,7 @@ process phigaro {
   file "assembly.phg.html"
 
   when:
-  ( params.prophage.search )
+  ( params.prophage_search )
 
   script:
   """
@@ -344,10 +464,10 @@ process phigaro {
 }
 
 process virsorter {
-  if ( params.prophage.search ) {
+  if ( params.prophage_search ) {
   publishDir "${outDir}/prophages", mode: 'copy'}
   container 'fmalmeida/compgen:VIRSORTER'
-  x = ( params.prophage.search
+  x = ( params.prophage_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -360,7 +480,7 @@ process virsorter {
   file "virsorter/VIR*.csv" into virsorter_csv
 
   when:
-  ( params.prophage.search )
+  ( params.prophage_search )
 
   script:
   """
@@ -372,14 +492,14 @@ process virsorter {
 }
 
 process iceberg {
-  if ( params.ice.search ) {
+  if ( params.ice_search ) {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename" }}
-  container 'fmalmeida/compgen:ANOTBACDB'
-  x = ( params.ice.search
+  container 'fmalmeida/compgen:BACANNOT'
+  x = ( params.ice_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -391,15 +511,15 @@ process iceberg {
   file "ice_iceberg_predictedGenes.tsv" into iceberg_blast_genes, ice_blast_genes2
 
   script:
-  if ( params.ice.search )
+  if ( params.ice_search )
   """
   # Blast search
   diamond blastx --query-gencode 11 --db /work/iceberg/iceberg_prot -o blastprot2_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond.ices.queryCoverage ;
+  --query $genes --query-cover $diamond_MGEs_queryCoverage ;
 
   ## Group it all
-  awk -v id=$diamond.ices.identity '{if (\$3 >= id) print }' blastprot2_result.tmp > ice_iceberg_predictedGenes.tsv
+  awk -v id=$diamond_MGEs_identity '{if (\$3 >= id) print }' blastprot2_result.tmp > ice_iceberg_predictedGenes.tsv
   """
   else
   """
@@ -439,11 +559,11 @@ process genes_blasted_to_gff {
   sed 's/\\s//' | sed 's/\\s/,/g') ; echo -e "\$id\\t\$ko" ; done < kofamscan.txt > formated.txt ;
 
   ## Add features
-  addBlast2Gff.R -i $blastVFDB -g gff -o gff -d vfdb -t virulence -c ${params.diamond.virulence.queryCoverage};
+  addBlast2Gff.R -i $blastVFDB -g gff -o gff -d vfdb -t virulence -c ${params.diamond_virulence_queryCoverage};
   [ ! -s kofamscan.txt ] || addKO2Gff.R -i formated.txt -g gff -o gff -d KEGG ;
-  addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence -c ${params.diamond.virulence.queryCoverage};
-  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice -c ${params.diamond.ices.queryCoverage};
-  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage -c ${params.diamond.ices.queryCoverage};
+  addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence -c ${params.diamond_virulence_queryCoverage};
+  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice -c ${params.diamond_MGEs_queryCoverage};
+  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage -c ${params.diamond_MGEs_queryCoverage};
   [ ! -s AMRFinder_output.tsv ] || addNCBIamr2Gff.R -g gff -i AMRFinder_output.tsv -o ${prefix}_blast_genes.gff -t resistance -d AMRFinderPlus ;
   [ -s AMRFinder_output.tsv ] || mv gff ${prefix}_blast_genes.gff ;
   """
@@ -457,7 +577,7 @@ process genes_blasted_to_gff {
 
 process merge_gffs {
   publishDir "${outDir}/gffs/merged", mode: 'copy'
-  container 'fmalmeida/compgen:ANOTBACDB'
+  container 'fmalmeida/compgen:BACANNOT'
 
   input:
   file 'prokka_gff' from blast_genes_gff
@@ -558,7 +678,7 @@ process write_summary_tables {
 
 process gff_to_gbk {
   publishDir "${outDir}/genbankFile", mode: 'copy'
-  container 'fmalmeida/compgen:EMBOSS'
+  container 'fmalmeida/compgen:BACANNOT'
 
   input:
   file gff from final_gff
@@ -578,21 +698,21 @@ process gff_to_gbk {
  */
 
 //Get Files Necessary For Methylation Calling
-if (params.fast5_dir && params.fastq_reads) {
-  fast5 = Channel.fromPath( params.fast5_dir )
-  nanopolish_lreads = file(params.fastq_reads)
-  fast5_dir = Channel.fromPath( params.fast5_dir, type: 'dir' )
+if (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) {
+  fast5 = Channel.fromPath( params.nanopolish_fast5_dir )
+  nanopolish_lreads = file(params.nanopolish_fastq_reads)
+  nanopolish_fast5_dir = Channel.fromPath( params.nanopolish_fast5_dir, type: 'dir' )
 } else {
   fast5 = ''
   nanopolish_lreads = ''
-  fast5_dir = ''
+  nanopolish_fast5_dir = ''
   }
 
 process call_methylation {
-  if (params.fast5_dir && params.fastq_reads) {
+  if (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) {
   publishDir "${outDir}/methylation", mode: 'copy' }
-  container 'fmalmeida/compgen:NANOPOLISH'
-  x = ( params.fast5_dir && params.fastq_reads
+  container 'fmalmeida/compgen:BACANNOT'
+  x = ( params.nanopolish_fast5_dir && params.nanopolish_fastq_reads
         ? "Methylated sites are being calculated"
         : "Process was skipped by the user")
   tag { x }
@@ -601,7 +721,7 @@ process call_methylation {
   file 'input.fa' from renamed_genome
   file 'reads.fq' from nanopolish_lreads
   file fast5
-  val fast5_dir from fast5_dir
+  val nanopolish_fast5_dir from nanopolish_fast5_dir
 
   output:
   file "*_calls.tsv" optional true
@@ -613,10 +733,10 @@ process call_methylation {
   file "chr.sizes"  into chr_sizes
 
   script:
-  if (params.fast5_dir && params.fastq_reads)
+  if (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads)
   """
   # Index Our Fast5 Data
-  nanopolish index -d "${fast5_dir}" reads.fq ;
+  nanopolish index -d "${nanopolish_fast5_dir}" reads.fq ;
 
   # Map Our Indexed Reads to Our Genome
   minimap2 -a -x map-ont input.fa reads.fq | samtools sort -T tmp -o reads_output.sorted.bam ;
@@ -660,8 +780,8 @@ process call_methylation {
 }
 
 process jbrowse {
-  publishDir "${outDir}/jbrowse/www", mode: 'copy'
-  container 'fmalmeida/compgen:JBROWSE'
+  publishDir "${outDir}/jbrowse/", mode: 'copy'
+  container 'fmalmeida/compgen:BACANNOT'
 
   input:
   file input from renamed_genome
@@ -689,8 +809,13 @@ process jbrowse {
   file "index.html" into jbrowse_html
 
   """
+  source activate JBROWSE ;
+
   # Get Files
-  cp -R /work/jbrowse/* .
+  cp -R /miniconda/envs/JBROWSE/* . ;
+
+  # Create DATA dir
+  mkdir data ;
 
   # Format FASTA file for JBROWSE
   prepare-refseqs.pl --fasta $input --key \"${params.prefix}\" --out \"data\" ;
@@ -818,7 +943,7 @@ process jbrowse {
   """
 }
 
-process SQL_Db {
+process SQL_db {
   publishDir "${outDir}/sqlDB", mode: 'copy'
   container 'fmalmeida/compgen:RENV'
 
@@ -877,8 +1002,8 @@ process report {
   ## Generate Virulence Report
   Rscript -e 'rmarkdown::render("report_virulence.Rmd" , \
   params = list( vfdb_blast = "${vfdb_blast}", \
-                 blast_id = ${params.diamond.virulence.identity} , \
-                 blast_cov = ${params.diamond.virulence.queryCoverage},
+                 blast_id = ${params.diamond_virulence_identity} , \
+                 blast_cov = ${params.diamond_virulence_queryCoverage},
                  gff = "final.gff",
                  victors_blast = "${victors_blast}",
                  query = "${params.prefix}"))'
@@ -886,8 +1011,8 @@ process report {
   ## Generate ICE Report
   Rscript -e 'rmarkdown::render("report_ices.Rmd" , params = list( \
                  ice_prot_blast = "${ice_blast}",
-                 blast_id = ${params.diamond.ices.identity},
-                 blast_cov = ${params.diamond.ices.queryCoverage},
+                 blast_id = ${params.diamond_MGEs_identity},
+                 blast_cov = ${params.diamond_MGEs_queryCoverage},
                  gff = "final.gff",
                  query = "${params.prefix}"))'
 
@@ -899,8 +1024,8 @@ process report {
                  virsorter_csv = "${virsorter_csv}",
                  query = "${params.prefix}",
                  gff = "final.gff",
-                 blast_id = ${params.diamond.ices.identity},
-                 blast_cov = ${params.diamond.ices.queryCoverage},
+                 blast_id = ${params.diamond_MGEs_identity},
+                 blast_cov = ${params.diamond_MGEs_queryCoverage},
                  phast_blast = "${phast_blast}"))'
   """
 }
@@ -920,19 +1045,15 @@ def summary = [:]
 summary['Input fasta']  = params.genome
 summary['Output prefix']   = params.prefix
 summary['Output dir']   = "${params.outDir}"
-summary['Prokka Kingdom searched']   = params.prokka.kingdom
-summary['Prokka Genetic Code used']   = params.prokka.genetic.code
-summary['Prokka Specific Genus'] = params.prokka.genus
+summary['Prokka Kingdom searched']   = params.prokka_kingdom
+summary['Prokka Genetic Code used']   = params.prokka_genetic_code
+summary['Prokka Specific Genus'] = params.prokka_genus
 summary['Number of threads used'] = params.threads
-summary['Number of minimum overlapping bases needed to merge'] = params.bedtools.merge.distance
-summary['Blast % ID - Resistance Genes'] = params.blast.percid.resistance
-summary['Blast query coverage - Resistance Genes'] = params.blast.qcovHspPerc.resistance
-summary['Blast % ID - Virulence Genes'] = params.diamond.virulence.identity
-summary['Blast query coverage - Virulence Genes'] = params.diamond.virulence.queryCoverage
-summary['Blast % ID - ICEs and Phages'] = params.diamond.ices.identity
-summary['Blast query coverage - ICEs and Phages'] = params.diamond.ices.queryCoverage
-summary['Blast best hit overhang'] = params.blast.bestHitOverhang
-summary['Blast best hit score edge'] = params.blast.bestHitScoreEdge
+summary['Number of minimum overlapping bases needed to merge'] = params.bedtools_merge_distance
+summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
+summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
+summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
+summary['Blast query coverage - ICEs and Phages'] = params.diamond_MGEs_queryCoverage
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Current home']   = "$HOME"
 summary['Current user']   = "$USER"
