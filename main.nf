@@ -11,24 +11,173 @@
 
 */
 
+def helpMessage() {
+   log.info """
+   Usage:
+   nextflow run fmalmeida/bacannot [--help] [ -c nextflow.config ] [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
+   Comments:
+
+   This pipeline contains a massive amount of configuration variables and its usage as CLI parameters would
+   cause the command to be huge.
+   Therefore, it is extremely recommended to use the nextflow.config configuration file in order to make
+   parameterization easier and more readable.
+
+   Creating a configuration file:
+
+   nextflow run fmalmeida/bacannot [--get_config]
+
+   Show command line examples:
+
+   nextflow run fmalmeida/bacannot --examples
+
+   Execution Reports:
+
+   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-report
+   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-trace
+   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-timeline
+
+   OBS: These reports can also be enabled through the configuration file.
+   OPTIONS:
+
+                            General Parameters - Mandatory
+
+    --outDir <string>                              Output directory name
+    --threads <int>                                Number of threads to use
+    --genome <string>                              Query Genome file
+    --bedtools_merge_distance                      Minimum number of overlapping bases for gene merge
+                                                   using bedtools merge.
+
+                            Prokka complementary parameters
+
+    --prokka_center <string>                       Your institude acronym to be used by prokka when
+                                                   renaming contigs.
+    --prokka_kingdom <string>                      Prokka annotation mode. Possibilities (default 'Bacteria'):
+                                                   Archaea|Bacteria|Mitochondria|Viruses
+    --prokka_genetic_code <int>                    Genetic Translation code. Must be set if kingdom is not
+                                                   default (in blank).
+    --prokka_use_rnammer                           Tells prokka wheter to use rnammer instead of barrnap.
+    --prokka_genus <string>                        Set only if you want to search only a specific genus database
+
+                            Diamond (blastx) search parameters
+
+    --diamond_virulence_identity                   Min. identity % for virulence annotation
+    --diamond_virulence_queryCoverage              Min. query coverage for virulence annotation
+    --diamond_MGEs_identity                        Min. identity % for ICEs and prophage annotation
+    --diamond_MGEs_queryCoverage                   Min. query coverage for ICEs and prophage annotation
+    --diamond_minimum_alignment_length             Min. alignment length for diamond annotation
+
+                            Configure Optional processes
+
+    --not_run_virulence_search                     Tells wheter you want or not to execute virulence annotation
+    --not_run_vfdb_search                          Tells wheter you want or not to used VFDB database for virulence
+                                                   annotation. It is useless if virulence_search is not true
+    --not_run_victors_search                       Tells wheter you want or not to used victors database for virulence
+                                                   annotation. It is useless if virulence_search is not true
+    --not_run_resistance_search                    Tells wheter you want or not to execute resistance annotation
+    --not_run_iceberg_search                       Tells wheter you want or not to execute ICE annotation
+    --not_run_prophage_search                      Tells wheter you want or not to execute prophage annotation
+    --not_run_kofamscan                            Tells wheter you want or not to execute KO annotation with kofamscan
+
+                      Configure optional Methylation annotation with nanopolish
+                      If left blank, it will not be executed. And, with both parameters are set
+                      it will automatically execute nanopolish to call methylation
+
+    --nanopolish_fast5_dir <string>                Path to directory containing FAST5 files
+    --nanopolish_fastq_reads <string>              Path to fastq files (file related to FAST5 files above)
+
+
+""".stripIndent()
+}
+
+def exampleMessage() {
+   log.info """
+   Example Usages:
+      Simple Klebsiella genome annotation using all pipeline's optional annotation processes
+nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --diamond_virulence_identity 90 --diamond_virulence_queryCoverage 80 --diamond_MGEs_identity 70 --diamond_MGEs_queryCoverage 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
+
+
+""".stripIndent()
+}
+
 /*
-          Loading general parameters
+          Display Help Message
 */
+
+params.help = false
+ // Show help emssage
+ if (params.help){
+   helpMessage()
+   file('work').deleteDir()
+   file('.nextflow').deleteDir()
+   exit 0
+}
+
+// CLI examples
+params.examples = false
+ // Show help emssage
+ if (params.examples){
+   exampleMessage()
+   exit 0
+}
+
+/*
+
+                                  Setting default parameters
+
+*/
+
+params.prefix = 'out'
+params.outDir = 'outdir'
+params.threads = 2
+params.bedtools_merge_distance = 0
+params.prokka_center = 'Centre'
+params.prokka_kingdom = ''
+params.prokka_genetic_code = false
+params.prokka_use_rnammer = false
+params.prokka_genus = ''
+params.diamond_virulence_identity = 90
+params.diamond_virulence_queryCoverage = 90
+params.diamond_MGEs_identity = 65
+params.diamond_MGEs_queryCoverage = 65
+params.diamond_minimum_alignment_length = 200
+params.not_run_virulence_search = false
+params.not_run_vfdb_search = false
+params.not_run_victors_search = false
+params.not_run_resistance_search = false
+params.not_run_iceberg_search = false
+params.not_run_prophage_search = false
+params.not_run_kofamscan = false
+
+/*
+
+                                  Loading general parameters
+
+*/
+
 genome = file(params.genome)
 prefix = params.prefix
 outDir = params.outDir
 threads = params.threads
 // This parameter sets the minimum number of overlapping bases for gene merge.
-bedDistance = params.bedtools.merge.distance
+bedDistance = params.bedtools_merge_distance
 // Diamond (blastx) parameters
 diamond_virulence_identity = params.diamond_virulence_identity
 diamond_virulence_queryCoverage = params.diamond_virulence_queryCoverage
-diamond_ices_identity = params.diamond_ices_identity
-diamond_ices_queryCoverage = params.diamond_ices_queryCoverage
+diamond_MGEs_identity = params.diamond_MGEs_identity
+diamond_MGEs_queryCoverage = params.diamond_MGEs_queryCoverage
 diamond_minimum_alignment_length = params.diamond_minimum_alignment_length
+params.virulence_search = (params.not_run_virulence_search) ? false : true
+params.vfdb_search = (params.not_run_vfdb_search) ? false : true
+params.victors_search = (params.not_run_victors_search) ? false : true
+params.resistance_search = (params.not_run_resistance_search) ? false : true
+params.iceberg_search = (params.not_run_iceberg_search) ? false : true
+params.prophage_search = (params.not_run_prophage_search) ? false : true
+params.execute_kofamscan = (params.not_run_kofamscan) ? false : true
 
 /*
-          Pipeline execution begins
+
+                              Pipeline execution begins
+
 */
 
 process MLST {
@@ -64,13 +213,13 @@ process prokka {
     file "prokka/${prefix}*.ffn" into genes_sequences_vfdb, genes_sequences_iceberg, genes_nt_sql, genes_sequences_phast, genes_sequences_victors
 
     script:
-    kingdom = (params.prokka.kingdom) ? "--kingdom ${params.prokka.kingdom}" : ''
-    gcode = (params.prokka.genetic.code) ? "--gcode ${params.prokka.genetic.code}" : ''
-    rnammer = (params.prokka.use.rnammer) ? "--rnammer" : ''
-    genus = (params.prokka.genus) ? "--genus ${params.prokka.genus} --usegenus" : ''
+    kingdom = (params.prokka_kingdom) ? "--kingdom ${params.prokka_kingdom}" : ''
+    gcode = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}" : ''
+    rnammer = (params.prokka_use_rnammer) ? "--rnammer" : ''
+    genus = (params.prokka_genus) ? "--genus ${params.prokka_genus} --usegenus" : ''
     """
     source activate PROKKA ;
-    prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads --centre ${params.prokka.center} \
+    prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads --centre ${params.prokka_center} \
     --mincontiglen 200 $genus --prefix $prefix $input
     """
 }
@@ -93,9 +242,11 @@ process rRNA {
 }
 
 /*
- * Remove genome sequence and comments from GFF.
- * Also, it masks the genome file.
- */
+
+                        Remove genome sequence and comments from GFF.
+                        Also, it masks the genome file.
+
+*/
 
 process masking_genome {
   container 'fmalmeida/compgen:BACANNOT'
@@ -116,9 +267,11 @@ process masking_genome {
 }
 
 /*
- * KOfamscan process. Here we search our predicted proteins in order to retrieve KO (KEGG)
- * Information about then. This makes easier to plot Methabolic Fluxes in KEGG.
- */
+
+                KOfamscan process. Here we search our predicted proteins in order to retrieve KO (KEGG)
+                Information about then. This makes easier to plot Methabolic Fluxes in KEGG.
+
+*/
 
 process kofamscan {
   publishDir outDir, mode: 'copy'
@@ -134,7 +287,7 @@ process kofamscan {
   file "KOfamscan/${prefix}_ko_forKEGGMapper.txt" into kofamscan_hits
 
   when:
-  ( params.execute.kofamscan )
+  ( params.execute_kofamscan )
 
   script:
   """
@@ -145,12 +298,14 @@ process kofamscan {
 }
 
 /*
- * Initiaing BLAST searches against specific databases:
- * VFDB, Victors, AMRFinder, ICE, Phast.
- */
+
+                      Initiaing DIAMOND searches against specific databases:
+                                VFDB, Victors,ICEberg and Phast.
+
+*/
 
 process vfdb {
-  if ( params.virulence.search && params.vfdb.search ) {
+  if ( params.virulence_search && params.vfdb_search ) {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
@@ -158,7 +313,7 @@ process vfdb {
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
   }}
   container 'fmalmeida/compgen:BACANNOT'
-  x = ( params.virulence.search && params.vfdb.search
+  x = ( params.virulence_search && params.vfdb_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -173,7 +328,7 @@ process vfdb {
   file "virulence_vfdb_predictedGenes.tsv" into vfdb_blast_genes, vfdb_blast_genes2
 
   script:
-  if ( params.virulence.search && params.vfdb.search )
+  if ( params.virulence_search && params.vfdb_search )
   """
   # First step, with masked genome
   diamond blastx --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result.tmp \
@@ -201,7 +356,7 @@ process vfdb {
 }
 
 process victors {
-  if ( params.virulence.search && params.victors.search ) {
+  if ( params.virulence_search && params.victors_search ) {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
@@ -209,7 +364,7 @@ process victors {
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
 }}
   container 'fmalmeida/compgen:BACANNOT'
-  x = ( params.virulence.search && params.victors.search
+  x = ( params.virulence_search && params.victors_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -221,7 +376,7 @@ process victors {
   file "virulence_victors_predictedGenes.tsv" into victors_blast_genes, victors_blast_genes2
 
   script:
-  if ( params.virulence.search && params.victors.search )
+  if ( params.virulence_search && params.victors_search )
   """
   # Blast predicted genes
   diamond blastx --query-gencode 11 --db /work/victors/victors_prot -o blast_result_genes.tmp \
@@ -238,10 +393,10 @@ process victors {
 }
 
 process amrfinder {
-  if ( params.resistance.search ) {
+  if ( params.resistance_search ) {
   publishDir "${outDir}/AMRFinderPlus_table", mode: 'copy' }
   container 'fmalmeida/compgen:BACANNOT'
-  x = ( params.resistance.search
+  x = ( params.resistance_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -253,7 +408,7 @@ process amrfinder {
   file "AMRFinder_output.tsv" into amrfinder_output
 
   script:
-  if ( params.resistance.search )
+  if ( params.resistance_search )
   """
   source activate AMRFINDERPLUS ;
   amrfinder -p $proteins --plus -o AMRFinder_output.tsv
@@ -265,7 +420,7 @@ process amrfinder {
 }
 
 process phast {
-  if ( params.prophage.search ) {
+  if ( params.prophage_search ) {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
@@ -273,7 +428,7 @@ process phast {
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
 }}
   container 'fmalmeida/compgen:BACANNOT'
-  x = ( params.prophage.search
+  x = ( params.prophage_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -288,12 +443,12 @@ process phast {
   file "prophage_phast_predictedGenes.tsv" into phast_blast_genes, phast_blast_genes2
 
   script:
-  if ( params.prophage.search )
+  if ( params.prophage_search )
   """
   # First step, with masked genome
   diamond blastx --query-gencode 11 --db /work/phast/phast_prot -o blast_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
-  --query $genome --query-cover $diamond_ices_queryCoverage ;
+  --query $genome --query-cover $diamond_MGEs_queryCoverage ;
 
   ## Convert it to gff
   awk -v len=$diamond_minimum_alignment_length '{if (\$4 >= len) print }' blast_result.tmp > prophage_phast_maskedGenome.tsv ;
@@ -302,10 +457,10 @@ process phast {
   # Second step, with predicted genes
   diamond blastx --query-gencode 11 --db /work/phast/phast_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond_ices_queryCoverage ;
+  --query $genes --query-cover $diamond_MGEs_queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$diamond_ices_identity '{if (\$3 >= id) print }' blast_result_genes.tmp > prophage_phast_predictedGenes.tsv
+  awk -v id=$diamond_MGEs_identity '{if (\$3 >= id) print }' blast_result_genes.tmp > prophage_phast_predictedGenes.tsv
   """
   else
   """
@@ -315,10 +470,10 @@ process phast {
 }
 
 process phigaro {
-  if ( params.prophage.search ) {
+  if ( params.prophage_search ) {
   publishDir "${outDir}/prophages/phigaro", mode: 'copy'}
   container 'fmalmeida/compgen:BACANNOT'
-  x = ( params.prophage.search
+  x = ( params.prophage_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -332,7 +487,7 @@ process phigaro {
   file "assembly.phg.html"
 
   when:
-  ( params.prophage.search )
+  ( params.prophage_search )
 
   script:
   """
@@ -347,10 +502,10 @@ process phigaro {
 }
 
 process virsorter {
-  if ( params.prophage.search ) {
+  if ( params.prophage_search ) {
   publishDir "${outDir}/prophages", mode: 'copy'}
   container 'fmalmeida/compgen:VIRSORTER'
-  x = ( params.prophage.search
+  x = ( params.prophage_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -363,7 +518,7 @@ process virsorter {
   file "virsorter/VIR*.csv" into virsorter_csv
 
   when:
-  ( params.prophage.search )
+  ( params.prophage_search )
 
   script:
   """
@@ -375,14 +530,14 @@ process virsorter {
 }
 
 process iceberg {
-  if ( params.ice.search ) {
+  if ( params.iceberg_search ) {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename" }}
   container 'fmalmeida/compgen:BACANNOT'
-  x = ( params.ice.search
+  x = ( params.iceberg_search
         ? "Process is being executed"
         : "Process was skipped by the user")
   tag { x }
@@ -394,15 +549,15 @@ process iceberg {
   file "ice_iceberg_predictedGenes.tsv" into iceberg_blast_genes, ice_blast_genes2
 
   script:
-  if ( params.ice.search )
+  if ( params.iceberg_search )
   """
   # Blast search
   diamond blastx --query-gencode 11 --db /work/iceberg/iceberg_prot -o blastprot2_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond_ices_queryCoverage ;
+  --query $genes --query-cover $diamond_MGEs_queryCoverage ;
 
   ## Group it all
-  awk -v id=$diamond_ices_identity '{if (\$3 >= id) print }' blastprot2_result.tmp > ice_iceberg_predictedGenes.tsv
+  awk -v id=$diamond_MGEs_identity '{if (\$3 >= id) print }' blastprot2_result.tmp > ice_iceberg_predictedGenes.tsv
   """
   else
   """
@@ -445,8 +600,8 @@ process genes_blasted_to_gff {
   addBlast2Gff.R -i $blastVFDB -g gff -o gff -d vfdb -t virulence -c ${params.diamond_virulence_queryCoverage};
   [ ! -s kofamscan.txt ] || addKO2Gff.R -i formated.txt -g gff -o gff -d KEGG ;
   addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence -c ${params.diamond_virulence_queryCoverage};
-  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice -c ${params.diamond_ices_queryCoverage};
-  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage -c ${params.diamond_ices_queryCoverage};
+  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice -c ${params.diamond_MGEs_queryCoverage};
+  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage -c ${params.diamond_MGEs_queryCoverage};
   [ ! -s AMRFinder_output.tsv ] || addNCBIamr2Gff.R -g gff -i AMRFinder_output.tsv -o ${prefix}_blast_genes.gff -t resistance -d AMRFinderPlus ;
   [ -s AMRFinder_output.tsv ] || mv gff ${prefix}_blast_genes.gff ;
   """
@@ -885,8 +1040,8 @@ process report {
   ## Generate ICE Report
   Rscript -e 'rmarkdown::render("report_ices.Rmd" , params = list( \
                  ice_prot_blast = "${ice_blast}",
-                 blast_id = ${params.diamond_ices_identity},
-                 blast_cov = ${params.diamond_ices_queryCoverage},
+                 blast_id = ${params.diamond_MGEs_identity},
+                 blast_cov = ${params.diamond_MGEs_queryCoverage},
                  gff = "final.gff",
                  query = "${params.prefix}"))'
 
@@ -898,8 +1053,8 @@ process report {
                  virsorter_csv = "${virsorter_csv}",
                  query = "${params.prefix}",
                  gff = "final.gff",
-                 blast_id = ${params.diamond_ices_identity},
-                 blast_cov = ${params.diamond_ices_queryCoverage},
+                 blast_id = ${params.diamond_MGEs_identity},
+                 blast_cov = ${params.diamond_MGEs_queryCoverage},
                  phast_blast = "${phast_blast}"))'
   """
 }
@@ -919,15 +1074,15 @@ def summary = [:]
 summary['Input fasta']  = params.genome
 summary['Output prefix']   = params.prefix
 summary['Output dir']   = "${params.outDir}"
-summary['Prokka Kingdom searched']   = params.prokka.kingdom
-summary['Prokka Genetic Code used']   = params.prokka.genetic.code
-summary['Prokka Specific Genus'] = params.prokka.genus
+summary['Prokka Kingdom searched']   = params.prokka_kingdom
+summary['Prokka Genetic Code used']   = params.prokka_genetic_code
+summary['Prokka Specific Genus'] = params.prokka_genus
 summary['Number of threads used'] = params.threads
-summary['Number of minimum overlapping bases needed to merge'] = params.bedtools.merge.distance
+summary['Number of minimum overlapping bases needed to merge'] = params.bedtools_merge_distance
 summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
 summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
-summary['Blast % ID - ICEs and Phages'] = params.diamond_ices_identity
-summary['Blast query coverage - ICEs and Phages'] = params.diamond_ices_queryCoverage
+summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
+summary['Blast query coverage - ICEs and Phages'] = params.diamond_MGEs_queryCoverage
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Current home']   = "$HOME"
 summary['Current user']   = "$USER"
