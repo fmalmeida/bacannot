@@ -395,7 +395,7 @@ process victors {
 
 process amrfinder {
   if ( params.resistance_search ) {
-  publishDir "${outDir}/AMRFinderPlus_table", mode: 'copy' }
+  publishDir "${outDir}/resistance/AMRFinderPlus_table", mode: 'copy' }
   container 'fmalmeida/compgen:BACANNOT'
   x = ( params.resistance_search
         ? "Process is being executed"
@@ -417,6 +417,42 @@ process amrfinder {
   else
   """
   touch AMRFinder_output.tsv
+  """
+}
+
+process rgi_annotation {
+  if ( params.resistance_search ) {
+  publishDir "${outDir}/resistance/RGI_annotation", mode: 'copy' }
+  container 'fmalmeida/compgen:BACANNOT'
+  x = ( params.resistance_search
+        ? "Process is being executed"
+        : "Process was skipped by the user")
+  tag { x }
+
+  input:
+  file input from renamed_genome
+
+  output:
+  file "RGI_${params.prefix}.txt" into rgi_output
+  file "*RGI_${params.prefix}*"
+
+  script:
+  if ( params.resistance_search )
+  """
+  source activate RGI ;
+  rgi main -i $input -o RGI_${params.prefix} -t contig -a DIAMOND -n ${params.threads} --exclude_nudge --clean ;
+
+  ## Parse perfect hits
+  sed 's/ # /#/g' RGI_${params.prefix}.txt | awk 'BEGIN { FS = "\t" } ; { print \$2 "\\t" \$3 "\\t" \$4 "\\t" \$5 "\\t" \
+  \$6 "\\t" \$9 "\\t" \$11 "\\t" \$15 "\\t" \$16 "\\t" \$17}' | awk '{ if (\$5 == "Perfect") print }' > Perfect_RGI_${params.prefix}_hits.txt
+
+  ## Parse strict hits
+  sed 's/ # /#/g' RGI_${params.prefix}.txt | awk 'BEGIN { FS = "\t" } ; { print \$2 "\\t" \$3 "\\t" \$4 "\\t" \$5 "\\t" \
+  \$6 "\\t" \$9 "\\t" \$11 "\\t" \$15 "\\t" \$16 "\\t" \$17}' | awk '{ if (\$5 == "Strict") print }' > Strict_RGI_${params.prefix}_hits.txt
+  """
+  else
+  """
+  touch RGI_${params.prefix}.txt
   """
 }
 
@@ -452,7 +488,7 @@ process phast {
   --query $genome --query-cover $diamond_MGEs_queryCoverage ;
 
   ## Convert it to gff
-  awk -v len=$diamond_minimum_alignment_length '{if (\$4 >= len) print }' blast_result.tmp > prophage_phast_maskedGenome.tsv ;
+  awk -v len=$diamond_minimum_alignment_length '{ if (\$4 >= len) print }' blast_result.tmp > prophage_phast_maskedGenome.tsv ;
   python2 /usr/local/bin/blast2gff.py -b prophage_phast_maskedGenome.tsv -p phast -t prophage -F > ${prefix}_phast.gff ;
 
   # Second step, with predicted genes
