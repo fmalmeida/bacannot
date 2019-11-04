@@ -501,7 +501,7 @@ process phigaro {
   """
 
 }
-
+/*
 process virsorter {
   if ( params.prophage_search ) {
   publishDir "${outDir}/prophages", mode: 'copy'}
@@ -527,8 +527,7 @@ process virsorter {
   wrapper_phage_contigs_sorter_iPlant.pl -f contigs.fasta --no_c --db 1 \
   --wdir virsorter --ncpu $threads --data-dir /work/virsorter-data
   """
-
-}
+}*/
 
 process find_GIs {
   publishDir "${outDir}/predicted_GIs", mode: 'copy'
@@ -1051,10 +1050,11 @@ process report {
   file 'final.gff' from final_gff
   file amrfinder_result from amrfinder_output
   file amrfinder_summary from amrfinderplus_table
+  file 'resistance.gff' from resistance_gff
   file vfdb_blast from vfdb_blast_genes2
   file victors_blast from victors_blast_genes2
   file ice_blast from ice_blast_genes2
-  file virsorter_csv from virsorter_csv.ifEmpty('virsorter_empty')
+  //file virsorter_csv from virsorter_csv.ifEmpty('virsorter_empty')
   file phigaro_txt from phigaro_txt.ifEmpty('phigaro_empty')
   file phast_blast from phast_blast_genes2
 
@@ -1069,6 +1069,7 @@ process report {
   Rscript -e 'rmarkdown::render("report_resistance.Rmd", params = list(\
     amrfinder = "$amrfinder_result", \
     query = "${params.prefix}", \
+    gff_resistance = "resistance.gff", \
     ncbi_amr = "${amrfinder_summary}"))'
 
   ## Generate Virulence Report
@@ -1080,20 +1081,11 @@ process report {
                  victors_blast = "${victors_blast}",
                  query = "${params.prefix}"))'
 
-  ## Generate ICE Report
-  Rscript -e 'rmarkdown::render("report_ices.Rmd" , params = list( \
-                 ice_prot_blast = "${ice_blast}",
-                 blast_id = ${params.diamond_MGEs_identity},
-                 blast_cov = ${params.diamond_MGEs_queryCoverage},
-                 gff = "final.gff",
-                 query = "${params.prefix}"))'
-
-  ## Generate Prophage report
-  Rscript -e 'rmarkdown::render("report_prophages.Rmd", params = list( \
+  ## Generate MGEs report
+  Rscript -e 'rmarkdown::render("report_MGEs.Rmd", params = list( \
                  phigaro_dir = "../prophages/phigaro",
                  phigaro_txt = "${phigaro_txt}",
-                 virsorter_dir = "../prophages/virsorter",
-                 virsorter_csv = "${virsorter_csv}",
+                 ice_prot_blast = "${ice_blast}",
                  query = "${params.prefix}",
                  gff = "final.gff",
                  blast_id = ${params.diamond_MGEs_identity},

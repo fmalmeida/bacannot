@@ -21,7 +21,7 @@ This is an easy to use pipeline that uses state-of-the-art software for prokaryo
 * Unix-like operating system (Linux, macOS, etc)
 * Java 8
 * Docker
-  * `fmalmeida/compgen:{BACANNOT, KOFAMSCAN, JBROWSE, RENV, VIRSORTER}`
+  * `fmalmeida/compgen:{BACANNOT, KOFAMSCAN, JBROWSE, RENV}`
 
 This images have been kept separate to not create massive Docker image and to avoid dependencies conflits.
 
@@ -35,7 +35,6 @@ This images have been kept separate to not create massive Docker image and to av
           docker pull fmalmeida/compgen:KOFAMSCAN
           docker pull fmalmeida/compgen:JBROWSE
           docker pull fmalmeida/compgen:RENV
-          docker pull fmalmeida/compgen:VIRSORTER
 
 2. Install Nextflow (version 0.24.x or higher):
 
@@ -123,9 +122,9 @@ This images have been kept separate to not create massive Docker image and to av
 
 ### Usage examples:
 
-> Annotating _Klebsiella_ genome using every optional parameter.
+> Simple annotation example
 
-    ./nextflow run fmalmeida/ngs-preprocess --threads 3
+    ./nextflow run main.nf --outDir TESTE --threads 3 --genome assembly.fasta --bedtools_merge_distance -20 --prokka_center UNB --not_run_kofamscan
 
 ## Using the configuration file
 
