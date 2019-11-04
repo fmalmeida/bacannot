@@ -207,6 +207,7 @@ process prokka {
 
     output:
     file "prokka/${prefix}.gff" into annotation_gff_prokka
+    file "prokka/${prefix}.gbk" into annotation_gbk_prokka
     file "*"
     file "prokka/${prefix}*.fna" into renamed_genome
     file "prokka/${prefix}*.faa" into genes_aa_sql, genes_aa_kofamscan, amrfinder_input
@@ -529,6 +530,28 @@ process virsorter {
 
 }
 
+process find_GIs {
+  publishDir "${outDir}/predicted_GIs", mode: 'copy'
+  container 'fmalmeida/compgen:BACANNOT'
+
+  input:
+  file "annotation.gbk" from annotation_gbk_prokka
+
+  output:
+  file "predicted_GIs.bed" into predicted_GIs optional true
+
+  script:
+  """
+  source activate find_GIs ;
+  python /work/pythonScripts/splitgenbank.py annotation.gbk && rm annotation.gbk ;
+  for file in \$(ls *.gbk); do grep -q "CDS" \$file && Dimob.pl \$file \${file%%.gbk}_GIs.txt 2> dimob.err ; done
+  for GI in \$(ls *.txt); do \
+    awk -v contig="\$( echo \"gnl|${params.prokka_center}|\${GI%%_GIs.txt}\" )" \
+    '{ print contig "\t" \$2 "\t" \$3 }' \$GI >> predicted_GIs.bed ; \
+  done
+  """
+}
+
 process iceberg {
   if ( params.iceberg_search ) {
   publishDir outDir, mode: 'copy',
@@ -826,6 +849,7 @@ process jbrowse {
   file 'virulence' from virulence_gff
   file 'prophage' from prophage_gff
   file 'prophages.bed' from phigaro_bed
+  file 'all_GIs.bed' from predicted_GIs
   file 'ices' from ices_gff
   file 'conjugation' from conjugation_gff
   file 'efflux' from efflux_gff
@@ -920,6 +944,25 @@ process jbrowse {
                                      \"trackType\" : \"CanvasFeatures\", \
                                      \"type\" : \"CanvasFeatures\", \
                                      \"urlTemplate\" : \"tracks/${params.prefix} prophage sequences/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
+
+  # Add track with GIs
+  [ ! -s all_GIs.bed ] || flatfile-to-json.pl --bed all_GIs.bed --key \"Genomic Islands\" \
+                              --trackType CanvasFeatures --trackLabel \"${params.prefix} genomic islands\" \
+                              --config '{ "style": { "color": "yellow" }, "displayMode": "compact" }' --out \"data\" ;
+
+  # Remove track for configuration
+  [ ! -s all_GIs.bed ] || remove-track.pl --trackLabel \"${params.prefix} genomic islands\" --dir data &> /tmp/error
+
+  # Re-create
+  [ ! -s all_GIs.bed ] || echo \' { \"compress\" : 0, \
+                                    \"displayMode\" : \"compact\", \
+                                    \"key\" : \"Genomic Islands\", \
+                                    \"label\" : \"${params.prefix} genomic islands\", \
+                                    \"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
+                                    \"style\" : { \"className\" : \"feature\", \"color\": \"yellow\" }, \
+                                    \"trackType\" : \"CanvasFeatures\", \
+                                    \"type\" : \"CanvasFeatures\", \
+                                    \"urlTemplate\" : \"tracks/${params.prefix} genomic islands/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
 
   # Add track with rRNA sequences
   [ ! -s rrna.gff ] || flatfile-to-json.pl --gff rrna.gff --key \"rRNA Sequences\" \
