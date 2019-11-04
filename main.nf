@@ -433,7 +433,7 @@ process rgi_annotation {
   file input from renamed_genome
 
   output:
-  file "RGI_${params.prefix}.txt" into rgi_output
+  file "Perfect_RGI_${params.prefix}_hits.txt" into rgi_output
   file "*RGI_${params.prefix}*"
 
   script:
@@ -1084,6 +1084,7 @@ process report {
   input:
   val x from finish
   file 'final.gff' from final_gff
+  file rgi_table from rgi_output
   file amrfinder_result from amrfinder_output
   file amrfinder_summary from amrfinderplus_table
   file 'resistance.gff' from resistance_gff
@@ -1105,6 +1106,7 @@ process report {
   Rscript -e 'rmarkdown::render("report_resistance.Rmd", params = list(\
     amrfinder = "$amrfinder_result", \
     query = "${params.prefix}", \
+    rgitool = "$rgi_table", \
     gff_resistance = "resistance.gff", \
     ncbi_amr = "${amrfinder_summary}"))'
 
