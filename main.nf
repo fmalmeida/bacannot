@@ -269,6 +269,36 @@ process masking_genome {
 
 /*
 
+                                                  Compute GC content to plot in JBrowse
+
+*/
+
+process compute_GC {
+  container 'fmalmeida/compgen:BACANNOT'
+
+  input:
+  file 'input.fasta' from renamed_genome
+
+  output:
+  file "input_GC_1000_bps.bedGraph" into gc_content_jbrowse
+  file "input.sizes" into gc_sizes_jbrowse
+
+  """
+  # Index
+  samtools faidx input.fasta ;
+  # Take Sizes
+  cut -f 1,2 input.fasta.fai > input.sizes ;
+  # Create sliding window
+  bedtools makewindows -g input.sizes -w 1000 > input_1000_bps.bed ;
+  # Compute GC
+  bedtools nuc -fi input.fasta -bed input_1000_bps.bed > input_1000_bps_nuc.txt ;
+  # Create bedGraph
+  awk 'BEGIN{FS="\\t"; OFS="\\t"} FNR > 1 { print \$1,\$2,\$3,\$5 }' input_1000_bps_nuc.txt > input_GC_1000_bps.bedGraph
+  """
+}
+
+/*
+
                 KOfamscan process. Here we search our predicted proteins in order to retrieve KO (KEGG)
                 Information about then. This makes easier to plot Methabolic Fluxes in KEGG.
 
@@ -878,6 +908,8 @@ process jbrowse {
   input:
   file input from renamed_genome
   file gff from final_gff
+  file 'GC_content.bedGraph' from gc_content_jbrowse
+  file 'GC_content.sizes' from gc_sizes_jbrowse
   file 'rrna.gff' from rrna_gff
   file 'resistance' from resistance_gff
   file 'amrfinder' from amrfinderplus_gff
@@ -907,6 +939,11 @@ process jbrowse {
 
   # Format FASTA file for JBROWSE
   prepare-refseqs.pl --fasta $input --key \"${params.prefix}\" --out \"data\" ;
+
+  # Add GC content Track
+  bedGraphToBigWig GC_content.bedGraph GC_content.sizes data/GC_content.bw ;
+  add-bw-track.pl --bw_url GC_content.bw --plot --label "GC Content" --key "GC Content" \
+  --category "GC Content" --pos_color darkgray ;
 
   # Add track with all features
   flatfile-to-json.pl --gff $gff --key \"All features\" \
