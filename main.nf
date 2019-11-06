@@ -983,7 +983,7 @@ process jbrowse {
   # Add track with GIs
   [ ! -s all_GIs.bed ] || flatfile-to-json.pl --bed all_GIs.bed --key \"Genomic Islands\" \
                               --trackType CanvasFeatures --trackLabel \"${params.prefix} genomic islands\" \
-                              --config '{ "style": { "color": "yellow" }, "displayMode": "compact" }' --out \"data\" ;
+                              --config '{ "style": { "color": "cyan" }, "displayMode": "compact" }' --out \"data\" ;
 
   # Remove track for configuration
   [ ! -s all_GIs.bed ] || remove-track.pl --trackLabel \"${params.prefix} genomic islands\" --dir data &> /tmp/error
@@ -994,7 +994,7 @@ process jbrowse {
                                     \"key\" : \"Genomic Islands\", \
                                     \"label\" : \"${params.prefix} genomic islands\", \
                                     \"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
-                                    \"style\" : { \"className\" : \"feature\", \"color\": \"yellow\" }, \
+                                    \"style\" : { \"className\" : \"feature\", \"color\": \"cyan\" }, \
                                     \"trackType\" : \"CanvasFeatures\", \
                                     \"type\" : \"CanvasFeatures\", \
                                     \"urlTemplate\" : \"tracks/${params.prefix} genomic islands/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
@@ -1046,7 +1046,7 @@ process jbrowse {
   --pos_color pink ;
   ## dcm
   [ ! -s data/dcm.bw ] || add-bw-track.pl --bw_url dcm.bw --plot --label "Dcm Methylations" --key "Dcm Methylations" --category "Methylations" \
-  --pos_color yellow ;
+  --pos_color cyan ;
   """
 }
 
