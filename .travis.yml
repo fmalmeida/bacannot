@@ -1,0 +1,16 @@
+sudo: required
+jdk:
+- openjdk8
+services:
+- docker
+branches:
+  only:
+  - master  
+install:
+- sudo apt-get -qq update
+script:
+- curl -fsSL get.nextflow.io | bash
+- ./nextflow run main.nf --help
+- ./nextflow run main.nf --examples
+- ./nextflow run main.nf --get_config
+- docker pull fmalmeida/compgen:BACANNOT
