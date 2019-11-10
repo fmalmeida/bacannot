@@ -120,6 +120,18 @@ params.examples = false
    exit 0
 }
 
+// Get configuration file
+if (params.get_config) {
+  new File("bacannot.config") << new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText()
+  println ""
+  println "bacannot.config file saved in working directory"
+  println "After configuration, run:"
+  println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
+  println "Nice code!\n"
+
+  exit 0
+}
+
 /*
 
                                   Setting default parameters
