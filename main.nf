@@ -109,11 +109,7 @@ def summary = [:]
 summary['Input fasta']  = params.genome
 summary['Output prefix']   = params.prefix
 summary['Output dir']   = "${params.outDir}"
-summary['Prokka Kingdom searched']   = params.prokka_kingdom
-summary['Prokka Genetic Code used']   = params.prokka_genetic_code
-summary['Prokka Specific Genus'] = params.prokka_genus
 summary['Number of threads used'] = params.threads
-summary['Number of minimum overlapping bases needed to merge'] = params.bedtools_merge_distance
 summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
 summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
 summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
@@ -157,6 +153,8 @@ if (params.get_config) {
   println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
   println "Nice code!\n"
 
+  file('work').deleteDir()
+  file('.nextflow').deleteDir()
   exit 0
 }
 
@@ -195,7 +193,7 @@ params.not_run_kofamscan = false
 */
 
 genome = file(params.genome)
-reference_genomes = Channel.fromPath( params.reference_genomes )
+reference_genomes = (params.reference_genomes) ? Channel.fromPath( params.reference_genomes ) : Channel.empty()
 prefix = params.prefix
 outDir = params.outDir
 threads = params.threads
