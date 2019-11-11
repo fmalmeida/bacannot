@@ -1000,7 +1000,6 @@ process jbrowse {
 
   output:
   file "*" optional true
-  file "index.html" into jbrowse_html
 
   """
   # Get Files
@@ -1019,7 +1018,7 @@ process jbrowse {
   --trackType CanvasFeatures --trackLabel \"${params.prefix} annotated features\" --out \"data\" ;
 
   # Add tRNA track
-  grep "tRNA" ${gff} > tRNAs.gff ;
+  awk '{ if (\$3 == "tRNA" ) print }' ${gff} > tRNAs.gff ;
   [ ! -s tRNAs.gff ] || flatfile-to-json.pl --gff tRNAs.gff --key \"tRNA Sequences\" \
   --trackType CanvasFeatures --trackLabel \"${params.prefix} tRNA sequences\" \
   --config '{ "style": { "color": "darkgreen" }, "displayMode": "compact" }' --out \"data\" ;
