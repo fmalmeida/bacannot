@@ -100,7 +100,34 @@ nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.co
 }
 
 /*
-          Display Help Message
+                                      Set log message
+*/
+log.info "========================================="
+log.info " Docker-based Genome Annotation Pipeline "
+log.info "========================================="
+def summary = [:]
+summary['Input fasta']  = params.genome
+summary['Output prefix']   = params.prefix
+summary['Output dir']   = "${params.outDir}"
+summary['Prokka Kingdom searched']   = params.prokka_kingdom
+summary['Prokka Genetic Code used']   = params.prokka_genetic_code
+summary['Prokka Specific Genus'] = params.prokka_genus
+summary['Number of threads used'] = params.threads
+summary['Number of minimum overlapping bases needed to merge'] = params.bedtools_merge_distance
+summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
+summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
+summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
+summary['Blast query coverage - ICEs and Phages'] = params.diamond_MGEs_queryCoverage
+if(workflow.revision) summary['Pipeline Release'] = workflow.revision
+summary['Current home']   = "$HOME"
+summary['Current user']   = "$USER"
+summary['Current path']   = "$PWD"
+summary['Configuration file'] = workflow.configFiles[0]
+log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
+log.info "========================================="
+
+/*
+                                                  Display Help Message
 */
 
 params.help = false
@@ -121,6 +148,7 @@ params.examples = false
 }
 
 // Get configuration file
+params.get_config = false
 if (params.get_config) {
   new File("bacannot.config") << new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText()
   println ""
@@ -167,6 +195,7 @@ params.not_run_kofamscan = false
 */
 
 genome = file(params.genome)
+reference_genomes = Channel.fromPath( params.reference_genomes )
 prefix = params.prefix
 outDir = params.outDir
 threads = params.threads
@@ -218,7 +247,7 @@ process prokka {
     file input from genome
 
     output:
-    file "prokka/${prefix}.gff" into annotation_gff_prokka
+    file "prokka/${prefix}.gff" into annotation_gff_prokka, annotation_gff_prokka_roary
     file "prokka/${prefix}.gbk" into annotation_gbk_prokka
     file "*"
     file "prokka/${prefix}*.fna" into renamed_genome
@@ -235,6 +264,65 @@ process prokka {
     prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads --centre ${params.prokka_center} \
     --mincontiglen 200 $genus --prefix $prefix $input
     """
+}
+
+process create_roary_input {
+  container = 'fmalmeida/compgen:BACANNOT'
+
+  input:
+  file references from reference_genomes
+
+  output:
+  file "${references.baseName}/${references.baseName}.gff" into roary_inputs
+
+  when:
+  (params.reference_genomes)
+
+  script:
+  """
+  ## First, run prokka on all genomes
+  source activate PROKKA ;
+  prokka --cpus $threads --centre ${params.prokka_center} \
+  --mincontiglen 200 --prefix ${references.baseName} $references ;
+  """
+}
+
+process roary_pangenome {
+  publishDir "${outDir}/Roary_pangenome", mode: 'copy'
+  container = 'fmalmeida/compgen:BACANNOT'
+
+  input:
+  file gffs from roary_inputs.mix(annotation_gff_prokka_roary).collect()
+
+  output:
+  file "roary_output"
+  file "roary_inputs"
+
+  when:
+  (params.reference_genomes)
+
+  script:
+  """
+  ## Activate environment
+  source activate ROARY ;
+
+  ## Inputs
+  mkdir roary_inputs ;
+  cp ${gffs} roary_inputs ;
+
+  ## Run roary pipeline
+  roary -e -f roary_output --mafft -p $threads $gffs ;
+  FastTree -nt -gtr roary_output/core_gene_alignment.aln > roary_output/output.newick
+
+  ## Entering Dir
+  cd roary_output ;
+
+  ## Plotting
+  roary2svg.pl gene_presence_absence.csv > pan_genome.svg ;
+  conda deactivate ;
+  source activate ROARY_PLOTS ;
+  python /usr/local/bin/roary_plots.py output.newick gene_presence_absence.csv ;
+  """
 }
 
 process rRNA {
@@ -292,7 +380,7 @@ process compute_GC {
   file 'input.fasta' from renamed_genome
 
   output:
-  file "input_GC_1000_bps.bedGraph" into gc_content_jbrowse
+  file "input_GC_1000_bps.sorted.bedGraph" into gc_content_jbrowse
   file "input.sizes" into gc_sizes_jbrowse
 
   """
@@ -306,6 +394,8 @@ process compute_GC {
   bedtools nuc -fi input.fasta -bed input_1000_bps.bed > input_1000_bps_nuc.txt ;
   # Create bedGraph
   awk 'BEGIN{FS="\\t"; OFS="\\t"} FNR > 1 { print \$1,\$2,\$3,\$5 }' input_1000_bps_nuc.txt > input_GC_1000_bps.bedGraph
+  # Sort
+  bedtools sort -i input_GC_1000_bps.bedGraph > input_GC_1000_bps.sorted.bedGraph
   """
 }
 
@@ -448,17 +538,15 @@ process amrfinder {
   file proteins from amrfinder_input
 
   output:
-  file "AMRFinder_output.tsv" into amrfinder_output
+  file "AMRFinder_output.tsv" into amrfinder_output optional true
+
+  when:
+  ( params.resistance_search )
 
   script:
-  if ( params.resistance_search )
   """
   source activate AMRFINDERPLUS ;
   amrfinder -p $proteins --plus -o AMRFinder_output.tsv
-  """
-  else
-  """
-  touch AMRFinder_output.tsv
   """
 }
 
@@ -475,26 +563,27 @@ process rgi_annotation {
   file input from renamed_genome
 
   output:
-  file "Perfect_RGI_${params.prefix}_hits.txt" into rgi_output
-  file "*RGI_${params.prefix}*"
+  file "Perfect_RGI_${params.prefix}_hits.txt" into rgi_perfect optional true
+  file "RGI_${params.prefix}.txt" into rgi_output optional true
+  file "*RGI_${params.prefix}*" optional true
+
+  when:
+  ( params.resistance_search )
 
   script:
-  if ( params.resistance_search )
   """
   source activate RGI ;
   rgi main -i $input -o RGI_${params.prefix} -t contig -a DIAMOND -n ${params.threads} --exclude_nudge --clean ;
 
   ## Parse perfect hits
-  sed 's/ # /#/g' RGI_${params.prefix}.txt | awk 'BEGIN { FS = "\t" } ; { print \$2 "\\t" \$3 "\\t" \$4 "\\t" \$5 "\\t" \
-  \$6 "\\t" \$9 "\\t" \$11 "\\t" \$15 "\\t" \$16 "\\t" \$17}' | awk '{ if (\$5 == "Perfect") print }' > Perfect_RGI_${params.prefix}_hits.txt
+  sed 's/ # /#/g' RGI_${params.prefix}.txt \
+  | awk 'BEGIN { FS = "\t"; OFS="\\t" } ; { print \$2,\$3,\$4,\$5,\$6,\$9,\$11,\$15,\$16,\$17 }' \
+  | awk '{ if (\$5 == "Perfect") print }' > Perfect_RGI_${params.prefix}_hits.txt
 
   ## Parse strict hits
-  sed 's/ # /#/g' RGI_${params.prefix}.txt | awk 'BEGIN { FS = "\t" } ; { print \$2 "\\t" \$3 "\\t" \$4 "\\t" \$5 "\\t" \
-  \$6 "\\t" \$9 "\\t" \$11 "\\t" \$15 "\\t" \$16 "\\t" \$17}' | awk '{ if (\$5 == "Strict") print }' > Strict_RGI_${params.prefix}_hits.txt
-  """
-  else
-  """
-  touch RGI_${params.prefix}.txt
+  sed 's/ # /#/g' RGI_${params.prefix}.txt \
+  | awk 'BEGIN { FS = "\t"; OFS="\\t" } ; { print \$2,\$3,\$4,\$5,\$6,\$9,\$11,\$15,\$16,\$17 }' \
+  | awk '{ if (\$5 == "Strict") print }' > Strict_RGI_${params.prefix}_hits.txt
   """
 }
 
@@ -575,37 +664,10 @@ process phigaro {
   phigaro -f assembly-L20000.fasta -c /work/phigaro/config.yml -e html txt -o assembly.phg -p --not-open ;
 
   # Create BED
-  grep -v "taxonomy" assembly.phg | awk '{ print \$1 "\\t" \$2 "\\t" \$3 }' > prophages.bed
+  grep -v "taxonomy" assembly.phg | awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$2,\$3 }' > prophages.bed
   """
 
 }
-/*
-process virsorter {
-  if ( params.prophage_search ) {
-  publishDir "${outDir}/prophages", mode: 'copy'}
-  container 'fmalmeida/compgen:VIRSORTER'
-  x = ( params.prophage_search
-        ? "Process is being executed"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file "contigs.fasta" from renamed_genome
-
-  output:
-  file "virsorter"
-  file "virsorter/VIR*.csv" into virsorter_csv
-
-  when:
-  ( params.prophage_search )
-
-  script:
-  """
-  source activate virsorter ;
-  wrapper_phage_contigs_sorter_iPlant.pl -f contigs.fasta --no_c --db 1 \
-  --wdir virsorter --ncpu $threads --data-dir /work/virsorter-data
-  """
-}*/
 
 process find_GIs {
   publishDir "${outDir}/predicted_GIs", mode: 'copy'
@@ -624,7 +686,7 @@ process find_GIs {
   for file in \$(ls *.gbk); do grep -q "CDS" \$file && Dimob.pl \$file \${file%%.gbk}_GIs.txt 2> dimob.err ; done
   for GI in \$(ls *.txt); do \
     awk -v contig="\$( echo \"gnl|${params.prokka_center}|\${GI%%_GIs.txt}\" )" \
-    '{ print contig "\t" \$2 "\t" \$3 }' \$GI >> predicted_GIs.bed ; \
+    'BEGIN { FS = "\t"; OFS="\\t" } { print contig,\$2,\$3 }' \$GI >> predicted_GIs.bed ; \
   done
   """
 }
@@ -678,8 +740,8 @@ process genes_blasted_to_gff {
   container 'fmalmeida/compgen:RENV'
 
   input:
-  //file 'gff' from prokka_with_hmm_gff
   file 'gff' from clear_gff
+  file 'RGI_output.txt' from rgi_output.ifEmpty('RGI_empty')
   file blastVFDB from vfdb_blast_genes
   file blastVictors from victors_blast_genes
   file blastIce from iceberg_blast_genes
@@ -702,6 +764,7 @@ process genes_blasted_to_gff {
   addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence -c ${params.diamond_virulence_queryCoverage};
   addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice -c ${params.diamond_MGEs_queryCoverage};
   addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage -c ${params.diamond_MGEs_queryCoverage};
+  [ ! -s RGI_output.txt ] || addRGI2gff.R -g gff -i RGI_output.txt -o gff ;
   [ ! -s AMRFinder_output.tsv ] || addNCBIamr2Gff.R -g gff -i AMRFinder_output.tsv -o ${prefix}_blast_genes.gff -t resistance -d AMRFinderPlus ;
   [ -s AMRFinder_output.tsv ] || mv gff ${prefix}_blast_genes.gff ;
   """
@@ -727,21 +790,24 @@ process merge_gffs {
 
   """
   # GFF from prokka
-  [ ! -s prokka_gff ] || grep "ID=" prokka_gff | sed 's/ /_/g' | bedtools sort | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
-  | awk '{ print \$1 "\\t" \$4 "\\t" \$5 "\\t" \$2+1 "\\t" \$3 "\\t" \$6 "\\t" \$7 "\\t" \$8 "\\t" \$9}' >> total_gff ;
+  [ ! -s prokka_gff ] || sed 's/ /_/g' prokka_gff | bedtools sort \
+  | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
+  | awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$4,\$5,\$2+1,\$3,\$6,\$7,\$8,\$9}' >> total_gff ;
 
   # GFF from VFDB
-  [ ! -s vfdb_gff ] || sed 's/ /_/g' vfdb_gff | bedtools sort | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
-  | awk '{ print \$1 "\\t" \$4 "\\t" \$5 "\\t" \$2+1 "\\t" \$3 "\\t" \$6 "\\t" \$7 "\\t" \$8 "\\t" \$9}' >> total_gff ;
+  [ ! -s vfdb_gff ] || sed 's/ /_/g' vfdb_gff | bedtools sort \
+  | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
+  | awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$4,\$5,\$2+1,\$3,\$6,\$7,\$8,\$9}' >> total_gff ;
 
   # GFF from PHAST
-  [ ! -s phast_gff ] || sed 's/ /_/g' phast_gff | bedtools sort | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
-  | awk '{ print \$1 "\\t" \$4 "\\t" \$5 "\\t" \$2+1 "\\t" \$3 "\\t" \$6 "\\t" \$7 "\\t" \$8 "\\t" \$9}' >> total_gff ;
+  [ ! -s phast_gff ] || sed 's/ /_/g' phast_gff | bedtools sort \
+  | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
+  | awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$4,\$5,\$2+1,\$3,\$6,\$7,\$8,\$9}' >> total_gff ;
 
   # Add header to it
   echo \"##gff-version 3\" > ${prefix}_merged.gff ;
   bedtools sort -i total_gff | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
-  | awk '{ print \$1 "\\t" \$4 "\\t" \$5 "\\t" \$2+1 "\\t" \$3 "\\t" \$6 "\\t" \$7 "\\t" \$8 "\\t" \$9}' >> ${prefix}_merged.gff
+  | awk 'BEGIN { FS = "\t"; OFS="\\t" } sub(",",";",\$9) { print \$1,\$4,\$5,\$2+1,\$3,\$6,\$7,\$8,\$9}' >> ${prefix}_merged.gff
   """
 }
 
@@ -771,12 +837,8 @@ process write_summary_tables {
   file "${prefix}_noHypothetical.gff" into noHypothetical_gff optional true
   file "${prefix}_hypothetical.gff" into hypothetical_gff optional true
   file "${prefix}_transposase.gff" into transposase_gff optional true
-  file "${prefix}_resistance.tsv" into resistance_table optional true
-  file "${prefix}_virulence.tsv" into virulence_table optional true
-  file "${prefix}_transposase.tsv" into transposase_table optional true
-  file "${prefix}_ices.tsv" into ices_table optional true
-  file "${prefix}_prophage.tsv" into prophage_table optional true
   file "${prefix}_amrfinderplus.gff" into amrfinderplus_gff optional true
+  file "${prefix}_rgi.gff" into rgi_gff optional true
   file "${prefix}_amrfinderplus.tsv" into amrfinderplus_table optional true
 
   """
@@ -789,7 +851,8 @@ process write_summary_tables {
   touch ${prefix}_virulence.gff ${prefix}_resistance.gff ${prefix}_prophage.gff ${prefix}_ices.gff ;
   [[ \$(grep -c "virulence" ${prefix}_final.gff) -eq 0 ]] || awk '/virulence/ || /victors/ || vfdb' ${prefix}_final.gff > ${prefix}_virulence.gff ;
   [[ \$(grep -c "resistance" ${prefix}_final.gff) -eq 0 ]] || awk '/resistance/' ${prefix}_final.gff > ${prefix}_resistance.gff ;
-  [[ \$(grep -c "resistance" ${prefix}_final.gff) -eq 0 ]] || awk '/AMRFinderPlus/' ${prefix}_final.gff > ${prefix}_amrfinderplus.gff ;
+  [[ \$(grep -c "AMRFinderPlus" ${prefix}_final.gff) -eq 0 ]] || awk '/AMRFinderPlus/' ${prefix}_final.gff > ${prefix}_amrfinderplus.gff ;
+  [[ \$(grep -c "RGI" ${prefix}_final.gff) -eq 0 ]] || awk '/CARD-RGI/' ${prefix}_final.gff > ${prefix}_rgi.gff ;
   [[ \$(grep -c "prophage" ${prefix}_final.gff) -eq 0 ]] || awk '/prophage/ || \$2 ~ /phast/' ${prefix}_final.gff > ${prefix}_prophage.gff ;
   [[ \$(grep -c "ice" ${prefix}_final.gff) -eq 0 ]] || grep "iceberg" ${prefix}_final.gff > ${prefix}_ices.gff ;
   [[ \$(grep -c "efflux" ${prefix}_final.gff) -eq 0 ]] || grep "efflux" ${prefix}_final.gff > ${prefix}_efflux.gff ;
@@ -799,14 +862,7 @@ process write_summary_tables {
   [[ \$(grep -c "transposase" ${prefix}_final.gff) -eq 0 ]] || grep "transposase" ${prefix}_final.gff > ${prefix}_transposase.gff ;
 
   # Write summary tables
-  touch ${prefix}_resistance.tsv ${prefix}_virulence.tsv ${prefix}_ices.tsv ${prefix}_prophage.tsv ${prefix}_amrfinderplus.tsv;
-  [ ! -s ${prefix}_final.gff ] || write_table_from_gff.R -i ${prefix}_final.gff -o ${prefix} &> /tmp/error.txt ;
-  [ ! -s ${prefix}_transposase.gff ] || write_table_from_gff.R -i ${prefix}_transposase.gff -o ${prefix} -t transposase &> /tmp/error.txt ;
   [ ! -s ${prefix}_amrfinderplus.gff ] || write_table_from_gff.R -i ${prefix}_amrfinderplus.gff -o ${prefix} -t amrfinderplus &> /tmp/error.txt ;
-  [ ! -s ${prefix}_resistance.gff ] || write_table_from_gff.R -i ${prefix}_resistance.gff -o ${prefix} -t resistance &> /tmp/error.txt ;
-  [ ! -s ${prefix}_virulence.gff ] || write_table_from_gff.R -i ${prefix}_virulence.gff -o ${prefix} -t virulence &> /tmp/error.txt ;
-  [ ! -s ${prefix}_ices.gff ] || write_table_from_gff.R -i ${prefix}_ices.gff -o ${prefix} -t ices &> /tmp/error.txt ;
-  [ ! -s ${prefix}_prophage.gff ] || write_table_from_gff.R -i ${prefix}_prophage.gff -o ${prefix} -t prophage &> /tmp/error.txt
   """
 }
 
@@ -925,6 +981,7 @@ process jbrowse {
   file 'rrna.gff' from rrna_gff
   file 'resistance' from resistance_gff
   file 'amrfinder' from amrfinderplus_gff
+  file 'rgi' from rgi_gff
   file 'virulence' from virulence_gff
   file 'prophage' from prophage_gff
   file 'prophages.bed' from phigaro_bed
@@ -1000,9 +1057,13 @@ process jbrowse {
   [ ! -s resistance ] || flatfile-to-json.pl --gff resistance --key \"All resistance features from all sources\" \
   --trackType CanvasFeatures --trackLabel \"${params.prefix} resistance features from all sources\" --out \"data\" ;
 
-  # Add track with resistance features
+  # Add track with resistance AMRFinder features
   [ ! -s amrfinder ] || flatfile-to-json.pl --gff amrfinder --key \"AMRFinderPLus features\" \
   --trackType CanvasFeatures --trackLabel \"${params.prefix} resistance features from AMRFinderPlus\" --out \"data\" ;
+
+  # Add track with resistance RGI features
+  [ ! -s rgi ] || flatfile-to-json.pl --gff rgi --key \"CARD-RGI features\" \
+  --trackType CanvasFeatures --trackLabel \"${params.prefix} resistance features from CARD-RGI\" --out \"data\" ;
 
   # Add track with ICEs features
   [ ! -s ices ] || flatfile-to-json.pl --gff ices --key \"ICE features\" \
@@ -1133,7 +1194,7 @@ process report {
   input:
   val x from finish
   file 'final.gff' from final_gff
-  file rgi_table from rgi_output
+  file rgi_table from rgi_perfect
   file amrfinder_result from amrfinder_output
   file amrfinder_summary from amrfinderplus_table
   file 'resistance.gff' from resistance_gff
@@ -1187,28 +1248,3 @@ workflow.onComplete {
     println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
     println "Execution duration: $workflow.duration"
 }
-
-// Header log info
-log.info "========================================="
-log.info " Docker-based Genome Annotation Pipeline "
-log.info "========================================="
-def summary = [:]
-summary['Input fasta']  = params.genome
-summary['Output prefix']   = params.prefix
-summary['Output dir']   = "${params.outDir}"
-summary['Prokka Kingdom searched']   = params.prokka_kingdom
-summary['Prokka Genetic Code used']   = params.prokka_genetic_code
-summary['Prokka Specific Genus'] = params.prokka_genus
-summary['Number of threads used'] = params.threads
-summary['Number of minimum overlapping bases needed to merge'] = params.bedtools_merge_distance
-summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
-summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
-summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
-summary['Blast query coverage - ICEs and Phages'] = params.diamond_MGEs_queryCoverage
-if(workflow.revision) summary['Pipeline Release'] = workflow.revision
-summary['Current home']   = "$HOME"
-summary['Current user']   = "$USER"
-summary['Current path']   = "$PWD"
-summary['Configuration file'] = workflow.configFiles[0]
-log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
-log.info "========================================="
