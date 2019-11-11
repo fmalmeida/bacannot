@@ -185,6 +185,7 @@ params.not_run_resistance_search = false
 params.not_run_iceberg_search = false
 params.not_run_prophage_search = false
 params.not_run_kofamscan = false
+params.reference_genomes = false
 
 /*
 
