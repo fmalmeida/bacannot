@@ -45,7 +45,7 @@ def helpMessage() {
     --threads <int>                                Number of threads to use
     --genome <string>                              Query Genome file
     --bedtools_merge_distance                      Minimum number of overlapping bases for gene merge
-                                                   using bedtools merge.
+                                                   using bedtools merge (default: 0)
 
                             Prokka complementary parameters
 
@@ -77,6 +77,14 @@ def helpMessage() {
     --not_run_iceberg_search                       Tells wheter you want or not to execute ICE annotation
     --not_run_prophage_search                      Tells wheter you want or not to execute prophage annotation
     --not_run_kofamscan                            Tells wheter you want or not to execute KO annotation with kofamscan
+
+                            Configure Optional Pangenome analysis with Roary
+
+    --reference_genomes <string>                   Used to set path to reference genomes to be used in the pangenome
+                                                   analysis with Roary. Whenever set, the pipeline will automatically
+                                                   execute Roary pangenome analysis. Example: "path/reference/*.fasta"
+                                                   They must be all in one directory and they must no be links. They
+                                                   must be the hard file.
 
                       Configure optional Methylation annotation with nanopolish
                       If left blank, it will not be executed. And, with both parameters are set
@@ -379,7 +387,7 @@ process compute_GC {
   file 'input.fasta' from renamed_genome
 
   output:
-  file "input_GC_1000_bps.sorted.bedGraph" into gc_content_jbrowse
+  file "input_GC_500_bps.sorted.bedGraph" into gc_content_jbrowse
   file "input.sizes" into gc_sizes_jbrowse
 
   """
@@ -388,13 +396,13 @@ process compute_GC {
   # Take Sizes
   cut -f 1,2 input.fasta.fai > input.sizes ;
   # Create sliding window
-  bedtools makewindows -g input.sizes -w 1000 > input_1000_bps.bed ;
+  bedtools makewindows -g input.sizes -w 500 > input_500_bps.bed ;
   # Compute GC
-  bedtools nuc -fi input.fasta -bed input_1000_bps.bed > input_1000_bps_nuc.txt ;
+  bedtools nuc -fi input.fasta -bed input_500_bps.bed > input_500_bps_nuc.txt ;
   # Create bedGraph
-  awk 'BEGIN{FS="\\t"; OFS="\\t"} FNR > 1 { print \$1,\$2,\$3,\$5 }' input_1000_bps_nuc.txt > input_GC_1000_bps.bedGraph
+  awk 'BEGIN{FS="\\t"; OFS="\\t"} FNR > 1 { print \$1,\$2,\$3,\$5 }' input_500_bps_nuc.txt > input_GC_500_bps.bedGraph
   # Sort
-  bedtools sort -i input_GC_1000_bps.bedGraph > input_GC_1000_bps.sorted.bedGraph
+  bedtools sort -i input_GC_500_bps.bedGraph > input_GC_500_bps.sorted.bedGraph
   """
 }
 
