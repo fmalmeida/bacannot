@@ -47,6 +47,8 @@ This images have been kept separate to not create massive Docker image and to av
 
 ## Documentation
 
+Please take a time to read the [docs](https://bacannot.readthedocs.io/en/latest/?badge=latest).
+
 ### Usage
 
     Usage:
