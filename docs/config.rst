@@ -7,7 +7,7 @@ To download a configuration file template users just need to run ``nextflow run 
 
 Using a config file your code is lot more clean and concise: ``nextflow run fmalmeida/bacannot -c [path-to-config]``
 
-Exemplification of Config file:
+Default configuration:
 
 .. code-block:: groovy
 
