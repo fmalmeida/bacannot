@@ -1,7 +1,7 @@
 # Bacterial Annotation (bacannot) Pipeline
 
 <p align="center">
-<img src="annotation_en.png">
+<img src="docs/annotation_en.png">
 <p align="center"><p align="center">
 </p>
 
