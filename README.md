@@ -1,4 +1,5 @@
 # Bacterial Annotation (bacannot) Pipeline
+[![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest)
 
 <p align="center">
 <img src="docs/annotation_en.png">
