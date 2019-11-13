@@ -108,29 +108,6 @@ nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.co
 }
 
 /*
-                                      Set log message
-*/
-log.info "========================================="
-log.info " Docker-based Genome Annotation Pipeline "
-log.info "========================================="
-def summary = [:]
-summary['Input fasta']  = params.genome
-summary['Output prefix']   = params.prefix
-summary['Output dir']   = "${params.outDir}"
-summary['Number of threads used'] = params.threads
-summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
-summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
-summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
-summary['Blast query coverage - ICEs and Phages'] = params.diamond_MGEs_queryCoverage
-if(workflow.revision) summary['Pipeline Release'] = workflow.revision
-summary['Current home']   = "$HOME"
-summary['Current user']   = "$USER"
-summary['Current path']   = "$PWD"
-summary['Configuration file'] = workflow.configFiles[0]
-log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
-log.info "========================================="
-
-/*
                                                   Display Help Message
 */
 
@@ -1247,6 +1224,29 @@ process report {
                  phast_blast = "${phast_blast}"))'
   """
 }
+
+/*
+                                      Set log message
+*/
+log.info "========================================="
+log.info " Docker-based Genome Annotation Pipeline "
+log.info "========================================="
+def summary = [:]
+summary['Input fasta']  = params.genome
+summary['Output prefix']   = params.prefix
+summary['Output dir']   = "${params.outDir}"
+summary['Number of threads used'] = params.threads
+summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
+summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
+summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
+summary['Blast query coverage - ICEs and Phages'] = params.diamond_MGEs_queryCoverage
+if(workflow.revision) summary['Pipeline Release'] = workflow.revision
+summary['Current home']   = "$HOME"
+summary['Current user']   = "$USER"
+summary['Current path']   = "$PWD"
+summary['Configuration file'] = workflow.configFiles[0]
+log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
+log.info "========================================="
 
 // Completition message
 workflow.onComplete {

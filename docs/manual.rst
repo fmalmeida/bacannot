@@ -160,6 +160,8 @@ Usage example
      - N
      - Path to fastq reads (related to fast5 files) that will be used to call methylation. If null, the analysis will be skipped
 
+
+
 Configuration File
 """"""""""""""""""
 
@@ -170,7 +172,9 @@ To download a configuration file template users just need to run ``nextflow run 
 
 Using a config file your code is lot more clean and concise: ``nextflow run fmalmeida/bacannot -c [path-to-config]``
 
-Exemplification of Config file::
+Exemplification of Config file:
+
+.. code-block:: groovy
 
   /*
 
