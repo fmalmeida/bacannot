@@ -6,7 +6,10 @@
 Bacannot - A generic prokaryotic genome annotation pipeline
 ===========================================================
 
-`bacannot <https://github.com/fmalmeida/bacannot>`_ is a pipeline developed with `Nextflow <https://www.nextflow.io/docs/latest/index.html>`_ and `Docker <https://www.docker.com/>`_. It was designed to provide an easy-to-use framework for performing a comprehensive annotation on prokaryotic genomes. Bacannot can annotate resistance genes, virulence factors, genomic islands, prophages, methylation and more. It wraps up the following tools and databases:
+`bacannot <https://github.com/fmalmeida/bacannot>`_ is a pipeline developed with `Nextflow <https://www.nextflow.io/docs/latest/index.html>`_
+and `Docker <https://www.docker.com/>`_. It was designed to provide an easy-to-use framework for performing a comprehensive annotation on
+prokaryotic genomes. Bacannot can annotate resistance genes, virulence factors, genomic islands, prophages, methylation and more.
+It wraps up the following tools and databases:
 
 * `Prokka <https://github.com/tseemann/prokka>`_
 * `barrnap <https://github.com/tseemann/barrnap>`_
@@ -33,4 +36,4 @@ Bacannot - A generic prokaryotic genome annotation pipeline
 
 Support Contact
 ===============
-Whenever a doubt arise feel free to contact me at <almeidafmarques@gmail.com>
+Whenever a doubt arise feel free to contact me at almeidafmarques@gmail.com
