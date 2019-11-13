@@ -26,7 +26,7 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
 5. Download required Docker images
 
-    .. codeblock:: guess
+    .. codeblock:: none
 
     docker pull fmalmeida/compgen:BACANNOT
     docker pull fmalmeida/compgen:KOFAMSCAN
