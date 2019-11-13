@@ -13,25 +13,18 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
   * Read more in their `manual <https://docs.docker.com/>`_
   * Or give this `in-house script <https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh>`_ a try.
 2. Installing Nextflow
-::
 
     ``curl -s https://get.nextflow.io | bash``
 
 3. Download the pipeline
 
-::
-
     ``./nextflow pull fmalmeida/bacannot``
 
 4. Test your installation
 
-::
-
     ``./nextflow run fmalmeida/bacannot --help``
 
 5. Download required Docker images
-
-::
 
     ``docker pull fmalmeida/compgen:BACANNOT``
 

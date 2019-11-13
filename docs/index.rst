@@ -32,6 +32,7 @@ It wraps up the following tools and databases:
    :hidden:
 
    installation
+   manual
 
 Support Contact
 ===============
