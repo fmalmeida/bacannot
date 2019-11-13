@@ -163,7 +163,7 @@ Usage example
 
 
 All this parameters are configurable through a configuration file. We encourage users to use the configuration
-file since it will keep your execution cleaner and more readable. See an :ref:`config`.
+file since it will keep your execution cleaner and more readable. See a :ref:`config` example.
 
 Examples
 """"""""

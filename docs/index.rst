@@ -33,6 +33,7 @@ It wraps up the following tools and databases:
 
    installation
    manual
+   config
    examples
 
 Support Contact
