@@ -160,7 +160,9 @@ Usage example
      - N
      - Path to fastq reads (related to fast5 files) that will be used to call methylation. If null, the analysis will be skipped
 
-|
+
+
+
 
 Configuration File
 """"""""""""""""""
