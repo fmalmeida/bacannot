@@ -33,4 +33,5 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
    docker pull fmalmeida/compgen:JBROWSE
    docker pull fmalmeida/compgen:RENV
 
+
 Now, everything is set up and ready to run. Remember to always keep your Docker images up to date (Docker pull you always download the latest).

@@ -31,9 +31,7 @@ It wraps up the following tools and databases:
 .. toctree::
    :hidden:
 
-   index
    installation
-   manual
 
 Support Contact
 ===============
