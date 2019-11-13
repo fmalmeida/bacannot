@@ -7,8 +7,8 @@ Simple annotation example
 """""""""""""""""""""""""
 
 ::
-  ./nextflow run main.nf --outDir TESTE --threads 3 --genome assembly.fasta
-  --bedtools_merge_distance -20 --prokka_center UNB --not_run_kofamscan
+      ./nextflow run main.nf --outDir TESTE --threads 3 --genome assembly.fasta \
+      --bedtools_merge_distance -20 --prokka_center UNB --not_run_kofamscan
 
 .. note::
 
@@ -20,9 +20,9 @@ A little more complex example
 """""""""""""""""""""""""""""
 
 ::
-  ./nextflow run main.nf --outDir TESTE --threads 3 --genome assembly.fasta --bedtools_merge_distance -20
-  --prokka_center UNB --roary_reference_genomes "references/*.fasta" --nanopolish_fastq_reads "fastq/input.fastq"
-  --nanopolish_fast5_dir "fast5_pass_dir" --diamond_minimum_alignment_length 500
+      ./nextflow run main.nf --outDir TESTE --threads 3 --genome assembly.fasta --bedtools_merge_distance -20 \
+      --prokka_center UNB --roary_reference_genomes "references/*.fasta" --nanopolish_fastq_reads "fastq/input.fastq" \
+      --nanopolish_fast5_dir "fast5_pass_dir" --diamond_minimum_alignment_length 500
 
 .. note::
 
@@ -35,4 +35,4 @@ Running with a configuration file
 """""""""""""""""""""""""""""""""
 
 ::
-  ./nextflow run fmalmeida/bacannot -c bacannot.config
+      ./nextflow run fmalmeida/bacannot -c bacannot.config
