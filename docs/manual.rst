@@ -163,9 +163,9 @@ Usage example
 
 
 All this parameters are configurable through a configuration file. We encourage users to use the configuration
-file since it will keep your execution cleaner and more readable. See an `examplification <config>`_.
+file since it will keep your execution cleaner and more readable. See an :ref:`config`.
 
 Examples
 """"""""
 
-Check out the `examples <examples>`_ that we provide for a better understanding of the usage.
+For a better understanding of the usage we provided a feel examples. See :ref:`examples`
