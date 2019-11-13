@@ -80,7 +80,7 @@ def helpMessage() {
 
                             Configure Optional Pangenome analysis with Roary
 
-    --reference_genomes <string>                   Used to set path to reference genomes to be used in the pangenome
+    --roary_reference_genomes <string>             Used to set path to reference genomes to be used in the pangenome
                                                    analysis with Roary. Whenever set, the pipeline will automatically
                                                    execute Roary pangenome analysis. Example: "path/reference/*.fasta"
                                                    They must be all in one directory and they must no be links. They
@@ -193,7 +193,7 @@ params.not_run_resistance_search = false
 params.not_run_iceberg_search = false
 params.not_run_prophage_search = false
 params.not_run_kofamscan = false
-params.reference_genomes = false
+params.roary_reference_genomes = false
 
 /*
 
@@ -202,7 +202,7 @@ params.reference_genomes = false
 */
 
 genome = file(params.genome)
-reference_genomes = (params.reference_genomes) ? Channel.fromPath( params.reference_genomes ) : Channel.empty()
+reference_genomes = (params.roary_reference_genomes) ? Channel.fromPath( params.roary_reference_genomes ) : Channel.empty()
 prefix = params.prefix
 outDir = params.outDir
 threads = params.threads
