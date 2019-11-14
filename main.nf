@@ -233,7 +233,7 @@ process prokka {
     output:
     file "prokka/${prefix}.gff" into annotation_gff_prokka, annotation_gff_prokka_roary
     file "prokka/${prefix}.gbk" into annotation_gbk_prokka
-    file "*"
+    file "prokka/"
     file "prokka/${prefix}*.fna" into renamed_genome
     file "prokka/${prefix}*.faa" into genes_aa_sql, genes_aa_kofamscan, amrfinder_input
     file "prokka/${prefix}*.ffn" into genes_sequences_vfdb, genes_sequences_iceberg, genes_nt_sql, genes_sequences_phast, genes_sequences_victors
