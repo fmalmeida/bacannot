@@ -925,10 +925,10 @@ process call_methylation {
 
   # Calculate Methylation Frequencies
   ## cpg , gpc , dam and dcm
-  /work/calculate_methylation_frequency.py cpg_calls.tsv > cpg_frequency.tsv ;
-  /work/calculate_methylation_frequency.py gpc_calls.tsv > gpc_frequency.tsv ;
-  /work/calculate_methylation_frequency.py dam_calls.tsv > dam_frequency.tsv ;
-  /work/calculate_methylation_frequency.py dcm_calls.tsv > dcm_frequency.tsv ;
+  /work/nanopolish_scripts/calculate_methylation_frequency.py cpg_calls.tsv > cpg_frequency.tsv ;
+  /work/nanopolish_scripts/calculate_methylation_frequency.py gpc_calls.tsv > gpc_frequency.tsv ;
+  /work/nanopolish_scripts/calculate_methylation_frequency.py dam_calls.tsv > dam_frequency.tsv ;
+  /work/nanopolish_scripts/calculate_methylation_frequency.py dcm_calls.tsv > dcm_frequency.tsv ;
 
   # Transform These TSV files into bedGraph
   ## cpg
