@@ -7,8 +7,8 @@ Overview
 """"""""
 
 .. image:: annotation_en.png
-
-An overview of all annotation steps automatically taken by the pipeline.
+    :align: center
+    :alt: An overview of all annotation steps automatically taken by the pipeline.
 
 
 Input
