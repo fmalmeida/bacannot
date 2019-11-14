@@ -47,95 +47,21 @@ This images have been kept separate to not create massive Docker image and to av
 
 ## Documentation
 
-Please take a time to read the [docs](https://bacannot.readthedocs.io/en/latest/?badge=latest).
-
 ### Usage
 
-    Usage:
-    nextflow run fmalmeida/bacannot [--help] [ -c nextflow.config ] [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
-    Comments:
+Checkout the full usage help with `nextflow run fmalmeida/bacannot --help`
 
-    This pipeline contains a massive amount of configuration variables and its usage as CLI parameters would
-    cause the command to be huge.
-    Therefore, it is extremely recommended to use the nextflow.config configuration file in order to make
-    parameterization easier and more readable.
-
-    Creating a configuration file:
-
-    nextflow run fmalmeida/bacannot [--get_config]
-
-    Show command line examples:
-
-    nextflow run fmalmeida/bacannot --examples
-
-    Execution Reports:
-
-    nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-report
-    nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-trace
-    nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-timeline
-
-    OBS: These reports can also be enabled through the configuration file.
-    OPTIONS:
-
-                             General Parameters - Mandatory
-
-     --outDir <string>                              Output directory name
-     --threads <int>                                Number of threads to use
-     --genome <string>                              Query Genome file
-     --bedtools_merge_distance                      Minimum number of overlapping bases for gene merge
-                                                    using bedtools merge.
-
-                             Prokka complementary parameters
-
-     --prokka_center <string>                       Your institude acronym to be used by prokka when
-                                                    renaming contigs.
-     --prokka_kingdom <string>                      Prokka annotation mode. Possibilities (default 'Bacteria'):
-                                                    Archaea|Bacteria|Mitochondria|Viruses
-     --prokka_genetic_code <int>                    Genetic Translation code. Must be set if kingdom is not
-                                                    default (in blank).
-     --prokka_use_rnammer                           Tells prokka wheter to use rnammer instead of barrnap.
-     --prokka_genus <string>                        Set only if you want to search only a specific genus database
-
-                             Diamond (blastx) search parameters
-
-     --diamond_virulence_identity                   Min. identity % for virulence annotation
-     --diamond_virulence_queryCoverage              Min. query coverage for virulence annotation
-     --diamond_MGEs_identity                        Min. identity % for ICEs and prophage annotation
-     --diamond_MGEs_queryCoverage                   Min. query coverage for ICEs and prophage annotation
-     --diamond_minimum_alignment_length             Min. alignment length for diamond annotation
-
-                             Configure Optional processes
-
-     --not_run_virulence_search                     Tells wheter you want or not to execute virulence annotation
-     --not_run_vfdb_search                          Tells wheter you want or not to used VFDB database for virulence
-                                                    annotation. It is useless if virulence_search is not true
-     --not_run_victors_search                       Tells wheter you want or not to used victors database for virulence
-                                                    annotation. It is useless if virulence_search is not true
-     --not_run_resistance_search                    Tells wheter you want or not to execute resistance annotation
-     --not_run_iceberg_search                       Tells wheter you want or not to execute ICE annotation
-     --not_run_prophage_search                      Tells wheter you want or not to execute prophage annotation
-     --not_run_kofamscan                            Tells wheter you want or not to execute KO annotation with kofamscan
-
-                             Configure Optional Pangenome analysis with Roary
-
-     --roary_reference_genomes <string>                   Used to set path to reference genomes to be used in the pangenome
-                                                    analysis with Roary. Whenever set, the pipeline will automatically
-                                                    execute Roary pangenome analysis. Example: "path/reference/*.fasta"
-                                                    They must be all in one directory and they must no be links. They
-                                                    must be the hard file.
-
-                       Configure optional Methylation annotation with nanopolish
-                       If left blank, it will not be executed. And, with both parameters are set
-                       it will automatically execute nanopolish to call methylation
-
-     --nanopolish_fast5_dir <string>                Path to directory containing FAST5 files
-     --nanopolish_fastq_reads <string>              Path to fastq files (file related to FAST5 files above)
+Please take a time to read the [docs](https://bacannot.readthedocs.io/en/latest/?badge=latest).
 
 ### Usage examples:
 
-> Simple annotation example
+> Simple annotation example through cli
 
     ./nextflow run main.nf --outDir TESTE --threads 3 --genome assembly.fasta --bedtools_merge_distance -20 --prokka_center UNB --not_run_kofamscan
+
+> Running with a configuration file
+
+    ./nextflow run fmalmeida/bacannot -c nextflow.config
 
 ## Using the configuration file
 
