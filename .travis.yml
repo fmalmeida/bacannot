@@ -5,7 +5,7 @@ services:
 - docker
 branches:
   only:
-  - master  
+  - master
 install:
 - sudo apt-get -qq update
 script:
@@ -13,4 +13,4 @@ script:
 - ./nextflow run main.nf --help
 - ./nextflow run main.nf --examples
 - ./nextflow run main.nf --get_config
-- docker pull fmalmeida/compgen:BACANNOT
+- docker pull fmalmeida/bacannot:latest

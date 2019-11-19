@@ -26,13 +26,13 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
 5. Download required Docker images
 
-    ``docker pull fmalmeida/compgen:BACANNOT``
+    ``docker pull fmalmeida/bacannot:latest``
 
-    ``docker pull fmalmeida/compgen:KOFAMSCAN``
+    ``docker pull fmalmeida/bacannot:kofamscan``
 
-    ``docker pull fmalmeida/compgen:JBROWSE``
+    ``docker pull fmalmeida/bacannot:jbrowse``
 
-    ``docker pull fmalmeida/compgen:RENV``
+    ``docker pull fmalmeida/bacannot:renv``
 
 .. note::
 

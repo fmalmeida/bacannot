@@ -207,7 +207,7 @@ params.execute_kofamscan = (params.not_run_kofamscan) ? false : true
 
 process MLST {
    publishDir "${outDir}/MLST", mode: 'copy'
-   container = 'fmalmeida/compgen:BACANNOT'
+   container = 'fmalmeida/bacannot:latest'
 
    input:
    file input from genome
@@ -225,7 +225,7 @@ process MLST {
 
 process prokka {
     publishDir outDir, mode: 'copy'
-    container = 'fmalmeida/compgen:BACANNOT'
+    container = 'fmalmeida/bacannot:latest'
 
     input:
     file input from genome
@@ -251,7 +251,7 @@ process prokka {
 }
 
 process create_roary_input {
-  container = 'fmalmeida/compgen:BACANNOT'
+  container = 'fmalmeida/bacannot:latest'
 
   input:
   file references from reference_genomes
@@ -273,7 +273,7 @@ process create_roary_input {
 
 process roary_pangenome {
   publishDir "${outDir}/Roary_pangenome", mode: 'copy'
-  container = 'fmalmeida/compgen:BACANNOT'
+  container = 'fmalmeida/bacannot:latest'
 
   input:
   file gffs from roary_inputs.mix(annotation_gff_prokka_roary).collect()
@@ -311,7 +311,7 @@ process roary_pangenome {
 
 process rRNA {
    publishDir "${outDir}/rRNA", mode: 'copy'
-   container = 'fmalmeida/compgen:BACANNOT'
+   container = 'fmalmeida/bacannot:latest'
 
    input:
    file input from renamed_genome
@@ -334,7 +334,7 @@ process rRNA {
 */
 
 process masking_genome {
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
 
   input:
   file input from renamed_genome
@@ -358,7 +358,7 @@ process masking_genome {
 */
 
 process compute_GC {
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
 
   input:
   file 'input.fasta' from renamed_genome
@@ -392,7 +392,7 @@ process compute_GC {
 
 process kofamscan {
   publishDir outDir, mode: 'copy'
-  container = 'fmalmeida/compgen:KOFAMSCAN'
+  container = 'fmalmeida/bacannot:kofamscan'
   x = "Executing KOfamscan - Its output can be directly put in KEGG Mapper for visualization"
   tag { x }
 
@@ -429,7 +429,7 @@ process vfdb {
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
   }}
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
   x = ( params.virulence_search && params.vfdb_search
         ? "Process is being executed"
         : "Process was skipped by the user")
@@ -480,7 +480,7 @@ process victors {
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
 }}
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
   x = ( params.virulence_search && params.victors_search
         ? "Process is being executed"
         : "Process was skipped by the user")
@@ -512,7 +512,7 @@ process victors {
 process amrfinder {
   if ( params.resistance_search ) {
   publishDir "${outDir}/resistance/AMRFinderPlus_table", mode: 'copy' }
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
   x = ( params.resistance_search
         ? "Process is being executed"
         : "Process was skipped by the user")
@@ -537,7 +537,7 @@ process amrfinder {
 process rgi_annotation {
   if ( params.resistance_search ) {
   publishDir "${outDir}/resistance/RGI_annotation", mode: 'copy' }
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
   x = ( params.resistance_search
         ? "Process is being executed"
         : "Process was skipped by the user")
@@ -579,7 +579,7 @@ process phast {
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
 }}
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
   x = ( params.prophage_search
         ? "Process is being executed"
         : "Process was skipped by the user")
@@ -624,7 +624,7 @@ process phast {
 process phigaro {
   if ( params.prophage_search ) {
   publishDir "${outDir}/prophages/phigaro", mode: 'copy'}
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
   x = ( params.prophage_search
         ? "Process is being executed"
         : "Process was skipped by the user")
@@ -655,7 +655,7 @@ process phigaro {
 
 process find_GIs {
   publishDir "${outDir}/predicted_GIs", mode: 'copy'
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
 
   input:
   file "annotation.gbk" from annotation_gbk_prokka
@@ -682,7 +682,7 @@ process iceberg {
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename" }}
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
   x = ( params.iceberg_search
         ? "Process is being executed"
         : "Process was skipped by the user")
@@ -721,7 +721,7 @@ process iceberg {
 
 process genes_blasted_to_gff {
   publishDir "${outDir}/gffs/only_against_predicted_genes", mode: 'copy'
-  container 'fmalmeida/compgen:RENV'
+  container 'fmalmeida/bacannot:renv'
 
   input:
   file 'gff' from clear_gff
@@ -762,7 +762,7 @@ process genes_blasted_to_gff {
 
 process merge_gffs {
   publishDir "${outDir}/gffs/merged", mode: 'copy'
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
 
   input:
   file 'prokka_gff' from blast_genes_gff
@@ -805,7 +805,7 @@ process write_summary_tables {
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".tsv") > 0 ) "/tmp/$filename"
   else if (filename.indexOf(".gff") > 0 ) "gffs/final/$filename" }
-  container 'fmalmeida/compgen:RENV'
+  container 'fmalmeida/bacannot:renv'
 
   input:
   file gff from merged_gff
@@ -852,7 +852,7 @@ process write_summary_tables {
 
 process gff_to_gbk {
   publishDir "${outDir}/genbankFile", mode: 'copy'
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
 
   input:
   file gff from final_gff
@@ -885,7 +885,7 @@ if (params.fast5_dir && params.fastq_reads) {
 process call_methylation {
   if (params.fast5_dir && params.fastq_reads) {
   publishDir "${outDir}/methylation", mode: 'copy' }
-  container 'fmalmeida/compgen:BACANNOT'
+  container 'fmalmeida/bacannot:latest'
   x = ( params.fast5_dir && params.fastq_reads
         ? "Methylated sites are being calculated"
         : "Process was skipped by the user")
@@ -955,7 +955,7 @@ process call_methylation {
 
 process jbrowse {
   publishDir "${outDir}/jbrowse/", mode: 'copy'
-  container 'fmalmeida/compgen:JBROWSE'
+  container 'fmalmeida/bacannot:jbrowse'
 
   input:
   file input from renamed_genome
@@ -1145,7 +1145,7 @@ process jbrowse {
 
 process SQL_db {
   publishDir "${outDir}/sqlDB", mode: 'copy'
-  container 'fmalmeida/compgen:RENV'
+  container 'fmalmeida/bacannot:renv'
 
   input:
   file gff from final_gff
@@ -1172,7 +1172,7 @@ configFile = file(workflow.configFiles[0])
 
 process report {
   publishDir "${outDir}/report_files", mode: 'copy'
-  container 'fmalmeida/compgen:RENV'
+  container 'fmalmeida/bacannot:renv'
 
   input:
   val x from finish

@@ -22,7 +22,7 @@ This is an easy to use pipeline that uses state-of-the-art software for prokaryo
 * Unix-like operating system (Linux, macOS, etc)
 * Java 8
 * Docker
-  * `fmalmeida/compgen:{BACANNOT, KOFAMSCAN, JBROWSE, RENV}`
+  * `fmalmeida/bacannot:{latest, kofamscan, jbrowse, renv}`
 
 This images have been kept separate to not create massive Docker image and to avoid dependencies conflits.
 
@@ -32,10 +32,10 @@ This images have been kept separate to not create massive Docker image and to av
     * You can give this [in-house script](https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh) a try.
     * After installed, you need to download the required Docker images
 
-          docker pull fmalmeida/compgen:BACANNOT
-          docker pull fmalmeida/compgen:KOFAMSCAN
-          docker pull fmalmeida/compgen:JBROWSE
-          docker pull fmalmeida/compgen:RENV
+          docker pull fmalmeida/bacannot:latest
+          docker pull fmalmeida/bacannot:kofamscan
+          docker pull fmalmeida/bacannot:jbrowse
+          docker pull fmalmeida/bacannot:renv
 
 2. Install Nextflow (version 0.24.x or higher):
 

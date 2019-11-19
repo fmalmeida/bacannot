@@ -1,0 +1,170 @@
+FROM ubuntu:18.04
+
+MAINTAINER Felipe Marques de Almeida <180039822@aluno.unb.br>
+SHELL ["/bin/bash", "-c"]
+# DEPENDENCIES
+WORKDIR /work
+
+# INSTALL MINICONDA
+RUN apt-get update && apt-get upgrade -y && apt-get install -y git libc6-dev build-essential wget && \
+	wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /miniconda.sh && \
+	bash /miniconda.sh -b -p /miniconda
+ENV PATH="/miniconda/bin:$PATH"
+
+# Configure Miniconda
+RUN conda config --add channels defaults && \
+	conda config --add channels bioconda && \
+	conda config --add channels conda-forge && \
+	conda init --all
+
+# INSTALL AMRFinderPlus
+RUN conda create -y -n AMRFINDERPLUS && \
+	conda install -y -n AMRFINDERPLUS -c bioconda ncbi-amrfinderplus && \
+	source activate AMRFINDERPLUS && \
+	amrfinder -u && \
+	conda deactivate
+
+
+# DIAMOND DATABASES - IMPORTANT ADDITIONAL DATABASES
+## Install bedtools and ncbi-blast+
+RUN rm -rf /var/lib/apt/lists/* && \
+	apt-get clean && apt-get update && apt-get upgrade -y && \
+	apt-get install -y build-essential wget git hmmer python perl bedtools libidn11 && \
+	wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.9.0+-x64-linux.tar.gz && \
+	tar -zxvf ncbi-blast-2.9.0+-x64-linux.tar.gz ; cd ncbi-blast-2.9.0+/bin/ ; ln -rs $(ls) /usr/local/bin/ && \
+	mkdir /work/scripts && cd /work/scripts && git clone https://github.com/fmalmeida/genomeGTFtools.git && \
+	cd genomeGTFtools/ && ln -rs $(ls) /usr/local/bin/
+
+## Install Diamond
+RUN wget https://github.com/bbuchfink/diamond/releases/download/v0.9.25/diamond-linux64.tar.gz && tar zxvf diamond-linux64.tar.gz && mv diamond /usr/local/bin
+## VFDB
+RUN mkdir /work/vfdb && cd /work/vfdb && wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_pro.fas.gz && \
+       gzip -d VFDB_setA_pro.fas.gz && diamond makedb --in /work/vfdb/VFDB_setA_pro.fas -d /work/vfdb/vfdb_prot
+##  VICTORS
+RUN mkdir /work/victors && cd /work/victors && \
+	wget http://www.phidias.us/victors/downloads/gen_downloads.php -O /work/victors/gen_downloads.fasta && \
+	wget "http://www.phidias.us/victors/downloads/gen_downloads_protein.php" && \
+	diamond makedb --in gen_downloads_protein.php -d /work/victors/victors_prot && \
+	makeblastdb -dbtype nucl -in /work/victors/gen_downloads.fasta -out /work/victors/victors_nt
+## ICEbergs
+RUN mkdir /work/iceberg && cd /work/iceberg && \
+	wget http://db-mml.sjtu.edu.cn/ICEberg/download/ICEberg_seq_experimental_data.fas.gz && \
+	gzip -d ICEberg_seq_experimental_data.fas.gz && \
+	makeblastdb -dbtype nucl -in ICEberg_seq_experimental_data.fas -out /work/iceberg/iceberg_nt && \
+       	wget http://db-mml.sjtu.edu.cn/ICEberg/download/ICEberg_aa_experimental_data.fas.gz && \
+	gzip -d ICEberg_aa_experimental_data.fas.gz && \
+	diamond makedb --in ICEberg_aa_experimental_data.fas -d /work/iceberg/iceberg_prot
+
+## PHAST
+RUN mkdir /work/phast && cd /work/phast && \
+	wget http://phast.wishartlab.com/phage_finder/DB/prophage_virus.db && \
+	diamond makedb --in prophage_virus.db -d /work/phast/phast_prot
+
+# INSTALL BARRNAP
+RUN wget http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
+	tar xf clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
+	ln -rs clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/* /usr/local/bin/ && \
+	conda install -y -c bioconda -c conda-forge barrnap
+
+# INSTALL EMBOSS
+RUN apt-get install -y libdatetime-perl libxml-simple-perl libdigest-md5-perl default-jre emboss
+
+# INSTALL MLST
+RUN conda create -y -n MLST && \
+	conda install -y -n MLST -c conda-forge -c bioconda -c defaults mlst
+
+# INSTALL NANOPOLISH
+## Configure Conda
+RUN conda config --add channels r && \
+	conda config --add channels bioconda && \
+	conda install -y pysam && \
+	conda install -y -c anaconda hdf5 && \
+	conda install -c bioconda htslib && \
+	conda install -c anaconda biopython && \
+	conda install -c conda-forge eigen && \
+	apt-get install -y libhdf5-dev && \
+	conda config --add channels defaults && \
+	conda config --add channels conda-forge && \
+	conda config --add channels bioconda && \
+	conda install -y nanopolish && \
+	git clone --recursive https://github.com/jts/nanopolish.git && \
+	mv nanopolish/scripts /work/nanopolish_scripts && \
+	rm -r nanopolish && \
+	conda install -y -c bioconda minimap2 && \
+	conda install -y -c bioconda samtools  && \
+	conda install -y -c bioconda seqtk && \
+	conda install -y -c conda-forge parallel
+
+# INSTALL PROKKA
+RUN apt-get update && apt-get upgrade -y && \
+	apt-get install -y libdatetime-perl libxml-simple-perl libdigest-md5-perl bioperl infernal prodigal aragorn hmmer && \
+	wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz
+RUN conda create -y -n PROKKA && \
+	conda install -y -c conda-forge -c bioconda -c defaults prokka
+RUN source activate PROKKA && \
+	gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
+	mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
+	mv TIGRFAMs_15.hmm /miniconda/db/hmm/ && \
+	prokka --setupdb && \
+	apt-get install -y ncbi-tools-bin
+
+# INSTALL PHIGARO
+RUN apt-get install -y tar git libc6-dev gcc g++ locate python3 python3-pip && \
+	git clone https://github.com/bobeobibo/phigaro.git && cd phigaro && python3 setup.py install && \
+	yes N | phigaro-setup -c /work/phigaro/config.yml --no-updatedb
+RUN apt-get install -y seqtk
+
+# Help Phigaro Installation
+RUN cd /usr/bin && \
+	for i in * ; do ln -rs "$i" /usr/local/bin ; done
+
+# INSTALL RGI
+RUN conda create -y -n RGI && \
+	conda install -y -n RGI -c bioconda rgi=5.1.0 && \
+	source activate RGI && \
+	wget https://card.mcmaster.ca/latest/data && \
+	tar -xvf data ./card.json && \
+	rgi load --card_json ./card.json
+
+# Update AMRFinderPlus
+RUN conda update -y -n AMRFINDERPLUS -c bioconda ncbi-amrfinderplus && \
+	source activate AMRFINDERPLUS && \
+	amrfinder -u && \
+	conda deactivate
+
+# Install IslandPath
+RUN conda create -y -n find_GIs && \
+	conda install -y -n find_GIs -c bioconda islandpath && \
+	git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
+	ln -rs ./islandpath/Dimob.pl /usr/local/bin
+
+RUN conda install -y -n find_GIs -c conda-forge biopython
+
+# Download pythonScripts
+RUN git clone https://github.com/fmalmeida/pythonScripts.git
+
+# Update blast2gff.py
+RUN cd /work/scripts && rm -r genomeGTFtools && git clone https://github.com/fmalmeida/genomeGTFtools.git && \
+        cd genomeGTFtools/ && rm /usr/local/bin/blast2gff.py && ln -rs blast2gff.py /usr/local/bin/
+
+# Install Roary dependencies
+RUN conda config --add channels r && \
+	conda config --add channels defaults && \
+	conda config --add channels conda-forge && \
+	conda config --add channels bioconda && \
+	conda create -y -n ROARY && \
+	conda install -y -n ROARY roary && \
+	wget https://github.com/sanger-pathogens/Roary/raw/master/contrib/roary2svg/roary2svg.pl -O /usr/local/bin/roary2svg.pl && \
+	chmod a+x /usr/local/bin/roary2svg.pl && \
+	wget https://github.com/sanger-pathogens/Roary/raw/master/contrib/roary_plots/roary_plots.py -O /usr/local/bin/roary_plots.py && \
+	chmod a+x /usr/local/bin/roary_plots.py
+RUN conda create -y -n ROARY_PLOTS python=3.7 && \
+	conda install -y -n ROARY_PLOTS -c conda-forge matplotlib biopython seaborn pandas
+# Help env
+RUN chmod -R a+rw /miniconda/envs/RGI/lib/python3.6/site-packages/app/*
+
+# CHECK ENVs
+RUN conda info -e
+
+# Set WorkDir
+WORKDIR /work
