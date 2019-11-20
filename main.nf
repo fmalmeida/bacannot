@@ -115,8 +115,8 @@ params.help = false
  // Show help emssage
  if (params.help){
    helpMessage()
-   file('work').deleteDir()
-   file('.nextflow').deleteDir()
+   //file('work').deleteDir()
+   //file('.nextflow').deleteDir()
    exit 0
 }
 
@@ -138,8 +138,8 @@ if (params.get_config) {
   println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
   println "Nice code!\n"
 
-  file('work').deleteDir()
-  file('.nextflow').deleteDir()
+  //file('work').deleteDir()
+  //file('.nextflow').deleteDir()
   exit 0
 }
 
