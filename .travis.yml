@@ -13,4 +13,4 @@ script:
 - ./nextflow run main.nf --help
 - ./nextflow run main.nf --examples
 - ./nextflow run main.nf --get_config
-- docker pull fmalmeida/bacannot:latest
+#- docker pull fmalmeida/bacannot:latest
