@@ -1204,7 +1204,7 @@ process report {
     query = "${params.prefix}", \
     rgitool = "$rgi_table", \
     rgiperfect = "$rgi_perfect", \
-    rgistric = "$rgi_strict", \
+    rgistrict = "$rgi_strict", \
     gff_resistance = "resistance.gff", \
     ncbi_amr = "${amrfinder_summary}"))'
 
