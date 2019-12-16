@@ -184,7 +184,7 @@ prefix = params.prefix
 outDir = params.outDir
 threads = params.threads
 // This parameter sets the minimum number of overlapping bases for gene merge.
-bedDistance = params.bedtools_merge_distance
+bedDistance = ( params.bedtools_merge_distance ) ? params.bedtools_merge_distance : 0
 // Diamond (blastx) parameters
 diamond_virulence_identity = params.diamond_virulence_identity
 diamond_virulence_queryCoverage = params.diamond_virulence_queryCoverage
