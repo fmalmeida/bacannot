@@ -30,8 +30,8 @@ RUN conda create -y -n AMRFINDERPLUS && \
 RUN rm -rf /var/lib/apt/lists/* && \
 	apt-get clean && apt-get update && apt-get upgrade -y && \
 	apt-get install -y build-essential wget git hmmer python perl bedtools libidn11 && \
-	wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.9.0+-x64-linux.tar.gz && \
-	tar -zxvf ncbi-blast-2.9.0+-x64-linux.tar.gz ; cd ncbi-blast-2.9.0+/bin/ ; ln -rs $(ls) /usr/local/bin/ && \
+	wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.10.0+-x64-linux.tar.gz && \
+	tar -zxvf ncbi-blast-2.10.0+-x64-linux.tar.gz ; cd ncbi-blast-2.10.0+/bin/ ; ln -rs $(ls) /usr/local/bin/ && \
 	mkdir /work/scripts && cd /work/scripts && git clone https://github.com/fmalmeida/genomeGTFtools.git && \
 	cd genomeGTFtools/ && ln -rs $(ls) /usr/local/bin/
 
