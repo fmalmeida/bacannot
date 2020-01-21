@@ -260,7 +260,7 @@ process create_roary_input {
   file "${references.baseName}/${references.baseName}.gff" into roary_inputs
 
   when:
-  (params.reference_genomes)
+  (params.roary_reference_genomes)
 
   script:
   """
@@ -283,7 +283,7 @@ process roary_pangenome {
   file "roary_inputs"
 
   when:
-  (params.reference_genomes)
+  (params.roary_reference_genomes)
 
   script:
   """

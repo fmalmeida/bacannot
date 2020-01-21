@@ -163,6 +163,11 @@ RUN conda create -y -n ROARY_PLOTS python=3.7 && \
 # Help env
 RUN chmod -R a+rw /miniconda/envs/RGI/lib/python3.6/site-packages/app/*
 
+# Install tbl2asn
+RUN wget ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux.tbl2asn.gz && \
+	gzip -d linux.tbl2asn.gz && mv linux.tbl2asn tbl2asn && chmod +x ./tbl2asn && \
+	mv ./tbl2asn /miniconda/bin
+
 # CHECK ENVs
 RUN conda info -e
 
