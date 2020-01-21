@@ -11,6 +11,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y git libc6-dev bui
 	bash /miniconda.sh -b -p /miniconda
 ENV PATH="/miniconda/bin:$PATH"
 
+# Update do latest
+RUN conda update -y -n base conda
+
 # Configure Miniconda
 RUN conda config --add channels defaults && \
 	conda config --add channels bioconda && \
@@ -166,7 +169,7 @@ RUN chmod -R a+rw /miniconda/envs/RGI/lib/python3.6/site-packages/app/*
 # Install tbl2asn
 RUN wget ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux.tbl2asn.gz && \
 	gzip -d linux.tbl2asn.gz && mv linux.tbl2asn tbl2asn && chmod +x ./tbl2asn && \
-	mv ./tbl2asn /miniconda/bin
+	rm /miniconda/bin/tbl2asn && mv ./tbl2asn /miniconda/bin
 
 # CHECK ENVs
 RUN conda info -e
