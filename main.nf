@@ -876,11 +876,11 @@ process gff_to_gbk {
 if (params.fast5_dir && params.fastq_reads) {
   fast5 = Channel.fromPath( params.fast5_dir )
   nanopolish_lreads = file(params.fastq_reads)
-  fast5_dir = Channel.fromPath( params.fast5_dir, type: 'dir' )
+  //fast5_dir = Channel.fromPath( params.fast5_dir, type: 'dir' )
 } else {
   fast5 = ''
   nanopolish_lreads = ''
-  fast5_dir = ''
+  //fast5_dir = ''
   }
 
 process call_methylation {
@@ -896,7 +896,7 @@ process call_methylation {
   file 'input.fa' from renamed_genome
   file 'reads.fq' from nanopolish_lreads
   file fast5
-  val fast5_dir from fast5_dir
+  //val fast5_dir from fast5_dir
 
   output:
   file "*_calls.tsv" optional true
@@ -908,6 +908,7 @@ process call_methylation {
   file "chr.sizes"  into chr_sizes
 
   script:
+  fast5_dir = fast5.baseName
   if (params.fast5_dir && params.fastq_reads)
   """
   # Index Our Fast5 Data
