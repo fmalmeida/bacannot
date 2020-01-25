@@ -1,5 +1,6 @@
 # Bacterial Annotation (bacannot) Pipeline
-[![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot)
+[![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot) [![DOI](https://zenodo.org/badge/217119558.svg)](https://zenodo.org/badge/latestdoi/217119558)
+
 
 <p align="center">
 <img src="docs/annotation_en.png">
@@ -74,6 +75,8 @@ Create a configuration file in your working directory:
       nextflow run fmalmeida/bacannot --get_config
 
 # Citation
+
+    Felipe Marques de Almeida. (2020, January 25). fmalmeida/bacannot: fmalmeida/bacannot: A pipeline for an easy but comprehensive annotation of prokaryotic genomes (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.3627670
 
 If using this tool, remember to cite the following software:
 
