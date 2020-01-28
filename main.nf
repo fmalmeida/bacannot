@@ -902,9 +902,6 @@ process call_methylation {
   file "*_calls.tsv" optional true
   file "*_frequency.tsv" optional true
   file "cpg_frequency.bedGraph" into cpg_bedGraph
-  file "gpc_frequency.bedGraph" into gpc_bedGraph
-  file "dam_frequency.bedGraph" into dam_bedGraph
-  file "dcm_frequency.bedGraph" into dcm_bedGraph
   file "chr.sizes"  into chr_sizes
 
   script:
@@ -919,39 +916,23 @@ process call_methylation {
   samtools index reads_output.sorted.bam ;
 
   # Call Methylation
-  ## cpg , gpc , dam and dcm
+  ## 5-mC in GpC context only
   nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation cpg > cpg_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation gpc > gpc_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation dam > dam_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation dcm > dcm_calls.tsv ;
 
   # Calculate Methylation Frequencies
-  ## cpg , gpc , dam and dcm
   /work/nanopolish_scripts/calculate_methylation_frequency.py cpg_calls.tsv > cpg_frequency.tsv ;
-  /work/nanopolish_scripts/calculate_methylation_frequency.py gpc_calls.tsv > gpc_frequency.tsv ;
-  /work/nanopolish_scripts/calculate_methylation_frequency.py dam_calls.tsv > dam_frequency.tsv ;
-  /work/nanopolish_scripts/calculate_methylation_frequency.py dcm_calls.tsv > dcm_frequency.tsv ;
 
   # Transform These TSV files into bedGraph
   ## cpg
   [ ! -s cpg_frequency.tsv ] || grep -v "start" cpg_frequency.tsv | \
   awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > cpg_frequency.bedGraph ;
-  ## gpc
-  [ ! -s gpc_frequency.tsv ] || grep -v "start" gpc_frequency.tsv | \
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > gpc_frequency.bedGraph ;
-  ## dam
-  [ ! -s dam_frequency.tsv ] || grep -v "start" dam_frequency.tsv |
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > dam_frequency.bedGraph ;
-  ## dcm
-  [ ! -s dcm_frequency.tsv ] || grep -v "start" dcm_frequency.tsv |
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > dcm_frequency.bedGraph ;
 
   # Create Contig Sizes File
   seqtk comp input.fa | awk '{ print \$1 "\t" \$2 }' > chr.sizes
   """
   else
   """
-  touch cpg_frequency.bedGraph gpc_frequency.bedGraph dam_frequency.bedGraph dcm_frequency.bedGraph chr.sizes
+  touch cpg_frequency.bedGraph chr.sizes
   """
 }
 
@@ -979,9 +960,6 @@ process jbrowse {
   file 'hypothetical' from hypothetical_gff
   file 'transposase' from transposase_gff
   file 'cpg' from cpg_bedGraph
-  file 'gpc' from gpc_bedGraph
-  file 'dam' from dam_bedGraph
-  file 'dcm' from dcm_bedGraph
   file 'chr.sizes' from chr_sizes
 
   output:
@@ -1122,26 +1100,12 @@ process jbrowse {
   # Format bedGraphs
   ## cpg
   [ ! -s cpg ] || bedGraphToBigWig cpg chr.sizes data/cpg.bw ;
-  ## gpc
-  [ ! -s gpc ] || bedGraphToBigWig gpc chr.sizes data/gpc.bw ;
-  ## dam
-  [ ! -s dam ] || bedGraphToBigWig dam chr.sizes data/dam.bw ;
-  ## dcm
-  [ ! -s dcm ] || bedGraphToBigWig dcm chr.sizes data/dcm.bw ;
 
   # Add BigWigs
   ## cpg
-  [ ! -s data/cpg.bw ] || add-bw-track.pl --bw_url cpg.bw --plot --label "CpG Methylations" --key "CpG Methylations" --category "Methylations" \
+  [ ! -s data/cpg.bw ] || add-bw-track.pl --bw_url cpg.bw --plot --label "5-mC - CpG Methylations" \
+  --key "5-mC - CpG Methylations" --category "Methylations" \
   --pos_color blue ;
-  ## gpc
-  [ ! -s data/gpc.bw ] || add-bw-track.pl --bw_url gpc.bw --plot --label "GpC Methylations" --key "GpC Methylations" --category "Methylations" \
-  --pos_color purple ;
-  ## dam
-  [ ! -s data/dam.bw ] || add-bw-track.pl --bw_url dam.bw --plot --label "Dam Methylations" --key "Dam Methylations" --category "Methylations" \
-  --pos_color pink ;
-  ## dcm
-  [ ! -s data/dcm.bw ] || add-bw-track.pl --bw_url dcm.bw --plot --label "Dcm Methylations" --key "Dcm Methylations" --category "Methylations" \
-  --pos_color cyan ;
   """
 }
 
