@@ -7,7 +7,7 @@ process prokka {
     val threads
 
     output:
-    file "prokka/${params.prefix}.*"
+    file "prokka/${params.prefix}.*" // needed to take all output into the output dir
     file "prokka/${params.prefix}.gff" // annotation in gff format
     file "prokka/${params.prefix}.gbk" // annotation in gbk format
     file "prokka/${params.prefix}.fna" // renamed genome

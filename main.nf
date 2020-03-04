@@ -207,6 +207,12 @@ include prokka from './modules/prokka.nf' params(outdir: params.outdir, prefix: 
 // Barrnap rRNA sequence prediction
 include barrnap from './modules/barrnap.nf' params(outdir: params.outdir, prefix: params.prefix)
 
+// Genome masking task
+include masking_genome from './modules/genome_mask.nf' params(prefix: params.prefix)
+
+// Compute GC content
+include compute_gc from './modules/compute_gc.nf'
+
 /*
  * Define custom workflows
  */
@@ -220,6 +226,8 @@ workflow single_genome_nf {
     prokka(genome, threads)
     mlst(prokka.out[3])
     barrnap(prokka.out[3])
+    masking_genome(prokka.out[3], prokka.out[1])
+    compute_gc(prokka.out[3])
 }
 
 /*
