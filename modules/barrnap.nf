@@ -1,6 +1,7 @@
 process barrnap {
    publishDir "${params.outdir}/rRNA", mode: 'copy'
    container = 'fmalmeida/bacannot:latest'
+   tag "Predicting rRNA sequences with barrnap pipeline from T. Seeman"
 
    input:
    file input

@@ -1,10 +1,10 @@
 process prokka {
     publishDir "${params.outdir}", mode: 'copy'
     container = 'fmalmeida/bacannot:latest'
+    tag "Executing generic gene annotation with Prokka"
 
     input:
     file input
-    val threads
 
     output:
     file "prokka/${params.prefix}.*" // needed to take all output into the output dir

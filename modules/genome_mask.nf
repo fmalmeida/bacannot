@@ -1,5 +1,6 @@
 process masking_genome {
   container 'fmalmeida/bacannot:latest'
+  tag "Masking genome with bedtools"
 
   input:
   file input

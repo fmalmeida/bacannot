@@ -1,7 +1,7 @@
 process mlst {
    publishDir "${params.outdir}/MLST", mode: 'copy'
    container = 'fmalmeida/bacannot:latest'
-   tag "Performing MLST analysis"
+   tag "Performing MLST analysis with mlst pipeline from T. Seeman"
 
    input:
      file genome

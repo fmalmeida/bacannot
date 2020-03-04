@@ -1,12 +1,13 @@
 process compute_gc {
   container 'fmalmeida/bacannot:latest'
+  tag "Calculating genome GC with bedtools"
 
   input:
   file 'input.fasta'
 
   output:
   file "input_GC_500_bps.sorted.bedGraph" // file containing gc values
-  file "input.sizes" into gc_sizes_jbrowse // file containing chr sizes
+  file "input.sizes" // file containing chr sizes
 
   """
   # Index
