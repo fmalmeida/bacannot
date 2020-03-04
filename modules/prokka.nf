@@ -21,7 +21,7 @@ process prokka {
     genus = (params.prokka_genus) ? "--genus ${params.prokka_genus} --usegenus" : ''
     """
     source activate PROKKA ;
-    prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads --centre ${params.prokka_center} \
+    prokka $kingdom $gcode $rnammer --outdir prokka --cpus ${params.threads} --centre ${params.prokka_center} \
     --mincontiglen 200 $genus --prefix ${params.prefix} $input
     """
 }

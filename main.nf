@@ -202,7 +202,7 @@ include mlst from './modules/mlst.nf' params(outdir: params.outdir, prefix: para
 // Prokka annotation
 include prokka from './modules/prokka.nf' params(outdir: params.outdir, prefix: params.prefix,
   prokka_kingdom: params.prokka_kingdom, prokka_genetic_code: params.prokka_genetic_code,
-  prokka_use_rnammer: params.prokka_use_rnammer, prokka_genus: params.prokka_genus)
+  prokka_use_rnammer: params.prokka_use_rnammer, prokka_genus: params.prokka_genus, threads: params.threads)
 
 // Barrnap rRNA sequence prediction
 include barrnap from './modules/barrnap.nf' params(outdir: params.outdir, prefix: params.prefix)
@@ -213,6 +213,10 @@ include masking_genome from './modules/genome_mask.nf' params(prefix: params.pre
 // Compute GC content
 include compute_gc from './modules/compute_gc.nf'
 
+// Kofamscan analysis (Annotate KOs)
+include kofamscan from './modules/kofamscan.nf' params(outdir: params.outdir, prefix: params.prefix,
+  threads: params.threads)
+
 /*
  * Define custom workflows
  */
@@ -221,13 +225,13 @@ include compute_gc from './modules/compute_gc.nf'
 workflow single_genome_nf {
   get:
     genome
-    threads
   main:
-    prokka(genome, threads)
+    prokka(genome)
     mlst(prokka.out[3])
     barrnap(prokka.out[3])
     masking_genome(prokka.out[3], prokka.out[1])
     compute_gc(prokka.out[3])
+    if (params.execute_kofamscan) { kofamscan(prokka.out[4]) }
 }
 
 /*
@@ -237,8 +241,10 @@ workflow single_genome_nf {
 workflow {
   // User gives only one genome
   if (params.genome) {
-    single_genome_nf(Channel.fromPath(params.genome), params.threads)
+    single_genome_nf(Channel.fromPath(params.genome))
   }
+
+  // User gives a csv with multiple genomes
 }
 
 // Completition message
