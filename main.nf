@@ -199,6 +199,14 @@ log.info "========================================="
 // MLST analysis
 include mlst from './modules/mlst.nf' params(outdir: params.outdir, prefix: params.prefix)
 
+// Prokka annotation
+include prokka from './modules/prokka.nf' params(outdir: params.outdir, prefix: params.prefix,
+  prokka_kingdom: params.prokka_kingdom, prokka_genetic_code: params.prokka_genetic_code,
+  prokka_use_rnammer: params.prokka_use_rnammer, prokka_genus: params.prokka_genus)
+
+// Barrnap rRNA sequence prediction
+include barrnap from './modules/barrnap.nf' params(outdir: params.outdir, prefix: params.prefix)
+
 /*
  * Define custom workflows
  */
@@ -207,8 +215,11 @@ include mlst from './modules/mlst.nf' params(outdir: params.outdir, prefix: para
 workflow single_genome_nf {
   get:
     genome
+    threads
   main:
-    mlst(genome)
+    prokka(genome, threads)
+    mlst(prokka.out[3])
+    barrnap(prokka.out[3])
 }
 
 /*
@@ -218,7 +229,7 @@ workflow single_genome_nf {
 workflow {
   // User gives only one genome
   if (params.genome) {
-    single_genome_nf(Channel.fromPath(params.genome))
+    single_genome_nf(Channel.fromPath(params.genome), params.threads)
   }
 }
 
