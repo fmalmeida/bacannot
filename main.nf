@@ -462,7 +462,7 @@ process vfdb {
   --query $genes --query-cover $diamond_virulence_queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$diamond_virulence_queryCoverage '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_vfdb_predictedGenes.tsv
+  awk -v id=$diamond_virulence_identity '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_vfdb_predictedGenes.tsv
   """
   else
   """
@@ -501,7 +501,7 @@ process victors {
   --query $genes --query-cover $diamond_virulence_queryCoverage ;
 
   ## Convert it to gff
-  awk -v id=$diamond_virulence_queryCoverage '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_victors_predictedGenes.tsv
+  awk -v id=$diamond_virulence_identity '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_victors_predictedGenes.tsv
   """
   else
   """
@@ -744,11 +744,11 @@ process genes_blasted_to_gff {
   sed 's/\\s//' | sed 's/\\s/,/g') ; echo -e "\$id\\t\$ko" ; done < kofamscan.txt > formated.txt ;
 
   ## Add features
-  addBlast2Gff.R -i $blastVFDB -g gff -o gff -d vfdb -t virulence -c ${params.diamond_virulence_queryCoverage};
+  addBlast2Gff.R -i $blastVFDB -g gff -o gff -d vfdb -t virulence;
   [ ! -s kofamscan.txt ] || addKO2Gff.R -i formated.txt -g gff -o gff -d KEGG ;
-  addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence -c ${params.diamond_virulence_queryCoverage};
-  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice -c ${params.diamond_MGEs_queryCoverage};
-  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage -c ${params.diamond_MGEs_queryCoverage};
+  addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence;
+  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice;
+  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage;
   ##[ ! -s RGI_output.txt ] || addRGI2gff.R -g gff -i RGI_output.txt -o gff ;
   [ ! -s AMRFinder_output.tsv ] || addNCBIamr2Gff.R -g gff -i AMRFinder_output.tsv -o ${prefix}_blast_genes.gff -t resistance -d AMRFinderPlus ;
   [ -s AMRFinder_output.tsv ] || mv gff ${prefix}_blast_genes.gff ;
