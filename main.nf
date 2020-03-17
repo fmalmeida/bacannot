@@ -41,9 +41,9 @@ def helpMessage() {
 
     --outdir <string>                              Output directory name
     --threads <int>                                Number of threads to use
-    --genome <string>                              Query Genome file
-    --bedtools_merge_distance                      Minimum number of overlapping bases for gene merge
-                                                   using bedtools merge (default: 0)
+    --genome_fofn <string>                         CSV file (two values) containing the genome FASTA file
+                                                   and its respective output prefix. One genome per line.
+                                                   FAST path in first field, prefix value in the second.
 
                             Prokka complementary parameters
 
@@ -67,10 +67,6 @@ def helpMessage() {
                             Configure Optional processes
 
     --not_run_virulence_search                     Tells wheter you want or not to execute virulence annotation
-    --not_run_vfdb_search                          Tells wheter you want or not to used VFDB database for virulence
-                                                   annotation. It is useless if virulence_search is not true
-    --not_run_victors_search                       Tells wheter you want or not to used victors database for virulence
-                                                   annotation. It is useless if virulence_search is not true
     --not_run_resistance_search                    Tells wheter you want or not to execute resistance annotation
     --not_run_iceberg_search                       Tells wheter you want or not to execute ICE annotation
     --not_run_prophage_search                      Tells wheter you want or not to execute prophage annotation
@@ -145,7 +141,6 @@ if (params.get_config) {
  * Load general parameters and establish defaults
  */
 
-params.prefix = 'out'
 params.outdir = 'outdir'
 params.threads = 2
 params.bedtools_merge_distance = 0
@@ -160,8 +155,6 @@ params.diamond_MGEs_identity = 65
 params.diamond_MGEs_queryCoverage = 65
 params.diamond_minimum_alignment_length = 200
 params.not_run_virulence_search = false
-params.not_run_vfdb_search = false
-params.not_run_victors_search = false
 params.not_run_resistance_search = false
 params.not_run_iceberg_search = false
 params.not_run_prophage_search = false
@@ -176,8 +169,6 @@ log.info "=============================================================="
 log.info " Docker-based, fmalmeida/bacannot, Genome Annotation Pipeline "
 log.info "=============================================================="
 def summary = [:]
-summary['Input fasta']  = params.genome
-summary['Output prefix']   = params.prefix
 summary['Output dir']   = "${params.outdir}"
 summary['Number of threads used'] = params.threads
 summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
@@ -197,42 +188,86 @@ log.info "========================================="
  */
 
 // MLST analysis
-include mlst from './modules/mlst.nf' params(outdir: params.outdir, prefix: params.prefix)
+include mlst from './modules/mlst.nf' params(outdir: params.outdir)
 
 // Prokka annotation
-include prokka from './modules/prokka.nf' params(outdir: params.outdir, prefix: params.prefix,
+include prokka from './modules/prokka.nf' params(outdir: params.outdir,
   prokka_kingdom: params.prokka_kingdom, prokka_genetic_code: params.prokka_genetic_code,
   prokka_use_rnammer: params.prokka_use_rnammer, prokka_genus: params.prokka_genus,
   prokka_center: params.prokka_center, threads: params.threads)
 
 // Barrnap rRNA sequence prediction
-include barrnap from './modules/barrnap.nf' params(outdir: params.outdir, prefix: params.prefix)
+include barrnap from './modules/barrnap.nf' params(outdir: params.outdir)
 
 // Genome masking task
-include masking_genome from './modules/genome_mask.nf' params(prefix: params.prefix)
+include masking_genome from './modules/genome_mask.nf'
 
 // Compute GC content
 include compute_gc from './modules/compute_gc.nf'
 
 // Kofamscan analysis (Annotate KOs)
-include kofamscan from './modules/kofamscan.nf' params(outdir: params.outdir, prefix: params.prefix,
-  threads: params.threads)
+include kofamscan from './modules/kofamscan.nf' params(outdir: params.outdir, threads: params.threads)
+
+// VFDB annotation
+include vfdb from './modules/virulence_scan_vfdb.nf' params(outdir: params.outdir,
+  diamond_virulence_queryCoverage: params.diamond_virulence_queryCoverage,
+  diamond_virulence_identity: params.diamond_virulence_identity)
+
+// Resistance annotation with AMRFINDERPLUS
+include amrfinder from './modules/amrfinder_scan.nf' params(outdir: params.outdir)
+
+// Resistance annotation with RGI
+include rgi from './modules/rgi_annotation.nf' params(outdir: params.outdir, threads: params.threads)
+
+// ICE annotation with ICEberg
+include iceberg from './modules/ices_scan_iceberg.nf' params(outdir: params.outdir,
+  diamond_MGEs_queryCoverage: params.diamond_MGEs_queryCoverage,
+  diamond_MGEs_identity: params.diamond_MGEs_identity)
+
+// PHAST annotation
+include phast from './modules/prophage_scan_phast.nf' params(outdir: params.outdir,
+  diamond_MGEs_queryCoverage: params.diamond_MGEs_queryCoverage,
+  diamond_MGEs_identity: params.diamond_MGEs_identity)
+
+// Prophage scan with phigaro
+include phigaro from './modules/prophage_scan_phigaro.nf' params(outdir: params.outdir)
+
+// GI prediction with IslandPath-DIMOB
+include find_GIs from './modules/islandPath_DIMOB.nf' params(outdir: params.outdir,
+  prokka_center: params.prokka_center)
 
 /*
  * Define custom workflows
  */
 
-// Analysis for only one genome
-workflow single_genome_nf {
-  get:
+// Complete analysis
+workflow bacannot_nf {
+  take:
     genome
+    prefix
   main:
-    prokka(genome)
-    mlst(prokka.out[3])
-    barrnap(prokka.out[3])
+    prokka(genome, prefix)
+    mlst(prokka.out[3], prefix)
+    barrnap(prokka.out[3], prefix)
     masking_genome(prokka.out[3], prokka.out[1])
     compute_gc(prokka.out[3])
-    if (params.not_run_kofamscan == false) { kofamscan(prokka.out[4]) }
+    // User wants kofamscan?
+    if (params.not_run_kofamscan == false) { kofamscan(prokka.out[4], prefix) }
+    // User wants virulence search?
+    if (params.not_run_virulence_search == false) { vfdb(prokka.out[5], prefix) }
+    // User wants resistance search?
+    if (params.not_run_resistance_search == false) {
+      amrfinder(prokka.out[4], prefix)
+      rgi(prokka.out[4], prefix)
+    }
+    // User wants to use ICEberg db?
+    if (params.not_run_iceberg_search == false) { iceberg(prokka.out[5], prefix) }
+    // User wants prophage search?
+    if (params.not_run_prophage_search == false) {
+      phast(prokka.out[5], prefix)
+      phigaro(prokka.out[3], prefix)
+    }
+    find_GIs(prokka.out[2], prefix)
 }
 
 /*
@@ -240,13 +275,21 @@ workflow single_genome_nf {
  */
 
 workflow {
-  // User gives only one genome
-  if (params.genome) {
-    single_genome_nf(Channel.fromPath(params.genome))
-  }
 
-  // User gives a csv with multiple genomes
+    // Read genomes, line by line
+    fofn   = file(params.genome_fofn)
+    lines  = fofn.readLines()
+    for( line in lines ) {
+      // Execute the workflow for each value pair
+      (fasta, prefix) = line.split(',');
+      println ""
+      println "Now executing the pipeline with the file:"
+      println "              ${fasta}"
+      println ""
+      bacannot_nf(Channel.fromPath(fasta), prefix)
+    }
 }
+
 
 // Completition message
 workflow.onComplete {

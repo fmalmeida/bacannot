@@ -1,18 +1,20 @@
 process prokka {
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}/${prefix}", mode: 'copy'
     container = 'fmalmeida/bacannot:latest'
     tag "Executing generic gene annotation with Prokka"
 
     input:
     file input
+    val(prefix)
 
     output:
-    file "prokka/${params.prefix}.*" // needed to take all output into the output dir
-    file "prokka/${params.prefix}.gff" // annotation in gff format
-    file "prokka/${params.prefix}.gbk" // annotation in gbk format
-    file "prokka/${params.prefix}.fna" // renamed genome
-    file "prokka/${params.prefix}.faa" // gene aa sequences
-    file "prokka/${params.prefix}.ffn" // gene nt sequences
+    file "prokka/${prefix}.*" // needed to take all output into the output dir
+    file "prokka/${prefix}.gff" // annotation in gff format
+    file "prokka/${prefix}.gbk" // annotation in gbk format
+    file "prokka/${prefix}.fna" // renamed genome
+    file "prokka/${prefix}.faa" // gene aa sequences
+    file "prokka/${prefix}.ffn" // gene nt sequences
+    val(prefix) // Save genome filename
 
     script:
     kingdom = (params.prokka_kingdom) ? "--kingdom ${params.prokka_kingdom}" : ''
@@ -22,6 +24,6 @@ process prokka {
     """
     source activate PROKKA ;
     prokka $kingdom $gcode $rnammer --outdir prokka --cpus ${params.threads} --centre ${params.prokka_center} \
-    --mincontiglen 200 $genus --prefix ${params.prefix} $input
+    --mincontiglen 200 $genus --prefix ${prefix} $input
     """
 }
