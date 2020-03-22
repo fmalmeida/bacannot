@@ -1,5 +1,5 @@
 process compute_gc {
-  container 'fmalmeida/bacannot:latest'
+  container = 'fmalmeida/bacannot:latest'
   tag "Calculating genome GC with bedtools"
 
   input:

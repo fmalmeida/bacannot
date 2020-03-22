@@ -8,11 +8,13 @@ process amrfinder {
   val(prefix)
 
   output:
-  file "AMRFinder_output.tsv"
+  file "AMRFinder_resistance-only.tsv"
+  file "AMRFinder_complete.tsv"
 
   script:
   """
   source activate AMRFINDERPLUS ;
-  amrfinder -p $proteins --plus -o AMRFinder_output.tsv
+  amrfinder -p $proteins --plus -o AMRFinder_complete.tsv ;
+  awk -F '\t' '{ if (\$2 != "") { print } }' AMRFinder_complete.tsv > AMRFinder_resistance-only.tsv ;
   """
 }

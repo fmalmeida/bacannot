@@ -1,6 +1,6 @@
 process phigaro {
   publishDir "${params.outdir}/${prefix}/prophages", mode: 'copy'
-  container 'fmalmeida/bacannot:latest'
+  container = 'fmalmeida/bacannot:latest'
   tag "Scanning putative prophages with phigaro"
 
   input:

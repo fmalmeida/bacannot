@@ -40,37 +40,58 @@ def helpMessage() {
                             General Parameters - Mandatory
 
     --outdir <string>                              Output directory name
+
     --threads <int>                                Number of threads to use
+
     --genome_fofn <string>                         CSV file (two values) containing the genome FASTA file
                                                    and its respective output prefix. One genome per line.
                                                    FAST path in first field, prefix value in the second.
+
+    --bedtools_merge_distance                      Minimum number of overlapping bases for gene merge
+                                                   using bedtools merge. Negative values, such as -20, means
+                                                   the number of required overlapping bases for merging.
+                                                   Positive values, such as 5, means the maximum distance
+                                                   accepted for merging. By default, this process is not executed.
+                                                   For execution the user needs to provide a value
 
                             Prokka complementary parameters
 
     --prokka_center <string>                       Your institude acronym to be used by prokka when
                                                    renaming contigs.
+
     --prokka_kingdom <string>                      Prokka annotation mode. Possibilities (default 'Bacteria'):
                                                    Archaea|Bacteria|Mitochondria|Viruses
+
     --prokka_genetic_code <int>                    Genetic Translation code. Must be set if kingdom is not
                                                    default (in blank).
+
     --prokka_use_rnammer                           Tells prokka wheter to use rnammer instead of barrnap.
+
     --prokka_genus <string>                        Set only if you want to search only a specific genus database
 
                             Diamond (blastx) search parameters
 
     --diamond_virulence_identity                   Min. identity % for virulence annotation
+
     --diamond_virulence_queryCoverage              Min. query coverage for virulence annotation
+
     --diamond_MGEs_identity                        Min. identity % for ICEs and prophage annotation
+
     --diamond_MGEs_queryCoverage                   Min. query coverage for ICEs and prophage annotation
+
     --diamond_minimum_alignment_length             Min. alignment length for diamond annotation
 
                             Configure Optional processes
 
-    --not_run_virulence_search                     Tells wheter you want or not to execute virulence annotation
-    --not_run_resistance_search                    Tells wheter you want or not to execute resistance annotation
-    --not_run_iceberg_search                       Tells wheter you want or not to execute ICE annotation
-    --not_run_prophage_search                      Tells wheter you want or not to execute prophage annotation
-    --not_run_kofamscan                            Tells wheter you want or not to execute KO annotation with kofamscan
+    --not_run_virulence_search                     Tells wheter you do not want to execute virulence annotation
+
+    --not_run_resistance_search                    Tells wheter you do not want to execute resistance annotation
+
+    --not_run_iceberg_search                       Tells wheter you do not want to execute ICE annotation
+
+    --not_run_prophage_search                      Tells wheter you do not want to execute prophage annotation
+
+    --not_run_kofamscan                            Tells wheter you do not want to execute KO annotation with kofamscan
 
                             Configure Optional Pangenome analysis with Roary
 
@@ -85,6 +106,7 @@ def helpMessage() {
                       it will automatically execute nanopolish to call methylation
 
     --nanopolish_fast5_dir <string>                Path to directory containing FAST5 files
+
     --nanopolish_fastq_reads <string>              Path to fastq files (file related to FAST5 files above)
 
 
@@ -143,7 +165,7 @@ if (params.get_config) {
 
 params.outdir = 'outdir'
 params.threads = 2
-params.bedtools_merge_distance = 0
+params.bedtools_merge_distance = ''
 params.prokka_center = 'Centre'
 params.prokka_kingdom = ''
 params.prokka_genetic_code = false
@@ -236,6 +258,16 @@ include phigaro from './modules/prophage_scan_phigaro.nf' params(outdir: params.
 include find_GIs from './modules/islandPath_DIMOB.nf' params(outdir: params.outdir,
   prokka_center: params.prokka_center)
 
+// Merging annotation in GFF
+include update_gff from './modules/updating_gff.nf' params(outdir: params.outdir)
+
+// Convert GFF to GBK
+include gff2gbk from './modules/gff2gbk.nf' params(outdir: params.outdir)
+
+// Bedtools gff merge
+include gff_merge from './modules/merge_gff.nf' params(outdir: params.outdir,
+  bedtools_merge_distance: params.bedtools_merge_distance)
+
 /*
  * Define custom workflows
  */
@@ -246,28 +278,63 @@ workflow bacannot_nf {
     genome
     prefix
   main:
+    // Prokka Annotation
     prokka(genome, prefix)
+
+    // MLST analysis
     mlst(prokka.out[3], prefix)
+
+    // rRNA prediction
     barrnap(prokka.out[3], prefix)
-    masking_genome(prokka.out[3], prokka.out[1])
+
+    // Genome masking and removal of nucleotide sequences from prokka gff
+    masking_genome(prokka.out[3], prokka.out[1], prefix)
+
+    // Computing GC content
     compute_gc(prokka.out[3])
+
     // User wants kofamscan?
     if (params.not_run_kofamscan == false) { kofamscan(prokka.out[4], prefix) }
+
     // User wants virulence search?
     if (params.not_run_virulence_search == false) { vfdb(prokka.out[5], prefix) }
+
     // User wants resistance search?
     if (params.not_run_resistance_search == false) {
       amrfinder(prokka.out[4], prefix)
       rgi(prokka.out[4], prefix)
     }
+
     // User wants to use ICEberg db?
     if (params.not_run_iceberg_search == false) { iceberg(prokka.out[5], prefix) }
+
     // User wants prophage search?
     if (params.not_run_prophage_search == false) {
       phast(prokka.out[5], prefix)
       phigaro(prokka.out[3], prefix)
     }
+
+    // Prediction of Genomic Islands
     find_GIs(prokka.out[2], prefix)
+
+    // Contatenation of annotations in a single GFF file
+    update_gff(prefix, masking_genome.out[0],
+      (params.not_run_kofamscan == false)         ? kofamscan.out[1] : Channel.empty().ifEmpty('EMPTY'),
+      (params.not_run_virulence_search == false)  ? vfdb.out[0]      : Channel.empty().ifEmpty('EMPTY'),
+      (params.not_run_resistance_search == false) ? amrfinder.out[0] : Channel.empty().ifEmpty('EMPTY'),
+      (params.not_run_resistance_search == false) ? rgi.out[2]       : Channel.empty().ifEmpty('EMPTY'),
+      (params.not_run_iceberg_search == false)    ? iceberg.out[0]   : Channel.empty().ifEmpty('EMPTY'),
+      (params.not_run_prophage_search == false)   ? phast.out[0]     : Channel.empty().ifEmpty('EMPTY'))
+
+    // Convert GFF file to GBK file
+    gff2gbk(update_gff.out[0], genome, prefix)
+
+    // User wants to merge the final gff file?
+    if (params.bedtools_merge_distance != '') {
+      gff_merge(update_gff.out[0], prefix)
+    }
+
+    // User wants to call methylation?
 }
 
 /*
