@@ -4,8 +4,7 @@ process prokka {
     tag "Executing generic gene annotation with Prokka"
 
     input:
-    file input
-    val(prefix)
+    tuple file(input), val(prefix), file(ont_fastq), file(ont_fast5), file(ont_summary)
 
     output:
     file "prokka/${prefix}.*" // needed to take all output into the output dir

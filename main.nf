@@ -275,11 +275,13 @@ include gff_merge from './modules/merge_gff.nf' params(outdir: params.outdir,
 // Complete analysis
 workflow bacannot_nf {
   take:
-    genome
-    prefix
+    input_tuple
   main:
     // Prokka Annotation
-    prokka(genome, prefix)
+    prokka(input_tuple)
+
+    // Save prefix
+    prefix = prokka.out[6]
 
     // MLST analysis
     mlst(prokka.out[3], prefix)
@@ -327,7 +329,7 @@ workflow bacannot_nf {
       (params.not_run_prophage_search == false)   ? phast.out[0]     : Channel.empty().ifEmpty('EMPTY'))
 
     // Convert GFF file to GBK file
-    gff2gbk(update_gff.out[0], genome, prefix)
+    gff2gbk(update_gff.out[0], prokka.out[3], prefix)
 
     // User wants to merge the final gff file?
     if (params.bedtools_merge_distance != '') {
@@ -342,19 +344,32 @@ workflow bacannot_nf {
  */
 
 workflow {
+  // Channel for execution
+  input = Channel.empty()
 
-    // Read genomes, line by line
-    fofn   = file(params.genome_fofn)
-    lines  = fofn.readLines()
-    for( line in lines ) {
-      // Execute the workflow for each value pair
+  // Read genomes, line by line
+  fofn   = file(params.genome_fofn)
+  lines  = fofn.readLines()
+  for( line in lines ) {
+
+    // User do not want methylation call
+
+    if (line.split(',').size() == 2) {
       (fasta, prefix) = line.split(',');
-      println ""
-      println "Now executing the pipeline with the file:"
-      println "              ${fasta}"
-      println ""
-      bacannot_nf(Channel.fromPath(fasta), prefix)
+      input << [file(fasta), prefix, 'EMPTY', 'EMPTY', 'EMPTY']
     }
+
+    // User wants methylation call
+
+    else if (line.split(',').size() == 5) {
+      // Execute the workflow for each value pair
+      (fasta, prefix, fastq_reads, fast5_dir, sequencing_summary) = line.split(',');
+      input << [file(fasta), prefix, file(fastq_reads), file(fast5_dir), file(sequencing_summary)]
+    }
+  }
+
+  // Run
+  bacannot_nf(input)
 }
 
 
