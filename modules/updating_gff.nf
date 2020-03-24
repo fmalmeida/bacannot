@@ -3,8 +3,7 @@ process update_gff {
   container = 'fmalmeida/bacannot:renv'
 
   input:
-  val(prefix)
-  file 'gff'
+  tuple val(prefix), file('gff')
   file 'kofamscan.txt'
   file 'vfdb_blast'
   file "AMRFinder_output.tsv"

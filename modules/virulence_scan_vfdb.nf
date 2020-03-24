@@ -4,11 +4,11 @@ process vfdb {
   tag "Scanning virulence genes with VFDB"
 
   input:
-  file genes
-  val(prefix)
+  tuple val(prefix), file(genes)
 
   output:
-  file "blast_virulence_vfdb.tsv" // Save the results in tabular blast format
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("blast_virulence_vfdb.tsv") // Save the results in tabular blast format
 
   script:
   """

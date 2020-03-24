@@ -3,21 +3,21 @@ process compute_gc {
   tag "Calculating genome GC with bedtools"
 
   input:
-  file 'input.fasta'
+  tuple val(prefix), file(genome)
 
   output:
-  file "input_GC_500_bps.sorted.bedGraph" // file containing gc values
-  file "input.sizes" // file containing chr sizes
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("input_GC_500_bps.sorted.bedGraph"), file("input.sizes")
 
   """
   # Index
-  samtools faidx input.fasta ;
+  samtools faidx $genome ;
   # Take Sizes
-  cut -f 1,2 input.fasta.fai > input.sizes ;
+  cut -f 1,2 ${genome}.fai > input.sizes ;
   # Create sliding window
   bedtools makewindows -g input.sizes -w 500 > input_500_bps.bed ;
   # Compute GC
-  bedtools nuc -fi input.fasta -bed input_500_bps.bed > input_500_bps_nuc.txt ;
+  bedtools nuc -fi ${genome} -bed input_500_bps.bed > input_500_bps_nuc.txt ;
   # Create bedGraph
   awk 'BEGIN{FS="\\t"; OFS="\\t"} FNR > 1 { print \$1,\$2,\$3,\$5 }' input_500_bps_nuc.txt > input_GC_500_bps.bedGraph
   # Sort

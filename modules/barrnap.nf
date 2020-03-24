@@ -4,8 +4,7 @@ process barrnap {
    tag "Predicting rRNA sequences with barrnap pipeline from T. Seeman"
 
    input:
-   file input
-   val(prefix)
+   tuple val(prefix), file(genome)
 
    output:
    file "${prefix}_rRNA.gff"
@@ -13,6 +12,6 @@ process barrnap {
 
    script:
    """
-   barrnap -o ${prefix}_rRNA.fa < $input > ${prefix}_rRNA.gff
+   barrnap -o ${prefix}_rRNA.fa < $genome > ${prefix}_rRNA.gff
    """
 }

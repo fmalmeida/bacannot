@@ -1,39 +1,42 @@
 process call_methylation {
-  publishDir "${params.outdir}/${params.prefix}/methylation", mode: 'copy'
+  publishDir "${params.outdir}/${prefix}/methylation", mode: 'copy'
   container = 'fmalmeida/bacannot:latest'
   tag "Methylated sites are being calculated with Nanopolish"
 
   input:
-  file 'input.fa'
-  file 'reads.fq'
-  file 'sequencing_summary.txt'
-  file fast5
+  tuple val(prefix), file(draft), file(reads), file(fast5)
 
   output:
-  file "*_calls.tsv"
-  file "*_frequency.tsv"
-  file "cpg_frequency.bedGraph"
-  file "gpc_frequency.bedGraph"
-  file "dam_frequency.bedGraph"
-  file "dcm_frequency.bedGraph"
-  file "chr.sizes"
+  // Grab all outputs
+  file "*_calls.tsv" optional true
+  file "*_frequency.tsv" optional true
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("cpg_frequency.bedGraph") optional true
+  tuple val(prefix), file("gpc_frequency.bedGraph") optional true
+  tuple val(prefix), file("dam_frequency.bedGraph") optional true
+  tuple val(prefix), file("dcm_frequency.bedGraph") optional true
+  tuple val(prefix), file("chr.sizes") optional true
+
+  when:
+  // When an entry does not exist, it is created as 'input'
+  if ("${fast5_dir}" != 'input' && "${reads}" != 'input.2')
 
   script:
   fast5_dir = fast5.baseName
   """
   # Index Our Fast5 Data
-  nanopolish index -d ${fast5_dir} reads.fq -f sequencing_summary.txt ;
+  nanopolish index -d ${fast5_dir} ${reads} ;
 
   # Map Our Indexed Reads to Our Genome
-  minimap2 -a -x map-ont input.fa reads.fq | samtools sort -T tmp -o reads_output.sorted.bam ;
+  minimap2 -a -x map-ont ${draft} ${reads} | samtools sort -T tmp -o reads_output.sorted.bam ;
   samtools index reads_output.sorted.bam ;
 
   # Call Methylation
   ## cpg , gpc , dam and dcm
-  nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation cpg > cpg_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation gpc > gpc_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation dam > dam_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation dcm > dcm_calls.tsv ;
+  nanopolish call-methylation -r ${reads} -b reads_output.sorted.bam -g ${draft} --methylation cpg > cpg_calls.tsv ;
+	nanopolish call-methylation -r ${reads} -b reads_output.sorted.bam -g ${draft} --methylation gpc > gpc_calls.tsv ;
+	nanopolish call-methylation -r ${reads} -b reads_output.sorted.bam -g ${draft} --methylation dam > dam_calls.tsv ;
+	nanopolish call-methylation -r ${reads} -b reads_output.sorted.bam -g ${draft} --methylation dcm > dcm_calls.tsv ;
 
   # Calculate Methylation Frequencies
   ## cpg , gpc , dam and dcm
@@ -57,6 +60,10 @@ process call_methylation {
   awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > dcm_frequency.bedGraph ;
 
   # Create Contig Sizes File
-  seqtk comp input.fa | awk '{ print \$1 "\t" \$2 }' > chr.sizes
+  seqtk comp ${draft} | awk '{ print \$1 "\t" \$2 }' > chr.sizes
   """
+  //else
+  //"""
+  //echo "Process was skipped"
+  //"""
 }

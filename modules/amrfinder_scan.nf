@@ -4,12 +4,12 @@ process amrfinder {
   tag "Resistance genes annotation with AMRFinderPlus"
 
   input:
-  file proteins
-  val(prefix)
+  tuple val(prefix), file(proteins)
 
   output:
-  file "AMRFinder_resistance-only.tsv"
-  file "AMRFinder_complete.tsv"
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("AMRFinder_resistance-only.tsv")
+  tuple val(prefix), file("AMRFinder_complete.tsv")
 
   script:
   """

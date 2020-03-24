@@ -4,11 +4,11 @@ process phast {
   tag "Scanning prophages with PHAST database"
 
   input:
-  file genes
-  val(prefix)
+  tuple val(prefix), file(genes)
 
   output:
-  file "blast_prophage_phast.tsv"
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("blast_prophage_phast.tsv")
 
   script:
   """

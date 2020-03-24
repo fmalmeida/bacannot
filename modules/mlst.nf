@@ -4,8 +4,7 @@ process mlst {
    tag "Performing MLST analysis with mlst pipeline from T. Seeman"
 
    input:
-     file genome
-     val(prefix)
+     tuple val(prefix), file(genome)
 
    output:
      file "${prefix}_mlst_analysis.txt" optional true

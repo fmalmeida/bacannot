@@ -4,11 +4,11 @@ process find_GIs {
   tag "Predicting Genomic Islands with IslandPath-DIMOB"
 
   input:
-  file "annotation.gbk"
-  val(prefix)
+  tuple val(prefix), file("annotation.gbk")
 
   output:
-  file "${prefix}_predicted_GIs.bed"
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("${prefix}_predicted_GIs.bed")
 
   script:
   """

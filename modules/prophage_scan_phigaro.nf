@@ -4,13 +4,13 @@ process phigaro {
   tag "Scanning putative prophages with phigaro"
 
   input:
-  file "assembly.fasta"
-  val(prefix)
+  tuple val(prefix), file("assembly.fasta")
 
   output:
-  file "${prefix}_phigaro.phg"
-  file "${prefix}_phigaro.bed"
-  file "${prefix}_phigaro.phg.html"
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("${prefix}_phigaro.phg")
+  tuple val(prefix), file("${prefix}_phigaro.bed")
+  tuple val(prefix), file("${prefix}_phigaro.phg.html")
 
   script:
   """

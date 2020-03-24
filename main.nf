@@ -222,7 +222,7 @@ include prokka from './modules/prokka.nf' params(outdir: params.outdir,
 include barrnap from './modules/barrnap.nf' params(outdir: params.outdir)
 
 // Genome masking task
-include masking_genome from './modules/genome_mask.nf'
+// include masking_genome from './modules/genome_mask.nf'
 
 // Compute GC content
 include compute_gc from './modules/compute_gc.nf'
@@ -268,75 +268,90 @@ include gff2gbk from './modules/gff2gbk.nf' params(outdir: params.outdir)
 include gff_merge from './modules/merge_gff.nf' params(outdir: params.outdir,
   bedtools_merge_distance: params.bedtools_merge_distance)
 
+// Methylation calc (Nanopolish)
+include call_methylation from './modules/nanopolish_call_methylation.nf' params(outdir: params.outdir)
+
 /*
  * Define custom workflows
  */
 
-// Complete analysis
+// Analysis with methylation calling
 workflow bacannot_nf {
   take:
     input_tuple
   main:
-    // Prokka Annotation
-    prokka(input_tuple)
+  // First we need to parse and separate the values in (main -> fasta and prefix) and (additional -> files for methylation annotation)
+  input_tuple.multiMap { it ->
+    base: [ it[0], it[1] ]
+    add:  [ it[0], it[2], it[3] ]
+  }.set { prokka_input }
 
-    // Save prefix
-    prefix = prokka.out[6]
+  // Then we can start with the first process, Prokka annotation
 
-    // MLST analysis
-    mlst(prokka.out[3], prefix)
+  // Prokka Annotation
+  prokka(prokka_input.base)
 
-    // rRNA prediction
-    barrnap(prokka.out[3], prefix)
+  // MLST analysis
+  mlst(prokka.out[3])
 
-    // Genome masking and removal of nucleotide sequences from prokka gff
-    masking_genome(prokka.out[3], prokka.out[1], prefix)
+  // rRNA prediction
+  barrnap(prokka.out[3])
 
-    // Computing GC content
-    compute_gc(prokka.out[3])
+  // Genome masking and removal of nucleotide sequences from prokka gff
+  // masking_genome(prokka.out[3], prokka.out[1], parsed_input.prefix)
 
-    // User wants kofamscan?
-    if (params.not_run_kofamscan == false) { kofamscan(prokka.out[4], prefix) }
+  // Computing GC content
+  compute_gc(prokka.out[3])
 
-    // User wants virulence search?
-    if (params.not_run_virulence_search == false) { vfdb(prokka.out[5], prefix) }
+  // User wants kofamscan?
+  if (params.not_run_kofamscan == false) { kofamscan(prokka.out[4]) }
 
-    // User wants resistance search?
-    if (params.not_run_resistance_search == false) {
-      amrfinder(prokka.out[4], prefix)
-      rgi(prokka.out[4], prefix)
-    }
+  // User wants virulence search?
+  if (params.not_run_virulence_search == false) { vfdb(prokka.out[5]) }
 
-    // User wants to use ICEberg db?
-    if (params.not_run_iceberg_search == false) { iceberg(prokka.out[5], prefix) }
+  // User wants resistance search?
+  if (params.not_run_resistance_search == false) {
+    amrfinder(prokka.out[4])
+    rgi(prokka.out[4])
+  }
 
-    // User wants prophage search?
-    if (params.not_run_prophage_search == false) {
-      phast(prokka.out[5], prefix)
-      phigaro(prokka.out[3], prefix)
-    }
+  // User wants to use ICEberg db?
+  if (params.not_run_iceberg_search == false) { iceberg(prokka.out[5]) }
 
-    // Prediction of Genomic Islands
-    find_GIs(prokka.out[2], prefix)
+  // User wants prophage search?
+  if (params.not_run_prophage_search == false) {
+    phast(prokka.out[5])
+    phigaro(prokka.out[3])
+  }
 
-    // Contatenation of annotations in a single GFF file
-    update_gff(prefix, masking_genome.out[0],
-      (params.not_run_kofamscan == false)         ? kofamscan.out[1] : Channel.empty().ifEmpty('EMPTY'),
-      (params.not_run_virulence_search == false)  ? vfdb.out[0]      : Channel.empty().ifEmpty('EMPTY'),
-      (params.not_run_resistance_search == false) ? amrfinder.out[0] : Channel.empty().ifEmpty('EMPTY'),
-      (params.not_run_resistance_search == false) ? rgi.out[2]       : Channel.empty().ifEmpty('EMPTY'),
-      (params.not_run_iceberg_search == false)    ? iceberg.out[0]   : Channel.empty().ifEmpty('EMPTY'),
-      (params.not_run_prophage_search == false)   ? phast.out[0]     : Channel.empty().ifEmpty('EMPTY'))
+  // Prediction of Genomic Islands
+  find_GIs(prokka.out[2])
 
-    // Convert GFF file to GBK file
-    gff2gbk(update_gff.out[0], prokka.out[3], prefix)
+  // Contatenation of annotations in a single GFF file
+  update_gff(prokka.out[1],
+    (params.not_run_kofamscan         == false) ? kofamscan.out[1] : Channel.empty().ifEmpty('EMPTY'),
+    (params.not_run_virulence_search  == false) ? vfdb.out[0]      : Channel.empty().ifEmpty('EMPTY'),
+    (params.not_run_resistance_search == false) ? amrfinder.out[0] : Channel.empty().ifEmpty('EMPTY'),
+    (params.not_run_resistance_search == false) ? rgi.out[2]       : Channel.empty().ifEmpty('EMPTY'),
+    (params.not_run_iceberg_search    == false) ? iceberg.out[0]   : Channel.empty().ifEmpty('EMPTY'),
+    (params.not_run_prophage_search   == false) ? phast.out[0]     : Channel.empty().ifEmpty('EMPTY'))
 
-    // User wants to merge the final gff file?
-    if (params.bedtools_merge_distance != '') {
-      gff_merge(update_gff.out[0], prefix)
-    }
+  // Convert GFF file to GBK file
+  // gff2gbk(update_gff.out[0], prokka.out[3], parsed_input.prefix)
 
-    // User wants to call methylation?
+  // User wants to merge the final gff file?
+  // if (params.bedtools_merge_distance != '') {
+  //  gff_merge(update_gff.out[0], parsed_input.prefix)
+  //}
+
+  // Grab all input files with new genome/contig names for methylation call
+  methylation_input = prokka.out[3].join(prokka_input.add)
+
+  // User wants to call methylation?
+  // If not (based on input.fofn) the process will only create blank files
+  // so the pipeline doesn't stop
+  call_methylation(methylation_input)
+
 }
 
 /*
@@ -355,16 +370,16 @@ workflow {
     // User do not want methylation call
 
     if (line.split(',').size() == 2) {
-      (fasta, prefix) = line.split(',');
-      input << [file(fasta), prefix, 'EMPTY', 'EMPTY', 'EMPTY']
+      (prefix, fasta) = line.split(',');
+      input << [prefix, file(fasta)]
     }
 
     // User wants methylation call
 
-    else if (line.split(',').size() == 5) {
+    else if (line.split(',').size() == 4) {
       // Execute the workflow for each value pair
-      (fasta, prefix, fastq_reads, fast5_dir, sequencing_summary) = line.split(',');
-      input << [file(fasta), prefix, file(fastq_reads), file(fast5_dir), file(sequencing_summary)]
+      (prefix, fasta, fastq_reads, fast5_dir) = line.split(',');
+      input << [prefix, file(fasta), file(fastq_reads), file(fast5_dir)]
     }
   }
 

@@ -4,12 +4,13 @@ process kofamscan {
   tag "Executing KOfamscan - Its output can be directly put in KEGG Mapper for visualization"
 
   input:
-  file 'proteins.faa'
-  val(prefix)
+  tuple val(prefix), file('proteins.faa')
 
   output:
-  file "KOfamscan/${prefix}_ko_*" // Get all files to input directory
-  file "KOfamscan/${prefix}_ko_forKEGGMapper.txt" // Kegg-mapper file
+  // Grab all outputs
+  file("KOfamscan/${prefix}_ko_*") // Get all files to input directory
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("KOfamscan/${prefix}_ko_forKEGGMapper.txt") // Kegg-mapper file
 
   script:
   """
