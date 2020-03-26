@@ -7,8 +7,8 @@ process mlst {
      tuple val(prefix), file(genome)
 
    output:
-     file "${prefix}_mlst_analysis.txt" optional true
-     file "${prefix}_novel_alleles.fasta" optional true
+     tuple val(prefix), file("${prefix}_mlst_analysis.txt") optional true
+     tuple val(prefix), file("${prefix}_novel_alleles.fasta") optional true
 
    script:
    """

@@ -7,8 +7,8 @@ process barrnap {
    tuple val(prefix), file(genome)
 
    output:
-   file "${prefix}_rRNA.gff"
-   file "${prefix}_rRNA.fa" optional true
+   tuple val(prefix), file("${prefix}_rRNA.gff")
+   tuple val(prefix), file("${prefix}_rRNA.fa") optional true
 
    script:
    """

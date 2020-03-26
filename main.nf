@@ -230,8 +230,13 @@ include compute_gc from './modules/compute_gc.nf'
 // Kofamscan analysis (Annotate KOs)
 include kofamscan from './modules/kofamscan.nf' params(outdir: params.outdir, threads: params.threads)
 
-// VFDB annotation
+// Virulence Annotation with VFDB
 include vfdb from './modules/virulence_scan_vfdb.nf' params(outdir: params.outdir,
+  diamond_virulence_queryCoverage: params.diamond_virulence_queryCoverage,
+  diamond_virulence_identity: params.diamond_virulence_identity)
+
+// Virulence Annotation with Victors
+include victors from './modules/virulence_scan_victors.nf' params(outdir: params.outdir,
   diamond_virulence_queryCoverage: params.diamond_virulence_queryCoverage,
   diamond_virulence_identity: params.diamond_virulence_identity)
 
@@ -304,37 +309,73 @@ workflow bacannot_nf {
   compute_gc(prokka.out[3])
 
   // User wants kofamscan?
-  if (params.not_run_kofamscan == false) { kofamscan(prokka.out[4]) }
+  if (params.not_run_kofamscan == false) {
+    kofamscan(prokka.out[4])
+    kofamscan_output = kofamscan.out[1]
+  } else { kofamscan_output = Channel.empty().ifEmpty('EMPTY') }
 
   // User wants virulence search?
-  if (params.not_run_virulence_search == false) { vfdb(prokka.out[5]) }
+  if (params.not_run_virulence_search == false) {
+    vfdb(prokka.out[5])
+    vfdb_output = vfdb.out[0]
+    victors(prokka.out[5])
+    victors_output = victors.out[0]
+  } else {
+    vfdb_output    = Channel.empty().ifEmpty('EMPTY')
+    victors_output = Channel.empty().ifEmpty('EMPTY')
+  }
 
   // User wants resistance search?
   if (params.not_run_resistance_search == false) {
     amrfinder(prokka.out[4])
+    amrfinder_output = amrfinder.out[0]
     rgi(prokka.out[4])
+    rgi_output = rgi.out[2]
+  } else {
+    amrfinder_output = Channel.empty().ifEmpty('EMPTY')
+    rgi_output       = Channel.empty().ifEmpty('EMPTY')
   }
 
   // User wants to use ICEberg db?
-  if (params.not_run_iceberg_search == false) { iceberg(prokka.out[5]) }
+  if (params.not_run_iceberg_search == false) {
+    iceberg(prokka.out[5])
+    iceberg_output = iceberg.out[0]
+  } else { iceberg_output = Channel.empty().ifEmpty('EMPTY') }
 
   // User wants prophage search?
   if (params.not_run_prophage_search == false) {
     phast(prokka.out[5])
+    phast_output = phast.out[0]
     phigaro(prokka.out[3])
+    phigaro_output = phigaro.out[1]
+  } else {
+    phast_output   = Channel.empty().ifEmpty('EMPTY')
+    phigaro_output = Channel.empty().ifEmpty('EMPTY')
   }
 
   // Prediction of Genomic Islands
   find_GIs(prokka.out[2])
 
+  // Merge all annotations with the same Prefix value in a single Channel
+  annotations_files = prokka.out[3].join(prokka.out[1])
+                                   .join(mlst.out[0])
+                                   .join(barrnap.out[0])
+                                   .join(compute_gc.out[0])
+                                   .join(kofamscan_output)
+                                   .join(vfdb_output)
+                                   .join(victors_output)
+                                   .join(amrfinder_output)
+                                   .join(rgi_output)
+                                   .join(iceberg_output)
+                                   .join(phast_output)
+                                   .join(phigaro_output)
+                                   .join(find_GIs.out[0])
+
   // Contatenation of annotations in a single GFF file
-  update_gff(prokka.out[1],
-    (params.not_run_kofamscan         == false) ? kofamscan.out[1] : Channel.empty().ifEmpty('EMPTY'),
-    (params.not_run_virulence_search  == false) ? vfdb.out[0]      : Channel.empty().ifEmpty('EMPTY'),
-    (params.not_run_resistance_search == false) ? amrfinder.out[0] : Channel.empty().ifEmpty('EMPTY'),
-    (params.not_run_resistance_search == false) ? rgi.out[2]       : Channel.empty().ifEmpty('EMPTY'),
-    (params.not_run_iceberg_search    == false) ? iceberg.out[0]   : Channel.empty().ifEmpty('EMPTY'),
-    (params.not_run_prophage_search   == false) ? phast.out[0]     : Channel.empty().ifEmpty('EMPTY'))
+  // update_gff(annotations_files)
+
+  // Check this things
+  annotations_files.view()
 
   // Convert GFF file to GBK file
   // gff2gbk(update_gff.out[0], prokka.out[3], parsed_input.prefix)
@@ -345,12 +386,12 @@ workflow bacannot_nf {
   //}
 
   // Grab all input files with new genome/contig names for methylation call
-  methylation_input = prokka.out[3].join(prokka_input.add)
+  // methylation_input = prokka.out[3].join(prokka_input.add)
 
   // User wants to call methylation?
   // If not (based on input.fofn) the process will only create blank files
   // so the pipeline doesn't stop
-  call_methylation(methylation_input)
+  // call_methylation(methylation_input)
 
 }
 

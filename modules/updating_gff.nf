@@ -3,13 +3,10 @@ process update_gff {
   container = 'fmalmeida/bacannot:renv'
 
   input:
-  tuple val(prefix), file('gff')
-  file 'kofamscan.txt'
-  file 'vfdb_blast'
-  file "AMRFinder_output.tsv"
-  file 'RGI_output.txt'
-  file 'iceberg_blast'
-  file 'phast_blast'
+  tuple val(prefix), file(draft), file(gff), file(mlst), file(barrnap),
+        file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb),
+        file(victors), file(amrfinder), file(rgi), file(iceberg), file(phast),
+        file(phigaro), file(genomic_islands)
 
   output:
   file "${prefix}.gff"                // Get main gff file
@@ -23,36 +20,40 @@ process update_gff {
   script:
   """
   # Rename gff file
-  mv gff ${prefix}.gff ;
+  mv $gff ${prefix}.gff ;
 
 
   ## Reformat KOfamscan Output
   while read line ; do id=\$(echo \$line | awk '{print \$1}') ; ko=\$(echo \$line | awk '{\$1=""; print \$0}' | \
-  sed 's/\\s//' | sed 's/\\s/,/g') ; echo -e "\$id\\t\$ko" ; done < kofamscan.txt > formated.txt ;
+  sed 's/\\s//' | sed 's/\\s/,/g') ; echo -e "\$id\\t\$ko" ; done < $kofamscan > formated.txt ;
 
   ## Increment GFF with custom annotations
   ### VFDB
-  [ ! -s vfdb_blast ] || addBlast2Gff.R -i vfdb_blast -g ${prefix}.gff -o ${prefix}.gff -d VFDB -t Virulence && \
+  [ ! -s ${vfdb} ] || addBlast2Gff.R -i $vfdb -g ${prefix}.gff -o ${prefix}.gff -d VFDB -t Virulence && \
                             grep "VFDB" ${prefix}.gff > virulence_vfdb.gff ;
 
+  ### Victors
+  [ ! -s ${victors} ] || addBlast2Gff.R -i $victors -g ${prefix}.gff -o ${prefix}.gff -d Victors -t Virulence && \
+                            grep "Victors" ${prefix}.gff > virulence_victors.gff ;
+
   ### KEGG Orthology
-  [ ! -s kofamscan.txt ] || addKO2Gff.R -i formated.txt -g ${prefix}.gff -o ${prefix}.gff -d KEGG ;
+  [ ! -s ${kofamscan} ] || addKO2Gff.R -i formated.txt -g ${prefix}.gff -o ${prefix}.gff -d KEGG ;
 
   ### ICEs
-  [ ! -s iceberg_blast ] || addBlast2Gff.R -i iceberg_blast -g ${prefix}.gff -o ${prefix}.gff -d ICEberg -t ICE && \
+  [ ! -s ${iceberg} ] || addBlast2Gff.R -i $iceberg -g ${prefix}.gff -o ${prefix}.gff -d ICEberg -t ICE && \
                                grep "ICEberg" ${prefix}.gff > ices_iceberg.gff ;
 
   ### Prophages
-  [ ! -s phast_blast ] || addBlast2Gff.R -i phast_blast -g ${prefix}.gff -o ${prefix}.gff -d PHAST -t Prophage && \
+  [ ! -s ${phast} ] || addBlast2Gff.R -i $phast -g ${prefix}.gff -o ${prefix}.gff -d PHAST -t Prophage && \
                              grep "PHAST" ${prefix}.gff > prophages_phast.gff ;
 
   ### Resistance
   #### RGI
-  [ ! -s RGI_output.txt ] || addRGI2gff.R -g ${prefix}.gff -i RGI_output.txt -o ${prefix}.gff && \
+  [ ! -s ${rgi} ] || addRGI2gff.R -g ${prefix}.gff -i $rgi -o ${prefix}.gff && \
                                 grep "CARD" ${prefix}.gff > resistance_card.gff ;
 
   #### AMRFinderPlus
-  [ ! -s AMRFinder_output.tsv ] || addNCBIamr2Gff.R -g ${prefix}.gff -i AMRFinder_output.tsv -o ${prefix}.gff -t Resistance -d AMRFinderPlus && \
+  [ ! -s ${amrfinder} ] || addNCBIamr2Gff.R -g ${prefix}.gff -i $amrfinder -o ${prefix}.gff -t Resistance -d AMRFinderPlus && \
                                       grep "AMRFinderPlus" ${prefix}.gff > resistance_amrfinderplus.gff ;
   """
 }
