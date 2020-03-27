@@ -148,7 +148,7 @@ process jbrowse {
   --config '{ "style": { "color": "blue" }, "displayMode": "compact" }' --out \"data\" ;
 
   remove-track.pl --trackLabel \"${prefix} rRNA sequences\" --dir data &> /tmp/error
-  [ ! -s rrna.gff ] || echo \' { \"compress\" : 0, \
+  [ ! -s ${barrnap} ] || echo \' { \"compress\" : 0, \
                                  \"displayMode\" : \"compact\", \
                                  \"key\" : \"rRNA Sequences\", \
                                  \"label\" : \"${prefix} rRNA sequences\", \
