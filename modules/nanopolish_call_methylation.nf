@@ -62,8 +62,4 @@ process call_methylation {
   # Create Contig Sizes File
   seqtk comp ${draft} | awk '{ print \$1 "\t" \$2 }' > chr.sizes
   """
-  //else
-  //"""
-  //echo "Process was skipped"
-  //"""
 }

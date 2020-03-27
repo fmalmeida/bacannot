@@ -276,6 +276,9 @@ include gff_merge from './modules/merge_gff.nf' params(outdir: params.outdir,
 // Methylation calc (Nanopolish)
 include call_methylation from './modules/nanopolish_call_methylation.nf' params(outdir: params.outdir)
 
+// JBrowse
+include jbrowse from './modules/jbrowse.nf' params(outdir: params.outdir)
+
 /*
  * Define custom workflows
  */
@@ -289,6 +292,7 @@ workflow bacannot_nf {
   input_tuple.multiMap { it ->
     base: [ it[0], it[1] ]
     add:  [ it[0], it[2], it[3] ]
+    prefix: it[0]
   }.set { prokka_input }
 
   // Then we can start with the first process, Prokka annotation
@@ -312,7 +316,7 @@ workflow bacannot_nf {
   if (params.not_run_kofamscan == false) {
     kofamscan(prokka.out[4])
     kofamscan_output = kofamscan.out[1]
-  } else { kofamscan_output = Channel.empty().ifEmpty('EMPTY') }
+  } else { kofamscan_output = Channel.empty() }
 
   // User wants virulence search?
   if (params.not_run_virulence_search == false) {
@@ -321,8 +325,8 @@ workflow bacannot_nf {
     victors(prokka.out[5])
     victors_output = victors.out[0]
   } else {
-    vfdb_output    = Channel.empty().ifEmpty('EMPTY')
-    victors_output = Channel.empty().ifEmpty('EMPTY')
+    vfdb_output    = Channel.empty()
+    victors_output = Channel.empty()
   }
 
   // User wants resistance search?
@@ -330,17 +334,17 @@ workflow bacannot_nf {
     amrfinder(prokka.out[4])
     amrfinder_output = amrfinder.out[0]
     rgi(prokka.out[4])
-    rgi_output = rgi.out[2]
+    rgi_output = rgi.out[3]
   } else {
-    amrfinder_output = Channel.empty().ifEmpty('EMPTY')
-    rgi_output       = Channel.empty().ifEmpty('EMPTY')
+    amrfinder_output = Channel.empty()
+    rgi_output       = Channel.empty()
   }
 
   // User wants to use ICEberg db?
   if (params.not_run_iceberg_search == false) {
     iceberg(prokka.out[5])
     iceberg_output = iceberg.out[0]
-  } else { iceberg_output = Channel.empty().ifEmpty('EMPTY') }
+  } else { iceberg_output = Channel.empty() }
 
   // User wants prophage search?
   if (params.not_run_prophage_search == false) {
@@ -349,8 +353,8 @@ workflow bacannot_nf {
     phigaro(prokka.out[3])
     phigaro_output = phigaro.out[1]
   } else {
-    phast_output   = Channel.empty().ifEmpty('EMPTY')
-    phigaro_output = Channel.empty().ifEmpty('EMPTY')
+    phast_output   = Channel.empty()
+    phigaro_output = Channel.empty()
   }
 
   // Prediction of Genomic Islands
@@ -361,37 +365,44 @@ workflow bacannot_nf {
                                    .join(mlst.out[0])
                                    .join(barrnap.out[0])
                                    .join(compute_gc.out[0])
-                                   .join(kofamscan_output)
-                                   .join(vfdb_output)
-                                   .join(victors_output)
-                                   .join(amrfinder_output)
-                                   .join(rgi_output)
-                                   .join(iceberg_output)
-                                   .join(phast_output)
-                                   .join(phigaro_output)
+                                   .join(kofamscan_output, remainder: true)
+                                   .join(vfdb_output, remainder: true)
+                                   .join(victors_output, remainder: true)
+                                   .join(amrfinder_output, remainder: true)
+                                   .join(rgi_output, remainder: true)
+                                   .join(iceberg_output, remainder: true)
+                                   .join(phast_output, remainder: true)
+                                   .join(phigaro_output, remainder: true)
                                    .join(find_GIs.out[0])
 
   // Contatenation of annotations in a single GFF file
-  // update_gff(annotations_files)
-
-  // Check this things
-  annotations_files.view()
+  update_gff(annotations_files)
 
   // Convert GFF file to GBK file
-  // gff2gbk(update_gff.out[0], prokka.out[3], parsed_input.prefix)
+  gff2gbk(update_gff.out[0].join(prokka.out[3]))
 
   // User wants to merge the final gff file?
-  // if (params.bedtools_merge_distance != '') {
-  //  gff_merge(update_gff.out[0], parsed_input.prefix)
-  //}
+  if (params.bedtools_merge_distance != '') {
+    gff_merge(update_gff.out[0])
+  }
 
   // Grab all input files with new genome/contig names for methylation call
-  // methylation_input = prokka.out[3].join(prokka_input.add)
+  methylation_input = prokka.out[3].join(prokka_input.add)
 
   // User wants to call methylation?
   // If not (based on input.fofn) the process will only create blank files
   // so the pipeline doesn't stop
-  // call_methylation(methylation_input)
+  call_methylation(methylation_input)
+
+  // Grab inputs needed for JBrowse step
+  jbrowse_input = update_gff.out[0].join(annotations_files, remainder: true)
+                                   .join(call_methylation.out[2], remainder: true)
+                                   .join(call_methylation.out[3], remainder: true)
+                                   .join(call_methylation.out[4], remainder: true)
+                                   .join(call_methylation.out[5], remainder: true)
+                                   .join(call_methylation.out[6], remainder: true)
+  // Jbrowse Creation
+  jbrowse(jbrowse_input)
 
 }
 

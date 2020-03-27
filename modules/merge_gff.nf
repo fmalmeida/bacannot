@@ -3,8 +3,7 @@ process gff_merge {
   container = 'fmalmeida/bacannot:latest'
 
   input:
-  file gff
-  val(prefix)
+  tuple val(prefix), file(gff)
 
   output:
   file "${prefix}_merged.gff"

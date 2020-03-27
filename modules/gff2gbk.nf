@@ -3,9 +3,7 @@ process gff2gbk {
   container = 'fmalmeida/bacannot:latest'
 
   input:
-  file gff
-  file input
-  val(prefix)
+  tuple val(prefix), file(gff), file(input)
 
   output:
   file "*.genbank"
