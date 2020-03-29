@@ -279,6 +279,13 @@ include call_methylation from './modules/nanopolish_call_methylation.nf' params(
 // JBrowse
 include jbrowse from './modules/jbrowse.nf' params(outdir: params.outdir)
 
+// Output reports
+include report from './modules/rmarkdown_reports.nf' params(outdir: params.outdir,
+  diamond_MGEs_queryCoverage: params.diamond_MGEs_queryCoverage,
+  diamond_MGEs_identity: params.diamond_MGEs_identity,
+  diamond_virulence_queryCoverage: params.diamond_virulence_queryCoverage,
+  diamond_virulence_identity: params.diamond_virulence_identity)
+
 /*
  * Define custom workflows
  */
@@ -349,12 +356,14 @@ workflow bacannot_nf {
   // User wants prophage search?
   if (params.not_run_prophage_search == false) {
     phast(prokka.out[5])
-    phast_output = phast.out[0]
+    phast_output       = phast.out[0]
     phigaro(prokka.out[3])
-    phigaro_output = phigaro.out[1]
+    phigaro_output     = phigaro.out[1]
+    phigaro_output_txt = phigaro.out[0]
   } else {
-    phast_output   = Channel.empty()
-    phigaro_output = Channel.empty()
+    phast_output       = Channel.empty()
+    phigaro_output     = Channel.empty()
+    phigaro_output_txt = Channel.empty()
   }
 
   // Prediction of Genomic Islands
@@ -403,6 +412,9 @@ workflow bacannot_nf {
                                    .join(call_methylation.out[6], remainder: true)
   // Jbrowse Creation
   jbrowse(jbrowse_input)
+
+  // Render reports
+  report(jbrowse_input.join(phigaro_output_txt, remainder: true))
 
 }
 

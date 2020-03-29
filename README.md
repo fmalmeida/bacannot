@@ -1,6 +1,6 @@
 # Bacterial Annotation (bacannot) Pipeline
-[![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot) [![DOI](https://zenodo.org/badge/217119558.svg)](https://zenodo.org/badge/latestdoi/217119558)
 
+[![DOI](https://zenodo.org/badge/217119558.svg)](https://zenodo.org/badge/latestdoi/217119558) ![](https://img.shields.io/github/v/release/fmalmeida/ngs-preprocess) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot) ![](https://img.shields.io/docker/cloud/build/fmalmeida/bacannot) [![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/badge/Nextflow-v20.01-yellowgreen)
 
 <p align="center">
 <img src="docs/annotation_en.png">
