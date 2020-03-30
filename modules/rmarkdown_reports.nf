@@ -27,20 +27,20 @@ process report {
   Rscript -e 'rmarkdown::render("report_virulence.Rmd" , \
   params = list( vfdb_blast = "$vfdb", \
                  blast_id = ${params.diamond_virulence_identity} , \
-                 blast_cov = ${params.diamond_virulence_queryCoverage},
-                 gff = "$gff",
-                 victors_blast = "$victors",
+                 blast_cov = ${params.diamond_virulence_queryCoverage}, \
+                 gff = "$gff", \
+                 victors_blast = "$victors", \
                  query = "${prefix}"))'
 
   ## Generate MGEs report
   Rscript -e 'rmarkdown::render("report_MGEs.Rmd", params = list( \
-                 phigaro_dir = "${params.outdir}/prophages/phigaro",
-                 phigaro_txt = "$phigaro_txt",
-                 ice_prot_blast = "$iceberg",
-                 query = "${prefix}",
-                 gff = "$gff",
-                 blast_id = ${params.diamond_MGEs_identity},
-                 blast_cov = ${params.diamond_MGEs_queryCoverage},
+                 phigaro_dir = "${params.outdir}/prophages/phigaro", \
+                 phigaro_txt = "$phigaro_txt", \
+                 ice_blast = "$iceberg", \
+                 query = "${prefix}", \
+                 gff = "$gff", \
+                 blast_id = ${params.diamond_MGEs_identity}, \
+                 blast_cov = ${params.diamond_MGEs_queryCoverage}, \
                  phast_blast = "$phast"))'
   """
 }

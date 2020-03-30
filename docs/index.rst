@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Bacannot - A generic prokaryotic genome annotation pipeline
-===========================================================
+Bacannot - A generic genome annotation pipeline for prokaryotes
+===============================================================
 
 `bacannot <https://github.com/fmalmeida/bacannot>`_ is a pipeline developed with `Nextflow <https://www.nextflow.io/docs/latest/index.html>`_
 and `Docker <https://www.docker.com/>`_. It was designed to provide an easy-to-use framework for performing a comprehensive annotation on
