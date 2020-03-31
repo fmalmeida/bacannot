@@ -51,11 +51,9 @@ RUN mkdir /work/victors && cd /work/victors && \
 	makeblastdb -dbtype nucl -in /work/victors/gen_downloads.fasta -out /work/victors/victors_nt
 ## ICEbergs
 RUN mkdir /work/iceberg && cd /work/iceberg && \
-	wget http://db-mml.sjtu.edu.cn/ICEberg/download/ICEberg_seq_experimental_data.fas.gz && \
-	gzip -d ICEberg_seq_experimental_data.fas.gz && \
+	wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_seq_experimental_data.fas && \
 	makeblastdb -dbtype nucl -in ICEberg_seq_experimental_data.fas -out /work/iceberg/iceberg_nt && \
-       	wget http://db-mml.sjtu.edu.cn/ICEberg/download/ICEberg_aa_experimental_data.fas.gz && \
-	gzip -d ICEberg_aa_experimental_data.fas.gz && \
+       	wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_aa_experimental_data.fas && \
 	diamond makedb --in ICEberg_aa_experimental_data.fas -d /work/iceberg/iceberg_prot
 
 ## PHAST
@@ -144,7 +142,8 @@ RUN conda create -y -n find_GIs && \
 RUN conda install -y -n find_GIs -c conda-forge biopython
 
 # Download pythonScripts
-RUN git clone https://github.com/fmalmeida/pythonScripts.git
+RUN git clone https://github.com/fmalmeida/pythonScripts.git && \
+				ln -rs pythonScripts/*.py /usr/local/bin/
 
 # Update blast2gff.py
 RUN cd /work/scripts && rm -r genomeGTFtools && git clone https://github.com/fmalmeida/genomeGTFtools.git && \
@@ -170,6 +169,9 @@ RUN chmod -R a+rw /miniconda/envs/RGI/lib/python3.6/site-packages/app/*
 RUN wget ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux.tbl2asn.gz && \
 	gzip -d linux.tbl2asn.gz && mv linux.tbl2asn tbl2asn && chmod +x ./tbl2asn && \
 	rm /miniconda/bin/tbl2asn && mv ./tbl2asn /miniconda/bin
+
+# Install MongoDB
+RUN conda create -y -n mongoDB -c anaconda mongodb pymongo
 
 # CHECK ENVs
 RUN conda info -e

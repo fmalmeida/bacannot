@@ -279,6 +279,9 @@ include call_methylation from './modules/nanopolish_call_methylation.nf' params(
 // JBrowse
 include jbrowse from './modules/jbrowse.nf' params(outdir: params.outdir)
 
+// MongoDB module
+include mongoDB from './modules/create_mongoDB.nf' params(outdir: params.outdir)
+
 // Output reports
 include report from './modules/rmarkdown_reports.nf' params(outdir: params.outdir,
   diamond_MGEs_queryCoverage: params.diamond_MGEs_queryCoverage,
@@ -386,6 +389,9 @@ workflow bacannot_nf {
 
   // Contatenation of annotations in a single GFF file
   update_gff(annotations_files)
+
+  // Create MongoDB Collection
+  mongoDB(update_gff.out[0])
 
   // Convert GFF file to GBK file
   gff2gbk(update_gff.out[0].join(prokka.out[3]))
