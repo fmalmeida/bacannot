@@ -17,7 +17,8 @@ process rgi {
   script:
   """
   source activate RGI ;
-  rgi main -i $input -o RGI_${prefix} -t protein -a DIAMOND -n ${params.threads} --exclude_nudge --clean ;
+  rgi main --input_sequence $input --output_file ./RGI_${prefix} --input_type protein \
+    --alignment_tool DIAMOND --num_threads ${params.threads} --exclude_nudge --clean ;
 
   ## Parse perfect hits
   sed 's/ # /#/g' RGI_${prefix}.txt \

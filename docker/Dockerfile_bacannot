@@ -110,9 +110,16 @@ RUN source activate PROKKA && \
 	apt-get install -y ncbi-tools-bin
 
 # INSTALL PHIGARO
+#RUN apt-get install -y tar git libc6-dev gcc g++ locate python3 python3-pip && \
+#	git clone https://github.com/bobeobibo/phigaro.git && cd phigaro && python3 setup.py install && \
+#	yes N | phigaro-setup -c /work/phigaro/config.yml --no-updatedb
+
 RUN apt-get install -y tar git libc6-dev gcc g++ locate python3 python3-pip && \
-	git clone https://github.com/bobeobibo/phigaro.git && cd phigaro && python3 setup.py install && \
-	yes N | phigaro-setup -c /work/phigaro/config.yml --no-updatedb
+	wget https://github.com/bobeobibo/phigaro/raw/master/environment.yml && \
+        conda env create -f environment.yml && \
+	source activate phigaro_env && \
+	echo -e "1\n\n1\n\nN\n\nN" | phigaro-setup --no-updatedb
+
 RUN apt-get install -y seqtk
 
 # Help Phigaro Installation

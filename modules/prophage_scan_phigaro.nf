@@ -14,13 +14,19 @@ process phigaro {
 
   script:
   """
+  chmod a+rw -R /root/.phigaro ;
+  
+  # Activate environment
+  source activate phigaro_env ;
+
   touch assembly.phg assembly.phg.html ;
 
   # Filter fasta with minimum size of 20 kb (required by phigaro)
-  seqtk seq -L 20000 assembly.fasta > assembly-L20000.fasta ;
+  seqtk seq -L 20000 assembly.fasta > assembly-L20000.fasta =;
 
   # Run phigaro
-  phigaro -f assembly-L20000.fasta -c /work/phigaro/config.yml -e html txt -o ${prefix}_phigaro.phg -p --not-open ;
+  phigaro -f assembly-L20000.fasta --config /root/.phigaro/config.yml \
+  -e html txt -o ${prefix}_phigaro.phg -p --not-open 2> /tmp/phigaro.err ;
 
   # Create BED
   grep -v "taxonomy" ${prefix}_phigaro.phg | \
