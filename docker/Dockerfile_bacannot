@@ -118,7 +118,8 @@ RUN apt-get install -y tar git libc6-dev gcc g++ locate python3 python3-pip && \
 	wget https://github.com/bobeobibo/phigaro/raw/master/environment.yml && \
         conda env create -f environment.yml && \
 	source activate phigaro_env && \
-	echo -e "1\n\n1\n\nN\n\nN" | phigaro-setup --no-updatedb
+	echo -e "1\n\n1\n\nN\n\nN" | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
+	chmod a+rw -R /work/phigaro_pvog
 
 RUN apt-get install -y seqtk
 
