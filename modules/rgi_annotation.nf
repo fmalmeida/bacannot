@@ -16,7 +16,6 @@ process rgi {
 
   script:
   """
-  source activate RGI ;
   rgi main --input_sequence $input --output_file ./RGI_${prefix} --input_type protein \
     --alignment_tool DIAMOND --num_threads ${params.threads} --exclude_nudge --clean ;
 

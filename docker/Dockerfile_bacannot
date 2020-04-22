@@ -6,10 +6,10 @@ SHELL ["/bin/bash", "-c"]
 WORKDIR /work
 
 # INSTALL MINICONDA
-RUN apt-get update && apt-get upgrade -y && apt-get install -y git libc6-dev build-essential wget && \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y git libc6-dev build-essential wget python3 python3-pip && \
 	wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /miniconda.sh && \
 	bash /miniconda.sh -b -p /miniconda
-ENV PATH="/miniconda/bin:$PATH"
+ENV PATH="$PATH:/miniconda/bin"
 
 # Update do latest
 RUN conda update -y -n base conda
@@ -110,14 +110,10 @@ RUN source activate PROKKA && \
 	apt-get install -y ncbi-tools-bin
 
 # INSTALL PHIGARO
-#RUN apt-get install -y tar git libc6-dev gcc g++ locate python3 python3-pip && \
-#	git clone https://github.com/bobeobibo/phigaro.git && cd phigaro && python3 setup.py install && \
-#	yes N | phigaro-setup -c /work/phigaro/config.yml --no-updatedb
 
-RUN apt-get install -y tar git libc6-dev gcc g++ locate python3 python3-pip && \
-	wget https://github.com/bobeobibo/phigaro/raw/master/environment.yml && \
-        conda env create -f environment.yml && \
-	source activate phigaro_env && \
+RUN apt-get install -y tar git libc6-dev gcc g++ locate && \
+	conda install -y -c bioconda prodigal hmmer && \
+	python3 -m pip install phigaro && \
 	echo -e "1\n\n1\n\nN\n\nN" | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
 	chmod a+rw -R /work/phigaro_pvog
 
@@ -128,11 +124,17 @@ RUN cd /usr/bin && \
 	for i in * ; do ln -rs "$i" /usr/local/bin ; done
 
 # INSTALL RGI
-RUN conda create -y -n RGI && \
-	conda install -y -n RGI -c bioconda rgi=5.1.0 && \
-	source activate RGI && \
+#RUN conda create -y -n RGI && \
+#	conda install -y -n RGI -c bioconda rgi=5.1.0 && \
+#	source activate RGI && \
+#	wget https://card.mcmaster.ca/latest/data && \
+#	tar -xvf data ./card.json && \
+#	rgi load --card_json ./card.json
+
+RUN python3 -m pip install six biopython filetype pytest mock pandas matplotlib seaborn pyfaidx pyahocorasick && \
+	python3 -m pip install git+https://github.com/arpcard/rgi.git && \
 	wget https://card.mcmaster.ca/latest/data && \
-	tar -xvf data ./card.json && \
+        tar -xvf data ./card.json && \
 	rgi load --card_json ./card.json
 
 # Update AMRFinderPlus
@@ -170,8 +172,6 @@ RUN conda config --add channels r && \
 	chmod a+x /usr/local/bin/roary_plots.py
 RUN conda create -y -n ROARY_PLOTS python=3.7 && \
 	conda install -y -n ROARY_PLOTS -c conda-forge matplotlib biopython seaborn pandas
-# Help env
-RUN chmod -R a+rw /miniconda/envs/RGI/lib/python3.6/site-packages/app/*
 
 # Install tbl2asn
 RUN wget ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux.tbl2asn.gz && \

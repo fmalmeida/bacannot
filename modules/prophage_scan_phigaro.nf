@@ -14,9 +14,6 @@ process phigaro {
 
   script:
   """
-  # Activate environment
-  source activate phigaro_env ;
-
   touch ${prefix}_phigaro.phg ${prefix}_phigaro.phg.html ;
 
   # Run phigaro
