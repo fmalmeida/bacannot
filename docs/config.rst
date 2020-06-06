@@ -17,6 +17,7 @@ Default configuration:
                                               This parameters must always be set
 
   */
+
   // Input file (Always in fasta)
   params.genome = ''
 
@@ -29,9 +30,6 @@ Default configuration:
   // Number of threads to be used
   params.threads = 2
 
-  // Prokka will rename contig files into 'gnl|Centre|TAG_{1,2,3}'. Set your's institute acronym
-  params.prokka_center = 'Centre'
-
   // Number of minimum overlapping base pairs required for merging
   // Negative values means required overlapping base pairs. Positive values means maximum distance accepted for merging.
   // Setting to false means using Bedtools default
@@ -42,6 +40,7 @@ Default configuration:
    *                                                 Prokka optional parameters
    *
    */
+
   // Annotation mode: Archaea|Bacteria|Mitochondria|Viruses (default 'Bacteria')
   params.prokka_kingdom = ''
 
@@ -62,6 +61,7 @@ Default configuration:
                                     are searched with blastn.
 
   */
+
   // Virulence genes identity threshold
   params.diamond_virulence_identity = 90
 
@@ -87,6 +87,7 @@ Default configuration:
                                           must be the hard file.
 
   */
+
   params.roary_reference_genomes = ''
 
   /*
@@ -99,6 +100,7 @@ Default configuration:
                     To skip it one just need to left its variables blank.
 
   */
+
   params.fast5_dir = ''
   params.fastq_reads = ''
 
@@ -114,6 +116,7 @@ Default configuration:
                                         process.
 
   */
+  
   // General Virulence annotation (this controls vfdb and victors together)
   params.not_run_virulence_search = false
 

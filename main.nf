@@ -49,8 +49,6 @@ def helpMessage() {
 
                             Prokka complementary parameters
 
-    --prokka_center <string>                       Your institude acronym to be used by prokka when
-                                                   renaming contigs.
     --prokka_kingdom <string>                      Prokka annotation mode. Possibilities (default 'Bacteria'):
                                                    Archaea|Bacteria|Mitochondria|Viruses
     --prokka_genetic_code <int>                    Genetic Translation code. Must be set if kingdom is not
@@ -101,7 +99,7 @@ def exampleMessage() {
    log.info """
    Example Usages:
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
-nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --diamond_virulence_identity 90 --diamond_virulence_queryCoverage 80 --diamond_MGEs_identity 70 --diamond_MGEs_queryCoverage 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
+nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --diamond_virulence_identity 90 --diamond_virulence_queryCoverage 80 --diamond_MGEs_identity 70 --diamond_MGEs_queryCoverage 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
 
 
 """.stripIndent()
@@ -131,7 +129,7 @@ params.examples = false
 // Get configuration file
 params.get_config = false
 if (params.get_config) {
-  new File("bacannot.config") << new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText()
+  new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
   println ""
   println "bacannot.config file saved in working directory"
   println "After configuration, run:"
@@ -153,7 +151,6 @@ params.prefix = 'out'
 params.outDir = 'outdir'
 params.threads = 2
 params.bedtools_merge_distance = 0
-params.prokka_center = 'Centre'
 params.prokka_kingdom = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer = false
@@ -235,7 +232,7 @@ process prokka {
     file "prokka/${prefix}.gff" into annotation_gff_prokka, annotation_gff_prokka_roary
     file "prokka/${prefix}.gbk" into annotation_gbk_prokka
     file "prokka/${prefix}.fna" into renamed_genome
-    file "prokka/${prefix}.faa" into genes_aa_sql, genes_aa_kofamscan, amrfinder_input
+    file "prokka/${prefix}.faa" into genes_aa_sql, genes_aa_kofamscan, amrfinder_input, rgi_input
     file "prokka/${prefix}.ffn" into genes_sequences_vfdb, genes_sequences_iceberg, genes_nt_sql, genes_sequences_phast, genes_sequences_victors
 
     script:
@@ -245,7 +242,7 @@ process prokka {
     genus = (params.prokka_genus) ? "--genus ${params.prokka_genus} --usegenus" : ''
     """
     source activate PROKKA ;
-    prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads --centre ${params.prokka_center} \
+    prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads \
     --mincontiglen 200 $genus --prefix $prefix $input
     """
 }
@@ -266,8 +263,7 @@ process create_roary_input {
   """
   ## First, run prokka on all genomes
   source activate PROKKA ;
-  prokka --cpus $threads --centre ${params.prokka_center} \
-  --mincontiglen 200 --prefix ${references.baseName} $references ;
+  prokka --cpus $threads --mincontiglen 200 --prefix ${references.baseName} $references ;
   """
 }
 
@@ -416,7 +412,7 @@ process kofamscan {
 
 /*
 
-                      Initiaing DIAMOND searches against specific databases:
+                      Initiating DIAMOND searches against specific databases:
                                 VFDB, Victors,ICEberg and Phast.
 
 */
@@ -448,7 +444,7 @@ process vfdb {
   if ( params.virulence_search && params.vfdb_search )
   """
   # First step, with masked genome
-  diamond blastx --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result.tmp \
+  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
   --query $genome --query-cover $diamond_virulence_queryCoverage ;
 
@@ -457,7 +453,7 @@ process vfdb {
   python2 /usr/local/bin/blast2gff.py -b virulence_VFDB_maskedGenome.tsv -p vfdb -t virulence -F > ${prefix}_vfdb.gff ;
 
   # Second step, with predicted genes
-  diamond blastx --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result_genes.tmp \
+  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
   --query $genes --query-cover $diamond_virulence_queryCoverage ;
 
@@ -496,7 +492,7 @@ process victors {
   if ( params.virulence_search && params.victors_search )
   """
   # Blast predicted genes
-  diamond blastx --query-gencode 11 --db /work/victors/victors_prot -o blast_result_genes.tmp \
+  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/victors/victors_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
   --query $genes --query-cover $diamond_virulence_queryCoverage ;
 
@@ -544,13 +540,13 @@ process rgi_annotation {
   tag { x }
 
   input:
-  file input from renamed_genome
+  file input from rgi_input
 
   output:
   file "Perfect_RGI_${params.prefix}_hits.txt" into rgi_perfect optional true
   file "Strict_RGI_${params.prefix}_hits.txt" into rgi_strict optional true
-  file "RGI_${params.prefix}.txt" into rgi_output optional true
-  file "*RGI_${params.prefix}*" optional true
+  file "RGI_${params.prefix}.txt" into rgi_output
+  file "*RGI_${params.prefix}*"
 
   when:
   ( params.resistance_search )
@@ -558,17 +554,18 @@ process rgi_annotation {
   script:
   """
   source activate RGI ;
-  rgi main -i $input -o RGI_${params.prefix} -t contig -a DIAMOND -n ${params.threads} --exclude_nudge --clean ;
+  rgi main --input_sequence $input --output_file ./RGI_${params.prefix} --input_type protein \
+    --alignment_tool BLAST --num_threads ${params.threads} --exclude_nudge --clean ;
 
   ## Parse perfect hits
-  sed 's/ # /#/g' RGI_${params.prefix}.txt \
-  | awk 'BEGIN { FS = "\t"; OFS="\\t" } ; { print \$2,\$3,\$4,\$5,\$6,\$9,\$11,\$15,\$16,\$17 }' \
-  | awk '{ if (\$5 == "Perfect") print }' > Perfect_RGI_${params.prefix}_hits.txt
+  sed 's/\\s/\\t/' RGI_${params.prefix}.txt | \
+  grep "Perfect" | \
+  awk 'BEGIN { FS = "\\t"; OFS="\\t" } ; { print \$1,\$2,\$7,\$10,\$12,\$16,\$17,\$18 }' > Perfect_RGI_${params.prefix}_hits.txt
 
   ## Parse strict hits
-  sed 's/ # /#/g' RGI_${params.prefix}.txt \
-  | awk 'BEGIN { FS = "\t"; OFS="\\t" } ; { print \$2,\$3,\$4,\$5,\$6,\$9,\$11,\$15,\$16,\$17 }' \
-  | awk '{ if (\$5 == "Strict") print }' > Strict_RGI_${params.prefix}_hits.txt
+  sed 's/\\s/\\t/' RGI_${params.prefix}.txt | \
+  grep "Strict" | \
+  awk 'BEGIN { FS = "\\t"; OFS="\\t" } ; { print \$1,\$2,\$7,\$10,\$12,\$16,\$17,\$18 }' > Strict_RGI_${params.prefix}_hits.txt
   """
 }
 
@@ -599,7 +596,7 @@ process phast {
   if ( params.prophage_search )
   """
   # First step, with masked genome
-  diamond blastx --query-gencode 11 --db /work/phast/phast_prot -o blast_result.tmp \
+  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/phast/phast_prot -o blast_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
   --query $genome --query-cover $diamond_MGEs_queryCoverage ;
 
@@ -608,7 +605,7 @@ process phast {
   python2 /usr/local/bin/blast2gff.py -b prophage_phast_maskedGenome.tsv -p phast -t prophage -F > ${prefix}_phast.gff ;
 
   # Second step, with predicted genes
-  diamond blastx --query-gencode 11 --db /work/phast/phast_prot -o blast_result_genes.tmp \
+  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/phast/phast_prot -o blast_result_genes.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
   --query $genes --query-cover $diamond_MGEs_queryCoverage ;
 
@@ -670,7 +667,7 @@ process find_GIs {
   python /work/pythonScripts/splitgenbank.py annotation.gbk && rm annotation.gbk ;
   for file in \$(ls *.gbk); do grep -q "CDS" \$file && Dimob.pl \$file \${file%%.gbk}_GIs.txt 2> dimob.err ; done
   for GI in \$(ls *.txt); do \
-    awk -v contig="\$( echo \"gnl|${params.prokka_center}|\${GI%%_GIs.txt}\" )" \
+    awk -v contig="\$( echo \"\${GI%%_GIs.txt}\" )" \
     'BEGIN { FS = "\t"; OFS="\\t" } { print contig,\$2,\$3 }' \$GI >> predicted_GIs.bed ; \
   done
   """
@@ -699,7 +696,7 @@ process iceberg {
   if ( params.iceberg_search )
   """
   # Blast search
-  diamond blastx --query-gencode 11 --db /work/iceberg/iceberg_prot -o blastprot2_result.tmp \
+  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/iceberg/iceberg_prot -o blastprot2_result.tmp \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
   --query $genes --query-cover $diamond_MGEs_queryCoverage ;
 
@@ -723,6 +720,7 @@ process iceberg {
 process genes_blasted_to_gff {
   publishDir "${outDir}/gffs/only_against_predicted_genes", mode: 'copy'
   container 'fmalmeida/bacannot:renv'
+  tag { "Parsing the annotations to a GFF-like format" }
 
   input:
   file 'gff' from clear_gff
@@ -764,6 +762,7 @@ process genes_blasted_to_gff {
 process merge_gffs {
   publishDir "${outDir}/gffs/merged", mode: 'copy'
   container 'fmalmeida/bacannot:latest'
+  tag { "Produce a single file GFF file with all the annotations merged" }
 
   input:
   file 'prokka_gff' from blast_genes_gff
@@ -800,12 +799,12 @@ process merge_gffs {
  * Here, it starts the execution of summarization processes.
  */
 
-process write_summary_tables {
+process subset_gffs {
   publishDir outDir, mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".tsv") > 0 ) "/tmp/$filename"
-  else if (filename.indexOf(".gff") > 0 ) "gffs/final/$filename" }
+  else if (filename.indexOf(".gff") > 0 ) "gffs/parsed/$filename" }
   container 'fmalmeida/bacannot:renv'
 
   input:
@@ -824,7 +823,6 @@ process write_summary_tables {
   file "${prefix}_transposase.gff" into transposase_gff optional true
   file "${prefix}_amrfinderplus.gff" into amrfinderplus_gff optional true
   file "${prefix}_rgi.gff" into rgi_gff optional true
-  file "${prefix}_amrfinderplus.tsv" into amrfinderplus_table optional true
 
   """
   # Reduce repeated values
@@ -845,9 +843,6 @@ process write_summary_tables {
   [[ \$(grep -c "hypothetical" ${prefix}_final.gff) -eq 0 ]] || grep -v "hypothetical" ${prefix}_final.gff > ${prefix}_noHypothetical.gff ;
   [[ \$(grep -c "hypothetical" ${prefix}_final.gff) -eq 0 ]] || grep "hypothetical" ${prefix}_final.gff > ${prefix}_hypothetical.gff ;
   [[ \$(grep -c "transposase" ${prefix}_final.gff) -eq 0 ]] || grep "transposase" ${prefix}_final.gff > ${prefix}_transposase.gff ;
-
-  # Write summary tables
-  [ ! -s ${prefix}_amrfinderplus.gff ] || write_table_from_gff.R -i ${prefix}_amrfinderplus.gff -o ${prefix} -t amrfinderplus &> /tmp/error.txt ;
   """
 }
 
@@ -901,10 +896,7 @@ process call_methylation {
   output:
   file "*_calls.tsv" optional true
   file "*_frequency.tsv" optional true
-  file "cpg_frequency.bedGraph" into cpg_bedGraph
-  file "gpc_frequency.bedGraph" into gpc_bedGraph
-  file "dam_frequency.bedGraph" into dam_bedGraph
-  file "dcm_frequency.bedGraph" into dcm_bedGraph
+  file "methylation_frequency.bedGraph" into methylation_bedGraph
   file "chr.sizes"  into chr_sizes
 
   script:
@@ -919,39 +911,20 @@ process call_methylation {
   samtools index reads_output.sorted.bam ;
 
   # Call Methylation
-  ## cpg , gpc , dam and dcm
-  nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation cpg > cpg_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation gpc > gpc_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation dam > dam_calls.tsv ;
-	nanopolish call-methylation -r reads.fq -b reads_output.sorted.bam -g input.fa --methylation dcm > dcm_calls.tsv ;
-
+  nanopolish call-methylation -t ${params.threads} -r reads.fq -b reads_output.sorted.bam -g input.fa > methylation_calls.tsv ;
   # Calculate Methylation Frequencies
-  ## cpg , gpc , dam and dcm
-  /work/nanopolish_scripts/calculate_methylation_frequency.py cpg_calls.tsv > cpg_frequency.tsv ;
-  /work/nanopolish_scripts/calculate_methylation_frequency.py gpc_calls.tsv > gpc_frequency.tsv ;
-  /work/nanopolish_scripts/calculate_methylation_frequency.py dam_calls.tsv > dam_frequency.tsv ;
-  /work/nanopolish_scripts/calculate_methylation_frequency.py dcm_calls.tsv > dcm_frequency.tsv ;
+  /work/nanopolish_scripts/calculate_methylation_frequency.py methylation_calls.tsv > methylation_frequency.tsv ;
 
   # Transform These TSV files into bedGraph
-  ## cpg
-  [ ! -s cpg_frequency.tsv ] || grep -v "start" cpg_frequency.tsv | \
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > cpg_frequency.bedGraph ;
-  ## gpc
-  [ ! -s gpc_frequency.tsv ] || grep -v "start" gpc_frequency.tsv | \
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > gpc_frequency.bedGraph ;
-  ## dam
-  [ ! -s dam_frequency.tsv ] || grep -v "start" dam_frequency.tsv |
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > dam_frequency.bedGraph ;
-  ## dcm
-  [ ! -s dcm_frequency.tsv ] || grep -v "start" dcm_frequency.tsv |
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > dcm_frequency.bedGraph ;
+  [ ! -s methylation_frequency.tsv ] || grep -v "start" methylation_frequency.tsv | \
+  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > methylation_frequency.bedGraph ;
 
   # Create Contig Sizes File
   seqtk comp input.fa | awk '{ print \$1 "\t" \$2 }' > chr.sizes
   """
   else
   """
-  touch cpg_frequency.bedGraph gpc_frequency.bedGraph dam_frequency.bedGraph dcm_frequency.bedGraph chr.sizes
+  touch methylation_frequency.bedGraph chr.sizes
   """
 }
 
@@ -964,35 +937,36 @@ process jbrowse {
   file gff from final_gff
   file 'GC_content.bedGraph' from gc_content_jbrowse
   file 'GC_content.sizes' from gc_sizes_jbrowse
-  file 'rrna.gff' from rrna_gff
-  file 'resistance' from resistance_gff
-  file 'amrfinder' from amrfinderplus_gff
-  file 'rgi' from rgi_gff
-  file 'virulence' from virulence_gff
-  file 'prophage' from prophage_gff
-  file 'prophages.bed' from phigaro_bed
-  file 'all_GIs.bed' from predicted_GIs
-  file 'ices' from ices_gff
-  file 'conjugation' from conjugation_gff
-  file 'efflux' from efflux_gff
-  file 'no_hypothetical' from noHypothetical_gff
-  file 'hypothetical' from hypothetical_gff
-  file 'transposase' from transposase_gff
-  file 'cpg' from cpg_bedGraph
-  file 'gpc' from gpc_bedGraph
-  file 'dam' from dam_bedGraph
-  file 'dcm' from dcm_bedGraph
-  file 'chr.sizes' from chr_sizes
+  file 'rrna.gff' from rrna_gff.ifEmpty('empty')
+  file 'resistance' from resistance_gff.ifEmpty('empty')
+  file 'amrfinder' from amrfinderplus_gff.ifEmpty('empty')
+  file 'rgi' from rgi_gff.ifEmpty('empty')
+  file 'virulence' from virulence_gff.ifEmpty('empty')
+  file 'prophage' from prophage_gff.ifEmpty('empty')
+  file 'prophages.bed' from phigaro_bed.ifEmpty('empty')
+  file 'all_GIs.bed' from predicted_GIs.ifEmpty('empty')
+  file 'ices' from ices_gff.ifEmpty('empty')
+  file 'conjugation' from conjugation_gff.ifEmpty('empty')
+  file 'efflux' from efflux_gff.ifEmpty('empty')
+  file 'no_hypothetical' from noHypothetical_gff.ifEmpty('empty')
+  file 'hypothetical' from hypothetical_gff.ifEmpty('empty')
+  file 'transposase' from transposase_gff.ifEmpty('empty')
+  file 'methylation' from methylation_bedGraph.ifEmpty('empty')
+  file 'chr.sizes' from chr_sizes.ifEmpty('empty')
 
   output:
-  file "*" optional true
+  path "*" optional true hidden true includeInputs true
 
   """
   # Get Files
-  cp -R /work/jbrowse/* . ;
+  cp -R /work/jbrowse/* . 2>/dev/null || : ;
+
+  # data
+  mkdir -p ./data ;
 
   # Format FASTA file for JBROWSE
-  prepare-refseqs.pl --fasta $input --key \"${params.prefix}\" --out \"data\" ;
+  samtools faidx ${input} ;
+  prepare-refseqs.pl --indexed_fasta ${input} --key \"${params.prefix}\" --out \"data\" ;
 
   # Add GC content Track
   bedGraphToBigWig GC_content.bedGraph GC_content.sizes data/GC_content.bw ;
@@ -1000,7 +974,7 @@ process jbrowse {
   --category "GC Content" --pos_color darkgray ;
 
   # Add track with all features
-  flatfile-to-json.pl --gff $gff --key \"All features\" \
+  flatfile-to-json.pl --gff ${gff} --key \"All features\" \
   --trackType CanvasFeatures --trackLabel \"${params.prefix} annotated features\" --out \"data\" ;
 
   # Add tRNA track
@@ -1121,27 +1095,11 @@ process jbrowse {
 
   # Format bedGraphs
   ## cpg
-  [ ! -s cpg ] || bedGraphToBigWig cpg chr.sizes data/cpg.bw ;
-  ## gpc
-  [ ! -s gpc ] || bedGraphToBigWig gpc chr.sizes data/gpc.bw ;
-  ## dam
-  [ ! -s dam ] || bedGraphToBigWig dam chr.sizes data/dam.bw ;
-  ## dcm
-  [ ! -s dcm ] || bedGraphToBigWig dcm chr.sizes data/dcm.bw ;
+  [ ! -s methylation ] || bedGraphToBigWig methylation chr.sizes data/methylation.bw ;
 
   # Add BigWigs
-  ## cpg
-  [ ! -s data/cpg.bw ] || add-bw-track.pl --bw_url cpg.bw --plot --label "CpG Methylations" --key "CpG Methylations" --category "Methylations" \
-  --pos_color blue ;
-  ## gpc
-  [ ! -s data/gpc.bw ] || add-bw-track.pl --bw_url gpc.bw --plot --label "GpC Methylations" --key "GpC Methylations" --category "Methylations" \
-  --pos_color purple ;
-  ## dam
-  [ ! -s data/dam.bw ] || add-bw-track.pl --bw_url dam.bw --plot --label "Dam Methylations" --key "Dam Methylations" --category "Methylations" \
-  --pos_color pink ;
-  ## dcm
-  [ ! -s data/dcm.bw ] || add-bw-track.pl --bw_url dcm.bw --plot --label "Dcm Methylations" --key "Dcm Methylations" --category "Methylations" \
-  --pos_color cyan ;
+  [ ! -s data/methylation.bw ] || add-bw-track.pl --bw_url methylation.bw --plot --label "Called Methylations" \
+  --key "Called Methylations" --category "Methylations" --pos_color purple ;
   """
 }
 
@@ -1179,18 +1137,16 @@ process report {
   input:
   val x from finish
   file 'final.gff' from final_gff
-  file rgi_table from rgi_output
-  file rgi_perfect from rgi_perfect
-  file rgi_strict from rgi_strict
-  file amrfinder_result from amrfinder_output
-  file amrfinder_summary from amrfinderplus_table
-  file 'resistance.gff' from resistance_gff
-  file vfdb_blast from vfdb_blast_genes2
-  file victors_blast from victors_blast_genes2
-  file ice_blast from ice_blast_genes2
-  //file virsorter_csv from virsorter_csv.ifEmpty('virsorter_empty')
+  file rgi_table from rgi_output.ifEmpty('empty')
+  file rgi_perfect from rgi_perfect.ifEmpty('empty')
+  file rgi_strict from rgi_strict.ifEmpty('empty')
+  file amrfinder_result from amrfinder_output.ifEmpty('empty')
+  file 'gff' from clear_gff.ifEmpty('empty')
+  file vfdb_blast from vfdb_blast_genes2.ifEmpty('empty')
+  file victors_blast from victors_blast_genes2.ifEmpty('empty')
+  file ice_blast from ice_blast_genes2.ifEmpty('empty')
   file phigaro_txt from phigaro_txt.ifEmpty('phigaro_empty')
-  file phast_blast from phast_blast_genes2
+  file phast_blast from phast_blast_genes2.ifEmpty('empty')
 
   output:
   file '*.html'
@@ -1206,8 +1162,7 @@ process report {
     rgitool = "$rgi_table", \
     rgiperfect = "$rgi_perfect", \
     rgistrict = "$rgi_strict", \
-    gff_resistance = "resistance.gff", \
-    ncbi_amr = "${amrfinder_summary}"))'
+    gff = "gff"))'
 
   ## Generate Virulence Report
   Rscript -e 'rmarkdown::render("report_virulence.Rmd" , \

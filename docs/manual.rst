@@ -61,11 +61,6 @@ Usage example
      - 0
      - Minimum number of required overlapping bases to merge genes
 
-   * - ``--prokka_center``
-     - Y
-     - Centre
-     - Your Institute acronym. It will be used by Prokka when renaming contigs.
-
    * - ``--prokka_kingdom``
      - N
      - Bacteria
