@@ -3,14 +3,6 @@
 Manual
 ======
 
-Overview
-""""""""
-
-.. image:: annotation_en.png
-    :align: center
-    :alt: An overview of all annotation steps automatically taken by the pipeline.
-
-
 Input
 """""
 
@@ -146,12 +138,12 @@ Usage example
      - NA
      - Path to reference genomes to be used in pangenome analysis. If null, the analysis will be skipped
 
-   * - ``--nanopolish_fast5_dir``
+   * - ``--fast5_dir``
      - N
      - NA
      - Path to directory containing fast5 files to be used to call methylation. If null, the analysis will be skipped
 
-   * - ``--nanopolish_fastq_reads``
+   * - ``--fastq_reads``
      - N
      - NA
      - Path to fastq reads (related to fast5 files) that will be used to call methylation. If null, the analysis will be skipped

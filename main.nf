@@ -1,4 +1,4 @@
-#!/usr/bin/env nextflow
+fast5_dirfastq_reads#!/usr/bin/env nextflow
 
 /*
           Generic Pipeline for Prokariotic Genome Annotation
@@ -88,8 +88,8 @@ def helpMessage() {
                       If left blank, it will not be executed. And, with both parameters are set
                       it will automatically execute nanopolish to call methylation
 
-    --nanopolish_fast5_dir <string>                Path to directory containing FAST5 files
-    --nanopolish_fastq_reads <string>              Path to fastq files (file related to FAST5 files above)
+    --fast5_dir <string>                           Path to directory containing FAST5 files
+    --fastq_reads <string>                         Path to fastq files (file related to FAST5 files above)
 
 
 """.stripIndent()
@@ -99,7 +99,7 @@ def exampleMessage() {
    log.info """
    Example Usages:
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
-nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --diamond_virulence_identity 90 --diamond_virulence_queryCoverage 80 --diamond_MGEs_identity 70 --diamond_MGEs_queryCoverage 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
+nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --diamond_virulence_identity 90 --diamond_virulence_queryCoverage 80 --diamond_MGEs_identity 70 --diamond_MGEs_queryCoverage 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --fast5_dir fast5_pass --fastq_reads Kp31_BC08.fastq
 
 
 """.stripIndent()
