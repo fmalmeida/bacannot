@@ -1,4 +1,4 @@
-fast5_dirfastq_reads#!/usr/bin/env nextflow
+#!/usr/bin/env nextflow
 
 /*
           Generic Pipeline for Prokariotic Genome Annotation
