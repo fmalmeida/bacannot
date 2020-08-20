@@ -1113,7 +1113,8 @@ process SQL_db {
   file genes_aa from genes_aa_sql
 
   output:
-  file "${prefix}.sqlite"
+  file "*"
+  file "${prefix}.sqlite" optional true
   val 'finished' into finish
 
   script:
@@ -1123,7 +1124,7 @@ process SQL_db {
   bioawk -c fastx '{print \$name"\\t"\$comment"\\t"\$seq}' $genes_aa > genes_aa.tsv ;
 
   # Create SQL db
-  gff2sql.R -i $gff -o ${prefix}.sqlite -n genes_nt.tsv -a genes_aa.tsv &> /tmp/log
+  ( gff2sql.R -i $gff -o ${prefix}.sqlite -n genes_nt.tsv -a genes_aa.tsv || true )&> /tmp/log
   """
 }
 
