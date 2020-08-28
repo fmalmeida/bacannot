@@ -1,10 +1,10 @@
 process prokka {
     publishDir "${params.outdir}/${prefix}", mode: 'copy'
-    container = 'fmalmeida/bacannot:latest'
-    tag "Executing generic gene annotation with Prokka"
+    container = 'fmalmeida/bacannot:dev'
+    tag "Executing generic annotation with Prokka"
 
     input:
-    tuple val(prefix), file(input)
+    file(input)
 
     output:
     // Grab all outputs
@@ -17,13 +17,13 @@ process prokka {
     tuple val(prefix), file("prokka/${prefix}.ffn") // gene nt sequences
 
     script:
+    prefix  = "${input.baseName}"
     kingdom = (params.prokka_kingdom)      ? "--kingdom ${params.prokka_kingdom}"        : ''
     gcode   = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}"     : ''
     rnammer = (params.prokka_use_rnammer)  ? "--rnammer"                                 : ''
-    genus   = (params.prokka_genus)        ? "--genus ${params.prokka_genus} --usegenus" : ''
     """
     source activate PROKKA ;
-    prokka $kingdom $gcode $rnammer --outdir prokka --cpus ${params.threads} --centre ${params.prokka_center} \
-    --mincontiglen 200 $genus --prefix ${prefix} $input
+    prokka $kingdom $gcode $rnammer --outdir prokka \
+    --cpus ${params.threads} --mincontiglen 200 --prefix ${prefix} $input
     """
 }
