@@ -68,11 +68,15 @@ def helpMessage() {
     --prokka_use_rnammer                           Tells prokka wheter to use rnammer instead of barrnap.
 
 
-                                  Diamond (blastx) search parameters
+                                  Blast alignment parameters
 
     --diamond_virulence_minid                      Min. identity % for virulence annotation
 
     --diamond_virulence_mincov                     Min. gene coverage for virulence annotation
+
+    --diamond_resistance_minid                     Min. identity % for resistance annotation
+
+    --diamond_resistance_mincov                    Min. gene coverage for resistance annotation
 
     --diamond_MGEs_minid                           Min. identity % for ICEs and prophage annotation
 
@@ -117,7 +121,7 @@ def exampleMessage() {
    log.info """
    Example Usages:
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
-nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --diamond_virulence_minid 90 --diamond_virulence_mincov 80 --diamond_MGEs_minid 70 --diamond_MGEs_mincov 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
+nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --diamond_virulence_minid 90 --diamond_virulence_mincov 80 --diamond_MGEs_minid 70 --diamond_MGEs_mincov 60 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
 
 
 """.stripIndent()
@@ -176,9 +180,11 @@ params.prokka_use_rnammer = false
 // Blast parameters
 params.diamond_virulence_minid = 90
 params.diamond_virulence_mincov = 90
+params.diamond_resistance_minid = 90
+params.diamond_resistance_mincov = 90
 params.diamond_MGEs_minid = 65
 params.diamond_MGEs_mincov = 65
-params.diamond_minimum_alignment_length = 200
+// Workflow parameters
 params.not_run_virulence_search = false
 params.not_run_resistance_search = false
 params.not_run_iceberg_search = false
@@ -265,6 +271,20 @@ include { iceberg } from './modules/ices_scan_iceberg.nf' params(outdir: params.
 // Prophage annotation with PHIGARO
 include { find_GIs } from './modules/IslandPath_DIMOB.nf' params(outdir: params.outdir)
 
+// AMR annotation with ARGMiner
+include { argminer } from './modules/resistance_scan_argminer.nf' params(outdir: params.outdir,
+  threads: params.threads, diamond_resistance_minid: params.diamond_resistance_minid,
+  diamond_resistance_mincov: params.diamond_resistance_mincov)
+
+// AMR annotation with AMRFinderPlus
+include { amrfinder } from './modules/amrfinder_scan.nf' params(outdir: params.outdir,
+  threads: params.threads, diamond_resistance_minid: params.diamond_resistance_minid,
+  diamond_resistance_mincov: params.diamond_resistance_mincov)
+
+// AMR annotation with CARD-RGI
+include { card_rgi } from './modules/rgi_annotation.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
 /*
  * Define custom workflows
  */
@@ -313,6 +333,16 @@ workflow bacannot_single_genome_nf {
         iceberg(prokka.out[5], prokka.out[4], prokka.out[3])
         // IslandPath software
         find_GIs(prokka.out[2])
+      }
+
+      // AMR search
+      if (params.not_run_resistance_search == false) {
+        // AMRFinderPlus
+        amrfinder(prokka.out[4])
+        // CARD-RGI
+        card_rgi(prokka.out[4])
+        // ARGMiner
+        argminer(prokka.out[4], prokka.out[3])
       }
 }
 

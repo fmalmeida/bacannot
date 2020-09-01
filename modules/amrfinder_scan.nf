@@ -1,6 +1,6 @@
 process amrfinder {
   publishDir "${params.outdir}/${prefix}/resistance/AMRFinderPlus", mode: 'copy'
-  tag "Resistance genes annotation with AMRFinderPlus"
+  tag "Scanning AMR genes with AMRFinderPlus"
   label 'main'
 
   input:
@@ -14,7 +14,9 @@ process amrfinder {
   script:
   """
   source activate AMRFINDERPLUS ;
-  amrfinder -p $proteins --plus -o AMRFinder_complete.tsv ;
+  amrfinder -p $proteins --plus -o AMRFinder_complete.tsv --threads ${params.threads} \
+  --ident_min \$(echo "scale=2; ${params.diamond_resistance_minid}/100" | bc -l ) \
+  --coverage_min \$(echo "scale=2; ${params.diamond_resistance_mincov}/100" | bc -l ) ;
   awk -F '\t' '{ if (\$2 != "") { print } }' AMRFinder_complete.tsv > AMRFinder_resistance-only.tsv ;
   """
 }

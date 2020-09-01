@@ -1,5 +1,5 @@
 process victors {
-  publishDir "${params.outdir}/${prefix}/virulence", mode: 'copy'
+  publishDir "${params.outdir}/${prefix}/virulence/Victors", mode: 'copy'
   tag "Scanning virulence genes with Victors"
   label 'main'
 

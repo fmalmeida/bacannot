@@ -1,6 +1,6 @@
-process rgi {
+process card_rgi {
   publishDir "${params.outdir}/${prefix}/resistance/RGI", mode: 'copy'
-  tag "Resistance genes annotation with RGI"
+  tag "Scanning AMR genes with RGI"
   label 'main'
 
   input:

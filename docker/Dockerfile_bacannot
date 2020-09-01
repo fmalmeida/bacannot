@@ -227,5 +227,11 @@ RUN mkdir phast && \
 # CHECK ENVs
 RUN conda info -e
 
+# Fix permissions
+RUN chmod -R a+rwx /usr/local/lib/python3.8/
+
+# For maths
+RUN apt-get install -y bc
+
 # Set WorkDir
 WORKDIR /work
