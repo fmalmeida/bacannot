@@ -1,7 +1,7 @@
 process amrfinder {
   publishDir "${params.outdir}/${prefix}/resistance/AMRFinderPlus", mode: 'copy'
-  container = 'fmalmeida/bacannot:latest'
   tag "Resistance genes annotation with AMRFinderPlus"
+  label 'main'
 
   input:
   tuple val(prefix), file(proteins)

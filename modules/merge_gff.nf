@@ -1,6 +1,6 @@
 process gff_merge {
   publishDir "${params.outdir}/${prefix}/gffs", mode: 'copy'
-  container = 'fmalmeida/bacannot:latest'
+  label 'main'
 
   input:
   tuple val(prefix), file(gff)

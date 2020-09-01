@@ -1,7 +1,7 @@
 process call_methylation {
   publishDir "${params.outdir}/${prefix}/methylation", mode: 'copy'
-  container = 'fmalmeida/bacannot:latest'
   tag "Methylated sites are being calculated with Nanopolish"
+  label 'main'
 
   input:
   tuple val(prefix), file(draft), file(reads), file(fast5)

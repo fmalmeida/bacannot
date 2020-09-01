@@ -1,7 +1,7 @@
 process prokka {
     publishDir "${params.outdir}/${prefix}", mode: 'copy'
-    container = 'fmalmeida/bacannot:dev'
     tag "Executing generic annotation with Prokka"
+    label 'main'
 
     input:
     file(input)

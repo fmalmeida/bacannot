@@ -8,7 +8,7 @@ WORKDIR /work
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y software-properties-common gnupg
-RUN apt-get update ; rm -rf /var/lib/apt/lists/* ; apt-get clean ; apt-get update 
+RUN apt-get update ; rm -rf /var/lib/apt/lists/* ; apt-get clean ; apt-get update
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
@@ -27,17 +27,30 @@ RUN git clone https://github.com/fmalmeida/rscripts.git && cd rscripts &&  chmod
 # Install latex dependencies
 RUN apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra xzdec
 RUN wget https://github.com/jgm/pandoc/releases/download/2.7.3/pandoc-2.7.3-linux.tar.gz && \
-	tar zxvf pandoc-2.7.3-linux.tar.gz && \
-	ln -rs pandoc-2.7.3/bin/* /usr/local/bin
-RUN tlmgr init-usertree && tlmgr option repository ftp://tug.org/historic/systems/texlive/2017/tlnet-final
+			tar zxvf pandoc-2.7.3-linux.tar.gz && \
+			ln -rs pandoc-2.7.3/bin/* /usr/local/bin
+RUN tlmgr init-usertree && \
+			tlmgr option repository ftp://tug.org/historic/systems/texlive/2017/tlnet-final
 RUN wget https://github.com/plotly/orca/releases/download/v1.2.1/orca-1.2.1-x86_64.AppImage && \
-	chmod +x orca-1.2.1-x86_64.AppImage && \
-	ln -rs orca-1.2.1-x86_64.AppImage /usr/local/bin/orca
+			chmod +x orca-1.2.1-x86_64.AppImage && \
+			ln -rs orca-1.2.1-x86_64.AppImage /usr/local/bin/orca
 
 # Download Victors metadata
-RUN mkdir /work/victors && wget "http://www.phidias.us/victors/export_text.php?c_mc_pathogen_id=&c_phi_function=Virulence%20factor&c_mc_victor_name=&c_gene_locus_tag=&db_type=gene_gi&db_id=&c_max_tmhmm_PredHel=1&c_max_tmhmm_PredHel_check=&c_min_spaan_score_check=&c_min_spaan_score=0.51&keywords=&c_human_alignment=&c_mouse_alignment=&c_localization[]=Any&cog_cat_id[]=" -O /work/victors/victors_metadata.tsv
+RUN mkdir /work/victors && \
+			wget "http://www.phidias.us/victors/export_text.php?c_mc_pathogen_id=&c_phi_function=Virulence%20factor&c_mc_victor_name=&c_gene_locus_tag=&db_type=gene_gi&db_id=&c_max_tmhmm_PredHel=1&c_max_tmhmm_PredHel_check=&c_min_spaan_score_check=&c_min_spaan_score=0.51&keywords=&c_human_alignment=&c_mouse_alignment=&c_localization[]=Any&cog_cat_id[]=" -O /work/victors/victors_metadata.tsv
+
+# Download CARD metadata
+RUN wget -O card-data.tar.bz2 https://card.mcmaster.ca/download/0/broadstreet-v3.1.0.tar.bz2 && \
+			tar jxvf card-data.tar.bz2 && \
+			rm card-data.tar.bz2
 
 # Update Rscripts
-RUN rm -r rscripts && git clone https://github.com/fmalmeida/rscripts.git && cd rscripts &&  chmod a+x *.R  && for i in $(ls *.R) ; do rm /usr/bin/${i} ; done && cp $(ls *.R) /usr/bin/ && chmod a+rx /work/rscripts/*.Rmd
+RUN rm -r rscripts && \
+			git clone https://github.com/fmalmeida/rscripts.git && \
+			cd rscripts && \
+			chmod a+x *.R && \
+			for i in $(ls *.R) ; do rm /usr/bin/${i} ; done && \
+			cp $(ls *.R) /usr/bin/ && \
+			chmod a+rx /work/rscripts/*.Rmd
 
 WORKDIR /work

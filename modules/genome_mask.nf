@@ -6,8 +6,8 @@ process masking_genome {
   else if (filename.indexOf(".fasta") > 0 ) "masked_genome/$filename"
   else if (filename.indexOf(".txt") > 0 ) "gffs/$filename"
 }
-  container = 'fmalmeida/bacannot:latest'
   tag "Masking genome with bedtools"
+  label 'main'
 
   input:
   file input

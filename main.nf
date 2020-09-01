@@ -70,15 +70,13 @@ def helpMessage() {
 
                                   Diamond (blastx) search parameters
 
-    --diamond_virulence_identity                   Min. identity % for virulence annotation
+    --diamond_virulence_minid                      Min. identity % for virulence annotation
 
-    --diamond_virulence_queryCoverage              Min. query coverage for virulence annotation
+    --diamond_virulence_mincov                     Min. gene coverage for virulence annotation
 
-    --diamond_MGEs_identity                        Min. identity % for ICEs and prophage annotation
+    --diamond_MGEs_minid                           Min. identity % for ICEs and prophage annotation
 
-    --diamond_MGEs_queryCoverage                   Min. query coverage for ICEs and prophage annotation
-
-    --diamond_minimum_alignment_length             Min. alignment length for diamond annotation
+    --diamond_MGEs_mincov                          Min. query coverage for ICEs and prophage annotation
 
 
                                   Configure Optional processes
@@ -119,7 +117,7 @@ def exampleMessage() {
    log.info """
    Example Usages:
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
-nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --diamond_virulence_identity 90 --diamond_virulence_queryCoverage 80 --diamond_MGEs_identity 70 --diamond_MGEs_queryCoverage 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
+nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --diamond_virulence_minid 90 --diamond_virulence_mincov 80 --diamond_MGEs_minid 70 --diamond_MGEs_mincov 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
 
 
 """.stripIndent()
@@ -169,15 +167,17 @@ if (params.get_config) {
 params.outdir = 'outdir'
 params.threads = 2
 params.bedtools_merge_distance = ''
+params.genome = ''
+params.genome_fofn = ''
 // Prokka parameters
 params.prokka_kingdom = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer = false
 // Blast parameters
-params.diamond_virulence_identity = 90
-params.diamond_virulence_queryCoverage = 90
-params.diamond_MGEs_identity = 65
-params.diamond_MGEs_queryCoverage = 65
+params.diamond_virulence_minid = 90
+params.diamond_virulence_mincov = 90
+params.diamond_MGEs_minid = 65
+params.diamond_MGEs_mincov = 65
 params.diamond_minimum_alignment_length = 200
 params.not_run_virulence_search = false
 params.not_run_resistance_search = false
@@ -197,12 +197,12 @@ def summary = [:]
 summary['Output dir']   = "${params.outdir}"
 summary['Threads'] = params.threads
 if (params.not_run_virulence_search == false) {
-summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
-summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
+summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_minid
+summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_mincov
 }
 if (params.not_run_iceberg_search == false | params.not_run_prophage_search == false) {
-summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
-summary['Blast query coverage - ICEs and Phages'] = params.diamond_MGEs_queryCoverage
+summary['Blast % ID - ICEs or Phages'] = params.diamond_MGEs_minid
+summary['Blast query coverage - ICEs or Phages'] = params.diamond_MGEs_mincov
 }
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Current home']   = "$HOME"
@@ -210,7 +210,7 @@ summary['Current user']   = "$USER"
 summary['Current path']   = "$PWD"
 summary['Configuration file'] = workflow.configFiles[0]
 log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
-log.info "========================================="
+log.info "=============================================================="
 
 /*
  * Include modules (Execution setup)
@@ -223,6 +223,47 @@ include { prokka } from './modules/prokka.nf' params(outdir: params.outdir,
 
 // MLST annotation
 include { mlst } from './modules/mlst.nf' params(outdir: params.outdir)
+
+// rRNA annotation
+include { barrnap } from './modules/barrnap.nf' params(outdir: params.outdir)
+
+// Calculate GC content
+include { compute_gc } from './modules/compute_gc.nf'
+
+// KOFAM annotation
+include { kofamscan } from './modules/kofamscan.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
+// KEGG decoder
+include { kegg_decoder } from './modules/kegg-decoder.nf' params(outdir: params.outdir,
+  threads: params.threads, genome: params.genome, genome_fofn: params.genome_fofn)
+
+// Virulence annotation with VFDB
+include { vfdb } from './modules/virulence_scan_vfdb.nf' params(outdir: params.outdir,
+  threads: params.threads, diamond_virulence_minid: params.diamond_virulence_minid,
+  diamond_virulence_mincov: params.diamond_virulence_mincov)
+
+// Virulence annotation with Victors
+include { victors } from './modules/virulence_scan_victors.nf' params(outdir: params.outdir,
+  threads: params.threads, diamond_virulence_minid: params.diamond_virulence_minid,
+  diamond_virulence_mincov: params.diamond_virulence_mincov)
+
+// Prophage annotation with PHAST
+include { phast } from './modules/prophage_scan_phast.nf' params(outdir: params.outdir,
+  threads: params.threads, diamond_MGEs_minid: params.diamond_MGEs_minid,
+  diamond_MGEs_mincov: params.diamond_MGEs_mincov)
+
+// Prophage annotation with PHIGARO
+include { phigaro } from './modules/prophage_scan_phigaro.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
+// ICE annotation with ICEberg db
+include { iceberg } from './modules/ices_scan_iceberg.nf' params(outdir: params.outdir,
+  threads: params.threads, diamond_MGEs_minid: params.diamond_MGEs_minid,
+  diamond_MGEs_mincov: params.diamond_MGEs_mincov)
+
+// Prophage annotation with PHIGARO
+include { find_GIs } from './modules/IslandPath_DIMOB.nf' params(outdir: params.outdir)
 
 /*
  * Define custom workflows
@@ -238,7 +279,41 @@ workflow bacannot_single_genome_nf {
       prokka(input_genome)
 
       // Second step -- MLST analysis
-      mlst(input_genome)
+      mlst(prokka.out[3])
+
+      // Third step -- rRNA annotation
+      barrnap(prokka.out[3])
+
+      // Fouth step -- calculate GC content for JBrowse
+      compute_gc(prokka.out[3])
+
+      // Fifth step -- run kofamscan
+      (params.not_run_kofamscan == false) ? kofamscan(prokka.out[4]) : ''
+      (params.not_run_kofamscan == false) ? kegg_decoder(kofamscan.out[1]) : ''
+
+      // Virulence search
+      if (params.not_run_virulence_search == false) {
+        // VFDB
+        vfdb(prokka.out[5], prokka.out[3])
+        // Victors db
+        victors(prokka.out[4], prokka.out[3])
+      }
+
+      // Prophage search
+      if (params.not_run_prophage_search == false) {
+        // PHAST db
+        phast(prokka.out[4], prokka.out[3])
+        // Phigaro software
+        phigaro(prokka.out[3])
+      }
+
+      // ICEs search
+      if (params.not_run_iceberg_search == false) {
+        // ICEberg db
+        iceberg(prokka.out[5], prokka.out[4], prokka.out[3])
+        // IslandPath software
+        find_GIs(prokka.out[2])
+      }
 }
 
 /*

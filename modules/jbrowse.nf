@@ -1,6 +1,6 @@
 process jbrowse {
   publishDir "${params.outdir}/${prefix}/jbrowse/", mode: 'copy'
-  container 'fmalmeida/bacannot:jbrowse'
+  label 'jbrowse'
 
   input:
   tuple val(prefix), file(gff), file(draft), file("prokka_gff"), file(mlst), file(barrnap),

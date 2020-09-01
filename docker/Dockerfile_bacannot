@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-MAINTAINER Felipe Marques de Almeida <180039822@aluno.unb.br>
+MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 SHELL ["/bin/bash", "-c"]
 # DEPENDENCIES
 WORKDIR /work
@@ -41,67 +41,10 @@ RUN conda create -y -n AMRFINDERPLUS && \
 			amrfinder -u && \
 			conda deactivate
 
-# INSTALL ABRICATE
-RUN conda create -y -n ABRICATE -c bioconda -c defaults abricate
-
 ## Install Diamond
 RUN wget https://github.com/bbuchfink/diamond/releases/download/v0.9.25/diamond-linux64.tar.gz && \
 			tar zxvf diamond-linux64.tar.gz && \
 			mv diamond /usr/local/bin
-
-# IMPORTANT ADDITIONAL DATABASES
-
-## VFDB
-RUN mkdir /work/vfdb && \
-			cd /work/vfdb && \
-			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_pro.fas.gz && \
-			gzip -d VFDB_setA_pro.fas.gz && \
-			diamond makedb --in /work/vfdb/VFDB_setA_pro.fas -d /work/vfdb/vfdb_prot
-
-## VFDB for ABRICATE
-RUN cd /work/vfdb && \
-			mkdir -p /miniconda/envs/ABRICATE/db/vfdb && \
- 			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \
-			gzip -d VFDB_setA_nt.fas.gz && \
-			awk -v db=VFDB '/>/{ split($0,name," "); all=$0; $0=">" db "~~~" name[1] "~~~" name[2] " " all }1' VFDB_setA_nt.fas | sed -e 's/~>/ /g' -e 's/ ~/~/g' -e 's/]~/~/g' > /miniconda/envs/ABRICATE/db/vfdb/sequences
-
-## ARGMiner for ABRICATE
-RUN mkdir /work/ARGMiner && \
-			cd /work/ARGMiner && \
-			mkdir -p /miniconda/envs/ABRICATE/db/ARGMiner && \
-			wget http://bench.cs.vt.edu/ftp/argminer/release/ARGminer-v1.1.1.A.fasta && \
-			awk -v db=ARGMiner '/>/{ split($0,a,"|"); $0=">" db "~~~" a[1] "~~~" a[3] "~~~" a[2] " " a[4] }1' ARGminer-v1.1.1.A.fasta | sed 's/~>/~/g' > /miniconda/envs/ABRICATE/db/ARGMiner/sequences
-
-## ICEberg (also for ABRICATE)
-RUN mkdir /work/iceberg && \
-			cd /work/iceberg && \
-			wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_seq_experimental_data.fas && \
-			mkdir -p /miniconda/envs/ABRICATE/db/ICEberg && \
-			awk -v db=ICEberg '/>/{ split($0,a,"|"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" a[5] " " all }1' ICEberg_seq_experimental_data.fas | sed -e 's/ >/ /g' > /miniconda/envs/ABRICATE/db/ICEberg/sequences && \
-			makeblastdb -dbtype nucl -in ICEberg_seq_experimental_data.fas -out /work/iceberg/iceberg_nt && \
-      wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_aa_experimental_data.fas && \
-			diamond makedb --in ICEberg_aa_experimental_data.fas -d /work/iceberg/iceberg_prot
-
-##  VICTORS (for ABRICATE)
-RUN mkdir /work/victors && \
-			cd /work/victors && \
-			wget -O victors_original.fasta "http://www.phidias.us/victors/downloads/gen_downloads_protein.php" && \
-			grep -v "^[^>M]" victors_original.fasta > victors_prot.fasta && \
-			diamond makedb --in victors_prot.fasta -d /work/victors/victors_prot && \
-			mkdir -p /miniconda/envs/ABRICATE/db/victors && \
-			awk -v db=victors '/>/{ split($0,a,"|"); all=$0; $0=">" db "~~~" "Victors_" a[2] "~~~" a[4] " " all }1' victors_prot.fasta | sed -e 's/ >/ /g' > /miniconda/envs/ABRICATE/db/victors/sequences
-
-## PHAST (and for ABRICATE)
-RUN mkdir /work/phast && \
-			cd /work/phast && \
-			mkdir -p /miniconda/envs/ABRICATE/db/phast && \
-			wget -O phast_prot.fasta http://phast.wishartlab.com/phage_finder/DB/prophage_virus.db && \
-			diamond makedb --in phast_prot.fasta -d /work/phast/phast_prot && \
-			awk -v db=phast '/>/{ split($0,a,"|"); all=$0; $0=">" db "~~~" "PHAST_" a[2] "~~~" a[4] " " all }1' phast_prot.fasta | sed -e 's/ >/ /g' > /miniconda/envs/ABRICATE/db/phast/sequences
-
-# Reload and setup abricate databases
-RUN source activate ABRICATE && \
-			abricate --setupdb
 
 # INSTALL BARRNAP
 RUN conda install -y -c bioconda -c conda-forge barrnap
@@ -203,13 +146,83 @@ RUN conda create -y -n ROARY_PLOTS python=3.7 && \
 			conda install -y -n ROARY_PLOTS -c conda-forge matplotlib biopython seaborn pandas
 
 # Install tbl2asn
-#RUN wget ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux.tbl2asn.gz && \
-#			gzip -d linux.tbl2asn.gz && mv linux.tbl2asn tbl2asn && chmod +x ./tbl2asn && \
-#			rm /miniconda/bin/tbl2asn && mv ./tbl2asn /miniconda/bin
 RUN conda install -y -c bioconda tbl2asn-forever
 
 # Install MongoDB
 RUN conda create -y -n mongoDB -c anaconda mongodb pymongo
+
+# Install samtools
+RUN apt-get install -y samtools
+
+# IMPORTANT ADDITIONAL DATABASES
+workdir /work/dbs
+
+## Pythons scripts for additional databases
+RUN /miniconda/bin/python3 -m pip install docopt pandas && \
+			wget https://github.com/fmalmeida/pythonScripts/raw/master/run_blasts.py && \
+			chmod a+x run_blasts.py && \
+			mv run_blasts.py /usr/local/bin
+
+## VFDB nt
+RUN mkdir vfdb && \
+ 			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \
+			gzip -d VFDB_setA_nt.fas.gz && \
+				awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setA_nt.fas | \
+				sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \
+				awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences && \
+			makeblastdb -in vfdb/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \
+			rm VFDB_setA_nt.fas
+
+## ARGMiner prot
+RUN mkdir ARGMiner && \
+			wget http://bench.cs.vt.edu/ftp/argminer/release/ARGminer-v1.1.1.A.fasta && \
+			awk -v db=ARGMiner '/>/{ split($0,a,"|"); $0=">" db "~~~" a[3] "~~~" a[1] "~~~" a[2] " " a[4] }1' ARGminer-v1.1.1.A.fasta | \
+			sed -e 's/~>/~/g' -e 's/gi:.*:ref://g' -e 's/gi:.*:gb://g' -e 's/gi:.*:emb://g' -e 's/:~/~/g' > ARGMiner/sequences && \
+			rm ARGminer-v1.1.1.A.fasta && \
+			makeblastdb -in ARGMiner/sequences -title 'argminer' -dbtype prot -logfile /dev/null && \
+			diamond makedb --in ARGMiner/sequences -d ARGMiner/diamond
+
+
+## ICEberg nt (ICEs)
+RUN mkdir iceberg && \
+			wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_seq_experimental_data.fas && \
+			awk -v db=ICEberg '/>/{ split($0,a,"|"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" a[5] "~~~" a[3] " " all }1' ICEberg_seq_experimental_data.fas | \
+			sed -e 's/ >/ /g' > iceberg/sequences && \
+			rm ICEberg_seq_experimental_data.fas && \
+			makeblastdb -in iceberg/sequences -title 'iceberg' -dbtype nucl -logfile /dev/null
+
+## ICEberg prot (genes)
+RUN wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_aa_experimental_data.fas && \
+			awk -v db=ICEberg \
+			'/>/{ split($0,col," "); split(col[1],a,"[|]"); split(col[2],b,"[|]"); split($0,c,"[|]"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" b[4] "~~~" c[6] " " all }1' \
+			ICEberg_aa_experimental_data.fas | sed -e 's/ >/ /g' | awk -F '\\]' \
+			'{ if ($0 ~ />/) { gsub(" ","_",$1); gsub("_\\[","_",$1); gsub("~_","~",$1); print $1,$2 "]" } else { print $0 }}' > iceberg/proteins && \
+			diamond makedb --in iceberg/proteins -d iceberg/diamond && \
+			makeblastdb -in iceberg/proteins -title 'iceberg' -dbtype prot -logfile /dev/null && \
+			rm ICEberg_aa_experimental_data.fas
+
+##  VICTORS prot (genes)
+RUN mkdir victors && \
+			wget -O victors_original.fasta "http://www.phidias.us/victors/downloads/gen_downloads_protein.php" && \
+			grep -v "^[^>M]" victors_original.fasta > victors_prot.fasta && \
+			rm victors_original.fasta && \
+			awk -v db=victors '/>/{ split($0,a,"|"); split(a[5],gene," \\["); all=$0; $0=">" db "~~~" gene[1] "~~~" a[4] "~~~" "Victors_" a[2] " " all }1' victors_prot.fasta | \
+			sed -e 's/ >/ /g' -e 's/~ /~/g' | \
+			awk -F "~~~" ' { if ($0 ~ />/) { gsub(" ", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' > victors/sequences && \
+			diamond makedb --in victors/sequences -d victors/diamond && \
+			makeblastdb -in victors/sequences -title 'victors' -dbtype prot -logfile /dev/null && \
+			rm victors_prot.fasta
+
+## PHAST prot (genes)
+RUN mkdir phast && \
+			wget -O phast_prot.fasta http://phast.wishartlab.com/phage_finder/DB/prophage_virus.db && \
+			awk -v db=phast '/>/{ split($0,a,"|"); split(a[5],gene," \\["); all=$0; $0=">" db "~~~" gene[1] "~~~" a[4]"~~~" "PHAST_" a[2] " " all }1' phast_prot.fasta | \
+			sed -e 's/ >/ /g' -e 's/~ /~/g' | \
+			awk -F "~~~" ' { if ($0 ~ />/) { gsub(" ", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' | \
+			awk -F "~~~" ' { if ($0 ~ />/) { gsub("-", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' > phast/sequences && \
+			rm phast_prot.fasta && \
+			diamond makedb --in phast/sequences -d phast/diamond && \
+			makeblastdb -in phast/sequences -title 'phast' -dbtype prot -logfile /dev/null
 
 # CHECK ENVs
 RUN conda info -e

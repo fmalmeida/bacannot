@@ -1,7 +1,7 @@
 process rgi {
   publishDir "${params.outdir}/${prefix}/resistance/RGI", mode: 'copy'
-  container = 'fmalmeida/bacannot:latest'
   tag "Resistance genes annotation with RGI"
+  label 'main'
 
   input:
   tuple val(prefix), file(input)

@@ -1,4 +1,4 @@
-process report {
+process virulence_report {
   publishDir "${params.outdir}/${prefix}/report_files", mode: 'copy'
   label 'reports'
 
@@ -14,14 +14,7 @@ process report {
 
   script:
   """
-  cp /work/rscripts/*.Rmd . ;
-
-  ## Generate Resistance Report
-  Rscript -e 'rmarkdown::render("report_resistance.Rmd", params = list(\
-    amrfinder = "$amrfinder", \
-    query = "${prefix}", \
-    rgitool = "$rgi", \
-    gff = "$gff"))'
+  cp /work/rscripts/reports/* . ;
 
   ## Generate Virulence Report
   Rscript -e 'rmarkdown::render("report_virulence.Rmd" , \
@@ -31,16 +24,5 @@ process report {
                  gff = "$gff", \
                  victors_blast = "$victors", \
                  query = "${prefix}"))'
-
-  ## Generate MGEs report
-  Rscript -e 'rmarkdown::render("report_MGEs.Rmd", params = list( \
-                 phigaro_dir = "${params.outdir}/prophages/phigaro", \
-                 phigaro_txt = "$phigaro_txt", \
-                 ice_blast = "$iceberg", \
-                 query = "${prefix}", \
-                 gff = "$gff", \
-                 blast_id = ${params.diamond_MGEs_identity}, \
-                 blast_cov = ${params.diamond_MGEs_queryCoverage}, \
-                 phast_blast = "$phast"))'
   """
 }

@@ -1,6 +1,6 @@
 process gff2gbk {
   publishDir "${params.outdir}/${prefix}/genbankFile", mode: 'copy'
-  container = 'fmalmeida/bacannot:latest'
+  label 'main'
 
   input:
   tuple val(prefix), file(gff), file(input)

@@ -1,27 +1,31 @@
 process vfdb {
   publishDir "${params.outdir}/${prefix}/virulence", mode: 'copy'
-  container = 'fmalmeida/bacannot:latest'
   tag "Scanning virulence genes with VFDB"
+  label 'main'
 
   input:
   tuple val(prefix), file(genes)
+  tuple val(prefix), file(genome)
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("blast_virulence_vfdb.tsv") // Save the results in tabular blast format
+  tuple val(prefix), file("${prefix}_vfdb_blastn_onGenes.summary.txt")
+  tuple val(prefix), file("${prefix}_vfdb_blastn_onGenome.summary.txt")
+  file('*.txt') // Grab summaries
 
   script:
   """
-  # Prediction using the genes predicted from prokka
+  # VFDB is a nucleotide-only dabatase
 
-  diamond blastx --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result_genes.tmp \
-  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover ${params.diamond_virulence_queryCoverage} ;
+  ## With predicted gene sequences
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genes --db /work/dbs/vfdb/sequences --minid ${params.diamond_virulence_minid} \
+  --mincov ${params.diamond_virulence_mincov} --threads ${params.threads} --out ${prefix}_vfdb_blastn_onGenes.txt | \
+  sed -e 's/ACCESSION/VFDB_ID/g' > ${prefix}_vfdb_blastn_onGenes.summary.txt ;
 
-  # Filter by identity
-
-  awk -v id=${params.diamond_virulence_identity} '{if (\$3 >= id) print }' \
-  blast_result_genes.tmp > blast_virulence_vfdb.tsv
+  ## With the whole genome
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genome --db /work/dbs/vfdb/sequences --minid ${params.diamond_virulence_minid} \
+  --mincov ${params.diamond_virulence_mincov} --threads ${params.threads} --out ${prefix}_vfdb_blastn_onGenes.txt | \
+  sed -e 's/ACCESSION/VFDB_ID/g' > ${prefix}_vfdb_blastn_onGenome.summary.txt ;
   """
 
 }

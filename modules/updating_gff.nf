@@ -1,6 +1,6 @@
 process update_gff {
   publishDir "${params.outdir}/${prefix}/gffs", mode: 'copy'
-  container = 'fmalmeida/bacannot:renv'
+  label 'main'
 
   input:
   tuple val(prefix), file(draft), file("prokka_gff"), file(mlst), file(barrnap),

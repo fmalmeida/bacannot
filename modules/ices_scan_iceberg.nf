@@ -1,25 +1,49 @@
 process iceberg {
   publishDir "${params.outdir}/${prefix}/ICEs", mode: 'copy'
-  container = 'fmalmeida/bacannot:latest'
-  tag "Scanning for ICEs with ICEberg database"
+  tag "Scanning for ICE genes with ICEberg database"
+  label 'main'
 
   input:
-  tuple val(prefix), file(genes)
+  tuple val(prefix), file(genes_nt)
+  tuple val(prefix), file(genes_aa)
+  tuple val(prefix), file(genome)
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("blast_ices_iceberg.tsv")
+  tuple val(prefix), file("${prefix}_iceberg_blastp_onGenes.summary.txt")
+  tuple val(prefix), file("${prefix}_iceberg_blastx_onGenome.summary.txt")
+  tuple val(prefix), file("${prefix}_iceberg_blastn_onGenes.summary.txt")
+  tuple val(prefix), file("${prefix}_iceberg_blastn_onGenome.summary.txt")
+  file('*.txt') // Grab summaries
 
   script:
   """
-  # Prediction using the genes predicted from prokka
+  # ICEberg is a protein and nucleotide dabatase
+  # In protein are the genes found inside ICEs
+  # In nucleotide are the full-length ICEs
 
-  diamond blastx --query-gencode 11 --db /work/iceberg/iceberg_prot -o blastprot2_result.tmp \
-  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover ${params.diamond_MGEs_queryCoverage} ;
+  ## Checking ICE genes
 
-  ## Group it all
-  awk -v id=${params.diamond_MGEs_identity} '{if (\$3 >= id) print }' \
-  blastprot2_result.tmp > blast_ices_iceberg.tsv
+  ## With predicted gene sequences
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastp --query $genes_aa --db /work/dbs/iceberg/diamond.dmnd --minid ${params.diamond_MGEs_minid} \
+  --mincov ${params.diamond_MGEs_mincov} --threads ${params.threads} --out ${prefix}_iceberg_blastp_onGenes.txt | \
+  sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastp_onGenes.summary.txt ;
+
+  ## With the whole genome
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastx --query ${genome} --db /work/dbs/iceberg/diamond.dmnd --minid ${params.diamond_MGEs_minid} \
+  --mincov ${params.diamond_MGEs_mincov} --threads ${params.threads} --out ${prefix}_iceberg_blastx_onGenome.txt | \
+  sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastx_onGenome.summary.txt ;
+
+  ## Checking for full-length ICEs
+
+  ## With predicted gene sequences
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genes_nt --db /work/dbs/iceberg/sequences --minid ${params.diamond_MGEs_minid} \
+  --mincov ${params.diamond_MGEs_mincov} --threads ${params.threads} --out ${prefix}_iceberg_blastn_onGenes.txt | \
+  sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastn_onGenes.summary.txt ;
+
+  ## With the whole genome
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query ${genome} --db /work/dbs/icerberg/sequences --minid ${params.diamond_MGEs_minid} \
+  --mincov ${params.diamond_MGEs_mincov} --threads ${params.threads} --out ${prefix}_iceberg_blastn_onGenes.txt | \
+  sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastn_onGenome.summary.txt ;
   """
 }

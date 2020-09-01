@@ -1,6 +1,6 @@
 process compute_gc {
-  container = 'fmalmeida/bacannot:latest'
   tag "Calculating genome GC with bedtools"
+  label 'main'
 
   input:
   tuple val(prefix), file(genome)
@@ -9,18 +9,24 @@ process compute_gc {
   // Outputs must be linked to each prefix (tag)
   tuple val(prefix), file("input_GC_500_bps.sorted.bedGraph"), file("input.sizes")
 
+  script:
   """
-  # Index
+  # Index de genome
   samtools faidx $genome ;
-  # Take Sizes
+
+  # Get contig sizes
   cut -f 1,2 ${genome}.fai > input.sizes ;
-  # Create sliding window
+
+  # Create genome sliding window
   bedtools makewindows -g input.sizes -w 500 > input_500_bps.bed ;
-  # Compute GC
+
+  # Compute GC content
   bedtools nuc -fi ${genome} -bed input_500_bps.bed > input_500_bps_nuc.txt ;
-  # Create bedGraph
+
+  # Create bedGraph for JBrowse
   awk 'BEGIN{FS="\\t"; OFS="\\t"} FNR > 1 { print \$1,\$2,\$3,\$5 }' input_500_bps_nuc.txt > input_GC_500_bps.bedGraph
-  # Sort
+
+  # Sort results
   bedtools sort -i input_GC_500_bps.bedGraph > input_GC_500_bps.sorted.bedGraph
   """
 }

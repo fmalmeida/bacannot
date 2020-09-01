@@ -1,7 +1,7 @@
 process mongoDB {
   validExitStatus 0,48
   publishDir "${params.outdir}/${prefix}/mongoDB", mode: 'copy'
-  container 'fmalmeida/bacannot:latest'
+  label 'main'
 
   input:
   tuple val(prefix), file(gff)
