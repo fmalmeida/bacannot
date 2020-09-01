@@ -1,4 +1,4 @@
-process update_gff {
+process merge_annotations {
   publishDir "${params.outdir}/${prefix}/gffs", mode: 'copy'
   label 'main'
 

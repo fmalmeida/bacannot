@@ -285,6 +285,13 @@ include { amrfinder } from './modules/amrfinder_scan.nf' params(outdir: params.o
 include { card_rgi } from './modules/rgi_annotation.nf' params(outdir: params.outdir,
   threads: params.threads)
 
+// Methylation calling (Nanopolish)
+include { call_methylation } from './modules/nanopolish_call_methylation.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
+// Merging annotation in GFF
+include { merge_annotations } from './modules/merge_annotations.nf' params(outdir: params.outdir)
+
 /*
  * Define custom workflows
  */
@@ -293,6 +300,8 @@ include { card_rgi } from './modules/rgi_annotation.nf' params(outdir: params.ou
 workflow bacannot_single_genome_nf {
   take:
     input_genome
+    fast5_dir
+    fast5_fastqs
   main:
 
       // First step -- Prokka annotation
@@ -310,6 +319,8 @@ workflow bacannot_single_genome_nf {
       // Fifth step -- run kofamscan
       (params.not_run_kofamscan == false) ? kofamscan(prokka.out[4]) : ''
       (params.not_run_kofamscan == false) ? kegg_decoder(kofamscan.out[1]) : ''
+
+      // Sixth step -- MGE, Virulence and AMR annotations
 
       // Virulence search
       if (params.not_run_virulence_search == false) {
@@ -344,6 +355,29 @@ workflow bacannot_single_genome_nf {
         // ARGMiner
         argminer(prokka.out[4], prokka.out[3])
       }
+
+      // Seventh step -- Methylation call
+      if (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) {
+        call_methylation(prokka.out[3], fast5_dir, fast5_fastqs)
+      }
+
+      // Eighth step -- Merge all annotations with the same Prefix value in a single Channel
+      annotations_files = prokka.out[3].join(prokka.out[1])
+                                       .join(mlst.out[0])
+                                       .join(barrnap.out[0])
+                                       .join(compute_gc.out[0])
+                                       .join(kofamscan_output, remainder: true)
+                                       .join(vfdb_output, remainder: true)
+                                       .join(victors_output, remainder: true)
+                                       .join(amrfinder_output, remainder: true)
+                                       .join(rgi_output, remainder: true)
+                                       .join(iceberg_output, remainder: true)
+                                       .join(phast_output, remainder: true)
+                                       .join(phigaro_output, remainder: true)
+                                       .join(find_GIs.out[0])
+
+      // Contatenation of annotations in a single GFF file
+      update_gff(annotations_files)
 }
 
 /*
@@ -355,8 +389,10 @@ workflow {
   // User has a single genome as input?
   if (params.genome) {
     bacannot_single_genome_nf(
-      Channel.fromPath(params.genome)
-    )
+        Channel.fromPath(params.genome),
+        (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(), // FAST5 Dir
+        (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()  // ONT FASTQS
+      ) // ONT fastqs
   }
 }
 
