@@ -1,42 +1,5 @@
-
-// Merging annotation in GFF
-include update_gff from './modules/updating_gff.nf' params(outdir: params.outdir)
-
-// Convert GFF to GBK
-include gff2gbk from './modules/gff2gbk.nf' params(outdir: params.outdir)
-
-// Bedtools gff merge
-include gff_merge from './modules/merge_gff.nf' params(outdir: params.outdir,
-  bedtools_merge_distance: params.bedtools_merge_distance)
-
-// JBrowse
-include jbrowse from './modules/jbrowse.nf' params(outdir: params.outdir)
-
-// MongoDB module
-include mongoDB from './modules/create_mongoDB.nf' params(outdir: params.outdir)
-
-// Output reports
-include report from './modules/rmarkdown_reports.nf' params(outdir: params.outdir,
-  diamond_MGEs_queryCoverage: params.diamond_MGEs_queryCoverage,
-  diamond_MGEs_identity: params.diamond_MGEs_identity,
-  diamond_virulence_queryCoverage: params.diamond_virulence_queryCoverage,
-  diamond_virulence_identity: params.diamond_virulence_identity)
-
+// User inputs multiple genomes
 /*
- * Define custom workflows
- */
-
-// Only for a single genome
-workflow bacannot_single_genome_nf {
-  take:
-    input_genome
-  main:
-
-      // First step -- Prokka annotation
-      prokka()
-}
-
-// For Multiple genomes as entries
 workflow bacannot_multiple_genomes_nf {
   take:
     input_tuple
@@ -166,6 +129,7 @@ workflow bacannot_multiple_genomes_nf {
   report(jbrowse_input.join(phigaro_output_txt, remainder: true))
 
 }
+*/
 
 /*
  * Define main workflow

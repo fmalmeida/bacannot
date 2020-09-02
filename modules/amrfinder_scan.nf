@@ -15,8 +15,8 @@ process amrfinder {
   """
   source activate AMRFINDERPLUS ;
   amrfinder -p $proteins --plus -o AMRFinder_complete.tsv --threads ${params.threads} \
-  --ident_min \$(echo "scale=2; ${params.diamond_resistance_minid}/100" | bc -l ) \
-  --coverage_min \$(echo "scale=2; ${params.diamond_resistance_mincov}/100" | bc -l ) ;
+  --ident_min \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
+  --coverage_min \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) ;
   awk -F '\t' '{ if (\$2 != "") { print } }' AMRFinder_complete.tsv > AMRFinder_resistance-only.tsv ;
   """
 }

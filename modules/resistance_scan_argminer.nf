@@ -18,11 +18,11 @@ process argminer {
   # ARGMiner is a protein-only dabatase
 
   ## With predicted gene sequences
-  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastp --query $genes --db /work/dbs/argminer/diamond.dmnd --minid ${params.diamond_resistance_minid} \
-  --mincov ${params.diamond_resistance_mincov} --threads ${params.threads} --out ${prefix}_argminer_blastp_onGenes.txt > ${prefix}_argminer_blastp_onGenes.summary.txt ;
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastp --query $genes --db /work/dbs/argminer/diamond.dmnd --minid ${params.blast_resistance_minid} \
+  --mincov ${params.blast_resistance_mincov} --threads ${params.threads} --out ${prefix}_argminer_blastp_onGenes.txt > ${prefix}_argminer_blastp_onGenes.summary.txt ;
 
   ## With the whole genome
-  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastx --query $genome --db /work/dbs/argminer/diamond.dmnd --minid ${params.diamond_resistance_minid} \
-  --mincov ${params.diamond_resistance_mincov} --threads ${params.threads} --out ${prefix}_argminer_blastx_onGenome.txt > ${prefix}_argminer_blastx_onGenome.summary.txt ;
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastx --query $genome --db /work/dbs/argminer/diamond.dmnd --minid ${params.blast_resistance_minid} \
+  --mincov ${params.blast_resistance_mincov} --threads ${params.threads} --out ${prefix}_argminer_blastx_onGenome.txt > ${prefix}_argminer_blastx_onGenome.summary.txt ;
   """
 }

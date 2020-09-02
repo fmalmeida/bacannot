@@ -1,6 +1,7 @@
 process merge_annotations {
   publishDir "${params.outdir}/${prefix}/gffs", mode: 'copy'
-  label 'main'
+  label 'renv'
+  tag "Merging all the different annotations"
 
   input:
   tuple val(prefix), file(draft), file("prokka_gff"), file(mlst), file(barrnap),
@@ -16,45 +17,43 @@ process merge_annotations {
   file "resistance_card.gff"          optional true         // Get CARD resistance file
   file "resistance_amrfinderplus.gff" optional true         // Get NDARO resistance file
   file "*.gff"                        optional true         // Get all subsets
+  file "virulence_victors.gff"        optional true         // Get Victors virulence file
 
   script:
   """
   # Rename gff and remove sequence entries
-  grep "ID=" prokka_gff > ${prefix}.gff
+  grep "ID=" prokka_gff > ${prefix}.gff ;
 
   ## Increment GFF with custom annotations
   ### VFDB
   [ ! -s ${vfdb} ] || addBlast2Gff.R -i $vfdb -g ${prefix}.gff -o ${prefix}.gff -d VFDB -t Virulence ;
-  [ ! -s ${vfdb} ] || grep "VFDB" ${prefix}.gff > virulence_vfdb.gff ;
+  [ \$(grep "VFDB" ${prefix}.gff | wc -l) -eq 0 ] || grep "VFDB" ${prefix}.gff > virulence_vfdb.gff ;
 
   ### Victors
   [ ! -s ${victors} ] || addBlast2Gff.R -i $victors -g ${prefix}.gff -o ${prefix}.gff -d Victors -t Virulence && \
-  [ ! -s ${victors} ] || grep "Victors" ${prefix}.gff > virulence_victors.gff ;
+  [ \$(grep "Victors" ${prefix}.gff | wc -l) -eq 0 ] || grep "Victors" ${prefix}.gff > virulence_victors.gff ;
 
   ### KEGG Orthology
   ## Reformat KOfamscan Output
-  [ ! -s ${kofamscan} ] || while read line ; do \
-                              id=\$(echo \$line | awk '{print \$1}') ; \
-                              ko=\$(echo \$line | awk '{\$1=""; print \$0}' | \
-                              sed 's/\\s//' | sed 's/\\s/,/g') ; \
-                              echo -e "\$id\\t\$ko" ; done < $kofamscan > formated.txt ;
-  [ ! -s ${kofamscan} ] || addKO2Gff.R -i formated.txt -g ${prefix}.gff -o ${prefix}.gff -d KEGG ;
+  [ ! -s ${kofamscan} ] || awk -F'\\t' -v OFS='\\t' '{x=\$1;\$1="";a[x]=a[x]\$0}END{for(x in a)print x,a[x]}' $kofamscan  | \
+                           sed -e 's/\\t/,/g' -e 's/,,/\\t/g' | awk  '\$2!=""' > formated.txt ;
+  [ ! -s formated.txt ] || addKO2Gff.R -i formated.txt -g ${prefix}.gff -o ${prefix}.gff -d KEGG ;
 
   ### ICEs
   [ ! -s ${iceberg} ] || addBlast2Gff.R -i $iceberg -g ${prefix}.gff -o ${prefix}.gff -d ICEberg -t ICE ;
-  [ ! -s ${iceberg} ] || grep "ICEberg" ${prefix}.gff > ices_iceberg.gff ;
+  [ \$(grep "ICEberg" ${prefix}.gff | wc -l) -eq 0 ] || grep "ICEberg" ${prefix}.gff > ices_iceberg.gff ;
 
   ### Prophages
   [ ! -s ${phast} ] || addBlast2Gff.R -i $phast -g ${prefix}.gff -o ${prefix}.gff -d PHAST -t Prophage ;
-  [ ! -s ${phast} ] || grep "PHAST" ${prefix}.gff > prophages_phast.gff ;
+  [ \$(grep "PHAST" ${prefix}.gff | wc -l) -eq 0 ] || grep "PHAST" ${prefix}.gff > prophages_phast.gff ;
 
   ### Resistance
   #### RGI
-  [ ! -s ${rgi} ] || addRGI2gff.R -g ${prefix}.gff -i $rgi -o ${prefix}.gff ;
-  [ ! -s ${rgi} ] || grep "CARD" ${prefix}.gff > resistance_card.gff ;
+  [ \$(cat ${rgi} | wc -l) -eq 1 ] || addRGI2gff.R -g ${prefix}.gff -i $rgi -o ${prefix}.gff ;
+  [ \$(grep "CARD" ${prefix}.gff | wc -l) -eq 0 ] || grep "CARD" ${prefix}.gff > resistance_card.gff ;
 
   #### AMRFinderPlus
-  [ ! -s ${amrfinder} ] || addNCBIamr2Gff.R -g ${prefix}.gff -i $amrfinder -o ${prefix}.gff -t Resistance -d AMRFinderPlus ;
-  [ ! -s ${amrfinder} ] || grep "AMRFinderPlus" ${prefix}.gff > resistance_amrfinderplus.gff ;
+  [ \$(cat ${amrfinder} | wc -l) -eq 1 ] || addNCBIamr2Gff.R -g ${prefix}.gff -i $amrfinder -o ${prefix}.gff -t Resistance -d AMRFinderPlus ;
+  [ \$(grep "AMRFinderPlus" ${prefix}.gff | wc -l) -eq 0 ] || grep "AMRFinderPlus" ${prefix}.gff > resistance_amrfinderplus.gff ;
   """
 }

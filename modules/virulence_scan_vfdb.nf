@@ -11,6 +11,7 @@ process vfdb {
   // Outputs must be linked to each prefix (tag)
   tuple val(prefix), file("${prefix}_vfdb_blastn_onGenes.summary.txt")
   tuple val(prefix), file("${prefix}_vfdb_blastn_onGenome.summary.txt")
+  tuple val(prefix), file("${prefix}_vfdb_blastn_onGenes.txt")
   file('*.txt') // Grab summaries
 
   script:
@@ -18,13 +19,13 @@ process vfdb {
   # VFDB is a nucleotide-only dabatase
 
   ## With predicted gene sequences
-  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genes --db /work/dbs/vfdb/sequences --minid ${params.diamond_virulence_minid} \
-  --mincov ${params.diamond_virulence_mincov} --threads ${params.threads} --out ${prefix}_vfdb_blastn_onGenes.txt | \
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genes --db /work/dbs/vfdb/sequences --minid ${params.blast_virulence_minid} \
+  --mincov ${params.blast_virulence_mincov} --threads ${params.threads} --out ${prefix}_vfdb_blastn_onGenes.txt | \
   sed -e 's/ACCESSION/VFDB_ID/g' > ${prefix}_vfdb_blastn_onGenes.summary.txt ;
 
   ## With the whole genome
-  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genome --db /work/dbs/vfdb/sequences --minid ${params.diamond_virulence_minid} \
-  --mincov ${params.diamond_virulence_mincov} --threads ${params.threads} --out ${prefix}_vfdb_blastn_onGenes.txt | \
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genome --db /work/dbs/vfdb/sequences --minid ${params.blast_virulence_minid} \
+  --mincov ${params.blast_virulence_mincov} --threads ${params.threads} --out ${prefix}_vfdb_blastn_onGenome.txt | \
   sed -e 's/ACCESSION/VFDB_ID/g' > ${prefix}_vfdb_blastn_onGenome.summary.txt ;
   """
 

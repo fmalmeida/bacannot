@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-nextflow.preview.dsl=2
+nextflow.enable.dsl=2
 
 /*
  * Generic Pipeline for Prokariotic Genome Annotation
@@ -49,12 +49,12 @@ def helpMessage() {
                                                    and its respective output prefix. One genome per line.
                                                    FAST path in first field, prefix value in the second.
 
-    --bedtools_merge_distance                      Minimum number of overlapping bases for gene merge
-                                                   using bedtools merge. Negative values, such as -20, means
-                                                   the number of required overlapping bases for merging.
-                                                   Positive values, such as 5, means the maximum distance
-                                                   accepted for merging. By default, this process is not executed.
-                                                   For execution the user needs to provide a value
+    --bedtools_merge_distance                      By default, this process is not executed. For execution
+                                                   one needs to provide a value.Minimum number of overlapping
+                                                   bases for gene merge using bedtools merge. Negative values,
+                                                   such as -20, means the number of required overlapping bases
+                                                   for merging. Positive values, such as 5, means the maximum
+                                                   distance accepted between features for merging.
 
 
                                   Prokka complementary parameters
@@ -70,17 +70,17 @@ def helpMessage() {
 
                                   Blast alignment parameters
 
-    --diamond_virulence_minid                      Min. identity % for virulence annotation
+    --blast_virulence_minid                        Min. identity % for virulence annotation
 
-    --diamond_virulence_mincov                     Min. gene coverage for virulence annotation
+    --blast_virulence_mincov                       Min. gene coverage for virulence annotation
 
-    --diamond_resistance_minid                     Min. identity % for resistance annotation
+    --blast_resistance_minid                       Min. identity % for resistance annotation
 
-    --diamond_resistance_mincov                    Min. gene coverage for resistance annotation
+    --blast_resistance_mincov                      Min. gene coverage for resistance annotation
 
-    --diamond_MGEs_minid                           Min. identity % for ICEs and prophage annotation
+    --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation
 
-    --diamond_MGEs_mincov                          Min. query coverage for ICEs and prophage annotation
+    --blast_MGEs_mincov                            Min. query coverage for ICEs and prophage annotation
 
 
                                   Configure Optional processes
@@ -121,12 +121,64 @@ def exampleMessage() {
    log.info """
    Example Usages:
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
-nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --diamond_virulence_minid 90 --diamond_virulence_mincov 80 --diamond_MGEs_minid 70 --diamond_MGEs_mincov 60 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
+nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --blast_virulence_minid 90 --blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
 
 
 """.stripIndent()
 }
 
+/*
+ * Check for errors
+ */
+// Genome inputs
+if (params.genome && params.genome_fofn) {
+  log.info """
+  ERROR!
+
+  A minor error has occurred
+    ==> User have set both --genome and --genome_fofn parameters
+
+  These parameters cannot be used together. Please check your inputs and re-configure the pipeline with one or another.
+
+  Cheers.
+  """.stripIndent()
+
+  exit 1
+}
+
+// Prokka parameters
+if (params.prokka_kingdom && !params.prokka_genetic_code) {
+  log.info """
+  ERROR!
+
+  A minor error has occurred
+    ==> User have set --prokka_kingdom but forget --prokka_genetic_code.
+
+  These parameters must be used together. If you change prokka defaults kingdom parameter you must set the genetic code to be used for translation.
+
+  If in doubt with these parameters let it blank, or get more information in Prokka's documentation.
+
+  Cheers.
+  """.stripIndent()
+
+  exit 1
+}
+
+// Methylation parameters
+if ((params.nanopolish_fast5_dir && !params.nanopolish_fastq_reads) || (!params.nanopolish_fast5_dir && params.nanopolish_fastq_reads)) {
+  log.info """
+  ERROR!
+
+  A minor error has occurred
+    ==> User have forget to set both --nanopolish_fast5_dir and --nanopolish_fastq_reads.
+
+  These parameters must be used together. They are the necessary files to call methylations from ONT data with Nanopolish.
+
+  Cheers.
+  """.stripIndent()
+
+  exit 1
+}
 /*
  * Check if user needs help
  */
@@ -135,8 +187,6 @@ params.help = false
  // Show help emssage
  if (params.help){
    helpMessage()
-   //file('work').deleteDir()
-   //file('.nextflow').deleteDir()
    exit 0
 }
 
@@ -178,12 +228,12 @@ params.prokka_kingdom = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer = false
 // Blast parameters
-params.diamond_virulence_minid = 90
-params.diamond_virulence_mincov = 90
-params.diamond_resistance_minid = 90
-params.diamond_resistance_mincov = 90
-params.diamond_MGEs_minid = 65
-params.diamond_MGEs_mincov = 65
+params.blast_virulence_minid = 90
+params.blast_virulence_mincov = 90
+params.blast_resistance_minid = 90
+params.blast_resistance_mincov = 90
+params.blast_MGEs_minid = 65
+params.blast_MGEs_mincov = 65
 // Workflow parameters
 params.not_run_virulence_search = false
 params.not_run_resistance_search = false
@@ -203,12 +253,16 @@ def summary = [:]
 summary['Output dir']   = "${params.outdir}"
 summary['Threads'] = params.threads
 if (params.not_run_virulence_search == false) {
-summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_minid
-summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_mincov
+summary['Blast % ID - Virulence Genes'] = params.blast_virulence_minid
+summary['Blast query coverage - Virulence Genes'] = params.blast_virulence_mincov
+}
+if (params.not_run_resistance_search == false) {
+summary['Blast % ID - AMR Genes'] = params.blast_resistance_minid
+summary['Blast query coverage - AMR Genes'] = params.blast_resistance_mincov
 }
 if (params.not_run_iceberg_search == false | params.not_run_prophage_search == false) {
-summary['Blast % ID - ICEs or Phages'] = params.diamond_MGEs_minid
-summary['Blast query coverage - ICEs or Phages'] = params.diamond_MGEs_mincov
+summary['Blast % ID - ICEs or Phages'] = params.blast_MGEs_minid
+summary['Blast query coverage - ICEs or Phages'] = params.blast_MGEs_mincov
 }
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Current home']   = "$HOME"
@@ -246,18 +300,18 @@ include { kegg_decoder } from './modules/kegg-decoder.nf' params(outdir: params.
 
 // Virulence annotation with VFDB
 include { vfdb } from './modules/virulence_scan_vfdb.nf' params(outdir: params.outdir,
-  threads: params.threads, diamond_virulence_minid: params.diamond_virulence_minid,
-  diamond_virulence_mincov: params.diamond_virulence_mincov)
+  threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
+  blast_virulence_mincov: params.blast_virulence_mincov)
 
 // Virulence annotation with Victors
 include { victors } from './modules/virulence_scan_victors.nf' params(outdir: params.outdir,
-  threads: params.threads, diamond_virulence_minid: params.diamond_virulence_minid,
-  diamond_virulence_mincov: params.diamond_virulence_mincov)
+  threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
+  blast_virulence_mincov: params.blast_virulence_mincov)
 
 // Prophage annotation with PHAST
 include { phast } from './modules/prophage_scan_phast.nf' params(outdir: params.outdir,
-  threads: params.threads, diamond_MGEs_minid: params.diamond_MGEs_minid,
-  diamond_MGEs_mincov: params.diamond_MGEs_mincov)
+  threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
+  blast_MGEs_mincov: params.blast_MGEs_mincov)
 
 // Prophage annotation with PHIGARO
 include { phigaro } from './modules/prophage_scan_phigaro.nf' params(outdir: params.outdir,
@@ -265,21 +319,21 @@ include { phigaro } from './modules/prophage_scan_phigaro.nf' params(outdir: par
 
 // ICE annotation with ICEberg db
 include { iceberg } from './modules/ices_scan_iceberg.nf' params(outdir: params.outdir,
-  threads: params.threads, diamond_MGEs_minid: params.diamond_MGEs_minid,
-  diamond_MGEs_mincov: params.diamond_MGEs_mincov)
+  threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
+  blast_MGEs_mincov: params.blast_MGEs_mincov)
 
 // Prophage annotation with PHIGARO
 include { find_GIs } from './modules/IslandPath_DIMOB.nf' params(outdir: params.outdir)
 
 // AMR annotation with ARGMiner
 include { argminer } from './modules/resistance_scan_argminer.nf' params(outdir: params.outdir,
-  threads: params.threads, diamond_resistance_minid: params.diamond_resistance_minid,
-  diamond_resistance_mincov: params.diamond_resistance_mincov)
+  threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
+  blast_resistance_mincov: params.blast_resistance_mincov)
 
 // AMR annotation with AMRFinderPlus
 include { amrfinder } from './modules/amrfinder_scan.nf' params(outdir: params.outdir,
-  threads: params.threads, diamond_resistance_minid: params.diamond_resistance_minid,
-  diamond_resistance_mincov: params.diamond_resistance_mincov)
+  threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
+  blast_resistance_mincov: params.blast_resistance_mincov)
 
 // AMR annotation with CARD-RGI
 include { card_rgi } from './modules/rgi_annotation.nf' params(outdir: params.outdir,
@@ -291,6 +345,26 @@ include { call_methylation } from './modules/nanopolish_call_methylation.nf' par
 
 // Merging annotation in GFF
 include { merge_annotations } from './modules/merge_annotations.nf' params(outdir: params.outdir)
+
+// Convert GFF to GBK
+include { gff2gbk } from './modules/gff2gbk.nf' params(outdir: params.outdir)
+
+// Bedtools gff merge
+include { gff_merge } from './modules/merge_gff.nf' params(outdir: params.outdir,
+  bedtools_merge_distance: params.bedtools_merge_distance)
+
+// JBrowse
+include { jbrowse } from './modules/jbrowse.nf' params(outdir: params.outdir)
+
+// MongoDB module
+include { mongoDB } from './modules/create_mongoDB.nf' params(outdir: params.outdir)
+
+// Output reports
+include { report } from './modules/rmarkdown_reports.nf' params(outdir: params.outdir,
+  blast_MGEs_mincov: params.blast_MGEs_mincov,
+  blast_MGEs_minid: params.blast_MGEs_minid,
+  blast_virulence_mincov: params.blast_virulence_mincov,
+  blast_virulence_minid: params.blast_virulence_minid)
 
 /*
  * Define custom workflows
@@ -317,43 +391,67 @@ workflow bacannot_single_genome_nf {
       compute_gc(prokka.out[3])
 
       // Fifth step -- run kofamscan
-      (params.not_run_kofamscan == false) ? kofamscan(prokka.out[4]) : ''
-      (params.not_run_kofamscan == false) ? kegg_decoder(kofamscan.out[1]) : ''
+      if (params.not_run_kofamscan == false) {
+        kofamscan(prokka.out[4])
+        kegg_decoder(kofamscan.out[1])
+        kofamscan_output = kofamscan.out[1]
+      } else {
+        kofamscan_output = Channel.empty()
+      }
 
       // Sixth step -- MGE, Virulence and AMR annotations
+
+      // IslandPath software
+      find_GIs(prokka.out[2])
 
       // Virulence search
       if (params.not_run_virulence_search == false) {
         // VFDB
         vfdb(prokka.out[5], prokka.out[3])
+        vfdb_output = vfdb.out[2]
         // Victors db
         victors(prokka.out[4], prokka.out[3])
+        victors_output = victors.out[2]
+      } else {
+        vfdb_output = Channel.empty()
+        victors_output = Channel.empty()
       }
 
       // Prophage search
       if (params.not_run_prophage_search == false) {
         // PHAST db
         phast(prokka.out[4], prokka.out[3])
+        phast_output = phast.out[2]
         // Phigaro software
         phigaro(prokka.out[3])
+        phigaro_output = phigaro.out[0]
+      } else {
+        phast_output = Channel.empty()
+        phigaro_output = Channel.empty()
       }
 
       // ICEs search
       if (params.not_run_iceberg_search == false) {
         // ICEberg db
-        iceberg(prokka.out[5], prokka.out[4], prokka.out[3])
-        // IslandPath software
-        find_GIs(prokka.out[2])
+        iceberg(prokka.out[4], prokka.out[3])
+        iceberg_output = iceberg.out[1]
+      } else {
+        iceberg_output = Channel.empty()
       }
 
       // AMR search
       if (params.not_run_resistance_search == false) {
         // AMRFinderPlus
         amrfinder(prokka.out[4])
+        amrfinder_output = amrfinder.out[0]
         // CARD-RGI
         card_rgi(prokka.out[4])
+        rgi_output = card_rgi.out[3]
         // ARGMiner
         argminer(prokka.out[4], prokka.out[3])
+      } else {
+        rgi_output = Channel.empty()
+        amrfinder_output = Channel.empty()
       }
 
       // Seventh step -- Methylation call
@@ -377,7 +475,28 @@ workflow bacannot_single_genome_nf {
                                        .join(find_GIs.out[0])
 
       // Contatenation of annotations in a single GFF file
-      update_gff(annotations_files)
+      merge_annotations(annotations_files)
+
+      // Convert GFF file to GBK file
+      // gff2gbk(update_gff.out[0].join(prokka.out[3]))
+
+      // User wants to merge the final gff file?
+      if (params.bedtools_merge_distance) {
+        gff_merge(merge_annotations.out[0])
+      }
+
+      // Final step -- Create genome browser and reports
+
+      // Grab inputs needed for JBrowse step
+      jbrowse_input = merge_annotations.out[0].join(annotations_files, remainder: true)
+                                              .join(call_methylation.out[2], remainder: true)
+                                              .join(call_methylation.out[3], remainder: true)
+      // Jbrowse Creation
+      jbrowse(jbrowse_input)
+
+      // Render reports
+      // report(jbrowse_input.join(phigaro_output_txt, remainder: true))
+
 }
 
 /*
@@ -392,7 +511,7 @@ workflow {
         Channel.fromPath(params.genome),
         (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(), // FAST5 Dir
         (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()  // ONT FASTQS
-      ) // ONT fastqs
+    )
   }
 }
 
