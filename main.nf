@@ -507,6 +507,10 @@ workflow {
 
   // User has a single genome as input?
   if (params.genome) {
+
+    name = params.genome.split("/", 2)[0]
+    println("\nCurrently annotationg: ${name}\n")
+
     bacannot_single_genome_nf(
         Channel.fromPath(params.genome),
         (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(), // FAST5 Dir
