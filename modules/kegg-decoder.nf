@@ -11,27 +11,12 @@ process kegg_decoder {
   file("*") // Get all files to input directory
 
   script:
-  if(params.genome)
-    """
-    # KEGG-DECODER
-    source activate kegg-decoder-env ;
+  """
+  # KEGG-DECODER
+  source activate kegg-decoder-env ;
 
-    # Draw static heatmap
-    KEGG-decoder --input input_mapper.txt\
-    --output ${prefix}_kegg-decoder_heatmap-static.tsv --vizoption static ;
-    """
-
-  else if(params.genome_fofn)
-    """
-    # KEGG-DECODER
-    source activate kegg-decoder-env ;
-
-    # Draw interactive heatmap
-    KEGG-decoder --input input_mapper.txt \
-    --output ${prefix}_kegg-decoder_heatmap-interactive.tsv --vizoption interactive ;
-
-    # Draw static heatmap
-    KEGG-decoder --input input_mapper.txt \
-    --output ${prefix}_kegg-decoder_heatmap-static.tsv --vizoption static ;
-    """
+  # Draw static heatmap
+  KEGG-decoder --input input_mapper.txt\
+  --output ${prefix}_kegg-decoder_heatmap-static.tsv --vizoption static ;
+  """
 }

@@ -118,21 +118,6 @@ def exampleMessage() {
 /*
  * Check for errors
  */
-// Genome inputs
-if (params.genome && params.genome_fofn) {
-  log.info """
-  ERROR!
-
-  A minor error has occurred
-    ==> User have set both --genome and --genome_fofn parameters
-
-  These parameters cannot be used together. Please check your inputs and re-configure the pipeline with one or another.
-
-  Cheers.
-  """.stripIndent()
-
-  exit 1
-}
 
 // Prokka parameters
 if (params.prokka_kingdom && !params.prokka_genetic_code) {
@@ -283,7 +268,7 @@ include { kofamscan } from './modules/kofamscan.nf' params(outdir: params.outdir
 
 // KEGG decoder
 include { kegg_decoder } from './modules/kegg-decoder.nf' params(outdir: params.outdir,
-  threads: params.threads, genome: params.genome, genome_fofn: params.genome_fofn)
+  threads: params.threads, genome: params.genome)
 
 // Virulence annotation with VFDB
 include { vfdb } from './modules/virulence_scan_vfdb.nf' params(outdir: params.outdir,
