@@ -17,6 +17,10 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
 * And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)
 
+## Further reading
+
+This pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a complete workflow for bacterial genomics analyses.
+
 ## Table of contents
 
 * [Requirements](https://github.com/fmalmeida/bacannot#requirements)
