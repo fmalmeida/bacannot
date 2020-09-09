@@ -12,7 +12,7 @@ process iceberg {
   tuple val(prefix), file("${prefix}_iceberg_blastp_onGenes.summary.txt")
   tuple val(prefix), file("${prefix}_iceberg_blastp_onGenes.txt")
   tuple val(prefix), file("${prefix}_iceberg_blastn_onGenome.summary.txt")
-  file('*.txt') // Grab summaries
+  file('*.txt') // Grab all
 
   script:
   """
@@ -28,7 +28,9 @@ process iceberg {
   sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastp_onGenes.summary.txt ;
 
   ## Checking for full-length ICEs
-  run_blasts.py blastn --query $genome --db /work/dbs/icerberg/sequences --minid 0 --mincov 0 --threads ${params.threads} \
+  ### The blast db was throwing errors
+  makeblastdb -dbtype nucl -in /work/dbs/iceberg/sequences -out sequences ;
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genome --db sequences --minid 0 --mincov 0 --threads ${params.threads} \
   --out ${prefix}_iceberg_blastn_onGenome.txt | sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastn_onGenome.summary.txt ;
   """
 }
