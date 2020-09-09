@@ -106,10 +106,10 @@ RUN cd /usr/bin && \
 			for i in * ; do ln -rs "$i" /usr/local/bin ; done
 
 # INSTALL RGI
-RUN python3 -m pip install six biopython filetype pytest mock pandas matplotlib seaborn pyfaidx pyahocorasick && \
-			python3 -m pip install git+https://github.com/arpcard/rgi.git && \
+RUN conda create -y -n RGI -c bioconda rgi && \
 			wget https://card.mcmaster.ca/latest/data && \
 		  tar -xvf data ./card.json && \
+			source activate RGI && \
 			rgi load --card_json ./card.json
 
 # Install IslandPath
@@ -215,7 +215,7 @@ RUN mkdir victors && \
 
 ## PHAST prot (genes)
 RUN mkdir phast && \
-			wget -O phast_prot.fasta http://phast.wishartlab.com/phage_finder/DB/prophage_virus.db && \
+			wget -O phast_prot.fasta http://phaster.ca/downloads/prophage_virus.db && \
 			awk -v db=phast '/>/{ split($0,a,"|"); split(a[5],gene," \\["); all=$0; $0=">" db "~~~" gene[1] "~~~" a[4]"~~~" "PHAST_" a[2] " " all }1' phast_prot.fasta | \
 			sed -e 's/ >/ /g' -e 's/~ /~/g' | \
 			awk -F "~~~" ' { if ($0 ~ />/) { gsub(" ", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' | \
@@ -229,6 +229,7 @@ RUN conda info -e
 
 # Fix permissions
 RUN chmod -R a+rwx /usr/local/lib/python3.8/
+RUN chmod -R a+rwx /miniconda/envs/RGI/lib/python3.6/
 
 # For maths
 RUN apt-get install -y bc

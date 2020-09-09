@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 
 MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 
@@ -18,30 +18,21 @@ RUN apt-get update && \
 
 ## Install R
 RUN DEBIAN_FRONTEND=noninteractive apt update && \
-			apt-get update && apt-get install -y r-base
+			DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && \
+			add-apt-repository ppa:marutter/c2d4u3.5 && \
+			DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y r-api-3.5 r-base r-base-core
 
 ## Install R-packages
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-			apt-get --option Acquire::Retries=100 --option Acquire::http::Timeout="300" install -yq r-cran-optparse r-cran-rmysql r-bioc-gviz r-cran-xml pandoc
+			DEBIAN_FRONTEND=noninteractive apt-get --option Acquire::Retries=100 --option Acquire::http::Timeout="300" install -yq r-cran-optparse r-cran-rmysql r-bioc-gviz r-cran-xml pandoc
 RUN DEBIAN_FRONTEND=noninteractive apt-get --option Acquire::Retries=100 --option Acquire::http::Timeout="300" install -yq r-cran-plyr libssl-dev libcurl4-openssl-dev libxml2-dev libudunits2-dev libcairo2-dev libpq-dev r-cran-rmarkdown
-RUN apt-get install -y git && \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git && \
 			git clone https://github.com/fmalmeida/rscripts.git && \
 			cd rscripts && \
 			chmod a+x *.R && \
 			ln -rs $(ls *.R) /usr/bin/ && \
 			Rscript installPack.R && \
 			apt-get clean
-
-# Install latex dependencies
-#RUN apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra xzdec
-#RUN wget https://github.com/jgm/pandoc/releases/download/2.7.3/pandoc-2.7.3-linux.tar.gz && \
-#			tar zxvf pandoc-2.7.3-linux.tar.gz && \
-#			ln -rs pandoc-2.7.3/bin/* /usr/local/bin
-#RUN tlmgr init-usertree && \
-#			tlmgr option repository ftp://tug.org/historic/systems/texlive/2017/tlnet-final
-#RUN wget https://github.com/plotly/orca/releases/download/v1.2.1/orca-1.2.1-x86_64.AppImage && \
-#			chmod +x orca-1.2.1-x86_64.AppImage && \
-#			ln -rs orca-1.2.1-x86_64.AppImage /usr/local/bin/orca
 
 # Download Victors metadata
 RUN apt-get install -y wget && \
@@ -56,6 +47,8 @@ RUN mkdir card-data && \
 			rm card-data.tar.bz2
 
 # Update Rmds
+#RUN rm -rf rscripts && \
+#			git clone https://github.com/fmalmeida/rscripts.git
 RUN cd rscripts && \
 			chmod a+rx /work/rscripts/reports/*.Rmd
 

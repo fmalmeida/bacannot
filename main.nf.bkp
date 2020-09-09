@@ -1,5 +1,5 @@
 // User inputs multiple genomes
-/*
+
 workflow bacannot_multiple_genomes_nf {
   take:
     input_tuple
@@ -129,7 +129,6 @@ workflow bacannot_multiple_genomes_nf {
   report(jbrowse_input.join(phigaro_output_txt, remainder: true))
 
 }
-*/
 
 /*
  * Define main workflow

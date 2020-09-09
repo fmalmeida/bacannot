@@ -45,10 +45,6 @@ def helpMessage() {
     --genome <string>                              User has as input only one genome. Set path to the
                                                    genome in FASTA file.
 
-    --genome_fofn <string>                         CSV file (two values) containing the genome FASTA file
-                                                   and its respective output prefix. One genome per line.
-                                                   FAST path in first field, prefix value in the second.
-
     --bedtools_merge_distance                      By default, this process is not executed. For execution
                                                    one needs to provide a value.Minimum number of overlapping
                                                    bases for gene merge using bedtools merge. Negative values,
@@ -364,14 +360,16 @@ include { report } from './modules/rmarkdown_reports.nf' params(outdir: params.o
   blast_MGEs_mincov: params.blast_MGEs_mincov,
   blast_MGEs_minid: params.blast_MGEs_minid,
   blast_virulence_mincov: params.blast_virulence_mincov,
-  blast_virulence_minid: params.blast_virulence_minid)
+  blast_virulence_minid: params.blast_virulence_minid,
+  blast_resistance_minid: params.blast_resistance_minid,
+  blast_resistance_mincov: params.blast_resistance_mincov)
 
 /*
  * Define custom workflows
  */
 
 // Only for a single genome
-workflow bacannot_single_genome_nf {
+workflow bacannot_nf {
   take:
     input_genome
     fast5_dir
@@ -407,11 +405,11 @@ workflow bacannot_single_genome_nf {
       // Virulence search
       if (params.not_run_virulence_search == false) {
         // VFDB
-        vfdb(prokka.out[5], prokka.out[3])
-        vfdb_output = vfdb.out[2]
+        vfdb(prokka.out[5])
+        vfdb_output = vfdb.out[1]
         // Victors db
-        victors(prokka.out[4], prokka.out[3])
-        victors_output = victors.out[2]
+        victors(prokka.out[4])
+        victors_output = victors.out[1]
       } else {
         vfdb_output = Channel.empty()
         victors_output = Channel.empty()
@@ -420,8 +418,8 @@ workflow bacannot_single_genome_nf {
       // Prophage search
       if (params.not_run_prophage_search == false) {
         // PHAST db
-        phast(prokka.out[4], prokka.out[3])
-        phast_output = phast.out[2]
+        phast(prokka.out[4])
+        phast_output = phast.out[1]
         // Phigaro software
         phigaro(prokka.out[3])
         phigaro_output = phigaro.out[0]
@@ -435,8 +433,10 @@ workflow bacannot_single_genome_nf {
         // ICEberg db
         iceberg(prokka.out[4], prokka.out[3])
         iceberg_output = iceberg.out[1]
+        iceberg_output_2 = iceberg.out[2]
       } else {
         iceberg_output = Channel.empty()
+        iceberg_output_2 = Channel.empty()
       }
 
       // AMR search
@@ -447,16 +447,27 @@ workflow bacannot_single_genome_nf {
         // CARD-RGI
         card_rgi(prokka.out[4])
         rgi_output = card_rgi.out[3]
+        rgi_output_1 = card_rgi.out[1]
+        rgi_output_2 = card_rgi.out[2]
         // ARGMiner
-        argminer(prokka.out[4], prokka.out[3])
+        argminer(prokka.out[4])
+        argminer_output = argminer.out[0]
       } else {
         rgi_output = Channel.empty()
+        rgi_output_1 = Channel.empty()
+        rgi_output_2 = Channel.empty()
         amrfinder_output = Channel.empty()
+        argminer_output = Channel.empty()
       }
 
       // Seventh step -- Methylation call
       if (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) {
         call_methylation(prokka.out[3], fast5_dir, fast5_fastqs)
+        methylation_out_1 = call_methylation.out[2]
+        methylation_out_2 = call_methylation.out[3]
+      } else {
+        methylation_out_1 = Channel.empty()
+        methylation_out_2 = Channel.empty()
       }
 
       // Eighth step -- Merge all annotations with the same Prefix value in a single Channel
@@ -489,13 +500,16 @@ workflow bacannot_single_genome_nf {
 
       // Grab inputs needed for JBrowse step
       jbrowse_input = merge_annotations.out[0].join(annotations_files, remainder: true)
-                                              .join(call_methylation.out[2], remainder: true)
-                                              .join(call_methylation.out[3], remainder: true)
+                                              .join(methylation_out_1, remainder: true)
+                                              .join(methylation_out_2, remainder: true)
       // Jbrowse Creation
       jbrowse(jbrowse_input)
 
       // Render reports
-      // report(jbrowse_input.join(phigaro_output_txt, remainder: true))
+      report(jbrowse_input.join(rgi_output_1, remainder: true)
+                          .join(rgi_output_2, remainder: true)
+                          .join(argminer_output, remainder: true)
+                          .join(iceberg_output_2, remainder: true))
 
 }
 
@@ -505,18 +519,14 @@ workflow bacannot_single_genome_nf {
 
 workflow {
 
-  // User has a single genome as input?
-  if (params.genome) {
-
     name = params.genome.split("/", 2)[0]
-    println("\nCurrently annotationg: ${name}\n")
+    println("\nCurrently annotating: ${name}\n")
 
-    bacannot_single_genome_nf(
+    bacannot_nf(
         Channel.fromPath(params.genome),
         (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(), // FAST5 Dir
         (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()  // ONT FASTQS
     )
-  }
 }
 
 
