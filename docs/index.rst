@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Bacannot - A generic prokaryotic genome annotation pipeline
-===========================================================
+Bacannot - A generic genome annotation pipeline for prokaryotes
+===============================================================
 
 `bacannot <https://github.com/fmalmeida/bacannot>`_ is a pipeline developed with `Nextflow <https://www.nextflow.io/docs/latest/index.html>`_
 and `Docker <https://www.docker.com/>`_. It was designed to provide an easy-to-use framework for performing a comprehensive annotation on
@@ -14,7 +14,6 @@ It wraps up the following tools and databases:
 * `Prokka <https://github.com/tseemann/prokka>`_
 * `barrnap <https://github.com/tseemann/barrnap>`_
 * `mlst <https://github.com/tseemann/mlst>`_
-* `Roary <https://github.com/sanger-pathogens/Roary>`_
 * `Nanopolish <https://github.com/jts/nanopolish>`_
 * `RGI <https://github.com/arpcard/rgi>`_
 * `AMRFinderPlus <https://github.com/ncbi/amr/wiki>`_
@@ -25,6 +24,7 @@ It wraps up the following tools and databases:
 * `PHAST <http://phast.wishartlab.com/>`_
 * `Phigaro <https://github.com/bobeobibo/phigaro>`_
 * `KofamScan <https://github.com/takaram/kofam_scan>`_
+* `KEGGDecoder <https://github.com/bjtully/BioData/tree/master/KEGGDecoder>`_
 * `IslandPath-DIMOB <https://github.com/brinkmanlab/islandpath>`_
 * `JBrowse <http://jbrowse.org/>`_
 

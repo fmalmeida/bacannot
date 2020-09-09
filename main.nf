@@ -1,15 +1,13 @@
 #!/usr/bin/env nextflow
+nextflow.enable.dsl=2
 
 /*
-          Generic Pipeline for Prokariotic Genome Annotation
+ * Generic Pipeline for Prokariotic Genome Annotation
+ */
 
-          This pipeline was built to make it easier for those
-          with minimum bioinformatics expertise to perform a
-          comprehensive genome annotation analysis.
-
-          Feel free to add more processes to this code if need.
-
-*/
+/*
+ * Define help message
+ */
 
 def helpMessage() {
    log.info """
@@ -17,9 +15,8 @@ def helpMessage() {
    nextflow run fmalmeida/bacannot [--help] [ -c nextflow.config ] [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
    Comments:
 
-   This pipeline contains a massive amount of configuration variables and its usage as CLI parameters would
-   cause the command to be huge.
-   Therefore, it is extremely recommended to use the nextflow.config configuration file in order to make
+   This pipeline contains a massive amount of configuration variables and its usage as CLI parameters would cause the command
+   to be huge. Therefore, it is extremely recommended to use the nextflow.config configuration file in order to make
    parameterization easier and more readable.
 
    Creating a configuration file:
@@ -39,57 +36,69 @@ def helpMessage() {
    OBS: These reports can also be enabled through the configuration file.
    OPTIONS:
 
-                            General Parameters - Mandatory
+                                  General Parameters - Mandatory
 
-    --outDir <string>                              Output directory name
+    --outdir <string>                              Output directory name
+
     --threads <int>                                Number of threads to use
-    --genome <string>                              Query Genome file
-    --bedtools_merge_distance                      Minimum number of overlapping bases for gene merge
-                                                   using bedtools merge (default: 0)
 
-                            Prokka complementary parameters
+    --genome <string>                              User has as input only one genome. Set path to the
+                                                   genome in FASTA file.
+
+    --bedtools_merge_distance                      By default, this process is not executed. For execution
+                                                   one needs to provide a value.Minimum number of overlapping
+                                                   bases for gene merge using bedtools merge. Negative values,
+                                                   such as -20, means the number of required overlapping bases
+                                                   for merging. Positive values, such as 5, means the maximum
+                                                   distance accepted between features for merging.
+
+
+                                  Prokka complementary parameters
 
     --prokka_kingdom <string>                      Prokka annotation mode. Possibilities (default 'Bacteria'):
                                                    Archaea|Bacteria|Mitochondria|Viruses
+
     --prokka_genetic_code <int>                    Genetic Translation code. Must be set if kingdom is not
                                                    default (in blank).
+
     --prokka_use_rnammer                           Tells prokka wheter to use rnammer instead of barrnap.
-    --prokka_genus <string>                        Set only if you want to search only a specific genus database
 
-                            Diamond (blastx) search parameters
 
-    --diamond_virulence_identity                   Min. identity % for virulence annotation
-    --diamond_virulence_queryCoverage              Min. query coverage for virulence annotation
-    --diamond_MGEs_identity                        Min. identity % for ICEs and prophage annotation
-    --diamond_MGEs_queryCoverage                   Min. query coverage for ICEs and prophage annotation
-    --diamond_minimum_alignment_length             Min. alignment length for diamond annotation
+                                  Blast alignment parameters
 
-                            Configure Optional processes
+    --blast_virulence_minid                        Min. identity % for virulence annotation
 
-    --not_run_virulence_search                     Tells wheter you want or not to execute virulence annotation
-    --not_run_vfdb_search                          Tells wheter you want or not to used VFDB database for virulence
-                                                   annotation. It is useless if virulence_search is not true
-    --not_run_victors_search                       Tells wheter you want or not to used victors database for virulence
-                                                   annotation. It is useless if virulence_search is not true
-    --not_run_resistance_search                    Tells wheter you want or not to execute resistance annotation
-    --not_run_iceberg_search                       Tells wheter you want or not to execute ICE annotation
-    --not_run_prophage_search                      Tells wheter you want or not to execute prophage annotation
-    --not_run_kofamscan                            Tells wheter you want or not to execute KO annotation with kofamscan
+    --blast_virulence_mincov                       Min. gene coverage for virulence annotation
 
-                            Configure Optional Pangenome analysis with Roary
+    --blast_resistance_minid                       Min. identity % for resistance annotation
 
-    --roary_reference_genomes <string>             Used to set path to reference genomes to be used in the pangenome
-                                                   analysis with Roary. Whenever set, the pipeline will automatically
-                                                   execute Roary pangenome analysis. Example: "path/reference/*.fasta"
-                                                   They must be all in one directory and they must no be links. They
-                                                   must be the hard file.
+    --blast_resistance_mincov                      Min. gene coverage for resistance annotation
 
-                      Configure optional Methylation annotation with nanopolish
-                      If left blank, it will not be executed. And, with both parameters are set
-                      it will automatically execute nanopolish to call methylation
+    --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation
 
-    --fast5_dir <string>                           Path to directory containing FAST5 files
-    --fastq_reads <string>                         Path to fastq files (file related to FAST5 files above)
+    --blast_MGEs_mincov                            Min. query coverage for ICEs and prophage annotation
+
+
+                                  Configure Optional processes
+
+    --not_run_virulence_search                     Tells wheter you do not want to execute virulence annotation
+
+    --not_run_resistance_search                    Tells wheter you do not want to execute resistance annotation
+
+    --not_run_iceberg_search                       Tells wheter you do not want to execute ICE annotation
+
+    --not_run_prophage_search                      Tells wheter you do not want to execute prophage annotation
+
+    --not_run_kofamscan                            Tells wheter you do not want to execute KO annotation with kofamscan
+
+
+                            Configure optional Methylation annotation with nanopolish
+                            If left blank, it will not be executed. And, with both parameters are set
+                            it will automatically execute nanopolish to call methylation
+
+    --nanopolish_fast5_dir <string>                Path to directory containing FAST5 files
+
+    --nanopolish_fastq_reads <string>              Path to fastq files (file related to FAST5 files above)
 
 
 """.stripIndent()
@@ -99,22 +108,72 @@ def exampleMessage() {
    log.info """
    Example Usages:
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
-nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --diamond_virulence_identity 90 --diamond_virulence_queryCoverage 80 --diamond_MGEs_identity 70 --diamond_MGEs_queryCoverage 60 --diamond_minimum_alignment_length 200 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --fast5_dir fast5_pass --fastq_reads Kp31_BC08.fastq
+nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --blast_virulence_minid 90 --blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
 
 
 """.stripIndent()
 }
 
 /*
-                                                  Display Help Message
-*/
+ * Check for errors
+ */
+// Genome inputs
+if (params.genome && params.genome_fofn) {
+  log.info """
+  ERROR!
+
+  A minor error has occurred
+    ==> User have set both --genome and --genome_fofn parameters
+
+  These parameters cannot be used together. Please check your inputs and re-configure the pipeline with one or another.
+
+  Cheers.
+  """.stripIndent()
+
+  exit 1
+}
+
+// Prokka parameters
+if (params.prokka_kingdom && !params.prokka_genetic_code) {
+  log.info """
+  ERROR!
+
+  A minor error has occurred
+    ==> User have set --prokka_kingdom but forget --prokka_genetic_code.
+
+  These parameters must be used together. If you change prokka defaults kingdom parameter you must set the genetic code to be used for translation.
+
+  If in doubt with these parameters let it blank, or get more information in Prokka's documentation.
+
+  Cheers.
+  """.stripIndent()
+
+  exit 1
+}
+
+// Methylation parameters
+if ((params.nanopolish_fast5_dir && !params.nanopolish_fastq_reads) || (!params.nanopolish_fast5_dir && params.nanopolish_fastq_reads)) {
+  log.info """
+  ERROR!
+
+  A minor error has occurred
+    ==> User have forget to set both --nanopolish_fast5_dir and --nanopolish_fastq_reads.
+
+  These parameters must be used together. They are the necessary files to call methylations from ONT data with Nanopolish.
+
+  Cheers.
+  """.stripIndent()
+
+  exit 1
+}
+/*
+ * Check if user needs help
+ */
 
 params.help = false
  // Show help emssage
  if (params.help){
    helpMessage()
-   //file('work').deleteDir()
-   //file('.nextflow').deleteDir()
    exit 0
 }
 
@@ -126,7 +185,10 @@ params.examples = false
    exit 0
 }
 
-// Get configuration file
+/*
+ * Does the user wants to download the configuration file?
+ */
+
 params.get_config = false
 if (params.get_config) {
   new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
@@ -135,34 +197,31 @@ if (params.get_config) {
   println "After configuration, run:"
   println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
   println "Nice code!\n"
-
-  //file('work').deleteDir()
-  //file('.nextflow').deleteDir()
   exit 0
 }
 
 /*
+ * Load general parameters and establish defaults
+ */
 
-                                  Setting default parameters
-
-*/
-
-params.prefix = 'out'
-params.outDir = 'outdir'
+// General parameters
+params.outdir = 'outdir'
 params.threads = 2
-params.bedtools_merge_distance = 0
+params.bedtools_merge_distance = ''
+params.genome = ''
+// Prokka parameters
 params.prokka_kingdom = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer = false
-params.prokka_genus = ''
-params.diamond_virulence_identity = 90
-params.diamond_virulence_queryCoverage = 90
-params.diamond_MGEs_identity = 65
-params.diamond_MGEs_queryCoverage = 65
-params.diamond_minimum_alignment_length = 200
+// Blast parameters
+params.blast_virulence_minid = 90
+params.blast_virulence_mincov = 90
+params.blast_resistance_minid = 90
+params.blast_resistance_mincov = 90
+params.blast_MGEs_minid = 65
+params.blast_MGEs_mincov = 65
+// Workflow parameters
 params.not_run_virulence_search = false
-params.not_run_vfdb_search = false
-params.not_run_victors_search = false
 params.not_run_resistance_search = false
 params.not_run_iceberg_search = false
 params.not_run_prophage_search = false
@@ -170,1049 +229,302 @@ params.not_run_kofamscan = false
 params.roary_reference_genomes = false
 
 /*
-
-                                  Loading general parameters
-
-*/
-
-genome = file(params.genome)
-reference_genomes = (params.roary_reference_genomes) ? Channel.fromPath( params.roary_reference_genomes ) : Channel.empty()
-prefix = params.prefix
-outDir = params.outDir
-threads = params.threads
-// This parameter sets the minimum number of overlapping bases for gene merge.
-bedDistance = ( params.bedtools_merge_distance ) ? params.bedtools_merge_distance : 0
-// Diamond (blastx) parameters
-diamond_virulence_identity = params.diamond_virulence_identity
-diamond_virulence_queryCoverage = params.diamond_virulence_queryCoverage
-diamond_MGEs_identity = params.diamond_MGEs_identity
-diamond_MGEs_queryCoverage = params.diamond_MGEs_queryCoverage
-diamond_minimum_alignment_length = params.diamond_minimum_alignment_length
-params.virulence_search = (params.not_run_virulence_search) ? false : true
-params.vfdb_search = (params.not_run_vfdb_search) ? false : true
-params.victors_search = (params.not_run_victors_search) ? false : true
-params.resistance_search = (params.not_run_resistance_search) ? false : true
-params.iceberg_search = (params.not_run_iceberg_search) ? false : true
-params.prophage_search = (params.not_run_prophage_search) ? false : true
-params.execute_kofamscan = (params.not_run_kofamscan) ? false : true
-
-/*
-
-                              Pipeline execution begins
-
-*/
-
-process MLST {
-   publishDir "${outDir}/MLST", mode: 'copy'
-   container = 'fmalmeida/bacannot:latest'
-
-   input:
-   file input from genome
-
-   output:
-   file "${prefix}_mlst_analysis.txt" optional true
-   file "${prefix}_novel_alleles.fasta" optional true
-
-   script:
-   """
-   source activate MLST ;
-   mlst --quiet --novel ${prefix}_novel_alleles.fasta $input > ${prefix}_mlst_analysis.txt
-   """
-}
-
-process prokka {
-    publishDir outDir, mode: 'copy'
-    container = 'fmalmeida/bacannot:latest'
-
-    input:
-    file input from genome
-
-    output:
-    file "prokka/${prefix}.*"
-    file "prokka/${prefix}.gff" into annotation_gff_prokka, annotation_gff_prokka_roary
-    file "prokka/${prefix}.gbk" into annotation_gbk_prokka
-    file "prokka/${prefix}.fna" into renamed_genome
-    file "prokka/${prefix}.faa" into genes_aa_sql, genes_aa_kofamscan, amrfinder_input, rgi_input
-    file "prokka/${prefix}.ffn" into genes_sequences_vfdb, genes_sequences_iceberg, genes_nt_sql, genes_sequences_phast, genes_sequences_victors
-
-    script:
-    kingdom = (params.prokka_kingdom) ? "--kingdom ${params.prokka_kingdom}" : ''
-    gcode = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}" : ''
-    rnammer = (params.prokka_use_rnammer) ? "--rnammer" : ''
-    genus = (params.prokka_genus) ? "--genus ${params.prokka_genus} --usegenus" : ''
-    """
-    source activate PROKKA ;
-    prokka $kingdom $gcode $rnammer --outdir prokka --cpus $threads \
-    --mincontiglen 200 $genus --prefix $prefix $input
-    """
-}
-
-process create_roary_input {
-  container = 'fmalmeida/bacannot:latest'
-
-  input:
-  file references from reference_genomes
-
-  output:
-  file "${references.baseName}/${references.baseName}.gff" into roary_inputs
-
-  when:
-  (params.roary_reference_genomes)
-
-  script:
-  """
-  ## First, run prokka on all genomes
-  source activate PROKKA ;
-  prokka --cpus $threads --mincontiglen 200 --prefix ${references.baseName} $references ;
-  """
-}
-
-process roary_pangenome {
-  publishDir "${outDir}/Roary_pangenome", mode: 'copy'
-  container = 'fmalmeida/bacannot:latest'
-
-  input:
-  file gffs from roary_inputs.mix(annotation_gff_prokka_roary).collect()
-
-  output:
-  file "roary_output"
-  file "roary_inputs"
-
-  when:
-  (params.roary_reference_genomes)
-
-  script:
-  """
-  ## Activate environment
-  source activate ROARY ;
-
-  ## Inputs
-  mkdir roary_inputs ;
-  cp ${gffs} roary_inputs ;
-
-  ## Run roary pipeline
-  roary -e -f roary_output --mafft -p $threads $gffs ;
-  FastTree -nt -gtr roary_output/core_gene_alignment.aln > roary_output/output.newick
-
-  ## Entering Dir
-  cd roary_output ;
-
-  ## Plotting
-  roary2svg.pl gene_presence_absence.csv > pan_genome.svg ;
-  conda deactivate ;
-  source activate ROARY_PLOTS ;
-  python /usr/local/bin/roary_plots.py output.newick gene_presence_absence.csv ;
-  """
-}
-
-process rRNA {
-   publishDir "${outDir}/rRNA", mode: 'copy'
-   container = 'fmalmeida/bacannot:latest'
-
-   input:
-   file input from renamed_genome
-
-   output:
-   file "${prefix}_rRNA.gff" into rrna_gff
-   file "${prefix}_rRNA.fa" optional true
-
-   script:
-   """
-   barrnap -o ${prefix}_rRNA.fa < $input > ${prefix}_rRNA.gff
-   """
-}
-
-/*
-
-                        Remove genome sequence and comments from GFF.
-                        Also, it masks the genome file.
-
-*/
-
-process masking_genome {
-  container 'fmalmeida/bacannot:latest'
-
-  input:
-  file input from renamed_genome
-  file 'gff' from annotation_gff_prokka
-
-  output:
-  file "${prefix}_clear.gff" into clear_gff
-  file "${prefix}_masked_genome.fasta" into masked_genome_vfdb, masked_genome_phast
-
-  """
-  grep "ID=" gff | awk '{ print \$1 "\t" \$4 "\t" \$5 }' > cds_prokka.bed ;
-  grep "ID=" gff > ${prefix}_clear.gff ;
-  maskFastaFromBed -fi $input -fo ${prefix}_masked_genome.fasta -bed cds_prokka.bed
-  """
-}
-
-/*
-
-                                                  Compute GC content to plot in JBrowse
-
-*/
-
-process compute_GC {
-  container 'fmalmeida/bacannot:latest'
-
-  input:
-  file 'input.fasta' from renamed_genome
-
-  output:
-  file "input_GC_500_bps.sorted.bedGraph" into gc_content_jbrowse
-  file "input.sizes" into gc_sizes_jbrowse
-
-  """
-  # Index
-  samtools faidx input.fasta ;
-  # Take Sizes
-  cut -f 1,2 input.fasta.fai > input.sizes ;
-  # Create sliding window
-  bedtools makewindows -g input.sizes -w 500 > input_500_bps.bed ;
-  # Compute GC
-  bedtools nuc -fi input.fasta -bed input_500_bps.bed > input_500_bps_nuc.txt ;
-  # Create bedGraph
-  awk 'BEGIN{FS="\\t"; OFS="\\t"} FNR > 1 { print \$1,\$2,\$3,\$5 }' input_500_bps_nuc.txt > input_GC_500_bps.bedGraph
-  # Sort
-  bedtools sort -i input_GC_500_bps.bedGraph > input_GC_500_bps.sorted.bedGraph
-  """
-}
-
-/*
-
-                KOfamscan process. Here we search our predicted proteins in order to retrieve KO (KEGG)
-                Information about then. This makes easier to plot Methabolic Fluxes in KEGG.
-
-*/
-
-process kofamscan {
-  publishDir outDir, mode: 'copy'
-  container = 'fmalmeida/bacannot:kofamscan'
-  x = "Executing KOfamscan - Its output can be directly put in KEGG Mapper for visualization"
-  tag { x }
-
-  input:
-  file 'proteins.faa' from genes_aa_kofamscan
-
-  output:
-  file "KOfamscan/${prefix}_ko_*"
-  file "KOfamscan/${prefix}_ko_forKEGGMapper.txt" into kofamscan_hits
-
-  when:
-  ( params.execute_kofamscan )
-
-  script:
-  """
-  mkdir KOfamscan ;
-  kofamscan -o KOfamscan/${prefix}_ko_detailed.txt --cpu=${threads} proteins.faa ;
-  kofamscan -o KOfamscan/${prefix}_ko_forKEGGMapper.txt --cpu=${threads} -f mapper-one-line proteins.faa ;
-  """
-}
-
-/*
-
-                      Initiating DIAMOND searches against specific databases:
-                                VFDB, Victors,ICEberg and Phast.
-
-*/
-
-process vfdb {
-  if ( params.virulence_search && params.vfdb_search ) {
-  publishDir outDir, mode: 'copy',
-  saveAs: {filename ->
-  //This line saves the files with specific sufixes in specific folders
-  if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
-  else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
-  }}
-  container 'fmalmeida/bacannot:latest'
-  x = ( params.virulence_search && params.vfdb_search
-        ? "Process is being executed"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file genome from masked_genome_vfdb
-  file genes from genes_sequences_vfdb
-
-  output:
-  file "${prefix}_vfdb.gff" into annotation_gff_vfdb
-  file "*.tsv"
-  file "virulence_vfdb_predictedGenes.tsv" into vfdb_blast_genes, vfdb_blast_genes2
-
-  script:
-  if ( params.virulence_search && params.vfdb_search )
-  """
-  # First step, with masked genome
-  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result.tmp \
-  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
-  --query $genome --query-cover $diamond_virulence_queryCoverage ;
-
-  ## Convert it to gff
-  awk -v len=$diamond_minimum_alignment_length '{if (\$4 >= len) print }' blast_result.tmp > virulence_VFDB_maskedGenome.tsv ;
-  python2 /usr/local/bin/blast2gff.py -b virulence_VFDB_maskedGenome.tsv -p vfdb -t virulence -F > ${prefix}_vfdb.gff ;
-
-  # Second step, with predicted genes
-  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/vfdb/vfdb_prot -o blast_result_genes.tmp \
-  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond_virulence_queryCoverage ;
-
-  ## Convert it to gff
-  awk -v id=$diamond_virulence_identity '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_vfdb_predictedGenes.tsv
-  """
-  else
-  """
-  touch virulence_vfdb_predictedGenes.tsv ;
-  touch ${prefix}_vfdb.gff
-  """
-
-}
-
-process victors {
-  if ( params.virulence_search && params.victors_search ) {
-  publishDir outDir, mode: 'copy',
-  saveAs: {filename ->
-  //This line saves the files with specific sufixes in specific folders
-  if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
-  else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
-}}
-  container 'fmalmeida/bacannot:latest'
-  x = ( params.virulence_search && params.victors_search
-        ? "Process is being executed"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file genes from genes_sequences_victors
-
-  output:
-  file "virulence_victors_predictedGenes.tsv" into victors_blast_genes, victors_blast_genes2
-
-  script:
-  if ( params.virulence_search && params.victors_search )
-  """
-  # Blast predicted genes
-  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/victors/victors_prot -o blast_result_genes.tmp \
-  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond_virulence_queryCoverage ;
-
-  ## Convert it to gff
-  awk -v id=$diamond_virulence_identity '{if (\$3 >= id) print }' blast_result_genes.tmp > virulence_victors_predictedGenes.tsv
-  """
-  else
-  """
-  touch virulence_victors_predictedGenes.tsv
-  """
-}
-
-process amrfinder {
-  if ( params.resistance_search ) {
-  publishDir "${outDir}/resistance/AMRFinderPlus_table", mode: 'copy' }
-  container 'fmalmeida/bacannot:latest'
-  x = ( params.resistance_search
-        ? "Process is being executed"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file proteins from amrfinder_input
-
-  output:
-  file "AMRFinder_output.tsv" into amrfinder_output optional true
-
-  when:
-  ( params.resistance_search )
-
-  script:
-  """
-  source activate AMRFINDERPLUS ;
-  amrfinder -p $proteins --plus -o AMRFinder_output.tsv
-  """
-}
-
-process rgi_annotation {
-  if ( params.resistance_search ) {
-  publishDir "${outDir}/resistance/RGI_annotation", mode: 'copy' }
-  container 'fmalmeida/bacannot:latest'
-  x = ( params.resistance_search
-        ? "Process is being executed"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file input from rgi_input
-
-  output:
-  file "Perfect_RGI_${params.prefix}_hits.txt" into rgi_perfect optional true
-  file "Strict_RGI_${params.prefix}_hits.txt" into rgi_strict optional true
-  file "RGI_${params.prefix}.txt" into rgi_output
-  file "*RGI_${params.prefix}*"
-
-  when:
-  ( params.resistance_search )
-
-  script:
-  """
-  source activate RGI ;
-  rgi main --input_sequence $input --output_file ./RGI_${params.prefix} --input_type protein \
-    --alignment_tool BLAST --num_threads ${params.threads} --exclude_nudge --clean ;
-
-  ## Parse perfect hits
-  sed 's/\\s/\\t/' RGI_${params.prefix}.txt | \
-  grep "Perfect" | \
-  awk 'BEGIN { FS = "\\t"; OFS="\\t" } ; { print \$1,\$2,\$7,\$10,\$12,\$16,\$17,\$18 }' > Perfect_RGI_${params.prefix}_hits.txt
-
-  ## Parse strict hits
-  sed 's/\\s/\\t/' RGI_${params.prefix}.txt | \
-  grep "Strict" | \
-  awk 'BEGIN { FS = "\\t"; OFS="\\t" } ; { print \$1,\$2,\$7,\$10,\$12,\$16,\$17,\$18 }' > Strict_RGI_${params.prefix}_hits.txt
-  """
-}
-
-process phast {
-  if ( params.prophage_search ) {
-  publishDir outDir, mode: 'copy',
-  saveAs: {filename ->
-  //This line saves the files with specific sufixes in specific folders
-  if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
-  else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename"
-}}
-  container 'fmalmeida/bacannot:latest'
-  x = ( params.prophage_search
-        ? "Process is being executed"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file genome from masked_genome_phast
-  file genes from genes_sequences_phast
-
-  output:
-  file "${prefix}_phast.gff" into annotation_gff_phast
-  file "*.tsv"
-  file "prophage_phast_predictedGenes.tsv" into phast_blast_genes, phast_blast_genes2
-
-  script:
-  if ( params.prophage_search )
-  """
-  # First step, with masked genome
-  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/phast/phast_prot -o blast_result.tmp \
-  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle\
-  --query $genome --query-cover $diamond_MGEs_queryCoverage ;
-
-  ## Convert it to gff
-  awk -v len=$diamond_minimum_alignment_length '{ if (\$4 >= len) print }' blast_result.tmp > prophage_phast_maskedGenome.tsv ;
-  python2 /usr/local/bin/blast2gff.py -b prophage_phast_maskedGenome.tsv -p phast -t prophage -F > ${prefix}_phast.gff ;
-
-  # Second step, with predicted genes
-  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/phast/phast_prot -o blast_result_genes.tmp \
-  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond_MGEs_queryCoverage ;
-
-  ## Convert it to gff
-  awk -v id=$diamond_MGEs_identity '{if (\$3 >= id) print }' blast_result_genes.tmp > prophage_phast_predictedGenes.tsv
-  """
-  else
-  """
-  touch prophage_phast_predictedGenes.tsv ;
-  touch ${prefix}_phast.gff
-  """
-}
-
-process phigaro {
-  if ( params.prophage_search ) {
-  publishDir "${outDir}/prophages/phigaro", mode: 'copy'}
-  container 'fmalmeida/bacannot:latest'
-  x = ( params.prophage_search
-        ? "Process is being executed"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file "assembly.fasta" from renamed_genome
-
-  output:
-  file "assembly.phg" into phigaro_txt
-  file "prophages.bed" into phigaro_bed
-  file "assembly.phg.html"
-
-  when:
-  ( params.prophage_search )
-
-  script:
-  """
-  touch assembly.phg assembly.phg.html ;
-  seqtk seq -L 20000 assembly.fasta > assembly-L20000.fasta ;
-  phigaro -f assembly-L20000.fasta -c /work/phigaro/config.yml -e html txt -o assembly.phg -p --not-open ;
-
-  # Create BED
-  grep -v "taxonomy" assembly.phg | awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$2,\$3 }' > prophages.bed
-  """
-
-}
-
-process find_GIs {
-  publishDir "${outDir}/predicted_GIs", mode: 'copy'
-  container 'fmalmeida/bacannot:latest'
-
-  input:
-  file "annotation.gbk" from annotation_gbk_prokka
-
-  output:
-  file "predicted_GIs.bed" into predicted_GIs optional true
-
-  script:
-  """
-  source activate find_GIs ;
-  python /work/pythonScripts/splitgenbank.py annotation.gbk && rm annotation.gbk ;
-  for file in \$(ls *.gbk); do grep -q "CDS" \$file && Dimob.pl \$file \${file%%.gbk}_GIs.txt 2> dimob.err ; done
-  for GI in \$(ls *.txt); do \
-    awk -v contig="\$( echo \"\${GI%%_GIs.txt}\" )" \
-    'BEGIN { FS = "\t"; OFS="\\t" } { print contig,\$2,\$3 }' \$GI >> predicted_GIs.bed ; \
-  done
-  """
-}
-
-process iceberg {
-  if ( params.iceberg_search ) {
-  publishDir outDir, mode: 'copy',
-  saveAs: {filename ->
-  //This line saves the files with specific sufixes in specific folders
-  if (filename.indexOf(".tsv") > 0 ) "blasts/$filename"
-  else if (filename.indexOf(".gff") > 0 ) "gffs/only_against_maskedGenome/$filename" }}
-  container 'fmalmeida/bacannot:latest'
-  x = ( params.iceberg_search
-        ? "Process is being executed"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file genes from genes_sequences_iceberg
-
-  output:
-  file "ice_iceberg_predictedGenes.tsv" into iceberg_blast_genes, ice_blast_genes2
-
-  script:
-  if ( params.iceberg_search )
-  """
-  # Blast search
-  diamond blastx --tmpdir /dev/shm --query-gencode 11 --db /work/iceberg/iceberg_prot -o blastprot2_result.tmp \
-  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send slen evalue bitscore stitle \
-  --query $genes --query-cover $diamond_MGEs_queryCoverage ;
-
-  ## Group it all
-  awk -v id=$diamond_MGEs_identity '{if (\$3 >= id) print }' blastprot2_result.tmp > ice_iceberg_predictedGenes.tsv
-  """
-  else
-  """
-  touch ice_iceberg_predictedGenes.tsv ;
-  """
-}
-
-/*
- * This process adds to the GFF the information about the additional
- * databases that were BLAST searched (with predicted genes). Note,
- * if the user has set its BLAST to FALSE, the blank file will be ignored
- * by the following process and will only perform tasks with those that
- * some content in it.
+ * Define log message
  */
 
-process genes_blasted_to_gff {
-  publishDir "${outDir}/gffs/only_against_predicted_genes", mode: 'copy'
-  container 'fmalmeida/bacannot:renv'
-  tag { "Parsing the annotations to a GFF-like format" }
-
-  input:
-  file 'gff' from clear_gff
-  file 'RGI_output.txt' from rgi_output.ifEmpty('RGI_empty')
-  file blastVFDB from vfdb_blast_genes
-  file blastVictors from victors_blast_genes
-  file blastIce from iceberg_blast_genes
-  file blastPhast from phast_blast_genes
-  file "AMRFinder_output.tsv" from amrfinder_output.ifEmpty('AMRFinder_empty')
-  file 'kofamscan.txt' from kofamscan_hits.ifEmpty('kofamscan_empty')
-
-  output:
-  file "${prefix}_blast_genes.gff" into blast_genes_gff
-
-  script:
-  """
-  ## Reformat KOfamscan Output
-  while read line ; do id=\$(echo \$line | awk '{print \$1}') ; ko=\$(echo \$line | awk '{\$1=""; print \$0}' | \
-  sed 's/\\s//' | sed 's/\\s/,/g') ; echo -e "\$id\\t\$ko" ; done < kofamscan.txt > formated.txt ;
-
-  ## Add features
-  addBlast2Gff.R -i $blastVFDB -g gff -o gff -d vfdb -t virulence;
-  [ ! -s kofamscan.txt ] || addKO2Gff.R -i formated.txt -g gff -o gff -d KEGG ;
-  addBlast2Gff.R -i $blastVictors -g gff -o gff -d victors -t virulence;
-  addBlast2Gff.R -i $blastIce -g gff -o gff -d iceberg -t ice;
-  addBlast2Gff.R -i $blastPhast -g gff -o gff -d phast -t prophage;
-  ##[ ! -s RGI_output.txt ] || addRGI2gff.R -g gff -i RGI_output.txt -o gff ;
-  [ ! -s AMRFinder_output.tsv ] || addNCBIamr2Gff.R -g gff -i AMRFinder_output.tsv -o ${prefix}_blast_genes.gff -t resistance -d AMRFinderPlus ;
-  [ -s AMRFinder_output.tsv ] || mv gff ${prefix}_blast_genes.gff ;
-  """
-}
-
-/*
- * This process will only merge gff files that have content in it. So,
- * gff files in blank from addional databases that were not searched
- * (with masked genome) will be ignored.
- */
-
-process merge_gffs {
-  publishDir "${outDir}/gffs/merged", mode: 'copy'
-  container 'fmalmeida/bacannot:latest'
-  tag { "Produce a single file GFF file with all the annotations merged" }
-
-  input:
-  file 'prokka_gff' from blast_genes_gff
-  file 'vfdb_gff' from annotation_gff_vfdb
-  file 'phast_gff' from annotation_gff_phast
-
-  output:
-  file "${prefix}_merged.gff" into merged_gff
-
-  """
-  # GFF from prokka
-  [ ! -s prokka_gff ] || sed 's/ /_/g' prokka_gff | bedtools sort \
-  | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
-  | awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$4,\$5,\$2+1,\$3,\$6,\$7,\$8,\$9}' >> total_gff ;
-
-  # GFF from VFDB
-  [ ! -s vfdb_gff ] || sed 's/ /_/g' vfdb_gff | bedtools sort \
-  | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
-  | awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$4,\$5,\$2+1,\$3,\$6,\$7,\$8,\$9}' >> total_gff ;
-
-  # GFF from PHAST
-  [ ! -s phast_gff ] || sed 's/ /_/g' phast_gff | bedtools sort \
-  | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
-  | awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$4,\$5,\$2+1,\$3,\$6,\$7,\$8,\$9}' >> total_gff ;
-
-  # Add header to it
-  echo \"##gff-version 3\" > ${prefix}_merged.gff ;
-  bedtools sort -i total_gff | bedtools merge -d $bedDistance -s -c 2,3,6,7,8,9 -o distinct,distinct,max,distinct,distinct,distinct \
-  | awk 'BEGIN { FS = "\t"; OFS="\\t" } sub(",",";",\$9) { print \$1,\$4,\$5,\$2+1,\$3,\$6,\$7,\$8,\$9}' >> ${prefix}_merged.gff
-  """
-}
-
-/*
- * Here, it starts the execution of summarization processes.
- */
-
-process subset_gffs {
-  publishDir outDir, mode: 'copy',
-  saveAs: {filename ->
-  //This line saves the files with specific sufixes in specific folders
-  if (filename.indexOf(".tsv") > 0 ) "/tmp/$filename"
-  else if (filename.indexOf(".gff") > 0 ) "gffs/parsed/$filename" }
-  container 'fmalmeida/bacannot:renv'
-
-  input:
-  file gff from merged_gff
-
-  output:
-  file "${prefix}_final.gff" into final_gff
-  file "${prefix}_virulence.gff" into virulence_gff optional true
-  file "${prefix}_resistance.gff" into resistance_gff optional true
-  file "${prefix}_ices.gff" into ices_gff optional true
-  file "${prefix}_prophage.gff" into prophage_gff optional true
-  file "${prefix}_conjugation.gff" into conjugation_gff optional true
-  file "${prefix}_efflux.gff" into efflux_gff optional true
-  file "${prefix}_noHypothetical.gff" into noHypothetical_gff optional true
-  file "${prefix}_hypothetical.gff" into hypothetical_gff optional true
-  file "${prefix}_transposase.gff" into transposase_gff optional true
-  file "${prefix}_amrfinderplus.gff" into amrfinderplus_gff optional true
-  file "${prefix}_rgi.gff" into rgi_gff optional true
-
-  """
-  # Reduce repeated values
-  reduceRepeatedValues.R -i $gff -o tmp.gff ;
-  sed -e 's/\\.,0/0/g' -e 's/0,\\./0/g' tmp.gff > gff ;
-  tolower.R -i gff -o ${prefix}_final.gff;
-
-  # Create gffs based on pattern
-  touch ${prefix}_virulence.gff ${prefix}_resistance.gff ${prefix}_prophage.gff ${prefix}_ices.gff ;
-  [[ \$(grep -c "virulence" ${prefix}_final.gff) -eq 0 ]] || awk '/virulence/ || /victors/ || vfdb' ${prefix}_final.gff > ${prefix}_virulence.gff ;
-  [[ \$(grep -c "resistance" ${prefix}_final.gff) -eq 0 ]] || awk '/resistance/' ${prefix}_final.gff > ${prefix}_resistance.gff ;
-  [[ \$(grep -c "AMRFinderPlus" ${prefix}_final.gff) -eq 0 ]] || awk '/AMRFinderPlus/' ${prefix}_final.gff > ${prefix}_amrfinderplus.gff ;
-  [[ \$(grep -c "RGI" ${prefix}_final.gff) -eq 0 ]] || awk '/CARD-RGI/' ${prefix}_final.gff > ${prefix}_rgi.gff ;
-  [[ \$(grep -c "prophage" ${prefix}_final.gff) -eq 0 ]] || awk '/prophage/ || \$2 ~ /phast/' ${prefix}_final.gff > ${prefix}_prophage.gff ;
-  [[ \$(grep -c "ice" ${prefix}_final.gff) -eq 0 ]] || grep "iceberg" ${prefix}_final.gff > ${prefix}_ices.gff ;
-  [[ \$(grep -c "efflux" ${prefix}_final.gff) -eq 0 ]] || grep "efflux" ${prefix}_final.gff > ${prefix}_efflux.gff ;
-  [[ \$(grep -c -E "conjugative|conjugation|pilus|relaxase" ${prefix}_final.gff) -eq 0 ]] || grep -E "conjugative|conjugation|pilus|relaxase" ${prefix}_final.gff > ${prefix}_conjugation.gff ;
-  [[ \$(grep -c "hypothetical" ${prefix}_final.gff) -eq 0 ]] || grep -v "hypothetical" ${prefix}_final.gff > ${prefix}_noHypothetical.gff ;
-  [[ \$(grep -c "hypothetical" ${prefix}_final.gff) -eq 0 ]] || grep "hypothetical" ${prefix}_final.gff > ${prefix}_hypothetical.gff ;
-  [[ \$(grep -c "transposase" ${prefix}_final.gff) -eq 0 ]] || grep "transposase" ${prefix}_final.gff > ${prefix}_transposase.gff ;
-  """
-}
-
-process gff_to_gbk {
-  publishDir "${outDir}/genbankFile", mode: 'copy'
-  container 'fmalmeida/bacannot:latest'
-
-  input:
-  file gff from final_gff
-  file input from genome
-
-  output:
-  file "*.genbank"
-
-  """
-  seqret -sequence $input -feature -fformat gff -fopenfile $gff -osformat genbank \
-  -osname_outseq ${prefix} -ofdirectory_outseq gbk_file -auto
-  """
-}
-
-/*
- * Calling Methylation with Nanopolish Call-Methylation
- */
-
-//Get Files Necessary For Methylation Calling
-if (params.fast5_dir && params.fastq_reads) {
-  fast5 = Channel.fromPath( params.fast5_dir )
-  nanopolish_lreads = file(params.fastq_reads)
-  //fast5_dir = Channel.fromPath( params.fast5_dir, type: 'dir' )
-} else {
-  fast5 = ''
-  nanopolish_lreads = ''
-  //fast5_dir = ''
-  }
-
-process call_methylation {
-  if (params.fast5_dir && params.fastq_reads) {
-  publishDir "${outDir}/methylation", mode: 'copy' }
-  container 'fmalmeida/bacannot:latest'
-  x = ( params.fast5_dir && params.fastq_reads
-        ? "Methylated sites are being calculated"
-        : "Process was skipped by the user")
-  tag { x }
-
-  input:
-  file 'input.fa' from renamed_genome
-  file 'reads.fq' from nanopolish_lreads
-  file fast5
-  //val fast5_dir from fast5_dir
-
-  output:
-  file "*_calls.tsv" optional true
-  file "*_frequency.tsv" optional true
-  file "methylation_frequency.bedGraph" into methylation_bedGraph
-  file "chr.sizes"  into chr_sizes
-
-  script:
-  fast5_dir = fast5.baseName
-  if (params.fast5_dir && params.fastq_reads)
-  """
-  # Index Our Fast5 Data
-  nanopolish index -d "${fast5_dir}" reads.fq ;
-
-  # Map Our Indexed Reads to Our Genome
-  minimap2 -a -x map-ont input.fa reads.fq | samtools sort -T tmp -o reads_output.sorted.bam ;
-  samtools index reads_output.sorted.bam ;
-
-  # Call Methylation
-  nanopolish call-methylation -t ${params.threads} -r reads.fq -b reads_output.sorted.bam -g input.fa > methylation_calls.tsv ;
-  # Calculate Methylation Frequencies
-  /work/nanopolish_scripts/calculate_methylation_frequency.py methylation_calls.tsv > methylation_frequency.tsv ;
-
-  # Transform These TSV files into bedGraph
-  [ ! -s methylation_frequency.tsv ] || grep -v "start" methylation_frequency.tsv | \
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > methylation_frequency.bedGraph ;
-
-  # Create Contig Sizes File
-  seqtk comp input.fa | awk '{ print \$1 "\t" \$2 }' > chr.sizes
-  """
-  else
-  """
-  touch methylation_frequency.bedGraph chr.sizes
-  """
-}
-
-process jbrowse {
-  publishDir "${outDir}/jbrowse/", mode: 'copy'
-  container 'fmalmeida/bacannot:jbrowse'
-
-  input:
-  file input from renamed_genome
-  file gff from final_gff
-  file 'GC_content.bedGraph' from gc_content_jbrowse
-  file 'GC_content.sizes' from gc_sizes_jbrowse
-  file 'rrna.gff' from rrna_gff.ifEmpty('empty')
-  file 'resistance' from resistance_gff.ifEmpty('empty')
-  file 'amrfinder' from amrfinderplus_gff.ifEmpty('empty')
-  file 'rgi' from rgi_gff.ifEmpty('empty')
-  file 'virulence' from virulence_gff.ifEmpty('empty')
-  file 'prophage' from prophage_gff.ifEmpty('empty')
-  file 'prophages.bed' from phigaro_bed.ifEmpty('empty')
-  file 'all_GIs.bed' from predicted_GIs.ifEmpty('empty')
-  file 'ices' from ices_gff.ifEmpty('empty')
-  file 'conjugation' from conjugation_gff.ifEmpty('empty')
-  file 'efflux' from efflux_gff.ifEmpty('empty')
-  file 'no_hypothetical' from noHypothetical_gff.ifEmpty('empty')
-  file 'hypothetical' from hypothetical_gff.ifEmpty('empty')
-  file 'transposase' from transposase_gff.ifEmpty('empty')
-  file 'methylation' from methylation_bedGraph.ifEmpty('empty')
-  file 'chr.sizes' from chr_sizes.ifEmpty('empty')
-
-  output:
-  path "*" optional true hidden true includeInputs true
-
-  """
-  # Get Files
-  cp -R /work/jbrowse/* . 2>/dev/null || : ;
-
-  # data
-  mkdir -p ./data ;
-
-  # Format FASTA file for JBROWSE
-  samtools faidx ${input} ;
-  prepare-refseqs.pl --indexed_fasta ${input} --key \"${params.prefix}\" --out \"data\" ;
-
-  # Add GC content Track
-  bedGraphToBigWig GC_content.bedGraph GC_content.sizes data/GC_content.bw ;
-  add-bw-track.pl --bw_url GC_content.bw --plot --label "GC Content" --key "GC Content" \
-  --category "GC Content" --pos_color darkgray ;
-
-  # Add track with all features
-  flatfile-to-json.pl --gff ${gff} --key \"All features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} annotated features\" --out \"data\" ;
-
-  # Add tRNA track
-  awk '{ if (\$3 == "tRNA" ) print }' ${gff} > tRNAs.gff ;
-  [ ! -s tRNAs.gff ] || flatfile-to-json.pl --gff tRNAs.gff --key \"tRNA Sequences\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} tRNA sequences\" \
-  --config '{ "style": { "color": "darkgreen" }, "displayMode": "compact" }' --out \"data\" ;
-
-  remove-track.pl --trackLabel \"${params.prefix} tRNA sequences\" --dir data &> /tmp/error
-
-  [ ! -s tRNAs.gff ] || echo \' { \"compress\" : 0, \
-                                 \"displayMode\" : \"compact\", \
-                                 \"key\" : \"tRNA Sequences\", \
-                                 \"label\" : \"${params.prefix} tRNA sequences\", \
-                                 \"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
-                                 \"style\" : { \"className\" : \"feature\", \"color\": \"darkgreen\" }, \
-                                 \"trackType\" : \"CanvasFeatures\", \
-                                 \"type\" : \"CanvasFeatures\", \
-                                 \"urlTemplate\" : \"tracks/${params.prefix} tRNA sequences/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
-
-
-  # Add track without hypothetical features|proteins
-  [ ! -s no_hypothetical ] || flatfile-to-json.pl --gff no_hypothetical --key \"Not hypothetical features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} not hypothetical features\" --out \"data\" ;
-
-  # Add track with all hypothetical features|proteins
-  [ ! -s hypothetical ] || flatfile-to-json.pl --gff hypothetical --key \"Only hypothetical features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} only hypothetical features\" --out \"data\" ;
-
-  # Add track with all transposases
-  [ ! -s transposase ] || flatfile-to-json.pl --gff transposase --key \"Transposases\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} only transposases\" --out \"data\" ;
-
-  # Add track with virulence features
-  [ ! -s virulence ] || flatfile-to-json.pl --gff virulence --key \"Virulence features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} virulence features\" --out \"data\" ;
-
-  # Add track with resistance features
-  [ ! -s resistance ] || flatfile-to-json.pl --gff resistance --key \"All resistance features from all sources\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} resistance features from all sources\" --out \"data\" ;
-
-  # Add track with resistance AMRFinder features
-  [ ! -s amrfinder ] || flatfile-to-json.pl --gff amrfinder --key \"AMRFinderPLus features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} resistance features from AMRFinderPlus\" --out \"data\" ;
-
-  # Add track with resistance RGI features
-  [ ! -s rgi ] || flatfile-to-json.pl --gff rgi --key \"CARD-RGI features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} resistance features from CARD-RGI\" --out \"data\" ;
-
-  # Add track with ICEs features
-  [ ! -s ices ] || flatfile-to-json.pl --gff ices --key \"ICE features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} integrative and conjugative elements\" --out \"data\" ;
-
-  # Add track with prophage features
-  [ ! -s prophage ] || flatfile-to-json.pl --gff prophage --key \"Prophage features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} prophage features\" --out \"data\" ;
-
-  # Add track with prophage sequences
-  [ ! -s prophages.bed ] || flatfile-to-json.pl --bed prophages.bed --key \"Prophage Sequences\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} prophage sequences\" \
-  --config '{ "style": { "color": "blue" }, "displayMode": "compact" }' --out \"data\" ;
-
-  remove-track.pl --trackLabel \"${params.prefix} prophage sequences\" --dir data &> /tmp/error
-
-  [ ! -s prophages.bed ] || echo \' { \"compress\" : 0, \
-                                     \"displayMode\" : \"compact\", \
-                                     \"key\" : \"Prophage Sequences\", \
-                                     \"label\" : \"${params.prefix} prophage sequences\", \
-                                     \"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
-                                     \"style\" : { \"className\" : \"feature\", \"color\": \"blue\" }, \
-                                     \"trackType\" : \"CanvasFeatures\", \
-                                     \"type\" : \"CanvasFeatures\", \
-                                     \"urlTemplate\" : \"tracks/${params.prefix} prophage sequences/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
-
-  # Add track with GIs
-  [ ! -s all_GIs.bed ] || flatfile-to-json.pl --bed all_GIs.bed --key \"Genomic Islands\" \
-                              --trackType CanvasFeatures --trackLabel \"${params.prefix} genomic islands\" \
-                              --config '{ "style": { "color": "cyan" }, "displayMode": "compact" }' --out \"data\" ;
-
-  # Remove track for configuration
-  [ ! -s all_GIs.bed ] || remove-track.pl --trackLabel \"${params.prefix} genomic islands\" --dir data &> /tmp/error
-
-  # Re-create
-  [ ! -s all_GIs.bed ] || echo \' { \"compress\" : 0, \
-                                    \"displayMode\" : \"compact\", \
-                                    \"key\" : \"Genomic Islands\", \
-                                    \"label\" : \"${params.prefix} genomic islands\", \
-                                    \"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
-                                    \"style\" : { \"className\" : \"feature\", \"color\": \"cyan\" }, \
-                                    \"trackType\" : \"CanvasFeatures\", \
-                                    \"type\" : \"CanvasFeatures\", \
-                                    \"urlTemplate\" : \"tracks/${params.prefix} genomic islands/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
-
-  # Add track with rRNA sequences
-  [ ! -s rrna.gff ] || flatfile-to-json.pl --gff rrna.gff --key \"rRNA Sequences\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} rRNA sequences\" \
-  --config '{ "style": { "color": "blue" }, "displayMode": "compact" }' --out \"data\" ;
-
-  remove-track.pl --trackLabel \"${params.prefix} rRNA sequences\" --dir data &> /tmp/error
-
-  [ ! -s rrna.gff ] || echo \' { \"compress\" : 0, \
-                                 \"displayMode\" : \"compact\", \
-                                 \"key\" : \"rRNA Sequences\", \
-                                 \"label\" : \"${params.prefix} rRNA sequences\", \
-                                 \"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
-                                 \"style\" : { \"className\" : \"feature\", \"color\": \"blue\" }, \
-                                 \"trackType\" : \"CanvasFeatures\", \
-                                 \"type\" : \"CanvasFeatures\", \
-                                 \"urlTemplate\" : \"tracks/${params.prefix} rRNA sequences/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
-
-  # Add track with efflux features
-  [ ! -s efflux ] || flatfile-to-json.pl --gff efflux --key \"Efflux [pumps] features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} efflux features\" --out \"data\" ;
-
-  # Add track with conjugation features
-  [ ! -s conjugation ] || flatfile-to-json.pl --gff conjugation --key \"Conjugation related features\" \
-  --trackType CanvasFeatures --trackLabel \"${params.prefix} Conjugation related features\" --out \"data\" ;
-
-  # Format bedGraphs
-  ## cpg
-  [ ! -s methylation ] || bedGraphToBigWig methylation chr.sizes data/methylation.bw ;
-
-  # Add BigWigs
-  [ ! -s data/methylation.bw ] || add-bw-track.pl --bw_url methylation.bw --plot --label "Called Methylations" \
-  --key "Called Methylations" --category "Methylations" --pos_color purple ;
-  """
-}
-
-process SQL_db {
-  publishDir "${outDir}/sqlDB", mode: 'copy'
-  container 'fmalmeida/bacannot:renv'
-
-  input:
-  file gff from final_gff
-  file genes_nt from genes_nt_sql
-  file genes_aa from genes_aa_sql
-
-  output:
-  file "*"
-  file "${prefix}.sqlite" optional true
-  val 'finished' into finish
-
-  script:
-  """
-  # Convert a FASTA to tabular (bioawk)
-  bioawk -c fastx '{print \$name"\\t"\$comment"\\t"\$seq}' $genes_nt > genes_nt.tsv ;
-  bioawk -c fastx '{print \$name"\\t"\$comment"\\t"\$seq}' $genes_aa > genes_aa.tsv ;
-
-  # Create SQL db
-  ( gff2sql.R -i $gff -o ${prefix}.sqlite -n genes_nt.tsv -a genes_aa.tsv || true )&> /tmp/log
-  """
-}
-
-// Getting config file as a file
-configFile = file(workflow.configFiles[0])
-
-process report {
-  publishDir "${outDir}/report_files", mode: 'copy'
-  container 'fmalmeida/bacannot:renv'
-
-  input:
-  val x from finish
-  file 'final.gff' from final_gff
-  file rgi_table from rgi_output.ifEmpty('empty')
-  file rgi_perfect from rgi_perfect.ifEmpty('empty')
-  file rgi_strict from rgi_strict.ifEmpty('empty')
-  file amrfinder_result from amrfinder_output.ifEmpty('empty')
-  file 'gff' from clear_gff.ifEmpty('empty')
-  file vfdb_blast from vfdb_blast_genes2.ifEmpty('empty')
-  file victors_blast from victors_blast_genes2.ifEmpty('empty')
-  file ice_blast from ice_blast_genes2.ifEmpty('empty')
-  file phigaro_txt from phigaro_txt.ifEmpty('phigaro_empty')
-  file phast_blast from phast_blast_genes2.ifEmpty('empty')
-
-  output:
-  file '*.html'
-
-  script:
-  """
-  cp /work/rscripts/*.Rmd . ;
-
-  ## Generate Resistance Report
-  Rscript -e 'rmarkdown::render("report_resistance.Rmd", params = list(\
-    amrfinder = "$amrfinder_result", \
-    query = "${params.prefix}", \
-    rgitool = "$rgi_table", \
-    rgiperfect = "$rgi_perfect", \
-    rgistrict = "$rgi_strict", \
-    gff = "gff"))'
-
-  ## Generate Virulence Report
-  Rscript -e 'rmarkdown::render("report_virulence.Rmd" , \
-  params = list( vfdb_blast = "${vfdb_blast}", \
-                 blast_id = ${params.diamond_virulence_identity} , \
-                 blast_cov = ${params.diamond_virulence_queryCoverage},
-                 gff = "final.gff",
-                 victors_blast = "${victors_blast}",
-                 query = "${params.prefix}"))'
-
-  ## Generate MGEs report
-  Rscript -e 'rmarkdown::render("report_MGEs.Rmd", params = list( \
-                 phigaro_dir = "../prophages/phigaro",
-                 phigaro_txt = "${phigaro_txt}",
-                 ice_prot_blast = "${ice_blast}",
-                 query = "${params.prefix}",
-                 gff = "final.gff",
-                 blast_id = ${params.diamond_MGEs_identity},
-                 blast_cov = ${params.diamond_MGEs_queryCoverage},
-                 phast_blast = "${phast_blast}"))'
-  """
-}
-
-/*
-                                      Set log message
-*/
-log.info "========================================="
-log.info " Docker-based Genome Annotation Pipeline "
-log.info "========================================="
+log.info "=============================================================="
+log.info " Docker-based, fmalmeida/bacannot, Genome Annotation Pipeline "
+log.info "=============================================================="
 def summary = [:]
-summary['Input fasta']  = params.genome
-summary['Output prefix']   = params.prefix
-summary['Output dir']   = "${params.outDir}"
-summary['Number of threads used'] = params.threads
-summary['Blast % ID - Virulence Genes'] = params.diamond_virulence_identity
-summary['Blast query coverage - Virulence Genes'] = params.diamond_virulence_queryCoverage
-summary['Blast % ID - ICEs and Phages'] = params.diamond_MGEs_identity
-summary['Blast query coverage - ICEs and Phages'] = params.diamond_MGEs_queryCoverage
+summary['Output dir']   = "${params.outdir}"
+summary['Threads'] = params.threads
+if (params.not_run_virulence_search == false) {
+summary['Blast % ID - Virulence Genes'] = params.blast_virulence_minid
+summary['Blast query coverage - Virulence Genes'] = params.blast_virulence_mincov
+}
+if (params.not_run_resistance_search == false) {
+summary['Blast % ID - AMR Genes'] = params.blast_resistance_minid
+summary['Blast query coverage - AMR Genes'] = params.blast_resistance_mincov
+}
+if (params.not_run_iceberg_search == false | params.not_run_prophage_search == false) {
+summary['Blast % ID - ICEs or Phages'] = params.blast_MGEs_minid
+summary['Blast query coverage - ICEs or Phages'] = params.blast_MGEs_mincov
+}
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Current home']   = "$HOME"
 summary['Current user']   = "$USER"
 summary['Current path']   = "$PWD"
 summary['Configuration file'] = workflow.configFiles[0]
 log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
-log.info "========================================="
+log.info "=============================================================="
+
+/*
+ * Include modules (Execution setup)
+ */
+
+// Prokka annotation
+include { prokka } from './modules/prokka.nf' params(outdir: params.outdir,
+  prokka_kingdom: params.prokka_kingdom, prokka_genetic_code: params.prokka_genetic_code,
+  prokka_use_rnammer: params.prokka_use_rnammer, threads: params.threads)
+
+// MLST annotation
+include { mlst } from './modules/mlst.nf' params(outdir: params.outdir)
+
+// rRNA annotation
+include { barrnap } from './modules/barrnap.nf' params(outdir: params.outdir)
+
+// Calculate GC content
+include { compute_gc } from './modules/compute_gc.nf'
+
+// KOFAM annotation
+include { kofamscan } from './modules/kofamscan.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
+// KEGG decoder
+include { kegg_decoder } from './modules/kegg-decoder.nf' params(outdir: params.outdir,
+  threads: params.threads, genome: params.genome, genome_fofn: params.genome_fofn)
+
+// Virulence annotation with VFDB
+include { vfdb } from './modules/virulence_scan_vfdb.nf' params(outdir: params.outdir,
+  threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
+  blast_virulence_mincov: params.blast_virulence_mincov)
+
+// Virulence annotation with Victors
+include { victors } from './modules/virulence_scan_victors.nf' params(outdir: params.outdir,
+  threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
+  blast_virulence_mincov: params.blast_virulence_mincov)
+
+// Prophage annotation with PHAST
+include { phast } from './modules/prophage_scan_phast.nf' params(outdir: params.outdir,
+  threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
+  blast_MGEs_mincov: params.blast_MGEs_mincov)
+
+// Prophage annotation with PHIGARO
+include { phigaro } from './modules/prophage_scan_phigaro.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
+// ICE annotation with ICEberg db
+include { iceberg } from './modules/ices_scan_iceberg.nf' params(outdir: params.outdir,
+  threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
+  blast_MGEs_mincov: params.blast_MGEs_mincov)
+
+// Prophage annotation with PHIGARO
+include { find_GIs } from './modules/IslandPath_DIMOB.nf' params(outdir: params.outdir)
+
+// AMR annotation with ARGMiner
+include { argminer } from './modules/resistance_scan_argminer.nf' params(outdir: params.outdir,
+  threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
+  blast_resistance_mincov: params.blast_resistance_mincov)
+
+// AMR annotation with AMRFinderPlus
+include { amrfinder } from './modules/amrfinder_scan.nf' params(outdir: params.outdir,
+  threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
+  blast_resistance_mincov: params.blast_resistance_mincov)
+
+// AMR annotation with CARD-RGI
+include { card_rgi } from './modules/rgi_annotation.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
+// Methylation calling (Nanopolish)
+include { call_methylation } from './modules/nanopolish_call_methylation.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
+// Merging annotation in GFF
+include { merge_annotations } from './modules/merge_annotations.nf' params(outdir: params.outdir)
+
+// Convert GFF to GBK
+include { gff2gbk } from './modules/gff2gbk.nf' params(outdir: params.outdir)
+
+// Bedtools gff merge
+include { gff_merge } from './modules/merge_gff.nf' params(outdir: params.outdir,
+  bedtools_merge_distance: params.bedtools_merge_distance)
+
+// JBrowse
+include { jbrowse } from './modules/jbrowse.nf' params(outdir: params.outdir)
+
+// MongoDB module
+include { mongoDB } from './modules/create_mongoDB.nf' params(outdir: params.outdir)
+
+// Output reports
+include { report } from './modules/rmarkdown_reports.nf' params(outdir: params.outdir,
+  blast_MGEs_mincov: params.blast_MGEs_mincov,
+  blast_MGEs_minid: params.blast_MGEs_minid,
+  blast_virulence_mincov: params.blast_virulence_mincov,
+  blast_virulence_minid: params.blast_virulence_minid,
+  blast_resistance_minid: params.blast_resistance_minid,
+  blast_resistance_mincov: params.blast_resistance_mincov)
+
+/*
+ * Define custom workflows
+ */
+
+// Only for a single genome
+workflow bacannot_nf {
+  take:
+    input_genome
+    fast5_dir
+    fast5_fastqs
+  main:
+
+      // First step -- Prokka annotation
+      prokka(input_genome)
+
+      // Second step -- MLST analysis
+      mlst(prokka.out[3])
+
+      // Third step -- rRNA annotation
+      barrnap(prokka.out[3])
+
+      // Fouth step -- calculate GC content for JBrowse
+      compute_gc(prokka.out[3])
+
+      // Fifth step -- run kofamscan
+      if (params.not_run_kofamscan == false) {
+        kofamscan(prokka.out[4])
+        kegg_decoder(kofamscan.out[1])
+        kofamscan_output = kofamscan.out[1]
+      } else {
+        kofamscan_output = Channel.empty()
+      }
+
+      // Sixth step -- MGE, Virulence and AMR annotations
+
+      // IslandPath software
+      find_GIs(prokka.out[2])
+
+      // Virulence search
+      if (params.not_run_virulence_search == false) {
+        // VFDB
+        vfdb(prokka.out[5])
+        vfdb_output = vfdb.out[1]
+        // Victors db
+        victors(prokka.out[4])
+        victors_output = victors.out[1]
+      } else {
+        vfdb_output = Channel.empty()
+        victors_output = Channel.empty()
+      }
+
+      // Prophage search
+      if (params.not_run_prophage_search == false) {
+        // PHAST db
+        phast(prokka.out[4])
+        phast_output = phast.out[1]
+        // Phigaro software
+        phigaro(prokka.out[3])
+        phigaro_output = phigaro.out[0]
+      } else {
+        phast_output = Channel.empty()
+        phigaro_output = Channel.empty()
+      }
+
+      // ICEs search
+      if (params.not_run_iceberg_search == false) {
+        // ICEberg db
+        iceberg(prokka.out[4], prokka.out[3])
+        iceberg_output = iceberg.out[1]
+        iceberg_output_2 = iceberg.out[2]
+      } else {
+        iceberg_output = Channel.empty()
+        iceberg_output_2 = Channel.empty()
+      }
+
+      // AMR search
+      if (params.not_run_resistance_search == false) {
+        // AMRFinderPlus
+        amrfinder(prokka.out[4])
+        amrfinder_output = amrfinder.out[0]
+        // CARD-RGI
+        card_rgi(prokka.out[4])
+        rgi_output = card_rgi.out[3]
+        rgi_output_1 = card_rgi.out[1]
+        rgi_output_2 = card_rgi.out[2]
+        // ARGMiner
+        argminer(prokka.out[4])
+        argminer_output = argminer.out[0]
+      } else {
+        rgi_output = Channel.empty()
+        rgi_output_1 = Channel.empty()
+        rgi_output_2 = Channel.empty()
+        amrfinder_output = Channel.empty()
+        argminer_output = Channel.empty()
+      }
+
+      // Seventh step -- Methylation call
+      if (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) {
+        call_methylation(prokka.out[3], fast5_dir, fast5_fastqs)
+        methylation_out_1 = call_methylation.out[2]
+        methylation_out_2 = call_methylation.out[3]
+      } else {
+        methylation_out_1 = Channel.empty()
+        methylation_out_2 = Channel.empty()
+      }
+
+      // Eighth step -- Merge all annotations with the same Prefix value in a single Channel
+      annotations_files = prokka.out[3].join(prokka.out[1])
+                                       .join(mlst.out[0])
+                                       .join(barrnap.out[0])
+                                       .join(compute_gc.out[0])
+                                       .join(kofamscan_output, remainder: true)
+                                       .join(vfdb_output, remainder: true)
+                                       .join(victors_output, remainder: true)
+                                       .join(amrfinder_output, remainder: true)
+                                       .join(rgi_output, remainder: true)
+                                       .join(iceberg_output, remainder: true)
+                                       .join(phast_output, remainder: true)
+                                       .join(phigaro_output, remainder: true)
+                                       .join(find_GIs.out[0])
+
+      // Contatenation of annotations in a single GFF file
+      merge_annotations(annotations_files)
+
+      // Convert GFF file to GBK file
+      // gff2gbk(update_gff.out[0].join(prokka.out[3]))
+
+      // User wants to merge the final gff file?
+      if (params.bedtools_merge_distance) {
+        gff_merge(merge_annotations.out[0])
+      }
+
+      // Final step -- Create genome browser and reports
+
+      // Grab inputs needed for JBrowse step
+      jbrowse_input = merge_annotations.out[0].join(annotations_files, remainder: true)
+                                              .join(methylation_out_1, remainder: true)
+                                              .join(methylation_out_2, remainder: true)
+      // Jbrowse Creation
+      jbrowse(jbrowse_input)
+
+      // Render reports
+      report(jbrowse_input.join(rgi_output_1, remainder: true)
+                          .join(rgi_output_2, remainder: true)
+                          .join(argminer_output, remainder: true)
+                          .join(iceberg_output_2, remainder: true))
+
+}
+
+/*
+ * Define main workflow
+ */
+
+workflow {
+
+    name = params.genome.split("/", 2)[0]
+    println("\nCurrently annotating: ${name}\n")
+
+    bacannot_nf(
+        Channel.fromPath(params.genome),
+        (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(), // FAST5 Dir
+        (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()  // ONT FASTQS
+    )
+}
+
 
 // Completition message
 workflow.onComplete {
+    println ""
     println "Pipeline completed at: $workflow.complete"
     println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
     println "Execution duration: $workflow.duration"
+    println "Thank you for using fmalmeida/bacannot pipeline!"
 }
