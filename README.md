@@ -1,17 +1,30 @@
 # Bacterial Annotation (bacannot) Pipeline
 
-[![DOI](https://zenodo.org/badge/217119558.svg)](https://zenodo.org/badge/latestdoi/217119558) ![](https://img.shields.io/github/v/release/fmalmeida/bacannot) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot) [![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest)  ![](https://img.shields.io/badge/Nextflow-v20.01-yellowgreen)
+[![DOI](https://zenodo.org/badge/217119558.svg)](https://zenodo.org/badge/latestdoi/217119558) ![](https://img.shields.io/github/v/release/fmalmeida/bacannot) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot) ![](https://img.shields.io/docker/cloud/build/fmalmeida/bacannot) [![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/badge/Nextflow-v20.01-yellowgreen)
 
-This is an easy to use pipeline that uses state-of-the-art software for prokaryotic genome annotation and has only two dependencies: [Docker](https://www.docker.com/) and [Nextflow](https://github.com/nextflow-io/nextflow). Bacannot pipeline is a nextflow docker-based wrapper around a several tools that enables a better understanding of prokaryotic genomes. It uses [Prokka](https://github.com/tseemann/prokka) for generic annotation, [barrnap](https://github.com/tseemann/barrnap) for rRNA prediction. [mlst](https://github.com/tseemann/mlst) for classification within multilocus sequence types, [KofamScan](https://github.com/takaram/kofam_scan) for KO annotation, [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation, [DIAMOND](https://github.com/bbuchfink/diamond) for sequence similarity searches, [JBrowse](http://jbrowse.org/) for genome browser production, [bedtools](https://bedtools.readthedocs.io/en/latest/) for gene merge, [AMRFinderPlus](https://github.com/ncbi/amr/wiki) and [CARD-RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation, [Phigaro](https://github.com/bobeobibo/phigaro) and [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction.
+Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-the-art software for prokaryotic genome annotation. It is a wrapper around a several tools that enables a better understanding of prokaryotic genomes. It uses:
+
+* [Prokka](https://github.com/tseemann/prokka) for generic annotation
+* [barrnap](https://github.com/tseemann/barrnap) for rRNA prediction
+* [mlst](https://github.com/tseemann/mlst) for classification within multi-locus sequence types (STs)
+* [KofamScan](https://github.com/takaram/kofam_scan) for KO annotation
+* [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) for drawing KO annotation
+* [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation
+* [JBrowse](http://jbrowse.org/) for genome browser production
+* [bedtools](https://bedtools.readthedocs.io/en/latest/) for annotation merging
+* [AMRFinderPlus](https://github.com/ncbi/amr/wiki) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
+* [Phigaro](https://github.com/bobeobibo/phigaro) for prophage sequences prediction
+* [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
+* And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)
 
 ## Table of contents
 
-* [Requirements](https://github.com/fmalmeida/ngs-preprocess#requirements)
-* [Quickstart](https://github.com/fmalmeida/ngs-preprocess#quickstart)
-* [Documentation](https://github.com/fmalmeida/ngs-preprocess#documentation)
-  * [Full usage](https://github.com/fmalmeida/ngs-preprocess#usage)
-  * [Usage Examples](https://github.com/fmalmeida/ngs-preprocess#usage-examples)
-  * [Configuration File](https://github.com/fmalmeida/ngs-preprocess#using-the-configuration-file)
+* [Requirements](https://github.com/fmalmeida/bacannot#requirements)
+* [Quickstart](https://github.com/fmalmeida/bacannot#quickstart)
+* [Documentation](https://github.com/fmalmeida/bacannot#documentation)
+  * [Full usage](https://github.com/fmalmeida/bacannot#usage)
+  * [Usage Examples](https://github.com/fmalmeida/bacannot#usage-examples)
+  * [Configuration File](https://github.com/fmalmeida/bacannot#using-the-configuration-file)
 
 ## Requirements
 
