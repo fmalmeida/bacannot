@@ -108,7 +108,8 @@ def exampleMessage() {
    log.info """
    Example Usages:
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
-nextflow run fmalmeida/bacannot --threads 3 --outDir kp25X --genome Kp31_BC08.contigs.fasta --bedtools_merge_distance -20 --prokka_center UNB --blast_virulence_minid 90 --blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --virulence_search --vfdb_search --victors_search --resistance_search --ice_search --prophage_search --execute_kofamscan --nanopolish_fast5_dir fast5_pass --nanopolish_fastq_reads Kp31_BC08.fastq
+$ nextflow run fmalmeida/bacannot --threads 3 --outdir kp25X --genome kp_ont.contigs.fasta --bedtools_merge_distance -20 --blast_virulence_minid 90 \
+--blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --nanopolish_fast5_dir ./fast5_pass --nanopolish_fastq_reads ./kp_ont.fastq
 
 
 """.stripIndent()
