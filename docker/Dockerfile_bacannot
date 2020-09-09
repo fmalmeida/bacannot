@@ -132,18 +132,18 @@ RUN cd /work/scripts && \
 			ln -rs blast2gff.py /usr/local/bin/
 
 # Install Roary dependencies
-RUN conda config --add channels r && \
-			conda config --add channels defaults && \
-			conda config --add channels conda-forge && \
-			conda config --add channels bioconda && \
-			conda create -y -n ROARY && \
-			conda install -y -n ROARY roary && \
-			wget https://github.com/sanger-pathogens/Roary/raw/master/contrib/roary2svg/roary2svg.pl -O /usr/local/bin/roary2svg.pl && \
-			chmod a+x /usr/local/bin/roary2svg.pl && \
-			wget https://github.com/sanger-pathogens/Roary/raw/master/contrib/roary_plots/roary_plots.py -O /usr/local/bin/roary_plots.py && \
-			chmod a+x /usr/local/bin/roary_plots.py
-RUN conda create -y -n ROARY_PLOTS python=3.7 && \
-			conda install -y -n ROARY_PLOTS -c conda-forge matplotlib biopython seaborn pandas
+#RUN conda config --add channels r && \
+#			conda config --add channels defaults && \
+#			conda config --add channels conda-forge && \
+#			conda config --add channels bioconda && \
+#			conda create -y -n ROARY && \
+#			conda install -y -n ROARY roary && \
+#			wget https://github.com/sanger-pathogens/Roary/raw/master/contrib/roary2svg/roary2svg.pl -O /usr/local/bin/roary2svg.pl && \
+#			chmod a+x /usr/local/bin/roary2svg.pl && \
+#			wget https://github.com/sanger-pathogens/Roary/raw/master/contrib/roary_plots/roary_plots.py -O /usr/local/bin/roary_plots.py && \
+#			chmod a+x /usr/local/bin/roary_plots.py
+#RUN conda create -y -n ROARY_PLOTS python=3.7 && \
+#			conda install -y -n ROARY_PLOTS -c conda-forge matplotlib biopython seaborn pandas
 
 # Install tbl2asn
 RUN conda install -y -c bioconda tbl2asn-forever
