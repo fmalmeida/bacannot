@@ -17,30 +17,26 @@ Default configuration:
                                               This parameters must always be set
 
   */
-  // Input file (Always in fasta)
+  // Input genome -- Always in FASTA format
   params.genome = ''
 
-  // Name of output directory
+  // Name of main output directory
+  // A subdirectory with the filename will be created inside this directory
   params.outDir = 'output'
-
-  // Output files predix (it must never be written with white spaces)
-  params.prefix = 'out'
 
   // Number of threads to be used
   params.threads = 2
 
-  // Prokka will rename contig files into 'gnl|Centre|TAG_{1,2,3}'. Set your's institute acronym
-  params.prokka_center = 'Centre'
-
   // Number of minimum overlapping base pairs required for merging
-  // Negative values means required overlapping base pairs. Positive values means maximum distance accepted for merging.
-  // Setting to false means using Bedtools default
-  params.bedtools_merge_distance = false
+  // Negative values, such as -20, means the number of required overlapping bases for merging.
+  // Positive values, such as 5, means the maximum distance accepted between features for merging.
+  // By default, this process is not executed. For execution the user needs to provide a value
+  params.bedtools_merge_distance = ''
 
   /*
-   *
-   *                                                 Prokka optional parameters
-   *
+
+                                                    Prokka optional parameters
+
    */
   // Annotation mode: Archaea|Bacteria|Mitochondria|Viruses (default 'Bacteria')
   params.prokka_kingdom = ''
@@ -52,59 +48,42 @@ Default configuration:
   // false or true to use rnammer instead of Barrnap
   params.prokka_use_rnammer = false
 
-  // Set only if you want to search only a specific prokka genus database
-  params.prokka_genus = ''
-
   /*
-                                    DIAMOND parameters used to annotated the genome using the specific databases
-                                    loaded in the docker image (VFDB, Victors, ICEberg and PHAST)
-                                    Resistance and Virulence genes are searched with blastx while ICEs and Phages
-                                    are searched with blastn.
+                                    BLAST parameters used to annotated the genome using the specific databases
+                                    loaded in the docker image (VFDB, Victors, ICEberg and PHAST) via blastx,
+                                    blastp or blastn depending on the database characteristics.
 
   */
   // Virulence genes identity threshold
-  params.diamond_virulence_identity = 90
+  params.blast_virulence_minid = 90
 
   // Virulence genes coverage threshold
-  params.diamond_virulence_queryCoverage = 90
+  params.blast_virulence_mincov = 90
+
+  // AMR genes identity threshold
+  params.blast_resistance_minid= 90
+
+  // AMR genes coverage threshold
+  params.blast_resistance_mincov = 90
 
   // MGEs (ICEs and Phages) identity threshold
-  params.diamond_MGEs_identity = 85
+  params.blast_MGEs_minid = 85
 
   // MGEs (ICEs and Phages) coverage threshold
-  params.diamond_MGEs_queryCoverage = 85
+  params.blast_MGEs_mincov = 85
 
-  // Minimum alignment length.
-  params.diamond_minimum_alignment_length = 200
 
   /*
-
-                                          Configure Optional Pangenome analysis with Roary
-                                          Used to set path to reference genomes to be used in the pangenome
-                                          analysis with Roary. Whenever set, the pipeline will automatically
-                                          execute Roary pangenome analysis. Example: "path/reference/*.fasta"
-                                          They must be all in one directory and they must no be links. They
-                                          must be the hard file.
-
+                                          Configure optional Methylation annotation with nanopolish
+                                          If left blank, it will not be executed. When both parameters are set
+                                          it will automatically execute nanopolish to call methylation
   */
-  params.roary_reference_genomes = ''
+  params.nanopolish_fast5_dir = ''   // Path to directory containing FAST5 files
+  params.nanopolish_fastq_reads = '' // Path to fastq files (file related to FAST5 files above)
 
   /*
 
-                    Necessary files for calling methylation using nanopolish call-methylation algorithm.
-                    This results will be readly plot in JBROWSE browser. Here we need Nanopore raw reads
-                    and its fastq. This step is extremely time consuming. If you desire fast results it
-                    is advised to skip this process and execute it later since it is not a difficult proccess.
-
-                    To skip it one just need to left its variables blank.
-
-  */
-  params.fast5_dir = ''
-  params.fastq_reads = ''
-
-  /*
-
-                                        Handling the execution of optional processes
+                                        Handling the execution of processes
 
                                         By default, all processes are executed. These
                                         parameters tells wheter NOT to run a process.
@@ -114,22 +93,16 @@ Default configuration:
                                         process.
 
   */
-  // General Virulence annotation (this controls vfdb and victors together)
+  // General Virulence annotation (controls VFDB scan)
   params.not_run_virulence_search = false
 
-  // Skip only VFDB annotation
-  params.not_run_vfdb_search = false
-
-  // Skip only Victors annotation
-  params.not_run_victors_search = false
-
-  // Skip Resistance annotation
+  // Skip Resistance annotation (controls AMRfinder and RGI)
   params.not_run_resistance_search = false
 
-  // Skip ICE annotation
+  // Skip ICE annotation (controls ICEberg annotation)
   params.not_run_iceberg_search = false
 
-  // Skip prophage annotation
+  // Skip prophage annotation (controls PHAST and Phigaro)
   params.not_run_prophage_search = false
 
   // Skip KO (KEGG Orthology) annotation

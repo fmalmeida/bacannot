@@ -3,21 +3,12 @@
 Manual
 ======
 
-Overview
-""""""""
-
-.. image:: annotation_en.png
-    :align: center
-    :alt: An overview of all annotation steps automatically taken by the pipeline.
-
-
 Input
 """""
 
     * path to genome fasta file
-    * path to referenge genomes fasta files
-    * path to a directory of FAST5 files modified to contain basecall information
-    * path to fastq reads
+    * path to a directory of FAST5 files modified to contain basecall information (optional)
+    * path to ONT fastq reads (optional)
 
 .. note::
 
@@ -41,7 +32,7 @@ Usage example
      - Default value
      - Description
 
-   * - ``--outDir``
+   * - ``--outdir``
      - Y
      - output
      - Name of directory to store output values
@@ -61,11 +52,6 @@ Usage example
      - 0
      - Minimum number of required overlapping bases to merge genes
 
-   * - ``--prokka_center``
-     - Y
-     - Centre
-     - Your Institute acronym. It will be used by Prokka when renaming contigs.
-
    * - ``--prokka_kingdom``
      - N
      - Bacteria
@@ -81,35 +67,35 @@ Usage example
      - False
      - Tells Prokka wheter to use rnammer instead of barrnap
 
-   * - ``--prokka_genus``
-     - N
-     - NA
-     - Set a specific prokka genus database to scan
-
-   * - ``--diamond_virulence_identity``
+   * - ``--blast_virulence_minid``
      - N
      - 90
      - Identity (%) threshold to be used when annotating virulence factors from VFDB and Victors
 
-   * - ``--diamond_virulence_queryCoverage``
+   * - ``--blast_virulence_mincov``
      - N
      - 90
      - Coverage (%) threshold to be used when annotating virulence factors from VFDB and Victors
 
-   * - ``--diamond_MGEs_identity``
+   * - ``--blast_resistance_minid``
+     - N
+     - 90
+     - Identity (%) threshold to be used when annotating AMR genes with ARGminer and AMRFinderPlus. CARD-RGI is not affected.
+
+   * - ``--blast_resistance_mincov``
+     - N
+     - 90
+     - Coverage (%) threshold to be used when annotating AMR genes with ARGminer and AMRFinderPlus. CARD-RGI is not affected.
+
+   * - ``--blast_MGEs_minid``
      - N
      - 85
      - Identity (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
 
-   * - ``--diamond_MGEs_queryCoverage``
+   * - ``--blast_MGEs_mincov``
      - N
      - 85
      - Coverage (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
-
-   * - ``--diamond_minimum_alignment_length``
-     - N
-     - 200
-     - Minimum alignment lenth to report a hit.
 
    * - ``--not_run_virulence_search``
      - N
@@ -145,11 +131,6 @@ Usage example
      - N
      - False
      - Tells wheter not to run KEGG orthology (KO) annotation with KofamScan
-
-   * - ``--roary_reference_genomes``
-     - N
-     - NA
-     - Path to reference genomes to be used in pangenome analysis. If null, the analysis will be skipped
 
    * - ``--nanopolish_fast5_dir``
      - N

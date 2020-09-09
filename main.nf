@@ -92,15 +92,6 @@ def helpMessage() {
     --not_run_kofamscan                            Tells wheter you do not want to execute KO annotation with kofamscan
 
 
-                                  Configure Optional Pangenome analysis with Roary
-
-    --roary_reference_genomes <string>             Used to set path to reference genomes to be used in the pangenome
-                                                   analysis with Roary. Whenever set, the pipeline will automatically
-                                                   execute Roary pangenome analysis. Example: "path/reference/*.fasta"
-                                                   They must be all in one directory and they must no be links. They
-                                                   must be the hard file.
-
-
                             Configure optional Methylation annotation with nanopolish
                             If left blank, it will not be executed. And, with both parameters are set
                             it will automatically execute nanopolish to call methylation
