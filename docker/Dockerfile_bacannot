@@ -36,9 +36,10 @@ RUN rm -rf /var/lib/apt/lists/* && \
 
 # INSTALL AMRFinderPlus
 RUN conda create -y -n AMRFINDERPLUS && \
-			conda install -y -n AMRFINDERPLUS -c bioconda ncbi-amrfinderplus && \
+			conda install -y --freeze-installed -n AMRFINDERPLUS -c bioconda ncbi-amrfinderplus nomkl && \
 			source activate AMRFINDERPLUS && \
-			amrfinder -u && \
+			amrfinder -u \
+			&& conda clean -afy && \
 			conda deactivate
 
 ## Install Diamond
@@ -47,7 +48,9 @@ RUN wget https://github.com/bbuchfink/diamond/releases/download/v0.9.25/diamond-
 			mv diamond /usr/local/bin
 
 # INSTALL BARRNAP
-RUN conda install -y -c bioconda -c conda-forge barrnap
+RUN conda install -y --freeze-installed -c bioconda -c conda-forge barrnap nomkl \
+			&& conda clean -afy
+
 
 # INSTALL EMBOSS
 RUN apt-get update && \
@@ -55,7 +58,8 @@ RUN apt-get update && \
 
 # INSTALL MLST
 RUN conda create -y -n MLST && \
-			conda install -y -n MLST -c conda-forge -c bioconda -c defaults mlst
+			conda install -y --freeze-installed -n MLST -c conda-forge -c bioconda -c defaults mlst nomkl \
+			&& conda clean -afy
 
 # INSTALL NANOPOLISH
 ## Configure Conda
@@ -63,8 +67,8 @@ RUN conda create -y -n NANOPOLISH python=3.7 && \
 			source activate NANOPOLISH && \
 			conda config --add channels r && \
 			conda config --add channels bioconda && \
-			conda install -y pysam && \
-			conda install -y -c anaconda hdf5 && \
+			conda install -y --freeze-installed pysam nomkl && \
+			conda install -y --freeze-installed -c anaconda hdf5 && \
 			conda install -c bioconda htslib && \
 			conda install -c anaconda biopython && \
 			conda install -c conda-forge eigen && \
@@ -72,22 +76,23 @@ RUN conda create -y -n NANOPOLISH python=3.7 && \
 			conda config --add channels defaults && \
 			conda config --add channels conda-forge && \
 			conda config --add channels bioconda && \
-			conda install -y nanopolish && \
+			conda install -y --freeze-installed nanopolish && \
 			git clone --recursive https://github.com/jts/nanopolish.git && \
 			mv nanopolish/scripts /work/nanopolish_scripts && \
 			rm -r nanopolish && \
-			conda install -y -c bioconda minimap2 && \
-			conda install -y -c bioconda samtools  && \
-			conda install -y -c bioconda seqtk && \
-			conda install -y -c conda-forge parallel
+			conda install -y --freeze-installed -c bioconda minimap2 && \
+			conda install -y --freeze-installed -c bioconda samtools  && \
+			conda install -y --freeze-installed -c bioconda seqtk && \
+			conda install -y --freeze-installed -c conda-forge parallel \
+			&& conda clean -afy
+
 
 # INSTALL PROKKA
-#apt-get update && apt-get upgrade -y && \
-#apt-get install -y libdatetime-perl libxml-simple-perl libdigest-md5-perl bioperl infernal prodigal aragorn hmmer && \
-RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz && \
-			conda create -y -n PROKKA && \
+RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz
+RUN conda create -y -n PROKKA && \
 			source activate PROKKA && \
-			conda install -y -c conda-forge -c bioconda -c defaults prokka>=1.14 && \
+			conda install -y --freeze-installed -c conda-forge -c bioconda -c defaults nomkl prokka>=1.14 && \
+			conda clean -afy && \
 			gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
 			mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
 			mv TIGRFAMs_15.hmm /miniconda/envs/PROKKA/db/hmm/ && \
@@ -96,7 +101,8 @@ RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz && \
 
 # INSTALL PHIGARO
 RUN apt-get install -y tar git libc6-dev gcc g++ locate seqtk && \
-			conda install -y -c bioconda prodigal hmmer && \
+			conda install -y --freeze-installed -c bioconda prodigal hmmer nomkl && \
+			conda clean -afy && \
 			python3 -m pip install phigaro && \
 			(echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
 			chmod a+rw -R /work/phigaro_pvog
@@ -106,7 +112,8 @@ RUN cd /usr/bin && \
 			for i in * ; do ln -rs "$i" /usr/local/bin ; done
 
 # INSTALL RGI
-RUN conda create -y -n RGI -c bioconda rgi && \
+RUN conda create -y -n RGI -c bioconda rgi nomkl && \
+			conda clean -afy && \
 			wget https://card.mcmaster.ca/latest/data && \
 		  tar -xvf data ./card.json && \
 			source activate RGI && \
@@ -114,8 +121,9 @@ RUN conda create -y -n RGI -c bioconda rgi && \
 
 # Install IslandPath
 RUN conda create -y -n find_GIs && \
-			conda install -y -n find_GIs -c bioconda islandpath && \
-			conda install -y -n find_GIs -c conda-forge biopython && \
+			conda install -y --freeze-installed -n find_GIs -c bioconda nomkl islandpath && \
+			conda install -y --freeze-installed -n find_GIs -c conda-forge biopython && \
+			conda clean -afy && \
 			git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
 			ln -rs ./islandpath/Dimob.pl /usr/local/bin
 
@@ -131,25 +139,19 @@ RUN cd /work/scripts && \
 			rm /usr/local/bin/blast2gff.py && \
 			ln -rs blast2gff.py /usr/local/bin/
 
-# Install Roary dependencies
-#RUN conda config --add channels r && \
-#			conda config --add channels defaults && \
-#			conda config --add channels conda-forge && \
-#			conda config --add channels bioconda && \
-#			conda create -y -n ROARY && \
-#			conda install -y -n ROARY roary && \
-#			wget https://github.com/sanger-pathogens/Roary/raw/master/contrib/roary2svg/roary2svg.pl -O /usr/local/bin/roary2svg.pl && \
-#			chmod a+x /usr/local/bin/roary2svg.pl && \
-#			wget https://github.com/sanger-pathogens/Roary/raw/master/contrib/roary_plots/roary_plots.py -O /usr/local/bin/roary_plots.py && \
-#			chmod a+x /usr/local/bin/roary_plots.py
-#RUN conda create -y -n ROARY_PLOTS python=3.7 && \
-#			conda install -y -n ROARY_PLOTS -c conda-forge matplotlib biopython seaborn pandas
-
 # Install tbl2asn
-RUN conda install -y -c bioconda tbl2asn-forever
+RUN conda install -y --freeze-installed -c bioconda nomkl tbl2asn-forever && \
+			conda clean -afy
 
 # Install MongoDB
-RUN conda create -y -n mongoDB -c anaconda mongodb pymongo
+RUN conda create -y -n mongoDB -c anaconda mongodb pymongo nomkl && \
+			conda clean -afy
+
+# Clean
+RUN conda clean -afy \
+			&& find /miniconda/ -follow -type f -name '*.a' -delete \
+			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
+			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
 
 # Install samtools
 RUN apt-get install -y samtools

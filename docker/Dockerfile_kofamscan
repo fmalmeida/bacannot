@@ -82,5 +82,11 @@ RUN conda create -n kegg-decoder-env python=3.7 && \
       source activate kegg-decoder-env && \
       python3.7 -m pip install KEGGDecoder
 
+# Clean
+RUN conda clean -afy \
+			&& find /miniconda/ -follow -type f -name '*.a' -delete \
+			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
+			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
+
 # Done
 WORKDIR /work
