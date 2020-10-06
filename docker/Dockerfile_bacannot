@@ -226,6 +226,19 @@ RUN mkdir phast && \
 			diamond makedb --in phast/sequences -d phast/diamond && \
 			makeblastdb -in phast/sequences -title 'phast' -dbtype prot -logfile /dev/null
 
+## Install plasmidfinder
+# Get program
+RUN conda create -y -n PLASMIDFINDER -c bioconda plasmidfinder nomkl && \
+			source activate PLASMIDFINDER && \
+			download-db.sh && \
+			conda clean -afy
+
+# Clean
+RUN conda clean -afy \
+			&& find /miniconda/ -follow -type f -name '*.a' -delete \
+			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
+			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
+
 # CHECK ENVs
 RUN conda info -e
 

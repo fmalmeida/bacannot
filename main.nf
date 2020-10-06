@@ -200,6 +200,8 @@ params.prokka_kingdom = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer = false
 // Blast parameters
+params.plasmids_minid = 90
+params.plasmids_mincov = 60
 params.blast_virulence_minid = 90
 params.blast_virulence_mincov = 90
 params.blast_resistance_minid = 90
@@ -207,6 +209,7 @@ params.blast_resistance_mincov = 90
 params.blast_MGEs_minid = 65
 params.blast_MGEs_mincov = 65
 // Workflow parameters
+params.not_run_plasmid_searchs = false
 params.not_run_virulence_search = false
 params.not_run_resistance_search = false
 params.not_run_iceberg_search = false
@@ -269,6 +272,10 @@ include { kofamscan } from './modules/kofamscan.nf' params(outdir: params.outdir
 // KEGG decoder
 include { kegg_decoder } from './modules/kegg-decoder.nf' params(outdir: params.outdir,
   threads: params.threads, genome: params.genome)
+
+// Plasmid annotation with plasmidfinder
+include { plasmidfinder } from './modules/plasmidfinder.nf' params(outdir: params.outdir,
+  plasmids_minid: params.plasmids_minid, plasmids_mincov: params.plasmids_mincov)
 
 // Virulence annotation with VFDB
 include { vfdb } from './modules/virulence_scan_vfdb.nf' params(outdir: params.outdir,
@@ -375,6 +382,11 @@ workflow bacannot_nf {
 
       // Sixth step -- MGE, Virulence and AMR annotations
 
+      // Plasmid finder
+      if (params.not_run_plasmid_search == false) {
+        plasmidfinder(prokka.out[3])
+      }
+
       // IslandPath software
       find_GIs(prokka.out[2])
 
@@ -465,7 +477,7 @@ workflow bacannot_nf {
       merge_annotations(annotations_files)
 
       // Convert GFF file to GBK file
-      // gff2gbk(update_gff.out[0].join(prokka.out[3]))
+      gff2gbk(merge_annotations.out[0].join(prokka.out[3]))
 
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {
