@@ -385,6 +385,9 @@ workflow bacannot_nf {
       // Plasmid finder
       if (params.not_run_plasmid_search == false) {
         plasmidfinder(prokka.out[3])
+        plasmidfinder_output = plasmidfinder.out[1]
+      } else {
+        plasmidfinder_output = Channel.empty()
       }
 
       // IslandPath software
@@ -494,10 +497,11 @@ workflow bacannot_nf {
       jbrowse(jbrowse_input)
 
       // Render reports
-      report(jbrowse_input.join(rgi_output_1, remainder: true)
-                          .join(rgi_output_2, remainder: true)
-                          .join(argminer_output, remainder: true)
-                          .join(iceberg_output_2, remainder: true))
+      report(jbrowse_input.join(rgi_output_1,         remainder: true)
+                          .join(rgi_output_2,         remainder: true)
+                          .join(argminer_output,      remainder: true)
+                          .join(iceberg_output_2,     remainder: true)
+                          .join(plasmidfinder_output, remainder: true))
 
 }
 

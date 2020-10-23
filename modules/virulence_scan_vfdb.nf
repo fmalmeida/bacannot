@@ -14,9 +14,8 @@ process vfdb {
 
   script:
   """
-  # VFDB is a nucleotide-only dabatase
-
-  ## With predicted gene sequences
+  # With predicted gene sequences
+  
   /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genes --db /work/dbs/vfdb/sequences --minid ${params.blast_virulence_minid} \
   --mincov ${params.blast_virulence_mincov} --threads ${params.threads} --out ${prefix}_vfdb_blastn_onGenes.txt --2way | \
   sed -e 's/ACCESSION/VFDB_ID/g' > ${prefix}_vfdb_blastn_onGenes.summary.txt ;

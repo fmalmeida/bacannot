@@ -14,9 +14,8 @@ process victors {
 
   script:
   """
-  # Victors is a protein-only dabatase
-
-  ## With predicted gene sequences
+  # With predicted gene sequences
+  
   /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastp --query $genes --db /work/dbs/victors/diamond.dmnd --minid ${params.blast_virulence_minid} \
   --mincov ${params.blast_virulence_mincov} --threads ${params.threads} --out ${prefix}_victors_blastp_onGenes.txt --2way | \
   sed -e 's/PRODUCT/VICTORS_ID/g' > ${prefix}_victors_blastp_onGenes.summary.txt ;

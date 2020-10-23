@@ -8,6 +8,7 @@ process plasmidfinder {
 
   output:
   tuple val(prefix), file("plasmidfinder_results") // Get everything
+  file "plasmidfinder_results/results_tab.tsv" // Get the main result
 
   script:
   if ("${params.plasmids_mincov}" > 1) {

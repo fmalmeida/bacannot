@@ -47,8 +47,8 @@ RUN mkdir card-data && \
 			rm card-data.tar.bz2
 
 # Update Rmds
-#RUN rm -rf rscripts && \
-#			git clone https://github.com/fmalmeida/rscripts.git
+RUN rm -rf rscripts && \
+			git clone https://github.com/fmalmeida/rscripts.git
 RUN cd rscripts && \
 			chmod a+rx /work/rscripts/reports/*.Rmd
 

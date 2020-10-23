@@ -8,7 +8,7 @@ process report {
         file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb_blastn), file(victors_blastp),
         file(amrfinder), file(rgi), file(iceberg_blastp), file(phast_blastp), file(phigaro_txt),
         file(genomic_islands), file("methylation"), file("chr.sizes"),
-        file(rgi_perfect), file(rgi_strict), file(argminer_out), file(iceberg_blastn)
+        file(rgi_perfect), file(rgi_strict), file(argminer_out), file(iceberg_blastn), file(plasmids_tsv)
 
   output:
   file '*.html'
@@ -46,6 +46,7 @@ process report {
                  phigaro_txt = "$phigaro_txt", \
                  ice_prot_blast = "$iceberg_blastp", \
                  ice_genome_blast = "$iceberg_blastn", \
+                 plasmid_finder_tab = "$plasmids_tsv", \
                  query = "${prefix}", \
                  gff = "$gff", \
                  phast_prot_blast = "$phast_blastp" ))'
