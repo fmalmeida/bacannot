@@ -209,13 +209,12 @@ params.blast_resistance_mincov = 90
 params.blast_MGEs_minid = 65
 params.blast_MGEs_mincov = 65
 // Workflow parameters
-params.not_run_plasmid_searchs = false
+params.not_run_plasmid_search = false
 params.not_run_virulence_search = false
 params.not_run_resistance_search = false
 params.not_run_iceberg_search = false
 params.not_run_prophage_search = false
 params.not_run_kofamscan = false
-params.roary_reference_genomes = false
 
 /*
  * Define log message
