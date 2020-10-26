@@ -12,6 +12,7 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 1. Installing Docker
   * Read more in their `manual <https://docs.docker.com/>`_
   * Or give this `in-house script <https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh>`_ a try.
+  
 2. Installing Nextflow
 
     ``curl -s https://get.nextflow.io | bash``
@@ -33,6 +34,10 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
     ``docker pull fmalmeida/bacannot:jbrowse``
 
     ``docker pull fmalmeida/bacannot:renv``
+
+6. (Optional) Install nf-core utility
+
+    ``pip install nf-core>=1.10``
 
 .. note::
 

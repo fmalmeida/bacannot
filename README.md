@@ -15,6 +15,7 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 * [AMRFinderPlus](https://github.com/ncbi/amr/wiki) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
 * [Phigaro](https://github.com/bobeobibo/phigaro) for prophage sequences prediction
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
+* [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) for in silico plasmid detection
 * And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)
 
 ## Further reading
@@ -29,6 +30,7 @@ This pipeline has two complementary pipelines (also written in nextflow) for [NG
   * [Full usage](https://github.com/fmalmeida/bacannot#usage)
   * [Usage Examples](https://github.com/fmalmeida/bacannot#usage-examples)
   * [Configuration File](https://github.com/fmalmeida/bacannot#using-the-configuration-file)
+  * [Interactive and graphical execution](https://github.com/fmalmeida/bacannot#interactive-graphical-configuration-and-execution)
 
 ## Requirements
 
@@ -62,19 +64,15 @@ This images have been kept separate to not create massive Docker image and to av
 
 ### Usage
 
-Checkout the full usage help with `nextflow run fmalmeida/bacannot --help`
+* Complete command line explanation of parameters:
+    + `nextflow run fmalmeida/bacannot --help`
+* See usage examples in the command line:
+    + `nextflow run fmalmeida/bacannot --examples`
+* However, users are encouraged to read the [complete online documentation](https://bacannot.readthedocs.io/en/latest/).
 
-Please take a time to read the [docs](https://bacannot.readthedocs.io/en/latest/?badge=latest).
+### Command line usage examples
 
-### Usage examples:
-
-> Simple annotation example through cli
-
-    ./nextflow run main.nf --outdir TESTE --threads 3 --genome assembly.fasta --bedtools_merge_distance -20 --not_run_kofamscan
-
-> Running with a configuration file
-
-    ./nextflow run fmalmeida/bacannot -c nextflow.config
+Command line executions are exemplified [in the manual](https://bacannot.readthedocs.io/en/latest/examples.html).
 
 ## Using the configuration file
 
@@ -85,6 +83,40 @@ Your configuration file is what will tell to the pipeline the type of data you h
 Create a configuration file in your working directory:
 
       nextflow run fmalmeida/bacannot --get_config
+
+### Interactive graphical configuration and execution
+
+Users can trigger a graphical and interactive pipeline configuration and execution by using [nf-core launch](https://nf-co.re/launch) utility.
+
+#### Install nf-core
+
+```bash
+# Install nf-core
+pip install nf-core
+```
+
+#### launch the pipeline
+
+nf-core launch will start an interactive form in your web browser or command line so you can configure the pipeline step by step and start the execution of the pipeline in the end.
+
+```bash
+# Launch the pipeline
+nf-core launch fmalmeida/ngs-preprocess
+```
+
+It will result in the following:
+
+<p align="center">
+<img src="./images/nf-core-asking.png" width="500px"/>
+</p>
+
+<p align="center">
+<img src="./images/nf-core-gui.png" width="400px"/>
+</p>
+
+#### nextflow tower
+
+This pipeline also accepts that users track its execution of processes via [nextflow tower](https://tower.nf/). For that users will have to use the parameters `--use_tower` and `--tower_token`.
 
 # Citation
 
@@ -101,4 +133,5 @@ Please cite this pipeline using our Zenodo tag or directly via the github url. A
 * [AMRFinderPlus](https://github.com/ncbi/amr/wiki) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
 * [Phigaro](https://github.com/bobeobibo/phigaro) for prophage sequences prediction
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
+* [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) for in silico plasmid detection
 * And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)

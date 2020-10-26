@@ -78,6 +78,10 @@ def helpMessage() {
 
     --blast_MGEs_mincov                            Min. query coverage for ICEs and prophage annotation
 
+    --plasmids_minid                               Min. identity % for plasmid detection
+
+    --plasmids_mincov                              Min. query coverage for plasmid detection
+
 
                                   Configure Optional processes
 
@@ -88,6 +92,8 @@ def helpMessage() {
     --not_run_iceberg_search                       Tells wheter you do not want to execute ICE annotation
 
     --not_run_prophage_search                      Tells wheter you do not want to execute prophage annotation
+
+    --not_run_plasmid_search                       Tells wheter you do not want to execute plasmid detection
 
     --not_run_kofamscan                            Tells wheter you do not want to execute KO annotation with kofamscan
 

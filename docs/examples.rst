@@ -29,6 +29,13 @@ A little more complex example
   Differently, this command will run **all** analysis because the Nanopolish parameters have
   been set and no process have been told to skip (e.g. ``--not_run_kofamscan``).
 
+Running with an interactive graphical interface
+"""""""""""""""""""""""""""""""""""""""""""""""
+
+::
+
+     nf-core launch fmalmeida/bacannot
+
 
 Running with a configuration file
 """""""""""""""""""""""""""""""""

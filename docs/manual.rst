@@ -65,7 +65,7 @@ Usage example
    * - ``--prokka_use_rnammer``
      - N
      - False
-     - Tells Prokka wheter to use rnammer instead of barrnap
+     - Tells Prokka whether to use rnammer instead of barrnap
 
    * - ``--blast_virulence_minid``
      - N
@@ -87,6 +87,16 @@ Usage example
      - 90
      - Coverage (%) threshold to be used when annotating AMR genes with ARGminer and AMRFinderPlus. CARD-RGI is not affected.
 
+   * - ``--plasmids_minid``
+     - N
+     - 90
+     - Identity (%) threshold to be used when detecting plasmids with Plasmidfinder
+
+   * - ``--plasmids_mincov``
+     - N
+     - 60
+     - Coverage (%) threshold to be used when detecting plasmids with Plasmidfinder
+
    * - ``--blast_MGEs_minid``
      - N
      - 85
@@ -100,37 +110,32 @@ Usage example
    * - ``--not_run_virulence_search``
      - N
      - False
-     - Tells wheter not to run virulence factors annotation. It skips both vfdb and victors annotation
+     - Tells whether not to run virulence factors annotation. It skips both vfdb and victors annotation
 
-   * - ``--not_run_vfdb_search``
+   * - ``--not_run_plasmid_search``
      - N
      - False
-     - Tells wheter not to run virulence factors annotation with VFDB
-
-   * - ``--not_run_victors_search``
-     - N
-     - False
-     - Tells wheter not to run virulence factors annotation with Victors
+     - Tells whether not to run plasmid detection with Plasmidfinder
 
    * - ``--not_run_resistance_search``
      - N
      - False
-     - Tells wheter not to run resistance genes annotation. It skips AMRFinderPlus and RGI annotation
+     - Tells whether not to run resistance genes annotation. It skips AMRFinderPlus and RGI annotation
 
    * - ``--not_run_iceberg_search``
      - N
      - False
-     - Tells wheter not to run mobile genetic elements annotation with ICEberg
+     - Tells whether not to run mobile genetic elements annotation with ICEberg
 
    * - ``--not_run_prophage_search``
      - N
      - False
-     - Tells wheter not to run prophage annotation with PHAST and Phigaro
+     - Tells whether not to run prophage annotation with PHAST and Phigaro
 
    * - ``--not_run_kofamscan``
      - N
      - False
-     - Tells wheter not to run KEGG orthology (KO) annotation with KofamScan
+     - Tells whether not to run KEGG orthology (KO) annotation with KofamScan
 
    * - ``--nanopolish_fast5_dir``
      - N
