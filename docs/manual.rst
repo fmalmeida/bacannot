@@ -32,6 +32,16 @@ Usage example
      - Default value
      - Description
 
+   * - ``--use_tower``
+     - N
+     - False
+     - Triggers the pipeline to be launched via nextflow tower
+
+   * - ``--tower_token``
+     - Y (if ``--use_tower``)
+     - NA
+     - Your nextflow tower token. Used to launch the pipeline in your nextflow tower account
+
    * - ``--outdir``
      - Y
      - output
