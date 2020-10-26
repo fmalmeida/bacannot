@@ -101,7 +101,7 @@ nf-core launch will start an interactive form in your web browser or command lin
 
 ```bash
 # Launch the pipeline
-nf-core launch fmalmeida/ngs-preprocess
+nf-core launch fmalmeida/bacannot
 ```
 
 It will result in the following:
