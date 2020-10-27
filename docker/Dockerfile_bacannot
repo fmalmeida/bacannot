@@ -227,11 +227,32 @@ RUN mkdir phast && \
 			makeblastdb -in phast/sequences -title 'phast' -dbtype prot -logfile /dev/null
 
 ## Install plasmidfinder
+workdir /work
 # Get program
-RUN conda create -y -n PLASMIDFINDER -c bioconda plasmidfinder nomkl && \
+RUN conda create -y -n PLASMIDFINDER && \
 			source activate PLASMIDFINDER && \
+			conda install -y --freeze-installed -c bioconda plasmidfinder nomkl && \
 			download-db.sh && \
 			conda clean -afy
+
+## Install resfinder
+# Create env
+RUN conda create -y -n Resfinder python=3.7 nomkl && \
+			source activate Resfinder && \
+			conda install -y --freeze-installed -c bioconda kma nomkl && \
+			pip3 install tabulate biopython cgecore gitpython setuptools python-dateutil && \
+			conda clean -afy
+# Get program
+RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
+			cd resfinder && \
+			git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder && \
+			git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder
+
+# Index databases
+RUN cd resfinder/db_resfinder && \
+			source activate Resfinder && \
+			python3 INSTALL.py $(which kma_index) non_interactive
+
 
 # Clean
 RUN conda clean -afy \
