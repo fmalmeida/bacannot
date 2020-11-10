@@ -66,21 +66,21 @@ def helpMessage() {
 
                                   Blast alignment parameters
 
-    --blast_virulence_minid                        Min. identity % for virulence annotation
+    --blast_virulence_minid                        Min. identity % for virulence annotation. Default 90.
 
-    --blast_virulence_mincov                       Min. gene coverage for virulence annotation
+    --blast_virulence_mincov                       Min. gene coverage for virulence annotation. Default 90.
 
-    --blast_resistance_minid                       Min. identity % for resistance annotation
+    --blast_resistance_minid                       Min. identity % for resistance annotation. Default 90.
 
-    --blast_resistance_mincov                      Min. gene coverage for resistance annotation
+    --blast_resistance_mincov                      Min. gene coverage for resistance annotation. Default 90.
 
-    --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation
+    --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation. Default 65.
 
-    --blast_MGEs_mincov                            Min. query coverage for ICEs and prophage annotation
+    --blast_MGEs_mincov                            Min. query coverage for ICEs and prophage annotation. Default 65.
 
-    --plasmids_minid                               Min. identity % for plasmid detection
+    --plasmids_minid                               Min. identity % for plasmid detection. Default 90.
 
-    --plasmids_mincov                              Min. query coverage for plasmid detection
+    --plasmids_mincov                              Min. query coverage for plasmid detection. Default 60.
 
 
                                   Configure Optional processes

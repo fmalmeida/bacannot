@@ -112,7 +112,7 @@ RUN cd /usr/bin && \
 			for i in * ; do ln -rs "$i" /usr/local/bin ; done
 
 # INSTALL RGI
-RUN conda create -y -n RGI -c bioconda rgi nomkl && \
+RUN conda create -y -n RGI -c bioconda rgi nomkl python=3.8 && \
 			conda clean -afy && \
 			wget https://card.mcmaster.ca/latest/data && \
 		  tar -xvf data ./card.json && \
@@ -167,13 +167,13 @@ RUN /miniconda/bin/python3 -m pip install docopt pandas && \
 
 ## VFDB nt
 RUN mkdir vfdb && \
- 			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \
-			gzip -d VFDB_setA_nt.fas.gz && \
-				awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setA_nt.fas | \
+ 			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setB_nt.fas.gz && \
+			gzip -d VFDB_setB_nt.fas.gz && \
+				awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setB_nt.fas | \
 				sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \
 				awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences && \
 			makeblastdb -in vfdb/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \
-			rm VFDB_setA_nt.fas
+			rm VFDB_setB_nt.fas
 
 ## ARGMiner prot
 RUN mkdir ARGMiner && \
@@ -227,11 +227,32 @@ RUN mkdir phast && \
 			makeblastdb -in phast/sequences -title 'phast' -dbtype prot -logfile /dev/null
 
 ## Install plasmidfinder
+workdir /work
 # Get program
-RUN conda create -y -n PLASMIDFINDER -c bioconda plasmidfinder nomkl && \
+RUN conda create -y -n PLASMIDFINDER && \
 			source activate PLASMIDFINDER && \
+			conda install -y --freeze-installed -c bioconda plasmidfinder nomkl && \
 			download-db.sh && \
 			conda clean -afy
+
+## Install resfinder
+# Create env
+RUN conda create -y -n Resfinder python=3.7 nomkl && \
+			source activate Resfinder && \
+			conda install -y --freeze-installed -c bioconda kma nomkl && \
+			pip3 install tabulate biopython cgecore gitpython setuptools python-dateutil && \
+			conda clean -afy
+# Get program
+RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
+			cd resfinder && \
+			git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder && \
+			git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder
+
+# Index databases
+RUN cd resfinder/db_resfinder && \
+			source activate Resfinder && \
+			python3 INSTALL.py $(which kma_index) non_interactive
+
 
 # Clean
 RUN conda clean -afy \
@@ -244,7 +265,7 @@ RUN conda info -e
 
 # Fix permissions
 RUN chmod -R a+rwx /usr/local/lib/python3.8/
-RUN chmod -R a+rwx /miniconda/envs/RGI/lib/python3.6/
+RUN chmod -R a+rwx /miniconda/envs/RGI/lib/python3.8/
 
 # For maths
 RUN apt-get install -y bc
