@@ -24,7 +24,7 @@ RUN conda config --add channels defaults && \
 
 ## Install bedtools, ncbi-blast+ and custom scripts
 RUN rm -rf /var/lib/apt/lists/* && \
-			wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.10.1+-x64-linux.tar.gz && \
+			wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.10.1/ncbi-blast-2.10.1+-x64-linux.tar.gz && \
 			tar -zxvf ncbi-blast-2.10.1+-x64-linux.tar.gz && \
 			cd ncbi-blast-2.10.1+/bin/ && \
 			ln -rs $(ls) /usr/local/bin/ && \
@@ -176,7 +176,7 @@ RUN mkdir vfdb && \
 				awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setB_nt.fas | \
 				sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \
 				awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences_full && \
-			cd-hit-est -i vfdb/sequences_full -o vfdb/sequences -c 0.9 && \
+			cd-hit-est -i vfdb/sequences_full -o vfdb/sequences -c 0.9 -T 3 && \
 			makeblastdb -in vfdb/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \
 			rm VFDB_setB_nt.fas
 
