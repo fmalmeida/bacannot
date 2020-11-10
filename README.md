@@ -58,7 +58,7 @@ This images have been kept separate to not create massive Docker image and to av
 
 3. Give it a try:
 
-       nextflow fmalmeida/bacannot --help
+       nextflow run fmalmeida/bacannot --help
 
 ## Documentation
 
