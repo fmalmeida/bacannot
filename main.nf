@@ -364,6 +364,10 @@ workflow bacannot_nf {
     fast5_fastqs
   main:
 
+      // Log
+      //name = params.genome.split("/", 2)[0]
+      //println("\nCurrently annotating: ${name}\n")
+
       // First step -- Prokka annotation
       prokka(input_genome)
 
@@ -516,14 +520,11 @@ workflow bacannot_nf {
 
 workflow {
 
-    name = params.genome.split("/", 2)[0]
-    println("\nCurrently annotating: ${name}\n")
+    in_genome = Channel.fromPath(params.genome)
+    in_fastq  = (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
+    in_fast5  = (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty()
 
-    bacannot_nf(
-        Channel.fromPath(params.genome),
-        (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(), // FAST5 Dir
-        (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()  // ONT FASTQS
-    )
+    bacannot_nf(in_genome, in_fast5, in_fastq)
 }
 
 
