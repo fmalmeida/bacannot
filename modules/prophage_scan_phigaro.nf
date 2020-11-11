@@ -14,11 +14,13 @@ process phigaro {
 
   script:
   """
-  touch ${prefix}_phigaro.phg ${prefix}_phigaro.phg.html ;
-
   # Run phigaro
   phigaro -f assembly.fasta --config /work/phigaro_config.yml -t ${params.threads} \
-  -e html tsv -o ${prefix}_phigaro --delete-shorts -p --not-open ;
+  -e html tsv -o out.phg --delete-shorts -p --not-open ;
+
+  # move
+  mv out.phg/assembly.phigaro.tsv ${prefix}_phigaro.tsv ;
+  mv out.phg/assembly.phigaro.html ${prefix}_phigaro.html;
 
   # Create BED
   grep -v "taxonomy" ${prefix}_phigaro.tsv | \
