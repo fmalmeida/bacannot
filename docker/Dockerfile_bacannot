@@ -166,19 +166,19 @@ RUN /miniconda/bin/python3 -m pip install docopt pandas && \
 			mv run_blasts.py /usr/local/bin
 
 ## Install cd-hit for VFDB
-RUN conda install -c bioconda cd-hit nomkl && \
-			conda clean -afy
+#RUN conda install -c bioconda cd-hit nomkl && \
+#			conda clean -afy
 
 ## VFDB nt
 RUN mkdir vfdb && \
- 			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setB_nt.fas.gz && \
-			gzip -d VFDB_setB_nt.fas.gz && \
-				awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setB_nt.fas | \
+ 			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \
+			gzip -d VFDB_setA_nt.fas.gz && \
+				awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setA_nt.fas | \
 				sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \
-				awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences_full && \
-			cd-hit-est -i vfdb/sequences_full -o vfdb/sequences -c 0.9 -T 3 && \
+				awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences && \
+#			cd-hit-est -i vfdb/sequences_full -o vfdb/sequences -c 0.9 -T 3 && \
 			makeblastdb -in vfdb/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \
-			rm VFDB_setB_nt.fas
+			rm VFDB_setA_nt.fas
 
 ## ARGMiner prot
 RUN mkdir ARGMiner && \
