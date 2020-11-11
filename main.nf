@@ -519,11 +519,11 @@ workflow {
     name = params.genome.split("/", 2)[0]
     println("\nCurrently annotating: ${name}\n")
 
-    bacannot_nf(
-        Channel.fromPath(params.genome),
-        (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(), // FAST5 Dir
-        (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()  // ONT FASTQS
-    )
+    in_genome = Channel.fromPath(params.genome)
+    in_fastq  = (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
+    in_fast5  = (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty()
+
+    bacannot_nf(in_genome, in_fast5, in_fastq)
 }
 
 
