@@ -68,11 +68,11 @@ def helpMessage() {
 
     --blast_virulence_minid                        Min. identity % for virulence annotation. Default 90.
 
-    --blast_virulence_mincov                       Min. gene coverage for virulence annotation. Default 90.
+    --blast_virulence_mincov                       Min. gene coverage for virulence annotation. Default 80.
 
     --blast_resistance_minid                       Min. identity % for resistance annotation. Default 90.
 
-    --blast_resistance_mincov                      Min. gene coverage for resistance annotation. Default 90.
+    --blast_resistance_mincov                      Min. gene coverage for resistance annotation. Default 80.
 
     --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation. Default 65.
 
@@ -82,6 +82,12 @@ def helpMessage() {
 
     --plasmids_mincov                              Min. query coverage for plasmid detection. Default 60.
 
+
+                                  Configure resfinder optional parameter
+
+    --resfinder_species                            It sets the species to be used for Resfinder annotation. If blank,
+                                                   it will not be executed. Must be identical (without the *) as written
+                                                   in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
 
                                   Configure Optional processes
 
@@ -115,7 +121,8 @@ def exampleMessage() {
    Example Usages:
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
 \$ nextflow run fmalmeida/bacannot --threads 3 --outdir kp25X --genome kp_ont.contigs.fasta --bedtools_merge_distance -20 --blast_virulence_minid 90 \
---blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --nanopolish_fast5_dir ./fast5_pass --nanopolish_fastq_reads ./kp_ont.fastq
+--blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --nanopolish_fast5_dir ./fast5_pass --nanopolish_fastq_reads ./kp_ont.fastq \
+--resfinder_species "Klebsiella"
 
 
 """.stripIndent()
@@ -205,13 +212,15 @@ params.genome = ''
 params.prokka_kingdom = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer = false
+// Resfinder parameters
+params.resfinder_species = ''
 // Blast parameters
 params.plasmids_minid = 90
 params.plasmids_mincov = 60
 params.blast_virulence_minid = 90
-params.blast_virulence_mincov = 90
+params.blast_virulence_mincov = 80
 params.blast_resistance_minid = 90
-params.blast_resistance_mincov = 90
+params.blast_resistance_mincov = 80
 params.blast_MGEs_minid = 65
 params.blast_MGEs_mincov = 65
 // Workflow parameters
@@ -230,6 +239,7 @@ log.info "=============================================================="
 log.info " Docker-based, fmalmeida/bacannot, Genome Annotation Pipeline "
 log.info "=============================================================="
 def summary = [:]
+summary['Input genomes'] = params.genome
 summary['Output dir']   = "${params.outdir}"
 summary['Threads'] = params.threads
 if (params.not_run_virulence_search == false) {
@@ -314,6 +324,11 @@ include { argminer } from './modules/resistance_scan_argminer.nf' params(outdir:
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
   blast_resistance_mincov: params.blast_resistance_mincov)
 
+// AMR annotation with Resfinder
+include { resfinder } from './modules/resistance_scan_resfinder.nf' params(outdir: params.outdir,
+  threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
+  blast_resistance_mincov: params.blast_resistance_mincov, resfinder_species: params.resfinder_species)
+
 // AMR annotation with AMRFinderPlus
 include { amrfinder } from './modules/amrfinder_scan.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
@@ -321,7 +336,7 @@ include { amrfinder } from './modules/amrfinder_scan.nf' params(outdir: params.o
 
 // AMR annotation with CARD-RGI
 include { card_rgi } from './modules/rgi_annotation.nf' params(outdir: params.outdir,
-  threads: params.threads)
+  threads: params.threads, blast_resistance_minid: params.blast_resistance_minid)
 
 // Methylation calling (Nanopolish)
 include { call_methylation } from './modules/nanopolish_call_methylation.nf' params(outdir: params.outdir,
@@ -418,7 +433,7 @@ workflow bacannot_nf {
         phast_output = phast.out[1]
         // Phigaro software
         phigaro(prokka.out[3])
-        phigaro_output = phigaro.out[0]
+        phigaro_output = phigaro.out[1]
       } else {
         phast_output = Channel.empty()
         phigaro_output = Channel.empty()
@@ -448,12 +463,23 @@ workflow bacannot_nf {
         // ARGMiner
         argminer(prokka.out[4])
         argminer_output = argminer.out[0]
+        // Resfinder
+        if (params.resfinder_species) {
+          resfinder(prokka.out[3])
+          resfinder_output_2 = resfinder.out[0]
+          resfinder_output_1 = resfinder.out[1]
+        } else {
+          resfinder_output_1 = Channel.empty()
+          resfinder_output_2 = Channel.empty()
+        }
       } else {
         rgi_output = Channel.empty()
         rgi_output_1 = Channel.empty()
         rgi_output_2 = Channel.empty()
         amrfinder_output = Channel.empty()
         argminer_output = Channel.empty()
+        resfinder_output_1 = Channel.empty()
+        resfinder_output_2 = Channel.empty()
       }
 
       // Seventh step -- Methylation call
@@ -506,7 +532,9 @@ workflow bacannot_nf {
                           .join(rgi_output_2,         remainder: true)
                           .join(argminer_output,      remainder: true)
                           .join(iceberg_output_2,     remainder: true)
-                          .join(plasmidfinder_output, remainder: true))
+                          .join(plasmidfinder_output, remainder: true)
+                          .join(resfinder_output_1,   remainder: true)
+                          .join(resfinder_output_2,   remainder: true))
 
 }
 
@@ -516,14 +544,10 @@ workflow bacannot_nf {
 
 workflow {
 
-    name = params.genome.split("/", 2)[0]
-    println("\nCurrently annotating: ${name}\n")
-
-    in_genome = Channel.fromPath(params.genome)
-    in_fastq  = (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
-    in_fast5  = (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty()
-
-    bacannot_nf(in_genome, in_fast5, in_fastq)
+  bacannot_nf(Channel.fromPath(params.genome),
+             (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(),
+             (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
+             )
 }
 
 
