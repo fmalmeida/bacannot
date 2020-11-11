@@ -18,8 +18,11 @@ process card_rgi {
   """
   source activate RGI ;
 
-  rgi main --input_sequence $input --output_file ./RGI_${prefix} --input_type protein \
+  rgi main --input_sequence $input --output_file RGI_${prefix}_unfiltered --input_type protein \
   --num_threads ${params.threads} --exclude_nudge --clean ;
+
+  ## Filtering by identity
+  awk 'BEGIN { FS = "\\t"; OFS="\\t" } { if (\$10 >= ${params.blast_resistance_minid}) print }' RGI_${prefix}_unfiltered.txt > ./RGI_${prefix}.txt
 
   ## Parse perfect hits
   cat RGI_${prefix}.txt  | \
