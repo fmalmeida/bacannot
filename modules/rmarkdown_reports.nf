@@ -8,7 +8,8 @@ process report {
         file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb_blastn), file(victors_blastp),
         file(amrfinder), file(rgi), file(iceberg_blastp), file(phast_blastp), file(phigaro_txt),
         file(genomic_islands), file("methylation"), file("chr.sizes"),
-        file(rgi_perfect), file(rgi_strict), file(argminer_out), file(iceberg_blastn), file(plasmids_tsv)
+        file(rgi_perfect), file(rgi_strict), file(argminer_out), file(iceberg_blastn), file(plasmids_tsv),
+        file(resfinder_tab), file(resfinder_point)
 
   output:
   file '*.html'
@@ -27,6 +28,8 @@ process report {
     rgiperfect = "$rgi_perfect", \
     rgistrict = "$rgi_strict", \
     argminer_blastp = "$argminer_out", \
+    resfinder_tab = "$resfinder_tab", \
+    resfinder_pointfinder = "$resfinder_point", \
     gff = "$gff"))'
 
   ## Generate Virulence Report
