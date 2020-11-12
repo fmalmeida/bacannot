@@ -101,12 +101,12 @@ process jbrowse {
   --nameAttributes \"PHAST_Target,PHAST_Product,Name,ID,product\" && rm -f prophage ;
 
   # Add track with prophage sequences
-  [ -s ${phigaro} ] || flatfile-to-json.pl --bed ${phigaro} --key \"Putative prophage Sequences\" \
+  [ ! -s  ${phigaro} ] || flatfile-to-json.pl --bed ${phigaro} --key \"Putative prophage Sequences\" \
   --trackType CanvasFeatures --trackLabel \"${prefix} putative prophage sequences predicted by Phigaro\" \
   --config '{ "style": { "color": "blue" }, "displayMode": "compact" }' --out \"data\" ;
   remove-track.pl --trackLabel \"${prefix} putative prophage sequences predicted by Phigaro\" --dir data &> /tmp/error
 
-  [ -s ${phigaro} ] || echo \' { \"compress\" : 0, \
+  [ ! -s  ${phigaro} ] || echo \' { \"compress\" : 0, \
                                      \"displayMode\" : \"compact\", \
                                      \"key\" : \"Putative prophage Sequences\", \
                                      \"label\" : \"${prefix} putative prophage sequences predicted by Phigaro\", \
@@ -117,14 +117,14 @@ process jbrowse {
                                      \"urlTemplate\" : \"tracks/${prefix} putative prophage sequences predicted by Phigaro/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
 
   # Add track with GIs
-  [ -s ${genomic_islands} ] || flatfile-to-json.pl --bed ${genomic_islands} --key \"Genomic Islands\" \
+  [ ! -s  ${genomic_islands} ] || flatfile-to-json.pl --bed ${genomic_islands} --key \"Genomic Islands\" \
                               --trackType CanvasFeatures --trackLabel \"${prefix} genomic islands\" \
                               --config '{ "style": { "color": "cyan" }, "displayMode": "compact" }' --out \"data\" ;
 
   # Remove track for configuration
-  [ -s ${genomic_islands} ] || remove-track.pl --trackLabel \"${prefix} genomic islands\" --dir data &> /tmp/error
+  [ ! -s  ${genomic_islands} ] || remove-track.pl --trackLabel \"${prefix} genomic islands\" --dir data &> /tmp/error
   # Re-create
-  [ -s ${genomic_islands} ] || echo \' { \"compress\" : 0, \
+  [ ! -s  ${genomic_islands} ] || echo \' { \"compress\" : 0, \
                                     \"displayMode\" : \"compact\", \
                                     \"key\" : \"Genomic Islands\", \
                                     \"label\" : \"${prefix} genomic islands\", \
@@ -135,12 +135,12 @@ process jbrowse {
                                     \"urlTemplate\" : \"tracks/${prefix} genomic islands/{refseq}/trackData.json\" } \' | add-track-json.pl  data/trackList.json
 
   # Add track with rRNA sequences
-  [ -s ${barrnap} ] || flatfile-to-json.pl --gff ${barrnap} --key \"rRNA Sequences\" \
+  [ ! -s  ${barrnap} ] || flatfile-to-json.pl --gff ${barrnap} --key \"rRNA Sequences\" \
   --trackType CanvasFeatures --trackLabel \"${prefix} rRNA sequences\" \
   --config '{ "style": { "color": "blue" }, "displayMode": "compact" }' --out \"data\" ;
 
   remove-track.pl --trackLabel \"${prefix} rRNA sequences\" --dir data &> /tmp/error
-  [ -s ${barrnap} ] || echo \' { \"compress\" : 0, \
+  [ ! -s  ${barrnap} ] || echo \' { \"compress\" : 0, \
                                  \"displayMode\" : \"compact\", \
                                  \"key\" : \"rRNA Sequences\", \
                                  \"label\" : \"${prefix} rRNA sequences\", \
