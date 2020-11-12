@@ -26,8 +26,25 @@ Default configuration:
              * General parameters
              */
 
-  // Input genome -- Always in FASTA format
+  // The input file formats are mutually exclusive. Users must choose between giving an
+  // assembled genome or raw reads to the pipeline.
+  // Input genome -- Always in FASTA format. Users can annotate more than one genome
+  // at once by using glob patters, such as "*.fasta"
     genome = ''
+
+  // Input raw reads -- Always in FASTQ format. When using raw reads, the fmalmeida/mpgap
+  // is also required to be available. Understand that nextflow loads and uses the reads
+  // in channels randomly so we can't guarantee that they will have the same order. Thus,
+  // if using more than one NGS read type, you must give path to reads of one sample per
+  // execution, otherwise the reads can end up mixed and confused. However, if using only
+  // one NGS read type, only illumina paired ends for example, you can specify reads of
+  // various samples in one run using glob patters such as "*{1,2}.fastq" since nextflow
+  // will load all the pairs into the channel, all samples will be analysed, however, it
+  // only works when using one NGS read type.
+    sreads_single = '' // Path to unpaired illumina reads, if available for the sample
+    sreads_paired = '' // Path to paired end illumina reads, if available for the sample
+    lreads = '' // Path to longreads (ONT or Pacbio), if available for the sample
+    lreads_type = '' // Longreads is used? If so, from which tech it is? Options: [ nanopore or pacbio ]
 
   // Main output folder name. More than one bacannot annotation can be redirected
   // to the same output parameter. It is good to keep related annotations together.
@@ -63,6 +80,15 @@ Default configuration:
 
   // Use rnammer instead of Barrnap? False or True?
     prokka_use_rnammer = false
+
+            /*
+             * Resfinder optional parameter
+             */
+
+  // Species panel to be used when annotating with Resfinder. If blank,
+  // it will not be executed. Must be identical (without the *) as written
+  // in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
+    resfinder_species = ''
 
             /*
              * Handling the execution of processes
@@ -110,24 +136,27 @@ Default configuration:
     blast_virulence_minid = 90
 
   // Virulence genes coverage threshold
-    blast_virulence_mincov = 90
+    blast_virulence_mincov = 80
 
   // AMR genes identity threshold
     blast_resistance_minid= 90
 
   // AMR genes coverage threshold
-    blast_resistance_mincov = 90
+    blast_resistance_mincov = 80
 
   // MGEs (ICEs and Phages) identity threshold
-    blast_MGEs_minid = 85
+    blast_MGEs_minid = 65
 
   // MGEs (ICEs and Phages) coverage threshold
-    blast_MGEs_mincov = 85
+    blast_MGEs_mincov = 65
 
             /*
              * Configure optional Methylation annotation with nanopolish
              * If left blank, it will not be executed. When both parameters are set
              * it will automatically execute nanopolish to call methylation
+             *
+             * For using these parameters, the pipeline must be used with one sample at a time
+             * since we can't guaratee the order the files are picked by nextflow.
              */
 
     nanopolish_fast5_dir = ''   // Path to directory containing FAST5 files
@@ -199,5 +228,9 @@ Default configuration:
 
       withLabel: 'kofam' {
           container = 'fmalmeida/bacannot:kofamscan'
+      }
+
+      withLabel: 'assembly' {
+          container = 'fmalmeida/mpgap'
       }
   }

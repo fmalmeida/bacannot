@@ -27,6 +27,7 @@ It wraps up the following tools and databases:
 * `KEGGDecoder <https://github.com/bjtully/BioData/tree/master/KEGGDecoder>`_
 * `IslandPath-DIMOB <https://github.com/brinkmanlab/islandpath>`_
 * `Plasmidfinder <https://cge.cbs.dtu.dk/services/PlasmidFinder/>`_
+* `Resfinder <https://cge.cbs.dtu.dk/services/ResFinder/>`_
 * `JBrowse <http://jbrowse.org/>`_
 
 .. toctree::

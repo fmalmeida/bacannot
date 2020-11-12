@@ -6,9 +6,25 @@ Manual
 Input
 """""
 
-    * path to genome fasta file
-    * path to a directory of FAST5 files modified to contain basecall information (optional)
-    * path to ONT fastq reads (optional)
+    * path to genome fasta file **OR** to raw reads.
+        - In order to get the best results from this pipeline, users are advised to analyse one sample at a time.
+    * path to a directory of FAST5 and path to ONT fastq to be used for methylation calling (optional)
+
+Users can perform the annotation analysis using wither raw reads or assembled genomes as input. When raw reads are used, Unicycler is used to create
+shortreads-only and hybrid assemblies while Flye is used to create longreads-only assemblies the annotation process.
+
+.. note::
+
+  Users can analyse more than one genome at once by using glob patterns such as "\*.fasta".
+  However, this is **completely incompatible** with the use of FAST5 information for
+  methylation calling in these cases users must analyse **one** sample at a time.
+
+.. note::
+
+  Users can analyse more than one sample from raw reads once by using glob patterns such as "\*\_sreads\_{1,2}.fastq".
+  However this is **completely incompatible** with the combination of different raw read types such as paired shortreads,
+  unpaired shortreads and/or longreads. When combining different sequencing libraries users must analyse **one** sample at a time.
+  This is also true for the methylation calling information as said above.
 
 .. note::
 
@@ -16,8 +32,8 @@ Input
    When setting the parameters, please **always** give full path to a hard file,
    not to a link. This will prevent file access fail.
 
-Usage example
-"""""""""""""
+Parameters manual
+"""""""""""""""""
 
 ::
 
@@ -53,9 +69,29 @@ Usage example
      - Number of threads to use
 
    * - ``--genome``
-     - Y
+     - Y (if raw reads are not used)
      - NA
-     - Genome to be annotated in FASTA file
+     - Genome(s) to be annotated in FASTA file. Mutually exclusively with the use of raw reads.
+
+   * - ``--sreads_single``
+     - N (Y if assembled genome is not used)
+     - NA
+     - Path to short unpaired reads.
+
+   * - ``--sreads_paired``
+     - N (Y if assembled genome is not used)
+     - NA
+     - Path to short paired reads
+
+   * - ``--lreads``
+     - N (Y if assembled genome is not used)
+     - NA
+     - Path to longreads (ONT or Pacbio)
+
+   * - ``--lreads_type``
+     - N (Y if longreads are used)
+     - NA
+     - Longreads is used? If so, from which tech it is? Options: [ 'nanopore' or 'pacbio' ]
 
    * - ``--bedtools_merge_distance``
      - N
@@ -116,6 +152,11 @@ Usage example
      - N
      - 85
      - Coverage (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
+
+   * - ``--resfinder_species``
+     - N
+     - NA
+     - Activate the resfinder annotation process using the give species panel. Check them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
    * - ``--not_run_virulence_search``
      - N

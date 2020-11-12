@@ -50,10 +50,15 @@ def helpMessage() {
                                                    distance accepted between features for merging.
 
                                   Configuring Input options
-                    (Users can give either a genome in FASTA file or raw reads)
+                (Users can give either a genome in FASTA file or raw reads in FASTQ)
 
-    --genome <string>                              User has as input only one genome. Set path to the
-                                                   genome in FASTA file.
+    --genome <string>                              Set path to the genome in FASTA file. Users can annotate more than
+                                                   one genome at once by using glob patters, such as "*.fasta"
+
+                ( If used together at once, the different NGS reads, short and long reads,
+                 must be from the same sample, one sample at a time. If you want to give
+                 more than one sample at once you must use only one NGS read type as input
+                 since we can't guaratee the order they are picked by nextflow )
 
     --sreads_paired                                Illumina paired end reads in fastq for assembly before annotation.
 
@@ -116,8 +121,11 @@ def helpMessage() {
 
 
                             Configure optional Methylation annotation with nanopolish
-                            If left blank, it will not be executed. And, with both parameters are set
-                            it will automatically execute nanopolish to call methylation
+
+                    ( If left blank, it will not be executed. And, with both parameters are set
+                      it will automatically execute nanopolish to call methylation. For using
+                      these parameters, the pipeline must be used with one sample at a time
+                      since we can't guaratee the order the files are picked by nextflow )
 
     --nanopolish_fast5_dir <string>                Path to directory containing FAST5 files
 
@@ -130,10 +138,21 @@ def helpMessage() {
 def exampleMessage() {
    log.info """
    Example Usages:
+
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
 \$ nextflow run fmalmeida/bacannot --threads 3 --outdir kp25X --genome kp_ont.contigs.fasta --bedtools_merge_distance -20 --blast_virulence_minid 90 \
 --blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --nanopolish_fast5_dir ./fast5_pass --nanopolish_fastq_reads ./kp_ont.fastq \
 --resfinder_species "Klebsiella"
+
+     Various genomes at once
+\$ nextflow run fmalmeida/bacannot --threads 3 --outdir teste --genome "input/*.fasta" --resfinder_species "Escherichia coli"
+
+     Various paired end shortreads samples at once
+\$ nextflow run fmalmeida/bacannot --threads 3 --outdir teste --sreads_paired "*{1,2}.fastq" --resfinder_species "Klebsiella"
+
+     Combining different NGS reads -- Must be used with only one sample at a time.
+\$ nextflow run fmalmeida/bacannot --threads 3 --outdir teste_one_sample --sreads_paired "sample1_{1,2}.fastq" --lreads "sample1_nanopore.fastq" \
+--lreads_type "nanopore" --sreads_single "sample1_sr_merged.fastq"
 
 
 """.stripIndent()
@@ -144,8 +163,36 @@ def exampleMessage() {
  */
 
 // Input parameters
+if (params.genome && (params.sreads_paired || params.sreads_single || params.lreads)) {
+  log.info """
+  ERROR!
+
+  A minor error has occurred
+    ==> User used raw reads and assembled genomes as input.
+
+  You cannot use both types of inputs together. Used either assembled genomes OR raw reads.
+
+  Cheers.
+  """.stripIndent()
+
+  exit 1
+}
 
 // Checking the use of lreads
+if (params.lreads && !params.lreads_type) {
+  log.info """
+  ERROR!
+
+  A minor error has occurred
+    ==> User used --lreads but forgot --lreads_type.
+
+  When giving longreads as input, you must tell the pipeline from wich tech it comes from: 'nanopore' or 'pacbio'
+
+  Cheers.
+  """.stripIndent()
+
+  exit 1
+}
 
 // Prokka parameters
 if (params.prokka_kingdom && !params.prokka_genetic_code) {
@@ -180,6 +227,7 @@ if ((params.nanopolish_fast5_dir && !params.nanopolish_fastq_reads) || (!params.
 
   exit 1
 }
+
 /*
  * Check if user needs help
  */

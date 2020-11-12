@@ -1,4 +1,4 @@
-# Bacterial Annotation (bacannot) Pipeline
+explicitly# Bacterial Annotation (bacannot) Pipeline
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) ![](https://img.shields.io/github/v/release/fmalmeida/bacannot) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot) ![](https://img.shields.io/badge/dependencies-docker-informational) [![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/badge/Nextflow-v20.07-yellowgreen)
 
@@ -16,6 +16,7 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 * [Phigaro](https://github.com/bobeobibo/phigaro) for prophage sequences prediction
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
 * [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) for in silico plasmid detection
+* [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) for _in silico_ resistance phenotype prediction of known species
 * And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)
 
 ## Further reading
@@ -31,6 +32,7 @@ This pipeline has two complementary pipelines (also written in nextflow) for [NG
   * [Usage Examples](https://github.com/fmalmeida/bacannot#usage-examples)
   * [Configuration File](https://github.com/fmalmeida/bacannot#using-the-configuration-file)
   * [Interactive and graphical execution](https://github.com/fmalmeida/bacannot#interactive-graphical-configuration-and-execution)
+* [Known issues]((https://github.com/fmalmeida/bacannot#known-issues))
 
 ## Requirements
 
@@ -51,6 +53,7 @@ This images have been kept separate to not create massive Docker image and to av
           docker pull fmalmeida/bacannot:kofamscan
           docker pull fmalmeida/bacannot:jbrowse
           docker pull fmalmeida/bacannot:renv
+          docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
 
     * Each image can be built by using the Dockerfiles in the docker folder
 
@@ -132,6 +135,21 @@ It will result in the following:
 
 This pipeline also accepts that users track its execution of processes via [nextflow tower](https://tower.nf/). For that users will have to use the parameters `--use_tower` and `--tower_token`.
 
+## Known issues
+
+### Mixed input formats
+
+Various issues can arise when user mixes different samples and different input format types. We tried to summarise all of them here. The majority of them are caused by the simple fact that nextflow channels are created and used randomly and we can't ensure the order of inputs used. **All of these issues have a simple solution: to use the pipeline with only one sample at a time**, and if desired creating an "outside" loop for executing it to various samples.
+
+* Mixed samples and fast5 for methylation calling.
+    + Nanopolish methylation calling must be used with only one sample as input (**either** from assembled genome **or** raw reads) since we cannot ensure the order that nextflow will grab the inputs.
+    + Otherwise, the inputs could be used in a mixed wrong manner, such as sample 1 genome with the fast5 from sample 2.
+* Mixed NGS read types
+    + When combining different NGS reads (shortreads paired, shortreads unpaired and/or longreads) the pipeline must be used with inputs of only one sample since we cannot ensure the order that nextflow will grab the inputs.
+    + Otherwise, the inputs could be used in a mixed wrong manner, such as shortreads paired from sample 1 with longreads from sample 2.
+
+> For these cases, users are advised to **not** use global patterns that would make nextflow grab files from different samples. Users are advised to explicitly set path to the exact inputs of the same sample.
+
 # Citation
 
 Please cite this pipeline using our Zenodo tag or directly via the github url. Also, whenever used/helpful, remember to cite the following software:
@@ -148,4 +166,5 @@ Please cite this pipeline using our Zenodo tag or directly via the github url. A
 * [Phigaro](https://github.com/bobeobibo/phigaro) for prophage sequences prediction
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
 * [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) for in silico plasmid detection
+* [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) for _in silico_ resistance phenotype prediction of known species
 * And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)

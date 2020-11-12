@@ -12,7 +12,7 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 1. Installing Docker
   * Read more in their `manual <https://docs.docker.com/>`_
   * Or give this `in-house script <https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh>`_ a try.
-  
+
 2. Installing Nextflow
 
     ``curl -s https://get.nextflow.io | bash``
@@ -38,6 +38,10 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 6. (Optional) Install nf-core utility
 
     ``pip install nf-core>=1.10``
+
+7. (Optional) Docker image for using raw reads as input
+
+    ``docker pull fmalmeida/mpgap``
 
 .. note::
 
