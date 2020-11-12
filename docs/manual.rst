@@ -10,8 +10,8 @@ Users can perform the annotation analysis using wither raw reads or assembled ge
 shortreads-only and hybrid assemblies while Flye is used to create longreads-only assemblies the annotation process.
 
 * path to genome fasta file **OR** to raw reads.
-    * In order to get the best results from this pipeline, users are advised to analyse one sample at a time.
 * path to a directory of FAST5 and path to ONT fastq to be used for methylation calling (optional)
+* In order to get the best results from this pipeline, users are advised to analyse one sample at a time.
 
 .. note::
 
