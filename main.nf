@@ -36,14 +36,11 @@ def helpMessage() {
    OBS: These reports can also be enabled through the configuration file.
    OPTIONS:
 
-                                  General Parameters - Mandatory
+                                  General Parameters
 
     --outdir <string>                              Output directory name
 
     --threads <int>                                Number of threads to use
-
-    --genome <string>                              User has as input only one genome. Set path to the
-                                                   genome in FASTA file.
 
     --bedtools_merge_distance                      By default, this process is not executed. For execution
                                                    one needs to provide a value.Minimum number of overlapping
@@ -51,6 +48,16 @@ def helpMessage() {
                                                    such as -20, means the number of required overlapping bases
                                                    for merging. Positive values, such as 5, means the maximum
                                                    distance accepted between features for merging.
+
+                                  Configuring Input options
+                    (Users can give either a genome in FASTA file or raw reads)
+
+    --genome <string>                              User has as input only one genome. Set path to the
+                                                   genome in FASTA file.
+    --sreads_paired                                Illumina paired end reads in fastq for assembly before annotation.
+    --sreads_single                                Illumina unpaired reads in fastq for assembly before annotation.
+    --lreads                                       Path to longreads in fastq assembly before annotation (ONT or Pacbio).
+    --lreads_type                                  Tells the technology of the input longreads: [ nanopore or pacbio ].
 
 
                                   Prokka complementary parameters
@@ -132,6 +139,10 @@ def exampleMessage() {
  * Check for errors
  */
 
+// Input parameters
+
+// Checking the use of lreads
+
 // Prokka parameters
 if (params.prokka_kingdom && !params.prokka_genetic_code) {
   log.info """
@@ -207,7 +218,12 @@ if (params.get_config) {
 params.outdir = 'outdir'
 params.threads = 2
 params.bedtools_merge_distance = ''
+// Input parameters
 params.genome = ''
+params.sreads_single = ''
+params.sreads_paired = ''
+params.lreads = ''
+params.lreads_type = ''
 // Prokka parameters
 params.prokka_kingdom = ''
 params.prokka_genetic_code = false
@@ -239,7 +255,7 @@ log.info "=============================================================="
 log.info " Docker-based, fmalmeida/bacannot, Genome Annotation Pipeline "
 log.info "=============================================================="
 def summary = [:]
-summary['Input genomes'] = params.genome
+if (params.genome) { summary['Input genomes'] = params.genome }
 summary['Output dir']   = "${params.outdir}"
 summary['Threads'] = params.threads
 if (params.not_run_virulence_search == false) {
@@ -265,6 +281,13 @@ log.info "=============================================================="
 /*
  * Include modules (Execution setup)
  */
+
+// Unicycler assembly
+include { unicycler } from './modules/assembly/unicycler.nf' params(outdir: params.outdir,
+  sreads_single: params.sreads_single, sreads_paired: params.sreads_paired,
+  threads: params.threads, lreads: params.lreads)
+
+// Flye assembly
 
 // Prokka annotation
 include { prokka } from './modules/prokka.nf' params(outdir: params.outdir,
@@ -371,7 +394,7 @@ include { report } from './modules/rmarkdown_reports.nf' params(outdir: params.o
  * Define custom workflows
  */
 
-// Only for a single genome
+// Bacannot pipeline
 workflow bacannot_nf {
   take:
     input_genome
@@ -544,10 +567,20 @@ workflow bacannot_nf {
 
 workflow {
 
-  bacannot_nf(Channel.fromPath(params.genome),
-             (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(),
-             (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
-             )
+  if (params.sreads_single || params.sreads_paired) {
+    unicycler((params.sreads_paired) ? Channel.fromFilePairs( params.sreads_paired, flat: true, size: 2 ) : Channel.value(['', '', '']),
+              (params.sreads_single) ? Channel.fromPath( params.sreads_single )                           : Channel.value(''),
+              (params.lreads)        ? Channel.fromPath( params.lreads )                                  : Channel.value(''))
+    bacannot_nf(unicycler.out[1],
+               (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(),
+               (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
+               )
+  } else {
+    bacannot_nf(Channel.fromPath(params.genome),
+               (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(),
+               (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
+               )
+  }
 }
 
 
