@@ -17,8 +17,8 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'Generic Archaeal and Bacterial Annotation (bacannot) pipeline'
-copyright = '2019, Generic Archaeal and Bacterial Annotation (bacannot) pipeline'
+project = 'Bacannot: a generic genome annotation pipeline for prokaryotes'
+copyright = '2020, fmalmeida/bacannot: A pipeline for an easy but comprehensive annotation of prokaryotic genomes'
 author = 'Felipe Marques de Almeida'
 
 

@@ -20,14 +20,41 @@
                 },
                 "genome": {
                     "type": "string",
-                    "description": "Input genome for annotation",
+                    "description": "Input genome for annotation (can't be used with raw reads)",
                     "fa_icon": "fas fa-book",
-                    "help_text": "Path to the input query genome to be annotated"
+                    "help_text": "Path to the input query genome to be annotated. Cannot be used with raw reads at the same time."
+                },
+                "sreads_single": {
+                    "type": "string",
+                    "fa_icon": "fas fa-book",
+                    "description": "Path to input short unpaired reads (can't be used with assembled genomes)",
+                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
+                },
+                "sreads_paired": {
+                    "type": "string",
+                    "fa_icon": "fas fa-book",
+                    "description": "Path to input short paired end reads (can't be used with assembled genomes)",
+                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
+                },
+                "lreads": {
+                    "type": "string",
+                    "fa_icon": "fas fa-book",
+                    "description": "Path to input longreads (ONT or Pacbio) (can't be used with assembled genomes)",
+                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
+                },
+                "lreads_type": {
+                    "type": "string",
+                    "fa_icon": "fas fa-quote-left",
+                    "description": "Using longreads? From which tech it is? Nanopore or Pacbio?",
+                    "help_text": "Must be used if giving longreads as input.",
+                    "enum": [
+                        "nanopore",
+                        "pacbio"
+                    ]
                 }
             },
             "required": [
-                "outdir",
-                "genome"
+                "outdir"
             ]
         },
         "nf_tower_options": {
@@ -108,6 +135,20 @@
                 "prokka_kingdom",
                 "prokka_use_rnammer"
             ]
+        },
+        "resfinder_optional_process": {
+            "title": "Resfinder optional process",
+            "type": "object",
+            "description": "Select the resfinder species panel to use",
+            "default": "",
+            "properties": {
+                "resfinder_species": {
+                    "type": "string",
+                    "description": "Select the resfinder species panel to use",
+                    "help_text": "If blank, resfinde will not be executed. Users must check Resfinder website to know the panels."
+                }
+            },
+            "fa_icon": "fas fa-cog"
         },
         "select_unselect_tasks_to_be_run": {
             "title": "Select/unselect tasks to be run",
@@ -257,6 +298,9 @@
         },
         {
             "$ref": "#/definitions/prokka_optional_parameters"
+        },
+        {
+            "$ref": "#/definitions/resfinder_optional_process"
         },
         {
             "$ref": "#/definitions/select_unselect_tasks_to_be_run"
