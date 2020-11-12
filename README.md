@@ -1,4 +1,4 @@
-explicitly# Bacterial Annotation (bacannot) Pipeline
+# Bacterial Annotation (bacannot) Pipeline
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) ![](https://img.shields.io/github/v/release/fmalmeida/bacannot) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot) ![](https://img.shields.io/badge/dependencies-docker-informational) [![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/badge/Nextflow-v20.07-yellowgreen)
 
@@ -32,7 +32,7 @@ This pipeline has two complementary pipelines (also written in nextflow) for [NG
   * [Usage Examples](https://github.com/fmalmeida/bacannot#usage-examples)
   * [Configuration File](https://github.com/fmalmeida/bacannot#using-the-configuration-file)
   * [Interactive and graphical execution](https://github.com/fmalmeida/bacannot#interactive-graphical-configuration-and-execution)
-* [Known issues]((https://github.com/fmalmeida/bacannot#known-issues))
+* [Known issues](https://github.com/fmalmeida/bacannot#known-issues)
 
 ## Requirements
 
@@ -139,7 +139,7 @@ This pipeline also accepts that users track its execution of processes via [next
 
 ### Mixed input formats
 
-Various issues can arise when user mixes different samples and different input format types. We tried to summarise all of them here. The majority of them are caused by the simple fact that nextflow channels are created and used randomly and we can't ensure the order of inputs used. **All of these issues have a simple solution: to use the pipeline with only one sample at a time**, and if desired creating an "outside" loop for executing it to various samples.
+Some issues can arise when user mixes different samples and different input format types. We tried to summarise them here. Basically, are caused by the simple fact that nextflow's channels are created and used randomly and we can't ensure the order of inputs used. **All of these issues have a simple solution: to use the pipeline with only one sample at a time**, and if desired creating an "outside" loop for executing it to various samples.
 
 * Mixed samples and fast5 for methylation calling.
     + Nanopolish methylation calling must be used with only one sample as input (**either** from assembled genome **or** raw reads) since we cannot ensure the order that nextflow will grab the inputs.
