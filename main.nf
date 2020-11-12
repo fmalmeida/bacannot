@@ -54,9 +54,13 @@ def helpMessage() {
 
     --genome <string>                              User has as input only one genome. Set path to the
                                                    genome in FASTA file.
+
     --sreads_paired                                Illumina paired end reads in fastq for assembly before annotation.
+
     --sreads_single                                Illumina unpaired reads in fastq for assembly before annotation.
+
     --lreads                                       Path to longreads in fastq assembly before annotation (ONT or Pacbio).
+
     --lreads_type                                  Tells the technology of the input longreads: [ nanopore or pacbio ].
 
 
@@ -288,6 +292,8 @@ include { unicycler } from './modules/assembly/unicycler.nf' params(outdir: para
   threads: params.threads, lreads: params.lreads)
 
 // Flye assembly
+include { flye } from './modules/assembly/flye.nf' params(outdir: params.outdir,
+  threads: params.threads, lreads: params.lreads, lreads_type: params.lreads_type)
 
 // Prokka annotation
 include { prokka } from './modules/prokka.nf' params(outdir: params.outdir,
@@ -572,6 +578,12 @@ workflow {
               (params.sreads_single) ? Channel.fromPath( params.sreads_single )                           : Channel.value(''),
               (params.lreads)        ? Channel.fromPath( params.lreads )                                  : Channel.value(''))
     bacannot_nf(unicycler.out[1],
+               (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(),
+               (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
+               )
+  } else if ((params.lreads && params.lreads_type) && (!params.sreads_paired && !params.sreads_single)) {
+    flye(Channel.fromPath( params.lreads ))
+    bacannot_nf(flye.out[1],
                (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(),
                (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
                )
