@@ -1,266 +1,27 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
+import org.yaml.snakeyaml.Yaml
 
 /*
  * Generic Pipeline for Prokariotic Genome Annotation
  */
 
 /*
- * Define help message
+ * Include functions
  */
+include { helpMessage } from './nf_functions/help.nf'
+include { exampleMessage } from './nf_functions/examples.nf'
+include { logMessage } from './nf_functions/log.nf'
+include { write_csv } from './nf_functions/writeCSV.nf'
+include { parse_csv } from './nf_functions/parseCSV.nf'
+include { paramsCheck } from './nf_functions/paramsCheck.nf'
+include { filter_ch } from './nf_functions/parseCSV.nf'
 
-def helpMessage() {
-   log.info """
-   Usage:
-   nextflow run fmalmeida/bacannot [--help] [ -c nextflow.config ] [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
-   Comments:
-
-   This pipeline contains a massive amount of configuration variables and its usage as CLI parameters would cause the command
-   to be huge. Therefore, it is extremely recommended to use the nextflow.config configuration file in order to make
-   parameterization easier and more readable.
-
-   Creating a configuration file:
-
-   nextflow run fmalmeida/bacannot [--get_config]
-
-   Show command line examples:
-
-   nextflow run fmalmeida/bacannot --examples
-
-   Execution Reports:
-
-   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-report
-   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-trace
-   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-timeline
-
-   OBS: These reports can also be enabled through the configuration file.
-   OPTIONS:
-
-                                  General Parameters
-
-    --outdir <string>                              Output directory name
-
-    --threads <int>                                Number of threads to use
-
-    --bedtools_merge_distance                      By default, this process is not executed. For execution
-                                                   one needs to provide a value.Minimum number of overlapping
-                                                   bases for gene merge using bedtools merge. Negative values,
-                                                   such as -20, means the number of required overlapping bases
-                                                   for merging. Positive values, such as 5, means the maximum
-                                                   distance accepted between features for merging.
-
-                                  Configuring Input options
-                (Users can give either a genome in FASTA file or raw reads in FASTQ)
-
-    --genome <string>                              Set path to the genome in FASTA file. Users can annotate more than
-                                                   one genome at once by using glob patters, such as "*.fasta"
-
-                ( If used together at once, the different NGS reads, short and long reads,
-                 must be from the same sample, one sample at a time. If you want to give
-                 more than one sample at once you must use only one NGS read type as input
-                 since we can't guaratee the order they are picked by nextflow )
-
-    --sreads_paired                                Illumina paired end reads in fastq for assembly before annotation.
-
-    --sreads_single                                Illumina unpaired reads in fastq for assembly before annotation.
-
-    --lreads                                       Path to longreads in fastq assembly before annotation (ONT or Pacbio).
-
-    --lreads_type                                  Tells the technology of the input longreads: [ nanopore or pacbio ].
-
-
-                                  Prokka complementary parameters
-
-    --prokka_kingdom <string>                      Prokka annotation mode. Possibilities (default 'Bacteria'):
-                                                   Archaea|Bacteria|Mitochondria|Viruses
-
-    --prokka_genetic_code <int>                    Genetic Translation code. Must be set if kingdom is not
-                                                   default (in blank).
-
-    --prokka_use_rnammer                           Tells prokka wheter to use rnammer instead of barrnap.
-
-
-                                  Blast alignment parameters
-
-    --blast_virulence_minid                        Min. identity % for virulence annotation. Default 90.
-
-    --blast_virulence_mincov                       Min. gene coverage for virulence annotation. Default 80.
-
-    --blast_resistance_minid                       Min. identity % for resistance annotation. Default 90.
-
-    --blast_resistance_mincov                      Min. gene coverage for resistance annotation. Default 80.
-
-    --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation. Default 65.
-
-    --blast_MGEs_mincov                            Min. query coverage for ICEs and prophage annotation. Default 65.
-
-    --plasmids_minid                               Min. identity % for plasmid detection. Default 90.
-
-    --plasmids_mincov                              Min. query coverage for plasmid detection. Default 60.
-
-
-                                  Configure resfinder optional parameter
-
-    --resfinder_species                            It sets the species to be used for Resfinder annotation. If blank,
-                                                   it will not be executed. Must be identical (without the *) as written
-                                                   in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
-
-                                  Configure Optional processes
-
-    --not_run_virulence_search                     Tells wheter you do not want to execute virulence annotation
-
-    --not_run_resistance_search                    Tells wheter you do not want to execute resistance annotation
-
-    --not_run_iceberg_search                       Tells wheter you do not want to execute ICE annotation
-
-    --not_run_prophage_search                      Tells wheter you do not want to execute prophage annotation
-
-    --not_run_plasmid_search                       Tells wheter you do not want to execute plasmid detection
-
-    --not_run_kofamscan                            Tells wheter you do not want to execute KO annotation with kofamscan
-
-
-                            Configure optional Methylation annotation with nanopolish
-
-                    ( If left blank, it will not be executed. And, with both parameters are set
-                      it will automatically execute nanopolish to call methylation. For using
-                      these parameters, the pipeline must be used with one sample at a time
-                      since we can't guaratee the order the files are picked by nextflow )
-
-    --nanopolish_fast5_dir <string>                Path to directory containing FAST5 files
-
-    --nanopolish_fastq_reads <string>              Path to fastq files (file related to FAST5 files above)
-
-
-""".stripIndent()
-}
-
-def exampleMessage() {
-   log.info """
-   Example Usages:
-
-      Simple Klebsiella genome annotation using all pipeline's optional annotation processes
-\$ nextflow run fmalmeida/bacannot --threads 3 --outdir kp25X --genome kp_ont.contigs.fasta --bedtools_merge_distance -20 --blast_virulence_minid 90 \
---blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --nanopolish_fast5_dir ./fast5_pass --nanopolish_fastq_reads ./kp_ont.fastq \
---resfinder_species "Klebsiella"
-
-     Various genomes at once
-\$ nextflow run fmalmeida/bacannot --threads 3 --outdir teste --genome "input/*.fasta" --resfinder_species "Escherichia coli"
-
-     Various paired end shortreads samples at once
-\$ nextflow run fmalmeida/bacannot --threads 3 --outdir teste --sreads_paired "*{1,2}.fastq" --resfinder_species "Klebsiella"
-
-     Combining different NGS reads -- Must be used with only one sample at a time.
-\$ nextflow run fmalmeida/bacannot --threads 3 --outdir teste_one_sample --sreads_paired "sample1_{1,2}.fastq" --lreads "sample1_nanopore.fastq" \
---lreads_type "nanopore" --sreads_single "sample1_sr_merged.fastq"
-
-
-""".stripIndent()
-}
 
 /*
- * Check for errors
+ * Check parameters
  */
-
-// Input parameters
-if (params.genome && (params.sreads_paired || params.sreads_single || params.lreads)) {
-  log.info """
-  ERROR!
-
-  A minor error has occurred
-    ==> User used raw reads and assembled genomes as input.
-
-  You cannot use both types of inputs together. Used either assembled genomes OR raw reads.
-
-  Cheers.
-  """.stripIndent()
-
-  exit 1
-}
-
-// Checking the use of lreads
-if (params.lreads && !params.lreads_type) {
-  log.info """
-  ERROR!
-
-  A minor error has occurred
-    ==> User used --lreads but forgot --lreads_type.
-
-  When giving longreads as input, you must tell the pipeline from wich tech it comes from: 'nanopore' or 'pacbio'
-
-  Cheers.
-  """.stripIndent()
-
-  exit 1
-}
-
-// Prokka parameters
-if (params.prokka_kingdom && !params.prokka_genetic_code) {
-  log.info """
-  ERROR!
-
-  A minor error has occurred
-    ==> User have set --prokka_kingdom but forget --prokka_genetic_code.
-
-  These parameters must be used together. If you change prokka defaults kingdom parameter you must set the genetic code to be used for translation.
-
-  If in doubt with these parameters let it blank, or get more information in Prokka's documentation.
-
-  Cheers.
-  """.stripIndent()
-
-  exit 1
-}
-
-// Methylation parameters
-if ((params.nanopolish_fast5_dir && !params.nanopolish_fastq_reads) || (!params.nanopolish_fast5_dir && params.nanopolish_fastq_reads)) {
-  log.info """
-  ERROR!
-
-  A minor error has occurred
-    ==> User have forget to set both --nanopolish_fast5_dir and --nanopolish_fastq_reads.
-
-  These parameters must be used together. They are the necessary files to call methylations from ONT data with Nanopolish.
-
-  Cheers.
-  """.stripIndent()
-
-  exit 1
-}
-
-/*
- * Check if user needs help
- */
-
-params.help = false
- // Show help emssage
- if (params.help){
-   helpMessage()
-   exit 0
-}
-
-// CLI examples
-params.examples = false
- // Show help emssage
- if (params.examples){
-   exampleMessage()
-   exit 0
-}
-
-/*
- * Does the user wants to download the configuration file?
- */
-
-params.get_config = false
-if (params.get_config) {
-  new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
-  println ""
-  println "bacannot.config file saved in working directory"
-  println "After configuration, run:"
-  println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
-  println "Nice code!\n"
-  exit 0
-}
+paramsCheck()
 
 /*
  * Load general parameters and establish defaults
@@ -271,6 +32,7 @@ params.outdir = 'outdir'
 params.threads = 2
 params.bedtools_merge_distance = ''
 // Input parameters
+params.in_yaml = 'test.yaml'
 params.genome = ''
 params.sreads_single = ''
 params.sreads_paired = ''
@@ -292,43 +54,17 @@ params.blast_resistance_mincov = 80
 params.blast_MGEs_minid = 65
 params.blast_MGEs_mincov = 65
 // Workflow parameters
-params.not_run_plasmid_search = false
-params.not_run_virulence_search = false
-params.not_run_resistance_search = false
-params.not_run_iceberg_search = false
-params.not_run_prophage_search = false
-params.not_run_kofamscan = false
+params.skip_plasmid_search = false
+params.skip_virulence_search = false
+params.skip_resistance_search = false
+params.skip_iceberg_search = false
+params.skip_prophage_search = false
+params.skip_kofamscan = false
 
 /*
  * Define log message
  */
-
-log.info "=============================================================="
-log.info " Docker-based, fmalmeida/bacannot, Genome Annotation Pipeline "
-log.info "=============================================================="
-def summary = [:]
-if (params.genome) { summary['Input genomes'] = params.genome }
-summary['Output dir']   = "${params.outdir}"
-summary['Threads'] = params.threads
-if (params.not_run_virulence_search == false) {
-summary['Blast % ID - Virulence Genes'] = params.blast_virulence_minid
-summary['Blast query coverage - Virulence Genes'] = params.blast_virulence_mincov
-}
-if (params.not_run_resistance_search == false) {
-summary['Blast % ID - AMR Genes'] = params.blast_resistance_minid
-summary['Blast query coverage - AMR Genes'] = params.blast_resistance_mincov
-}
-if (params.not_run_iceberg_search == false | params.not_run_prophage_search == false) {
-summary['Blast % ID - ICEs or Phages'] = params.blast_MGEs_minid
-summary['Blast query coverage - ICEs or Phages'] = params.blast_MGEs_mincov
-}
-if(workflow.revision) summary['Pipeline Release'] = workflow.revision
-summary['Current home']   = "$HOME"
-summary['Current user']   = "$USER"
-summary['Current path']   = "$PWD"
-summary['Configuration file'] = workflow.configFiles[0]
-log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
-log.info "=============================================================="
+logMessage()
 
 /*
  * Include modules (Execution setup)
@@ -336,12 +72,11 @@ log.info "=============================================================="
 
 // Unicycler assembly
 include { unicycler } from './modules/assembly/unicycler.nf' params(outdir: params.outdir,
-  sreads_single: params.sreads_single, sreads_paired: params.sreads_paired,
-  threads: params.threads, lreads: params.lreads)
+  threads: params.threads)
 
 // Flye assembly
 include { flye } from './modules/assembly/flye.nf' params(outdir: params.outdir,
-  threads: params.threads, lreads: params.lreads, lreads_type: params.lreads_type)
+  threads: params.threads)
 
 // Prokka annotation
 include { prokka } from './modules/prokka.nf' params(outdir: params.outdir,
@@ -370,26 +105,26 @@ include { plasmidfinder } from './modules/plasmidfinder.nf' params(outdir: param
   plasmids_minid: params.plasmids_minid, plasmids_mincov: params.plasmids_mincov)
 
 // Virulence annotation with VFDB
-include { vfdb } from './modules/virulence_scan_vfdb.nf' params(outdir: params.outdir,
+include { vfdb } from './modules/vfdb.nf' params(outdir: params.outdir,
   threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
   blast_virulence_mincov: params.blast_virulence_mincov)
 
 // Virulence annotation with Victors
-include { victors } from './modules/virulence_scan_victors.nf' params(outdir: params.outdir,
+include { victors } from './modules/victors.nf' params(outdir: params.outdir,
   threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
   blast_virulence_mincov: params.blast_virulence_mincov)
 
 // Prophage annotation with PHAST
-include { phast } from './modules/prophage_scan_phast.nf' params(outdir: params.outdir,
+include { phast } from './modules/phast.nf' params(outdir: params.outdir,
   threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
   blast_MGEs_mincov: params.blast_MGEs_mincov)
 
 // Prophage annotation with PHIGARO
-include { phigaro } from './modules/prophage_scan_phigaro.nf' params(outdir: params.outdir,
+include { phigaro } from './modules/phigaro.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // ICE annotation with ICEberg db
-include { iceberg } from './modules/ices_scan_iceberg.nf' params(outdir: params.outdir,
+include { iceberg } from './modules/iceberg.nf' params(outdir: params.outdir,
   threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
   blast_MGEs_mincov: params.blast_MGEs_mincov)
 
@@ -397,17 +132,17 @@ include { iceberg } from './modules/ices_scan_iceberg.nf' params(outdir: params.
 include { find_GIs } from './modules/IslandPath_DIMOB.nf' params(outdir: params.outdir)
 
 // AMR annotation with ARGMiner
-include { argminer } from './modules/resistance_scan_argminer.nf' params(outdir: params.outdir,
+include { argminer } from './modules/argminer.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
   blast_resistance_mincov: params.blast_resistance_mincov)
 
 // AMR annotation with Resfinder
-include { resfinder } from './modules/resistance_scan_resfinder.nf' params(outdir: params.outdir,
+include { resfinder } from './modules/resfinder.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
   blast_resistance_mincov: params.blast_resistance_mincov, resfinder_species: params.resfinder_species)
 
 // AMR annotation with AMRFinderPlus
-include { amrfinder } from './modules/amrfinder_scan.nf' params(outdir: params.outdir,
+include { amrfinder } from './modules/amrfinder.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
   blast_resistance_mincov: params.blast_resistance_mincov)
 
@@ -416,7 +151,7 @@ include { card_rgi } from './modules/rgi_annotation.nf' params(outdir: params.ou
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid)
 
 // Methylation calling (Nanopolish)
-include { call_methylation } from './modules/nanopolish_call_methylation.nf' params(outdir: params.outdir,
+include { call_methylation } from './modules/methylation.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // Merging annotation in GFF
@@ -432,11 +167,8 @@ include { gff_merge } from './modules/merge_gff.nf' params(outdir: params.outdir
 // JBrowse
 include { jbrowse } from './modules/jbrowse.nf' params(outdir: params.outdir)
 
-// MongoDB module
-include { mongoDB } from './modules/create_mongoDB.nf' params(outdir: params.outdir)
-
 // Output reports
-include { report } from './modules/rmarkdown_reports.nf' params(outdir: params.outdir,
+include { report } from './modules/reports.nf' params(outdir: params.outdir,
   blast_MGEs_mincov: params.blast_MGEs_mincov,
   blast_MGEs_minid: params.blast_MGEs_minid,
   blast_virulence_mincov: params.blast_virulence_mincov,
@@ -448,16 +180,17 @@ include { report } from './modules/rmarkdown_reports.nf' params(outdir: params.o
  * Define custom workflows
  */
 
+// Parse samplesheet
+include { parse_samplesheet } from './workflows/parse_samples.nf'
+
 // Bacannot pipeline
 workflow bacannot_nf {
   take:
-    input_genome
-    fast5_dir
-    fast5_fastqs
+    input_ch
   main:
 
       // First step -- Prokka annotation
-      prokka(input_genome)
+      prokka(input_ch)
 
       // Second step -- MLST analysis
       mlst(prokka.out[3])
@@ -469,7 +202,7 @@ workflow bacannot_nf {
       compute_gc(prokka.out[3])
 
       // Fifth step -- run kofamscan
-      if (params.not_run_kofamscan == false) {
+      if (params.skip_kofamscan == false) {
         kofamscan(prokka.out[4])
         kegg_decoder(kofamscan.out[1])
         kofamscan_output = kofamscan.out[1]
@@ -477,10 +210,12 @@ workflow bacannot_nf {
         kofamscan_output = Channel.empty()
       }
 
+      /*
+
       // Sixth step -- MGE, Virulence and AMR annotations
 
       // Plasmid finder
-      if (params.not_run_plasmid_search == false) {
+      if (params.skip_plasmid_search == false) {
         plasmidfinder(prokka.out[3])
         plasmidfinder_output = plasmidfinder.out[1]
       } else {
@@ -491,7 +226,7 @@ workflow bacannot_nf {
       find_GIs(prokka.out[2])
 
       // Virulence search
-      if (params.not_run_virulence_search == false) {
+      if (params.skip_virulence_search == false) {
         // VFDB
         vfdb(prokka.out[5])
         vfdb_output = vfdb.out[1]
@@ -504,7 +239,7 @@ workflow bacannot_nf {
       }
 
       // Prophage search
-      if (params.not_run_prophage_search == false) {
+      if (params.skip_prophage_search == false) {
         // PHAST db
         phast(prokka.out[4])
         phast_output = phast.out[1]
@@ -517,7 +252,7 @@ workflow bacannot_nf {
       }
 
       // ICEs search
-      if (params.not_run_iceberg_search == false) {
+      if (params.skip_iceberg_search == false) {
         // ICEberg db
         iceberg(prokka.out[4], prokka.out[3])
         iceberg_output = iceberg.out[1]
@@ -528,7 +263,7 @@ workflow bacannot_nf {
       }
 
       // AMR search
-      if (params.not_run_resistance_search == false) {
+      if (params.skip_resistance_search == false) {
         // AMRFinderPlus
         amrfinder(prokka.out[4])
         amrfinder_output = amrfinder.out[0]
@@ -560,8 +295,8 @@ workflow bacannot_nf {
       }
 
       // Seventh step -- Methylation call
-      if (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) {
-        call_methylation(prokka.out[3], fast5_dir, fast5_fastqs)
+      if (input_lreads.ifEmpty('EMPTY') != 'EMPTY' && input_fast5.ifEmpty('EMPTY') != 'EMPTY') {
+        call_methylation(prokka.out[3], input_fast5, input_lreads)
         methylation_out_1 = call_methylation.out[2]
         methylation_out_2 = call_methylation.out[3]
       } else {
@@ -612,6 +347,7 @@ workflow bacannot_nf {
                           .join(plasmidfinder_output, remainder: true)
                           .join(resfinder_output_1,   remainder: true)
                           .join(resfinder_output_2,   remainder: true))
+      */
 
 }
 
@@ -635,6 +371,26 @@ workflow {
                (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(),
                (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fastq_reads ) : Channel.empty()
                )
+  } else if (params.in_yaml) {
+
+    parameter_yaml = new FileInputStream(new File(params.in_yaml))
+    new Yaml().load(parameter_yaml).each { k, v -> params[k] = v }
+
+    // Read YAML file
+    parse_samplesheet(params.samplesheet)
+
+    // Convert it to CSV for usability
+    samples_ch = write_csv(parse_samplesheet.out)
+
+    // Run unicycler when necessary
+    unicycler(filter_ch(samples_ch, "unicycler"))
+
+    // Run flye when necessary
+    flye(filter_ch(samples_ch, "flye"))
+
+    // Run annotation
+    bacannot_nf(filter_ch(samples_ch, "annotation").mix(flye.out[1], unicycler.out[1]))
+
   } else {
     bacannot_nf(Channel.fromPath(params.genome),
                (params.nanopolish_fast5_dir && params.nanopolish_fastq_reads) ? Channel.fromPath( params.nanopolish_fast5_dir )   : Channel.empty(),

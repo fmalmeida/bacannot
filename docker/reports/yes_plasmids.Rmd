@@ -1,0 +1,25 @@
+## Analysis of plasmid replicons
+
+Plasmid annotation was performed with [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/), a tool for _in silico_ detection of plasmids. Its results are summarized below:
+
+* The complete results can be found in the directory `plasmidfinder_results` under the output directory.
+
+<caption>(#tab:write-table-plasmidfinder) In silico detection of plasmids with Plasmidfinder</caption>
+```{r}
+results <- plasmid_finder_tab
+
+# Get urls
+results$Accession.number <- lapply(results$Accession.number, function(x){
+  url <- paste0("https://www.ncbi.nlm.nih.gov/nuccore/", x)
+  url <- paste0("<a  target=_blank href=", url, ">", x,"</a>" )
+  return(url)
+  })
+
+# Render dt
+datatable(results,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = T)
+```

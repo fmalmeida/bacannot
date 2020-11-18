@@ -1,0 +1,51 @@
+This database was searched with hmmsearch under Prokka pipeline. Since it searchs for protein motifs. Hence, some genes might not be complete and not fully functional. Therefore, I recommend the user to select the gene sequence of interest and do a [blast search](https://blast.ncbi.nlm.nih.gov/Blast.cgi) to confirm its product. Not because the database is not good, but because the annotation may have failed.
+
+All resistance genes from this dataset and its protein ID (local protein ID) are shown in Table \@ref(tab:ncbi-amr-resistance-genes). Aditionally, Figure \@ref(fig:ncbi-resistome-png) shows all gene families annotated using NCBI-amr database and its number of genes.
+
+```{r results='asis'}
+# Create Position Column
+ncbi_amr$`Query Protein Coordinates` <- paste(ncbi_amr$seqname, ":", ncbi_amr$start, "-", ncbi_amr$end)
+
+# To upper
+ncbi_amr$Prokka_ID <- toupper(ncbi_amr$Prokka_ID)
+
+# Parse
+info <- read.csv(url("https://ftp.ncbi.nlm.nih.gov/hmm/NCBIfam-AMR/latest/NCBIfam-AMR.tsv"), sep = "\t", header = FALSE)
+info$V1 <- tolower(info$V1)
+genes <- ncbi_amr %>% select(Prokka_ID, `Query Protein Coordinates`, Prokka_product, Prokka_inference)
+genes <- separate(genes, Prokka_inference, c("method", "prog", "ver", "motif", "db_id"), sep = ":", extra = "merge")
+genes <- merge.data.frame(genes, info, by.x = "db_id", by.y = "V1")
+genes <- genes %>% select("Prokka_ID", "Prokka_product", "db_id", "V2", "V5", "V9", "Query Protein Coordinates")
+
+# Create List
+string.list <- genes %>% pull("V9") %>% unique()
+cat("- Resistance genes found in the query genome:\n")
+cat(paste("\t-", string.list), sep = '\n')
+```
+
+```{r ncbi-amr-resistance-genes}
+# Create urls
+urls <- lapply(genes$db_id, function(x){paste0("https://www.ncbi.nlm.nih.gov/protein/?term=", x)})
+
+# Produce Table
+genes %>%
+  mutate("db_id" = cell_spec(db_id, "html", link = urls)) %>%
+  arrange(Prokka_product) %>%
+kable(caption = "Resistance genes annotated from NCBI-amr curated database", escape = FALSE, col.names = c("Query Protein ID", "Annotated Gene Product", "Reference Motif", "Gene Family", "Gene Name", "Description", "Query Protein Coordinates")) %>%
+  kable_styling(bootstrap_options = bt_opt, full_width = T, fixed_thead = T, font_size = 12) %>%
+  collapse_rows(columns = 1:7, valign = "middle") %>%
+  footnote(general = "The third column contains a link to NCBI showing the resulting protein. Note that, the result shows all species that have that protein annotated using this motif. It is not a similarity search.")
+```
+
+```{r ncbi-resistome-png, fig.align='center', fig.show='hold', fig.cap="Resistance Gene Families annotated using NCBI-amr", out.width="60%"}
+ncbi_count <- genes %>%
+  select("V2", "Prokka_ID") %>% group_by(V2)
+drugs <- plyr::count(ncbi_count, "V2")
+ggplot(drugs, aes(x=V2, y=freq, fill=V2)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("Gene Family") +
+  ylab("Frequency") +
+  guides(fill=guide_legend(title = "Gene Family"))
+```

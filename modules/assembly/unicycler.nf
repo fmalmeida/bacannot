@@ -1,39 +1,36 @@
 process unicycler {
-  publishDir "${params.outdir}/assembly", mode: 'copy'
+  publishDir "${params.outdir}/${id}", mode: 'copy', saveAs: { filename ->
+    if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
+    else if (filename == "unicycler_${id}") "assembly"
+    else null
+  }
   label 'assembly'
   tag { x }
 
   input:
-  tuple val(id), file(sread1), file(sread2)
-  file(sreads)
-  file(lreads)
+  tuple val(id), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly)
 
   output:
   file "unicycler_${id}" // Save everything
-  file("unicycler_${id}.fasta")
+  // Keep tuple structure to mixing channels
+  tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("unicycler_${id}.fasta")
+  file('unicycler_version.txt')
 
   script:
-  x = "Performing a illumina-only assembly with Unicycler"
-  if ((params.sreads_single) && (params.sreads_paired)) {
-    parameter = "-1 $sread1 -2 $sread2 -s $sreads --no_correct"
-  } else if ((params.sreads_single) && (!params.sreads_paired)) {
-    parameter = "-s $sreads --no_correct"
-    id = sreads.getSimpleName()
-  } else if ((params.sreads_paired) && (!params.sreads_single)) {
-    parameter = "-1 $sread1 -2 $sread2"
-  }
-
-  if (params.lreads) {
-    lr_param = "-l $lreads"
-    x = "Performing a hybrid assembly with Unicycler"
-  } else {
-    lr_param = ""
-  }
+  x = (lreads.getName() != "input.4") ? "Performing a hybrid assembly with Unicycler" : "Performing a illumina-only assembly with Unicycler"
+  println "TESTE ${sreads.getName()}"
+  unpaired_param = (sreads.getName() != "input.3") ? "-s $sreads --no_correct" : ""
+  paired_param = (sread1.getName() != "input.1" && sread2.getName() != "input.2") ? "-1 $sread1 -2 $sread2" : ""
+  lr_param = (lreads.getName() != "input.4") ? "-l $lreads" : ""
 
   """
-  unicycler $parameter $lr_param -o unicycler_${id} -t ${params.threads} &> unicycler.log
+  # Save unicycler version
+  unicycler --version > unicycler_version.txt
 
-  # get copy
+  # Run unicycler
+  unicycler $paired_param $unpaired_param $lr_param -o unicycler_${id} -t ${params.threads} &> unicycler.log
+
+  # Save copy for annotation
   cp unicycler_${id}/assembly.fasta unicycler_${id}.fasta
   """
 }

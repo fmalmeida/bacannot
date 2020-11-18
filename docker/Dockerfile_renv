@@ -5,6 +5,10 @@ MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 # Workdir
 WORKDIR /work
 
+# Add local files
+ADD scripts/rscripts /work/rscripts
+ADD reports /work/reports
+
 # Set main R dependencies
 ## Add R repo key
 RUN apt-get update && \
@@ -26,12 +30,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 			DEBIAN_FRONTEND=noninteractive apt-get --option Acquire::Retries=100 --option Acquire::http::Timeout="300" install -yq r-cran-optparse r-cran-rmysql r-bioc-gviz r-cran-xml pandoc
 RUN DEBIAN_FRONTEND=noninteractive apt-get --option Acquire::Retries=100 --option Acquire::http::Timeout="300" install -yq r-cran-plyr libssl-dev libcurl4-openssl-dev libxml2-dev libudunits2-dev libcairo2-dev libpq-dev r-cran-rmarkdown
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git && \
-			git clone https://github.com/fmalmeida/rscripts.git && \
-			cd rscripts && \
-			chmod a+x *.R && \
-			ln -rs $(ls *.R) /usr/bin/ && \
-			Rscript installPack.R && \
+RUN DEBIAN_FRONTEND=noninteractive Rscript /work/rscripts/installPack.R && \
 			apt-get clean
 
 # Download Victors metadata
@@ -46,10 +45,8 @@ RUN mkdir card-data && \
 			tar jxvf card-data.tar.bz2 && \
 			rm card-data.tar.bz2
 
-# Update Rmds
-RUN rm -rf rscripts && \
-			git clone https://github.com/fmalmeida/rscripts.git
-RUN cd rscripts && \
-			chmod a+rx /work/rscripts/reports/*.Rmd
+# Make Rmds executable
+RUN chmod a+rx /work/reports/*.Rmd
 
+# Re-set workidir
 WORKDIR /work

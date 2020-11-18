@@ -1,5 +1,8 @@
 process kofamscan {
-  publishDir "${params.outdir}/${prefix}", mode: 'copy'
+  publishDir "${params.outdir}/${prefix}", mode: 'copy', saveAs: { filename ->
+    if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
+    else "$filename"
+  }
   tag "Executing KOfamscan - Its outputs can be viewed in KEGG-mapper"
   label 'kofam'
 
@@ -8,11 +11,14 @@ process kofamscan {
 
   output:
   // Grab all outputs
-  file("KOfamscan/*") // Get all files to input directory
+  file("KOfamscan") // Get all files to input directory
   tuple val(prefix), file("KOfamscan/${prefix}_ko_forKEGGMapper.txt") // Kegg-mapper file
 
   script:
   """
+  # Get kofamscan version
+  kofamscan -v > kofamscan_version.txt
+
   # Create dir for results
   mkdir KOfamscan ;
 

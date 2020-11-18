@@ -1,0 +1,24 @@
+Below it is summarized the results obtained with RGI. Roughly, it can be divided into two main categories: 
+
+1. Perfect hits
+    + detects perfect matches to the curated reference sequences and mutations in the CARD
+2. Strict hits
+    + detects previously unknown variants of known AMR genes, including secondary screen for key mutations, using detection models with CARD's curated similarity cut-offs to ensure the detected variant is likely a functional AMR gene
+
+**Obs:** CARD RGI tool always tries to annotate functional AMR genes, however, depending on the assembly, a not functional gene may yet be annotated. There for, users are advised to double check genes annotated under **Strict** category.
+
+## Perfect hits
+
+```{r, Perfect_RGI_block, echo=FALSE, results='asis', eval=rgi_perfect_not_null, child='yes_RGI_Perfect.Rmd'}
+```
+
+```{r, Perfect_RGI_block2, echo=FALSE, results='asis', eval=rgi_perfect_null, child='no_RGI_Perfect.Rmd'}
+```
+
+## Strict hits
+
+```{r, Strict_RGI_block, echo=FALSE, results='asis', eval=rgi_strict_not_null, child='yes_RGI_Strict.Rmd'}
+```
+
+```{r, Perfect_RGI_block2, echo=FALSE, results='asis', eval=rgi_strict_null, child='no_RGI_Strict.Rmd'}
+```

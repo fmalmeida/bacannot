@@ -1,0 +1,252 @@
+---
+title: "Annotation of resistance genes/determintants"
+author: "Produced with bacannot pipeline"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+subtitle: "Query: `r params$query`"
+params:
+  blast_id:
+  blast_cov:
+  query:
+  amrfinder:
+  gff:
+  rgitool:
+  rgiperfect:
+  rgistrict:
+  argminer_blastp:
+  resfinder_tab:
+  resfinder_pointfinder:
+output:
+  bookdown::html_document2: 
+    css: styles.css
+    df_print: paged
+    number_sections: true
+    syntax: espresso
+    self_contained: yes
+    theme: yeti
+    toc: yes
+    toc_collapsed: yes
+    toc_depth: 4
+    toc_float: yes
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.pos = 'H', message = FALSE)
+suppressMessages(library(magrittr))
+suppressMessages(library(ballgown))
+suppressMessages(library(knitr))
+suppressMessages(library(stringr))
+suppressMessages(library(tidyr))
+suppressMessages(library(plyr))
+suppressMessages(library(DT))
+suppressMessages(library(dplyr))
+suppressMessages(library(stringr))
+suppressMessages(library(ggplot2))
+
+
+########################
+### Useful functions ###
+########################
+
+getAttributeField <- function (x, field, attrsep = ";") {
+  s = strsplit(x, split = attrsep, fixed = TRUE)
+  sapply(s, function(atts) {
+    a = strsplit(atts, split = "=", fixed = TRUE)
+    m = match(field, sapply(a, "[", 1))
+    if (!is.na(m)) { rv = a[[m]][2]
+    }
+    else {
+      rv = as.character(NA)
+    }
+    return(rv)
+  })
+}
+
+amrfinder_url <- function (x) {
+  
+  id  <- x
+  url <- ifelse(!is.na(x), paste0("https://www.ncbi.nlm.nih.gov/gene/?term=", x), paste0("No Reference"))
+  url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
+    
+  return(url)
+}
+
+resfinder_url <- function (x) {
+  
+  id  <- x
+  url <- ifelse(!is.na(x), paste0("https://www.ncbi.nlm.nih.gov/nuccore/?term=", x), paste0("No Reference"))
+  url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
+    
+  return(url)
+}
+
+card_url <- function (x) {
+  
+  id  <- x
+  url <- ifelse(!is.na(x), paste0("https://card.mcmaster.ca/ontology/", x), paste0("No Reference"))
+  url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
+    
+  return(url)
+}
+
+#####################
+### Loading files ###
+#####################
+
+# Prokka GFF
+gff <- try(gffRead(params$gff), silent = TRUE)
+## Adding IDs and coordinates to the GFF
+gff$`Query Protein Coordinates` <- paste(gff$seqname, ":", gff$start, "-", gff$end, sep = "")
+gff$Prokka_ID <- getAttributeField(gff$attributes, "ID", ";")
+
+# Amrfinder
+amrtsv <- try(read.delim(params$amrfinder) %>% select(1,2,3,4,5,6,7,8,9,15), silent = TRUE)
+
+# Resfinder
+resfinder_tab <- try(read.delim(params$resfinder_tab), silent = T)
+resfinder_point <- try(read.delim(params$resfinder_pointfinder), silent = T)
+
+# RGI
+rgi_tsv <- try(read.delim(params$rgitool, header = TRUE), silent = TRUE)
+rgi_perfect <- try(read.delim(params$rgiperfect, header = FALSE), silent = TRUE)
+rgi_strict <- try(read.delim(params$rgistrict, header = FALSE), silent = TRUE)
+
+# ARGminer
+argminer_blastp <- try(read.delim(params$argminer_blastp, header = TRUE), silent = TRUE)
+
+
+#########################################
+### Checking if input files are empty ###
+#########################################
+
+# Check if NCBI is empty
+if (class(amrtsv) != 'try-error' && nrow(amrtsv) > 0) {
+  amrFinder_not_null <- TRUE
+  amrFinder_null <- FALSE
+} else {
+  amrFinder_not_null <- FALSE
+  amrFinder_null <- TRUE
+}
+
+# Check if NCBI is empty
+if (class(resfinder_tab) != 'try-error' && nrow(resfinder_tab) > 0) {
+  resfinder_not_null <- TRUE
+  resfinder_null <- FALSE
+} else {
+  resfinder_not_null <- FALSE
+  resfinder_null <- TRUE
+}
+
+# Check if ARGminer is empty
+if (class(argminer_blastp) != 'try-error' && nrow(argminer_blastp) > 0) {
+  argminer_not_null <- TRUE
+  argminer_null <- FALSE
+} else {
+  argminer_not_null <- FALSE
+  argminer_null <- TRUE
+}
+
+# Check if RGI is empty
+if (class(rgi_tsv) != 'try-error' && nrow(rgi_tsv) > 0) {
+  rgi_not_null <- TRUE
+  rgi_null <- FALSE
+} else {
+  rgi_not_null <- FALSE
+  rgi_null <- TRUE
+}
+
+if (class(rgi_perfect) != 'try-error' && nrow(rgi_perfect) > 0) {
+  rgi_perfect_not_null <- TRUE
+  rgi_perfect_null <- FALSE
+} else {
+  rgi_perfect_not_null <- FALSE
+  rgi_perfect_null <- TRUE
+}
+
+if (class(rgi_strict) != 'try-error' && nrow(rgi_strict) > 0) {
+  rgi_strict_not_null <- TRUE
+  rgi_strict_null <- FALSE
+} else {
+  rgi_strict_not_null <- FALSE
+  rgi_strict_null <- TRUE
+}
+
+# DT options
+# Lists
+dt_opt_lst <- list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE)
+```
+
+# About
+
+Resistance genes or resistance determinants confer to the bacteria the ability to tolerate or resist some antibiotics or antimicrobials. Which means, these characteristics makes the bacteria less susceptible to its effects. Resistance determinants were predicted using [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/), [AMRFinderPlus](https://github.com/ncbi/amr/wiki) and [CARD RGI](https://github.com/arpcard/rgi). Additionally, we scanned the genome with [ARGminer](https://bench.cs.vt.edu/argminer/#/home) database which is an online resource for the inspection and curation of ARGs based on crowdsourcing as well as a platform to promote interaction and collaboration for the ARG scientific community.
+
+[Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) is a very popular database of acquired resistance genes and chromosomal point mutations hosted by the Center for Genomic Epidemiology.
+
+[AMRFinderPlus](https://github.com/ncbi/amr/wiki) is a binary distributed by NCBI that allows users to query the National Database of Antibiotic Resistant Organisms ([NDARO](https://www.ncbi.nlm.nih.gov/pathogens/antimicrobial-resistance/)). This is a NCBI curated database that aggregates resistance genes from other databases such as [Resfams](http://www.dantaslab.org/resfams), [CARD](https://card.mcmaster.ca/), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/), Pasteur Institute Beta Lactamases and others. For more information please read the following [link](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA313047). NCBI's efforts were done in order to standardize and confer reliability to AMR predictions.
+
+[CARD RGI](https://github.com/arpcard/rgi) is a tool which enables the detection of new variants and mutations that confer resistance to antibiotics, it analyzes genome or proteome sequences under three paradigms: **Perfect**, **Strict**, and **Loose** (a.k.a. Discovery). **The Perfect algorithm** is most often applied to clinical surveillance as it detects perfect matches to the curated reference sequences and mutations in the CARD. In contrast, **the Strict algorithm** detects previously unknown variants of known AMR genes, including secondary screen for key mutations, using detection models with CARD's curated similarity cut-offs to ensure the detected variant is likely a functional AMR gene.
+
+[ARGminer](https://bench.cs.vt.edu/argminer/#/home) is used in the workflow in order to provide some more diverse insights about the resistance genes found. It can not be used as the sole source of prediction, but it may be a useful contribution for analyses and AMR descriptions because it tries to aggregate and create nomenclature standards between databases.
+
+About the BLASTs:
+
+* [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/), [AMRFinderPlus](https://github.com/ncbi/amr/wiki) and [ARGminer](https://bench.cs.vt.edu/argminer/#/home) are searched in a manner that it is possible to filter alignments based on coverage and identity, for those we have used the following:
+    * Blast % identity: `> `r params$blast_id`%`
+    * Blast % query coverage: `> `r params$blast_cov`%`
+        + For blasts against gene sequences predicted by Prokka, alignments are filtered in a two way manner so they cover at least `r params$blast_cov`% of the reference gene sequence and the of query sequence at the same time -- _valid for ARGminer_
+* [CARD RGI](https://github.com/arpcard/rgi) results are not filtered in these manners because they have their own detection models thresholds obtained by curation
+
+# Resfinder
+
+```{r, Resfinder_conditional_block, echo=FALSE, results='asis', eval=resfinder_not_null, child='yes_Resfinder.Rmd'}
+```
+
+```{r, Resfinder_conditional_block_2, echo=FALSE, results='asis', eval=resfinder_null, child='no_Resfinder.Rmd'}
+```
+
+# CARD RGI
+
+```{r, rgi_conditional_block, echo=FALSE, results='asis', eval=rgi_not_null, child='yes_RGI.Rmd'}
+```
+
+```{r, rgi_conditional_block_2, echo=FALSE, results='asis', eval=rgi_null, child='no_RGI.Rmd'}
+```
+
+# AMRFinder
+
+```{r, AMRFinder_conditional_block, echo=FALSE, results='asis', eval=amrFinder_not_null, child='yes_AMRfinder.Rmd'}
+```
+
+```{r, AMRFinder_conditional_block_2, echo=FALSE, results='asis', eval=amrFinder_null, child='no_AMRfinder.Rmd'}
+```
+
+# ARGminer
+
+```{r, argminer_conditional_block, echo=FALSE, results='asis', eval=argminer_not_null, child='yes_argminer.Rmd'}
+```
+
+```{r, argminer_conditional_block_2, echo=FALSE, results='asis', eval=argminer_null, child='no_argminer.Rmd'}
+```
+
+# Prokka
+
+Additionally, Prokka generically annotates a few proteins that are related to any type of resistance. One must take caution when evaluating this result because this annotation can be very generic and therefore not so meaningful. Because it uses hmms, it can happen to annotate a multidrug resistance efflux pumps but it must be checked whether it is correctly annotated or functional. These are showed in Table \@ref(tab:prokka-general-resistance).
+
+<caption>(#tab:prokka-general-resistance) Generic annotation of resistance determinants by Prokka</caption>
+```{r prokka-general-resistance, echo=FALSE}
+gff %>%
+  filter(str_detect(attributes, "resistance|Resistance")) %>%
+  select("seqname", "start", "end", "attributes") %>%
+  datatable(escape = FALSE,
+          filter = 'top',
+          colnames = c("Contig", "Start", "End", "Description"),
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = T)
+```

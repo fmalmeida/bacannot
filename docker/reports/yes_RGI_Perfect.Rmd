@@ -1,0 +1,84 @@
+
+Perfect hits are genes that CARD guarantee its functionality. Which means that these genes are likely functional and might be conferring resistance to the bacteria. The drug classes found to be targeted by the AMR genes found are shown below:
+
+```{r results='asis'}
+# Name columns
+colnames(rgi_perfect) <- c("Protein ID", "Cut_Off", "Product", "ARO", "Drug Class", "Resistance Mechanism", "AMR Gene Family")
+
+# Create List 
+string.list <- rgi_perfect %>% mutate_if(is.factor, as.character) %>% separate_rows(`Drug Class`, sep = "; ") %>% pull(5) %>% sort() %>% unique()
+cat("- **Drug Classes targeted by the query genome:**\n")
+cat(paste("\t-", string.list), sep = '\n')
+```
+
+### AMR genes
+
+```{r rgi-perfect-resistance-genes}
+# Merge data.frame with GFF
+colnames(rgi_perfect) <- c("Protein ID", "Cut_Off", "Product", "ARO", "Drug Class", "Resistance Mechanism", "AMR Gene Family")
+rgi_perfect <- merge.data.frame(gff, rgi_perfect, by.x = "Prokka_ID", by.y = "Protein ID", all.y = TRUE, all.x = FALSE)
+
+# Get CARD metadata
+#aro_index <- read.csv("https://github.com/fmalmeida/CARDDB/raw/master/aro_index.tsv", sep = "\t")
+aro_index <- read.csv("/work/card-data/aro_index.tsv", sep = "\t")
+aro_index$ARO.Accession <- str_remove(aro_index$ARO.Accession, "ARO:")
+
+# Change Col name
+names(aro_index)[names(aro_index) == "ARO.Accession"] <- 'ARO'
+aro_index$ARO <- as.integer(aro_index$ARO)
+rgi_perfect$ARO <- as.integer(rgi_perfect$ARO)
+
+# Join
+rgi_perfect <- merge.data.frame(rgi_perfect, aro_index, by = "ARO", all.x = TRUE)
+
+# Create urls
+rgi_perfect$CVTERM.ID <- card_url(rgi_perfect$CVTERM.ID)
+
+# Produce Table
+rgi_perfect %>%
+  select(Prokka_ID, Product, `AMR Gene Family`, `Drug Class`, `Resistance Mechanism`, CVTERM.ID, `Query Protein Coordinates`) %>%
+  datatable(escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = T)
+```
+
+<br>
+
+The images \@ref(fig:rgi-perfect-resistome-png) and \@ref(fig:rgi-perfect-resistome-png-2) summarises the drug classes targeted by the AMR genes found and its resistance mechanisms.
+
+```{r rgi-perfect-resistome-png, fig.align='center', fig.show='hold', fig.cap="Targeted drug classes by th resistome predicted using CARD RGI tool", out.width="45%"}
+rgi_count <- rgi_perfect %>%
+  mutate_if(is.factor, as.character) %>%
+  separate_rows(`Drug Class`, sep = "; ", convert = FALSE) %>%
+  select(Prokka_ID, `Drug Class`)
+colnames(rgi_count) <- c("Contig", "Class")
+drugs <- plyr::count(rgi_count, "Class")
+
+ggplot(drugs, aes(x=Class, y=freq, fill=Class)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("Targeted Drug Class") +
+  ylab("Number of genes") +
+  guides(fill=guide_legend(title = "Drug Classes"))
+```
+
+<br>
+```{r rgi-perfect-resistome-png-2, fig.align='center', fig.show='hold', fig.cap="Resistance mechanisms of the resistome predicted using CARD RGI tool", out.width="45%"}
+rgi_count <- rgi_perfect %>%
+  mutate_if(is.factor, as.character) %>%
+  separate_rows(`Resistance Mechanism`, sep = "; ", convert = FALSE) %>%
+  select(Prokka_ID, `Resistance Mechanism`)
+colnames(rgi_count) <- c("Contig", "Class")
+drugs <- plyr::count(rgi_count, "Class")
+
+ggplot(drugs, aes(x=Class, y=freq, fill=Class)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("Resistance mechanisms") +
+  ylab("Number of genes") +
+  guides(fill=guide_legend(title = "Resistance Mechanisms"))
+```

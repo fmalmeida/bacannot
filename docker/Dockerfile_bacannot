@@ -2,6 +2,7 @@ FROM ubuntu:20.04
 
 MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 SHELL ["/bin/bash", "-c"]
+
 # DEPENDENCIES
 WORKDIR /work
 
@@ -50,7 +51,6 @@ RUN wget https://github.com/bbuchfink/diamond/releases/download/v0.9.25/diamond-
 # INSTALL BARRNAP
 RUN conda install -y --freeze-installed -c bioconda -c conda-forge barrnap nomkl \
 			&& conda clean -afy
-
 
 # INSTALL EMBOSS
 RUN apt-get update && \
@@ -143,10 +143,6 @@ RUN cd /work/scripts && \
 RUN conda install -y --freeze-installed -c bioconda nomkl tbl2asn-forever && \
 			conda clean -afy
 
-# Install MongoDB
-RUN conda create -y -n mongoDB -c anaconda mongodb pymongo nomkl && \
-			conda clean -afy
-
 # Clean
 RUN conda clean -afy \
 			&& find /miniconda/ -follow -type f -name '*.a' -delete \
@@ -165,10 +161,6 @@ RUN /miniconda/bin/python3 -m pip install docopt pandas && \
 			chmod a+x run_blasts.py && \
 			mv run_blasts.py /usr/local/bin
 
-## Install cd-hit for VFDB
-#RUN conda install -c bioconda cd-hit nomkl && \
-#			conda clean -afy
-
 ## VFDB nt
 RUN mkdir vfdb && \
  			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \
@@ -176,7 +168,6 @@ RUN mkdir vfdb && \
 				awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setA_nt.fas | \
 				sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \
 				awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences && \
-#			cd-hit-est -i vfdb/sequences_full -o vfdb/sequences -c 0.9 -T 3 && \
 			makeblastdb -in vfdb/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \
 			rm VFDB_setA_nt.fas
 
@@ -245,7 +236,7 @@ RUN conda create -y -n PLASMIDFINDER && \
 RUN conda create -y -n Resfinder python=3.7 nomkl && \
 			source activate Resfinder && \
 			conda install -y --freeze-installed -c bioconda kma nomkl && \
-			pip3 install tabulate biopython cgecore gitpython setuptools python-dateutil && \
+			pip3 install tabulate biopython==1.76 cgecore gitpython setuptools python-dateutil && \
 			conda clean -afy
 # Get program
 RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git && \

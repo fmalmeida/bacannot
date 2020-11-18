@@ -1,21 +1,33 @@
 process flye {
-  publishDir "${params.outdir}/assembly", mode: 'copy', overwrite: true
+  publishDir "${params.outdir}/${id}", mode: 'copy', saveAs: { filename ->
+    if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
+    else if (filename == "flye_${id}") "assembly"
+    else null
+  }
   label 'assembly'
   tag "Performing a longreads only assembly with Flye"
 
   input:
-  file lreads
+  tuple val(id), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly)
 
   output:
-  file "flye_${lrID}" // Saves all files
-  file("flye_${lrID}.fasta") // Gets contigs file
+  file "flye_${id}" // Saves all files
+  // Keep tuple structure to mixing channels
+  tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("flye_${id}.fasta")
+  file('flye_version.txt')
 
   script:
-  lr = (params.lreads_type == 'nanopore') ? '--nano-raw' : '--pacbio-raw'
-  lrID = lreads.getSimpleName()
+  lr = (lr_type == 'nanopore') ? '--nano-raw' : '--pacbio-raw'
   """
   source activate flye ;
-  flye ${lr} $lreads --plasmids --out-dir flye_${lrID} --threads ${params.threads} &> flye.log ;
-  cp flye_${lrID}/assembly.fasta flye_${lrID}.fasta
+
+  # Save flye version
+  flye -v > flye_version.txt ;
+
+  # Run flye
+  flye ${lr} $lreads --plasmids --out-dir flye_${id} --threads ${params.threads} &> flye.log ;
+
+  # Save a copy for annotation
+  cp flye_${id}/assembly.fasta flye_${id}.fasta
   """
 }

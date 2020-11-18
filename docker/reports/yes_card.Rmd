@@ -1,0 +1,50 @@
+CARD is a curated database which hosts drug resistance genes of pathogenic bacteria. Therefore, an antibiogram can be infered using data provenient from this database.
+
+In Table \@ref(tab:card-resistance-pattern) we can clearly see all resistance gene names found in the query genome and its target drug classes. In addition, each ARO accession are disponibilized to the user in order to gather more information about each gene. This ARO can be searched in CARD database.
+
+In summary, the query genome possesses the following resistance genes: **`r card_summary %>% pull(Name)`**.
+
+```{r results='asis'}
+# Create List
+string.list <- card_summary %>% separate_rows(Drug_Class, sep = ":") %>% pull(Drug_Class) %>% unique()
+cat("- Drug Classes that the query genome is resistant to:\n")
+cat(paste("\t-", string.list), sep = '\n')
+```
+
+In Figure \@ref(fig:card-resistome-png) it is summarised the amount of genes found that target a specific antibiotic class.
+
+
+```{r card-resistome-png, fig.align='center', fig.show='hold', fig.cap="Drug Classes to which the query genome is resistant (CARD)", out.width="60%"}
+card_count <- card_summary %>%
+  select("Name", "Drug_Class", "Resistance_Mechanism", "ARO_Accession") %>%
+  arrange(Drug_Class) %>%
+  separate_rows(Drug_Class, sep = ":") %>% group_by(Name)
+drugs <- plyr::count(card_count, "Drug_Class")
+ggplot(drugs, aes(x=Drug_Class, y=freq, fill=Drug_Class)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("Drug Classes") +
+  ylab("Number of related genes found") +
+  guides(fill=guide_legend(title = "Drug Classes"))
+```
+
+```{r card-resistance-pattern}
+# Create a position column
+card_summary$`Query Protein Coordinates` <- paste(card_summary$seqname, ":", card_summary$start, "-", card_summary$end, sep = "")
+card_summary$`Query Protein ID` <- toupper(card_summary$Prokka_ID)
+
+# Create urls
+urls <- lapply(card_summary$CVTerm, function(x){paste0("https://card.mcmaster.ca/ontology/", x)})
+
+# Produce Table
+card_summary %>%
+  select("Name", "Drug_Class", "Resistance_Mechanism", "ARO_Accession", "CVTerm", "Query Protein ID", "Query Protein Coordinates") %>%
+  mutate("CVTerm" = cell_spec(CVTerm, "html", link = urls)) %>%
+  separate_rows(Drug_Class, sep = ":") %>%
+  group_by(Name) %>%
+  kable(caption = "CARD resistance genes annotated and its target drug classes", escape = FALSE) %>%
+  kable_styling(bootstrap_options = bt_opt, full_width = T, fixed_thead = T, font_size = 12) %>%
+  collapse_rows(columns = 1:7, valign = "middle") %>%
+  footnote(general = "CVTerms are the gene IDs that direct link the results to CARD database")
+```

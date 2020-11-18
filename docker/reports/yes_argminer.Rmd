@@ -1,0 +1,18 @@
+ARGminer is an online resource for the inspection and curation of ARGs based on crowdsourcing as well as a platform to promote interaction and collaboration for the ARG scientific community. We put this database here in the report and annotation in order to support the initative and to help it go towards nomenclature simplification. Genes are scanned via BLASTp since ARGminer is a protein-only database. This alignment is summarized in table \@ref(tab:argminer-amr-resistance-genes).
+
+> It must be used with caution. Remender, it is a super new database thus it is rapidly changing and may yet contain errors.
+
+### BLAST summary
+
+<caption>(#tab:argminer-amr-resistance-genes) Resistance genes detected using ARGminer database via BLASTp</caption>
+```{r}
+# Produce Table
+argminer_blastp %>%
+  select(-DESCRIPTION, -DATABASE) %>%
+  datatable(escape = FALSE,
+            filter = 'top',
+            colnames = c("Protein ID", "Start", "End", "Strand", "Gene Name", "Coverage Map", "Gaps", "Coverage %", "Identity %", "Reference", "Drug target"),
+            options = dt_opt_lst,
+            extensions = 'Buttons',
+            rownames = T)
+```

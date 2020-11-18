@@ -157,32 +157,32 @@
             "default": "",
             "help_text": "When true, the specific task will be skipped (not executed)",
             "properties": {
-                "not_run_plasmid_search": {
+                "skip_plasmid_search": {
                     "type": "boolean",
                     "description": "Skip (do not run) plasmidfinder?",
                     "help_text": "If true, the process will be skipped!"
                 },
-                "not_run_virulence_search": {
+                "skip_virulence_search": {
                     "type": "boolean",
                     "description": "Skip (do not run) virulence factors annotation?",
                     "help_text": "If true, the process will be skipped!"
                 },
-                "not_run_resistance_search": {
+                "skip_resistance_search": {
                     "type": "boolean",
                     "description": "Skip (do not run) resistance genes annotation?",
                     "help_text": "If true, the process will be skipped!"
                 },
-                "not_run_iceberg_search": {
+                "skip_iceberg_search": {
                     "type": "boolean",
                     "description": "Skip (do not run) ICEs annotation?",
                     "help_text": "If true, the process will be skipped!"
                 },
-                "not_run_prophage_search": {
+                "skip_prophage_search": {
                     "type": "boolean",
                     "description": "Skip (do not run) prophage annotation?",
                     "help_text": "If true, the process will be skipped!"
                 },
-                "not_run_kofamscan": {
+                "skip_kofamscan": {
                     "type": "boolean",
                     "description": "Skip (do not run) KO annotation?",
                     "help_text": "If true, the process will be skipped!"
