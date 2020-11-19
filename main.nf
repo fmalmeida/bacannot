@@ -104,6 +104,10 @@ include { kegg_decoder } from './modules/kegg-decoder.nf' params(outdir: params.
 include { plasmidfinder } from './modules/plasmidfinder.nf' params(outdir: params.outdir,
   plasmids_minid: params.plasmids_minid, plasmids_mincov: params.plasmids_mincov)
 
+// Plasmid annotation with platon
+include { platon } from './modules/platon.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
 // Virulence annotation with VFDB
 include { vfdb } from './modules/vfdb.nf' params(outdir: params.outdir,
   threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
@@ -121,6 +125,10 @@ include { phast } from './modules/phast.nf' params(outdir: params.outdir,
 
 // Prophage annotation with PHIGARO
 include { phigaro } from './modules/phigaro.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
+// Prophage annotation with phispy
+include { phispy } from './modules/phispy.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // ICE annotation with ICEberg db
@@ -211,15 +219,20 @@ workflow bacannot_nf {
       }
 
       /*
-
-      // Sixth step -- MGE, Virulence and AMR annotations
+          Sixth step -- MGE, Virulence and AMR annotations
+      */
 
       // Plasmid finder
       if (params.skip_plasmid_search == false) {
+        // plasmidfinder
         plasmidfinder(prokka.out[3])
         plasmidfinder_output = plasmidfinder.out[1]
+        // platon
+        platon(prokka.out[3])
+        platon_output = platon.out[1]
       } else {
         plasmidfinder_output = Channel.empty()
+        platon_output = Channel.empty()
       }
 
       // IslandPath software
@@ -246,10 +259,16 @@ workflow bacannot_nf {
         // Phigaro software
         phigaro(prokka.out[3])
         phigaro_output = phigaro.out[1]
+        // PhiSpy
+        phispy(prokka.out[2])
+        phispy_output = phispy.out[1]
       } else {
         phast_output = Channel.empty()
         phigaro_output = Channel.empty()
+        phispy_output = Channel.empty()
       }
+
+      /*
 
       // ICEs search
       if (params.skip_iceberg_search == false) {

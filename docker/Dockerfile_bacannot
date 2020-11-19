@@ -23,16 +23,11 @@ RUN conda config --add channels defaults && \
 			conda config --add channels conda-forge && \
 			conda init --all
 
-## Install bedtools, ncbi-blast+ and custom scripts
+## Install bedtoolsa and ncbi-blast+
 RUN rm -rf /var/lib/apt/lists/* && \
 			wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.10.1/ncbi-blast-2.10.1+-x64-linux.tar.gz && \
 			tar -zxvf ncbi-blast-2.10.1+-x64-linux.tar.gz && \
 			cd ncbi-blast-2.10.1+/bin/ && \
-			ln -rs $(ls) /usr/local/bin/ && \
-			mkdir /work/scripts && \
-			cd /work/scripts && \
-			git clone https://github.com/fmalmeida/genomeGTFtools.git && \
-			cd genomeGTFtools/ && \
 			ln -rs $(ls) /usr/local/bin/
 
 # INSTALL AMRFinderPlus
@@ -111,6 +106,10 @@ RUN apt-get install -y tar git libc6-dev gcc g++ locate seqtk && \
 RUN cd /usr/bin && \
 			for i in * ; do ln -rs "$i" /usr/local/bin ; done
 
+## INSTALL phispy
+RUN conda create -n phispy -y -c bioconda phispy nomkl && \
+			conda clean -afy
+
 # INSTALL RGI
 RUN conda create -y -n RGI -c bioconda rgi nomkl python=3.6 && \
 			conda clean -afy && \
@@ -128,26 +127,12 @@ RUN conda create -y -n find_GIs && \
 			ln -rs ./islandpath/Dimob.pl /usr/local/bin
 
 # Download pythonScripts
-RUN git clone https://github.com/fmalmeida/pythonScripts.git && \
-			ln -rs pythonScripts/*.py /usr/local/bin/
-
-# Update blast2gff.py
-RUN cd /work/scripts && \
-			rm -r genomeGTFtools && \
-			git clone https://github.com/fmalmeida/genomeGTFtools.git && \
-      cd genomeGTFtools/ && \
-			rm /usr/local/bin/blast2gff.py && \
-			ln -rs blast2gff.py /usr/local/bin/
+ADD scripts/pscripts/splitgenbank.py /usr/local/bin/splitgenbank.py
+RUN chmod a+x /usr/local/bin/splitgenbank.py
 
 # Install tbl2asn
 RUN conda install -y --freeze-installed -c bioconda nomkl tbl2asn-forever && \
 			conda clean -afy
-
-# Clean
-RUN conda clean -afy \
-			&& find /miniconda/ -follow -type f -name '*.a' -delete \
-			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
-			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
 
 # Install samtools
 RUN apt-get install -y samtools
@@ -156,10 +141,9 @@ RUN apt-get install -y samtools
 workdir /work/dbs
 
 ## Pythons scripts for additional databases
-RUN /miniconda/bin/python3 -m pip install docopt pandas && \
-			wget https://github.com/fmalmeida/pythonScripts/raw/master/run_blasts.py && \
-			chmod a+x run_blasts.py && \
-			mv run_blasts.py /usr/local/bin
+COPY scripts/pscripts/run_blasts.py /usr/local/bin/run_blasts.py
+RUN chmod a+x /usr/local/bin/run_blasts.py && \
+			/miniconda/bin/python3 -m pip install docopt pandas
 
 ## VFDB nt
 RUN mkdir vfdb && \
@@ -231,6 +215,13 @@ RUN conda create -y -n PLASMIDFINDER && \
 			download-db.sh && \
 			conda clean -afy
 
+## Install platon
+RUN mkdir -p /work/platon && \
+			conda create -n PLATON -y -c conda-forge -c bioconda -c defaults platon nomkl &&\
+			wget https://zenodo.org/record/4066768/files/db.tar.gz && \
+			mv db.tar.gz /work/platon && \
+			conda clean -afy
+
 ## Install resfinder
 # Create env
 RUN conda create -y -n Resfinder python=3.7 nomkl && \
@@ -265,6 +256,13 @@ RUN chmod -R a+rwx /miniconda/envs/RGI/lib/python3.6/
 
 # For maths
 RUN apt-get install -y bc
+
+# Clean
+RUN conda clean -afy \
+			&& rm diamond_manual.pdf *.tar.gz '=1.14' \
+			&& find /miniconda/ -follow -type f -name '*.a' -delete \
+			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
+			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
 
 # Set WorkDir
 WORKDIR /work

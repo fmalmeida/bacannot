@@ -1,5 +1,9 @@
 process phigaro {
-  publishDir "${params.outdir}/${prefix}/prophages/phigaro", mode: 'copy'
+  publishDir "${params.outdir}/${prefix}", mode: 'copy', saveAs: { filename ->
+    if (filename == "out.phg") null
+    else if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
+    else "prophages/phigaro/$filename"
+  }
   tag "Scanning putative prophage sequences with phigaro"
   label 'main'
 
@@ -11,14 +15,18 @@ process phigaro {
   tuple val(prefix), file("${prefix}_phigaro.tsv")
   tuple val(prefix), file("${prefix}_phigaro.bed")
   tuple val(prefix), file("${prefix}_phigaro.html")
+  file('phigaro_version.txt')
 
   script:
   """
+  # Get tool version
+  phigaro -V > phigaro_version.txt ;
+
   # Run phigaro
   phigaro -f assembly.fasta --config /work/phigaro_config.yml -t ${params.threads} \
   -e html tsv -o out.phg --delete-shorts -p --not-open ;
 
-  # move
+  # Change names
   mv out.phg/assembly.phigaro.tsv ${prefix}_phigaro.tsv ;
   mv out.phg/assembly.phigaro.html ${prefix}_phigaro.html;
 

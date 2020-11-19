@@ -1,5 +1,8 @@
 process plasmidfinder {
-  publishDir "${params.outdir}/${prefix}", mode: 'copy'
+  publishDir "${params.outdir}/${prefix}", mode: 'copy', saveAs: { filename ->
+    if (filename == "plasmidfinder") "plasmids/$filename"
+    else null
+  }
   tag "Detecting plasmids with plasmidfinder"
   label 'main'
 
@@ -7,17 +10,10 @@ process plasmidfinder {
   tuple val(prefix), file(genome)
 
   output:
-  tuple val(prefix), file("plasmidfinder_results") // Get everything
-  tuple val(prefix), file("plasmidfinder_results/results_tab.tsv") // Get the main result
+  tuple val(prefix), file("plasmidfinder") // Get everything
+  tuple val(prefix), file("plasmidfinder/results_tab.tsv") // Get the main result
 
   script:
-  if ("${params.plasmids_mincov}" > 1) {
-    params.plasmids_mincov = params.plasmids_mincov / 100
-  }
-
-  if (params.plasmids_minid > 1) {
-    params.plasmids_minid = params.plasmids_mincov / 100
-  }
   """
   # Check thresholds
   [ "${params.plasmids_mincov}" > 1 ] && mincov=\$(( ${params.plasmids_mincov} / 100 )) || mincov=${params.plasmids_mincov}
@@ -27,7 +23,10 @@ process plasmidfinder {
   source activate PLASMIDFINDER ;
 
   # Run plasmidfinder
-  mkdir plasmidfinder_results ;
-  plasmidfinder.py -i $genome -o plasmidfinder_results -l \$mincov -t \$minid -x
+  mkdir plasmidfinder ;
+  plasmidfinder.py -i $genome -o plasmidfinder -l \$mincov -t \$minid -x
+
+  # Remove tmp
+  rm -rf plasmidfinder/tmp
   """
 }
