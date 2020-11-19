@@ -79,104 +79,104 @@ include { flye } from './modules/assembly/flye.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // Prokka annotation
-include { prokka } from './modules/prokka.nf' params(outdir: params.outdir,
+include { prokka } from './modules/generic/prokka.nf' params(outdir: params.outdir,
   prokka_kingdom: params.prokka_kingdom, prokka_genetic_code: params.prokka_genetic_code,
   prokka_use_rnammer: params.prokka_use_rnammer, threads: params.threads)
 
 // MLST annotation
-include { mlst } from './modules/mlst.nf' params(outdir: params.outdir)
+include { mlst } from './modules/generic/mlst.nf' params(outdir: params.outdir)
 
 // rRNA annotation
-include { barrnap } from './modules/barrnap.nf' params(outdir: params.outdir)
+include { barrnap } from './modules/generic/barrnap.nf' params(outdir: params.outdir)
 
 // Calculate GC content
-include { compute_gc } from './modules/compute_gc.nf'
+include { compute_gc } from './modules/generic/compute_gc.nf'
 
 // KOFAM annotation
-include { kofamscan } from './modules/kofamscan.nf' params(outdir: params.outdir,
+include { kofamscan } from './modules/KOs/kofamscan.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // KEGG decoder
-include { kegg_decoder } from './modules/kegg-decoder.nf' params(outdir: params.outdir,
+include { kegg_decoder } from './modules/KOs/kegg-decoder.nf' params(outdir: params.outdir,
   threads: params.threads, genome: params.genome)
 
 // Plasmid annotation with plasmidfinder
-include { plasmidfinder } from './modules/plasmidfinder.nf' params(outdir: params.outdir,
+include { plasmidfinder } from './modules/MGEs/plasmidfinder.nf' params(outdir: params.outdir,
   plasmids_minid: params.plasmids_minid, plasmids_mincov: params.plasmids_mincov)
 
 // Plasmid annotation with platon
-include { platon } from './modules/platon.nf' params(outdir: params.outdir,
+include { platon } from './modules/MGEs/platon.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // Virulence annotation with VFDB
-include { vfdb } from './modules/vfdb.nf' params(outdir: params.outdir,
+include { vfdb } from './modules/virulence/vfdb.nf' params(outdir: params.outdir,
   threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
   blast_virulence_mincov: params.blast_virulence_mincov)
 
 // Virulence annotation with Victors
-include { victors } from './modules/victors.nf' params(outdir: params.outdir,
+include { victors } from './modules/virulence/victors.nf' params(outdir: params.outdir,
   threads: params.threads, blast_virulence_minid: params.blast_virulence_minid,
   blast_virulence_mincov: params.blast_virulence_mincov)
 
 // Prophage annotation with PHAST
-include { phast } from './modules/phast.nf' params(outdir: params.outdir,
+include { phast } from './modules/prophages/phast.nf' params(outdir: params.outdir,
   threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
   blast_MGEs_mincov: params.blast_MGEs_mincov)
 
 // Prophage annotation with PHIGARO
-include { phigaro } from './modules/phigaro.nf' params(outdir: params.outdir,
+include { phigaro } from './modules/prophages/phigaro.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // Prophage annotation with phispy
-include { phispy } from './modules/phispy.nf' params(outdir: params.outdir,
+include { phispy } from './modules/prophages/phispy.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // ICE annotation with ICEberg db
-include { iceberg } from './modules/iceberg.nf' params(outdir: params.outdir,
+include { iceberg } from './modules/MGEs/iceberg.nf' params(outdir: params.outdir,
   threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
   blast_MGEs_mincov: params.blast_MGEs_mincov)
 
 // Prophage annotation with PHIGARO
-include { find_GIs } from './modules/IslandPath_DIMOB.nf' params(outdir: params.outdir)
+include { find_GIs } from './modules/MGEs/islandPath_DIMOB.nf' params(outdir: params.outdir)
 
 // AMR annotation with ARGMiner
-include { argminer } from './modules/argminer.nf' params(outdir: params.outdir,
+include { argminer } from './modules/resistance/argminer.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
   blast_resistance_mincov: params.blast_resistance_mincov)
 
 // AMR annotation with Resfinder
-include { resfinder } from './modules/resfinder.nf' params(outdir: params.outdir,
+include { resfinder } from './modules/resistance/resfinder.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
   blast_resistance_mincov: params.blast_resistance_mincov, resfinder_species: params.resfinder_species)
 
 // AMR annotation with AMRFinderPlus
-include { amrfinder } from './modules/amrfinder.nf' params(outdir: params.outdir,
+include { amrfinder } from './modules/resistance/amrfinder.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
   blast_resistance_mincov: params.blast_resistance_mincov)
 
 // AMR annotation with CARD-RGI
-include { card_rgi } from './modules/rgi_annotation.nf' params(outdir: params.outdir,
+include { card_rgi } from './modules/resistance/rgi_annotation.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid)
 
 // Methylation calling (Nanopolish)
-include { call_methylation } from './modules/methylation.nf' params(outdir: params.outdir,
+include { call_methylation } from './modules/generic/methylation.nf' params(outdir: params.outdir,
   threads: params.threads)
 
 // Merging annotation in GFF
-include { merge_annotations } from './modules/merge_annotations.nf' params(outdir: params.outdir)
+include { merge_annotations } from './modules/generic/merge_annotations.nf' params(outdir: params.outdir)
 
 // Convert GFF to GBK
-include { gff2gbk } from './modules/gff2gbk.nf' params(outdir: params.outdir)
+include { gff2gbk } from './modules/generic/gff2gbk.nf' params(outdir: params.outdir)
 
 // Bedtools gff merge
-include { gff_merge } from './modules/merge_gff.nf' params(outdir: params.outdir,
+include { gff_merge } from './modules/generic/merge_gff.nf' params(outdir: params.outdir,
   bedtools_merge_distance: params.bedtools_merge_distance)
 
 // JBrowse
-include { jbrowse } from './modules/jbrowse.nf' params(outdir: params.outdir)
+include { jbrowse } from './modules/generic/jbrowse.nf' params(outdir: params.outdir)
 
 // Output reports
-include { report } from './modules/reports.nf' params(outdir: params.outdir,
+include { report } from './modules/generic/reports.nf' params(outdir: params.outdir,
   blast_MGEs_mincov: params.blast_MGEs_mincov,
   blast_MGEs_minid: params.blast_MGEs_minid,
   blast_virulence_mincov: params.blast_virulence_mincov,
@@ -268,8 +268,6 @@ workflow bacannot_nf {
         phispy_output = Channel.empty()
       }
 
-      /*
-
       // ICEs search
       if (params.skip_iceberg_search == false) {
         // ICEberg db
@@ -313,17 +311,16 @@ workflow bacannot_nf {
         resfinder_output_2 = Channel.empty()
       }
 
-      // Seventh step -- Methylation call
-      if (input_lreads.ifEmpty('EMPTY') != 'EMPTY' && input_fast5.ifEmpty('EMPTY') != 'EMPTY') {
-        call_methylation(prokka.out[3], input_fast5, input_lreads)
-        methylation_out_1 = call_methylation.out[2]
-        methylation_out_2 = call_methylation.out[3]
-      } else {
-        methylation_out_1 = Channel.empty()
-        methylation_out_2 = Channel.empty()
-      }
+      /*
+          Seventh step -- Methylation call
+      */
+      call_methylation(prokka.out[6])
+      methylation_out_1 = call_methylation.out[2]
+      methylation_out_2 = call_methylation.out[3]
 
-      // Eighth step -- Merge all annotations with the same Prefix value in a single Channel
+      /*
+          Eighth step -- Merge all annotations with the same Prefix value in a single Channel
+      */
       annotations_files = prokka.out[3].join(prokka.out[1])
                                        .join(mlst.out[0])
                                        .join(barrnap.out[0])
@@ -349,7 +346,9 @@ workflow bacannot_nf {
         gff_merge(merge_annotations.out[0])
       }
 
-      // Final step -- Create genome browser and reports
+      /*
+          Final step -- Create genome browser and reports
+      */
 
       // Grab inputs needed for JBrowse step
       jbrowse_input = merge_annotations.out[0].join(annotations_files, remainder: true)
@@ -357,6 +356,12 @@ workflow bacannot_nf {
                                               .join(methylation_out_2, remainder: true)
       // Jbrowse Creation
       jbrowse(jbrowse_input)
+
+      /*
+
+
+
+
 
       // Render reports
       report(jbrowse_input.join(rgi_output_1,         remainder: true)

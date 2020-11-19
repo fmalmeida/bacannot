@@ -1,12 +1,13 @@
 process call_methylation {
-  publishDir "${params.outdir}/${prefix}/methylation", mode: 'copy'
+  publishDir "${params.outdir}/${prefix}", mode: 'copy', saveAs: { filename ->
+    if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
+    else "methylations/$filename"
+  }
   tag "5mC (CpG) Methylated sites are being calculated with Nanopolish"
   label 'main'
 
   input:
-  tuple val(prefix), file(draft)
-  file(fast5)
-  file(reads)
+  tuple val(prefix), file(draft), file(reads), file(fast5)
 
   output:
   // Grab all outputs
@@ -14,16 +15,17 @@ process call_methylation {
   file "*_frequency.tsv" optional true
   tuple val(prefix), file("methylation_frequency.bedGraph") optional true
   tuple val(prefix), file("chr.sizes") optional true
+  file('nanopolish_version.txt')
 
   when:
   // When an entry does not exist, it is created as 'input'
-  if ("${fast5_dir}" != 'input' && "${reads}" != 'input.2')
+  if (fast5.getName() != 'input.5' && reads.getName() != 'input.4') // Names were set in assembly and prokka process
 
   script:
-  fast5_dir = fast5.baseName
+  fast5_dir = fast5.getName()
   """
-  # Activate ENV
-  source activate NANOPOLISH ;
+  # Get tool version
+  nanopolish --version > nanopolish_version.txt ;
 
   # Index Our Fast5 Data
   nanopolish index -d ${fast5_dir} ${reads} ;
@@ -36,7 +38,7 @@ process call_methylation {
   nanopolish call-methylation -r ${reads} -b reads_output.sorted.bam -g ${draft} -t ${params.threads} > methylation_call.tsv ;
 
   # Calculate Methylation Frequencies
-  /work/nanopolish_scripts/calculate_methylation_frequency.py methylation_call.tsv > methylation_frequency.tsv ;
+  /work/nanopolish/scripts/calculate_methylation_frequency.py methylation_call.tsv > methylation_frequency.tsv ;
 
   # Transform These TSV files into bedGraph
   [ ! -s methylation_frequency.tsv ] || grep -v "start" methylation_frequency.tsv | \

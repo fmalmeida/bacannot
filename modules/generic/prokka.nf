@@ -19,7 +19,7 @@ process prokka {
     tuple val(prefix), file("annotation/${prefix}.fna") // renamed genome
     tuple val(prefix), file("annotation/${prefix}.faa") // gene aa sequences
     tuple val(prefix), file("annotation/${prefix}.ffn") // gene nt sequences
-    tuple val(prefix), file("${lreads}"), file("${fast5}") // For methylation calling
+    tuple val(prefix), file("annotation/${prefix}.fna"), file("${lreads}"), file("${fast5}") // For methylation calling
     file('prokka_version.txt') // Save prokka version
 
     script:

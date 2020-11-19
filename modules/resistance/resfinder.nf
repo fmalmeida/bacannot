@@ -16,7 +16,7 @@ process resfinder {
   script:
   """
   # Activate env
-  source activate resfinder;
+  source activate Resfinder;
 
   # Run resfinder acquired resistance
   /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species ${params.resfinder_species} \

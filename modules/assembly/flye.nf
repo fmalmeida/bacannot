@@ -16,6 +16,9 @@ process flye {
   tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("flye_${id}.fasta")
   file('flye_version.txt')
 
+  when:
+  if (lreads.getName() != 'input.4')
+
   script:
   lr = (lr_type == 'nanopore') ? '--nano-raw' : '--pacbio-raw'
   """

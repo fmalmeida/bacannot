@@ -58,29 +58,12 @@ RUN conda create -y -n MLST && \
 
 # INSTALL NANOPOLISH
 ## Configure Conda
-RUN conda create -y -n NANOPOLISH python=3.7 && \
-			source activate NANOPOLISH && \
-			conda config --add channels r && \
-			conda config --add channels bioconda && \
-			conda install -y --freeze-installed pysam nomkl && \
-			conda install -y --freeze-installed -c anaconda hdf5 && \
-			conda install -c bioconda htslib && \
-			conda install -c anaconda biopython && \
-			conda install -c conda-forge eigen && \
-			apt-get install -y libhdf5-dev && \
-			conda config --add channels defaults && \
-			conda config --add channels conda-forge && \
-			conda config --add channels bioconda && \
-			conda install -y --freeze-installed nanopolish && \
-			git clone --recursive https://github.com/jts/nanopolish.git && \
-			mv nanopolish/scripts /work/nanopolish_scripts && \
-			rm -r nanopolish && \
-			conda install -y --freeze-installed -c bioconda minimap2 && \
-			conda install -y --freeze-installed -c bioconda samtools  && \
-			conda install -y --freeze-installed -c bioconda seqtk && \
-			conda install -y --freeze-installed -c conda-forge parallel \
-			&& conda clean -afy
-
+RUN apt-get install -y libhdf5-dev \
+			&& git clone --recursive https://github.com/jts/nanopolish.git \
+			&& cd nanopolish \
+			&& make all
+RUN rm /work/nanopolish/hdf5-1.8.14.tar.gz /work/nanopolish/eigen-3.3.7.tar.bz2
+ENV PATH="$PATH:/work/nanopolish"
 
 # INSTALL PROKKA
 RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz
@@ -241,11 +224,9 @@ RUN cd resfinder/db_resfinder && \
 			python3 INSTALL.py $(which kma_index) non_interactive
 
 
-# Clean
-RUN conda clean -afy \
-			&& find /miniconda/ -follow -type f -name '*.a' -delete \
-			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
-			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
+# Install minimap2
+RUN conda install -y -c bioconda minimap2 nomkl \
+			&& conda clean -afy
 
 # CHECK ENVs
 RUN conda info -e
