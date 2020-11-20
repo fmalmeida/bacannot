@@ -289,6 +289,7 @@ workflow bacannot_nf {
         rgi_output = card_rgi.out[3]
         rgi_output_1 = card_rgi.out[1]
         rgi_output_2 = card_rgi.out[2]
+        rgi_heatmap = card_rgi.out[4]
         // ARGMiner
         argminer(prokka.out[4])
         argminer_output = argminer.out[0]
@@ -297,18 +298,22 @@ workflow bacannot_nf {
           resfinder(prokka.out[3])
           resfinder_output_2 = resfinder.out[0]
           resfinder_output_1 = resfinder.out[1]
+          resfinder_phenotable = resfinder.out[2]
         } else {
           resfinder_output_1 = Channel.empty()
           resfinder_output_2 = Channel.empty()
+          resfinder_phenotable = Channel.empty()
         }
       } else {
         rgi_output = Channel.empty()
         rgi_output_1 = Channel.empty()
         rgi_output_2 = Channel.empty()
+        rgi_heatmap = Channel.empty()
         amrfinder_output = Channel.empty()
         argminer_output = Channel.empty()
         resfinder_output_1 = Channel.empty()
         resfinder_output_2 = Channel.empty()
+        resfinder_phenotable = Channel.empty()
       }
 
       /*
@@ -366,11 +371,13 @@ workflow bacannot_nf {
       // Render reports
       report(jbrowse_input.join(rgi_output_1,         remainder: true)
                           .join(rgi_output_2,         remainder: true)
+                          .join(rgi_heatmap,          remainder: true)
                           .join(argminer_output,      remainder: true)
                           .join(iceberg_output_2,     remainder: true)
                           .join(plasmidfinder_output, remainder: true)
                           .join(resfinder_output_1,   remainder: true)
-                          .join(resfinder_output_2,   remainder: true))
+                          .join(resfinder_output_2,   remainder: true)
+                          .join(resfinder_phenotable, remainder: true))
       */
 
 }

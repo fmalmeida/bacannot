@@ -25,8 +25,7 @@ vf_id_url_DT <- function (x) {
 }
 
 # Get Victors Metadata
-victors_meta <- read.delim("/work/victors/victors_metadata.tsv")
-#victors_meta <- read.delim("/Users/falmeida/Downloads/victors_metadata.tsv")
+victors_meta <- read.delim("victors_metadata.tsv")
 ```
 
 ```{r parsing-db-victors, eval=TRUE, include=FALSE, echo=FALSE}
@@ -63,7 +62,7 @@ urls <- lapply(ids, function(x){paste0("http://www.phidias.us/victors/gene_detai
 
 All query genes predicted by Prokka that have a match in Victors database are described in Table \@ref(tab:write-table-victors). In order to make further investigations easier, all genes are linked to its matches in Victors database.
 
-> Victors database is protein-only thus genes are scanned via blastp. Victors is a new database and focused in proteins that are important in the interaction pathogen-host, thus it may contain proteins that you have never heard about.
+> Victors database is protein-only thus genes are scanned via blastp. Victors is a new database and focused in proteins that are important in the interaction pathogen-host, thus it may contain some less known genes.
 
 <caption>(#tab:write-table-victors) Virulence factors annotated using the Victors database via BLASTp</caption>
 ```{r}
@@ -77,5 +76,5 @@ datatable(blast,
           filter = 'top',
           options = dt_opt_lst,
           extensions = 'Buttons',
-          rownames = T)
+          rownames = F)
 ```

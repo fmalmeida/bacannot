@@ -2,7 +2,6 @@
 title: "Annotation of virulence factors"
 author: "Produced with bacannot pipeline"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-subtitle: "Query: `r params$query`"
 params:
   blast_id:
   blast_cov:
@@ -14,14 +13,14 @@ output:
   bookdown::html_document2: 
     css: styles.css
     df_print: paged
-    number_sections: true
+    number_sections: false
     syntax: espresso
     self_contained: yes
-    theme: yeti
-    toc: yes
-    toc_collapsed: yes
-    toc_depth: 4
-    toc_float: yes
+    theme: flatly
+    #toc: yes
+    #toc_collapsed: yes
+    #toc_depth: 4
+    #toc_float: yes
     code_folding: "show"
 ---
 
@@ -69,21 +68,29 @@ dt_opt_lst <- list(pageLength = 5,
                          autoWidth = TRUE)
 ```
 
-# About
+# `r params$query` virulence report {.tabset .tabset-pills}
 
-Virulence factors are molecules produced by bacteria that add effectiveness in their colonization of a niche, immunoevasion, immunosuppression and obtain nutrition from the host. In order to detect these molecules in the query genome we used [VFDB](http://www.mgc.ac.cn/VFs/main.htm) and [Victors](http://www.phidias.us/victors/) databases. [VFDB](http://www.mgc.ac.cn/VFs/main.htm) (Virulence Factor Database) is a comprehensive resource, created in 2004, of curated information about virulence factors of pathogenic bacteria. To date, it contains a 1080 virulence factors in its database, from 74 _bacteria genera_. [Victors](http://www.phidias.us/victors/) is a curated database which currently possesses 5296 virulence factors for 194 different pathogens including bacteria, viruses and parasites and is focused in proteins related to interactions pathogen-host.
+## About
 
-About the BLASTs:
+Virulence factors are molecules produced by bacteria that add effectiveness in their colonization ability of a niche, immunoevasion, immunosuppression and nutrition obtention from the host. In order to detect these molecules in the query genome its gene sequences were aligned against two databases:
 
-* [VFDB](http://www.mgc.ac.cn/VFs/main.htm) is a nucleotide database blasted to the predicted genes via BLASTn;
-* [Victors](http://www.phidias.us/victors/) is a protein database blasted to the predicted genes via BLASTp.
-* Blast % identity: `> `r params$blast_id`%`
-* Blast % query coverage: `> `r params$blast_cov`%`
-    + For blasts against gene sequences predicted by Prokka, alignments are filtered in a two way manner so they cover at least `r params$blast_cov`%` of the reference gene sequence and the of query sequence at the same time
+1. [VFDB](http://www.mgc.ac.cn/VFs/main.htm);
+    + VFDB is a comprehensive resource, created in 2004, of curated information about virulence factors of pathogenic bacteria. To date, it contains a 1080 virulence factors in its database, from >74 _bacteria genera_.
+    + In this pipeline the VFDB nucleotide core dataset (A) was used for alignment.
+2. [Victors](http://www.phidias.us/victors/).
+    + Victors is a curated database which currently possesses 5296 virulence factors for 194 different pathogens including bacteria, viruses and parasites and is focused in proteins related to interactions pathogen-host.
+    + Victors is a protein database, thus scanned with `BLASTp`.
+    
+### Prediction thresholds
+
+All the predictions were passed through a user defined threshold for minimum coverage and identity:
+
+* Min. Identity (%): `> `r params$blast_id``
+* Min. Coverage (%): `> `r params$blast_cov``
 
 > The results used to create this report are under the directory called `virulence` in the output folder of the query `r params$query`.
 
-# VFDB
+## VFDB
 
 ```{r, VFDB_conditional_block, echo=FALSE, results='asis', eval=vfdb_not_null, child='yes_vfdb.Rmd'}
 ```
@@ -91,7 +98,7 @@ About the BLASTs:
 ```{r, VFDB_conditional_block_2, echo=FALSE, results='asis', eval=vfdb_null, child='no_vfdb.Rmd'}
 ```
 
-# Victors
+## Victors
 
 ```{r, Victors_conditional_block, echo=FALSE, results='asis', eval=victors_not_null, child='yes_victors.Rmd'}
 ```

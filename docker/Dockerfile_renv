@@ -48,5 +48,9 @@ RUN mkdir card-data && \
 # Make Rmds executable
 RUN chmod a+rx /work/reports/*.Rmd
 
+# Set PATH
+RUN chmod a+x /work/rscripts/*R
+ENV PATH="$PATH:/work/rscripts"
+
 # Re-set workidir
 WORKDIR /work

@@ -1,12 +1,12 @@
-Below it is summarized the results obtained with AMRFinderPlus. Roughly, it can be divided into two main categories: 
+The AMRFinderPlus annotation results are summarized below in an interactive table containing the complete annotation information (Table \@ref(tab:ncbi-amr-resistance-genes)) and image showing the targeted drug classes (Figure \@ref(fig:ncbi-resistome-png)). Whenever possible, all feature have links to NCBI database marking the closest reference sequence to each annotated gene. The results obtained with AMRFinderPlus can be roughly divided into two main categories: 
 
 1. Genes related to antibiotics, called AMR;
 2. Genes related to stress resistance which can be:
     + biocide resistance
     + metal resistance
     + heat resistance
-
-This is well documented in Table \@ref(tab:ncbi-amr-resistance-genes). Whenever possible, all feature have links to NCBI database marking the closest reference sequence to each annotated gene. Additionally, gene targets are summarized in image \@ref(fig:ncbi-resistome-png). Right below it is presented a small list containing AMR genes found in the query genome. If empty, none has been found.
+    
+### Acquired ARGs detected
 
 ```{r results='asis'}
 # Read result
@@ -18,7 +18,7 @@ cat("- **AMR genes found in the query genome:**\n")
 cat(paste("\t-", string.list), sep = '\n')
 ```
 
-## Supporting Data
+### Supporting Data
 
 <caption>(#tab:ncbi-amr-resistance-genes) Resistance genes annotated from NCBI AMR curated database using AMRfinderplus</caption>
 ```{r ncbi-amr-resistance-genes}
@@ -29,36 +29,27 @@ tab2$Accession.of.closest.sequence <- amrfinder_url(tab2$Accession.of.closest.se
 # Produce Table
 tab2 %>%
   select(Element.type, Element.subtype, Prokka_ID, Gene.symbol, Sequence.name, Class, Subclass, Method, Accession.of.closest.sequence, `Query Protein Coordinates`) %>%
-  arrange(Element.type, Prokka_ID) %>%
+  dplyr::arrange(Element.type, Prokka_ID) %>%
   datatable(escape = FALSE,
             filter = 'top',
             colnames = c("Resistance type", "Resistance subtype", "Query protein", "Gene", "Product", "Resistance Class", "Resistance subclass", "Detection method", "Ref. Accession", "Genomic coordinates"),
             options = dt_opt_lst,
             extensions = 'Buttons',
-            rownames = T)
+            rownames = F)
 ```
 
-```{r ncbi-resistome-png, fig.align='center', fig.show='hold', fig.cap="Resistome Predicted using NCBI's AMRFinderplus", out.width="45%"}
+```{r ncbi-resistome-png, fig.align='center', fig.show='hold', fig.cap="Resistome Predicted using NCBI's AMRFinderplus", out.width="35%"}
 ## Grab AMR
 amr <- tab2 %>%
-  filter(Element.type == "AMR") %>%
-  select(Prokka_ID, Class)
-amr <- plyr::count(amr, "Class")
-
-## Grab STRESS
-stress <- tab2 %>%
-  filter(Element.type == "STRESS") %>%
-  select(Prokka_ID, Element.subtype)
-stress <- plyr::count(stress, "Element.subtype")
-colnames(stress) <- c("Class", "freq")
+  select(Prokka_ID, Subclass)
+amr <- plyr::count(amr, "Subclass")
 
 ## Plot
-drugs <- rbind(amr, stress)
-ggplot(drugs, aes(x=Class, y=freq, fill=Class)) +
+ggplot(amr, aes(x=Subclass, y=freq, fill=Subclass)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank()) +
   xlab("") +
   ylab("Number of genes") +
-  guides(fill=guide_legend(title = "Resistance Class"))
+  guides(fill=guide_legend(title = "Targeted drug class"))
 ```

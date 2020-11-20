@@ -91,9 +91,11 @@ blast <- arrange(blast, `Virulence Factor ID`, `Gene Name`)
 urls <- apply(blast, 1, vf_id_url)
 ```
 
-All virulence factors (from VFDB) that were found to have at least one gene in the query genome are shown in the list below. All of them are linked to the database for further investigations.
+All virulence factors (from VFDB) that were found to have at least one gene in the query genome are summarized below. All of them are linked to the database for further investigations. A more detailed information about the virulence annotation with VFDB is given in Table \@ref(tab:vfdb-table). Additionally, Figure \@ref(fig:vfs-png) summarizes the amount of annotated genes of each virulence factor. Information are always linked to the database to make investigations easier.
 
 > The results are showed as: **VFDB virulence factor name (VFDB virulence factor ID)**.
+
+### Summary
 
 ```{r results='asis'}
 string.list <- apply(blast, 1, vf_id_url_list) %>% sort() %>% unique()
@@ -101,9 +103,7 @@ cat("- Virulence factors found in the query genome:\n")
 cat(paste("\t-", string.list), sep = '\n')
 ```
 
-All query genes predicted by Prokka that have a match in VFDB are more detailed in Table \@ref(tab:vfdb-table). Additionally, Figure \@ref(fig:vfs-png) summarizes the amount of annotated genes of each virulence factor. Information are always linked to the database to make investigations easier.
-
-```{r vfs-png, fig.align='center', fig.show='hold', fig.cap="Virulence Factors annotated from [VFDB](http://www.mgc.ac.cn/VFs/main.htm) database", out.width="45%"}
+```{r vfs-png, fig.align='center', fig.show='hold', fig.cap="Virulence Factors annotated from [VFDB](http://www.mgc.ac.cn/VFs/main.htm) database", out.width="35%"}
 summary <- blast %>%
   select("Virulence Factor Name", "Gene Name")
 colnames(summary) <- c("Virulence_Factor_Name", "Gene_Name")
@@ -112,9 +112,11 @@ ggplot(vfs, aes(x=Virulence_Factor_Name, y=freq, fill=Virulence_Factor_Name)) + 
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank()) +
   xlab("Virulence Factors") +
-  ylab("Number of annotated genes") +
+  ylab("Number of genes") +
   guides(fill=guide_legend(title = "Virulence Factors"))
 ```
+
+### Detailed information
 
 <caption>(#tab:vfdb-table) Virulence factors annotated using the VFDB database via BLASTn</caption>
 ```{r}
@@ -128,5 +130,5 @@ datatable(blast %>% select("Virulence Factor Name", "VF ID", "Gene Name", "Descr
           filter = 'top',
           options = dt_opt_lst,
           extensions = 'Buttons',
-          rownames = T)
+          rownames = F)
 ```

@@ -1,0 +1,24 @@
+## Generate Resistance Report
+Rscript -e 'rmarkdown::render("report_resistance.Rmd", params = list(
+  blast_id = 90 ,
+  blast_cov = 90,
+  amrfinder = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/AMRFinderPlus/AMRFinder_resistance-only.tsv",
+  query = "KpV3",
+  rgitool = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/RGI/RGI_KpV3.txt",
+  rgiperfect = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/RGI/Perfect_RGI_KpV3_hits.txt",
+  rgistrict = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/RGI/Strict_RGI_KpV3_hits.txt",
+  rgi_heatmap = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/RGI/heatmap/RGI_heatmap-1.png",
+  argminer_blastp = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/ARGMiner/KpV3_argminer_blastp_onGenes.summary.txt",
+  resfinder_tab = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/resfinder/results_tab.txt",
+  resfinder_pointfinder = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/resfinder/PointFinder_results.txt",
+  resfinder_phenotype = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/resistance/resfinder/pheno_table.txt",
+  gff = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/gffs/KpV3.gff"))'
+
+## Generate Virulence Report
+Rscript -e 'rmarkdown::render("report_virulence.Rmd" , 
+  params = list( blast_id = 90, 
+                 blast_cov = 90, 
+                 vfdb_blast = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/virulence/vfdb/KpV3_vfdb_blastn_onGenes.txt", 
+                 gff = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/gffs/KpV3.gff", 
+                 victors_blast = "/Volumes/falmeida1TB/bacannot_teste/output/KpV3/virulence/victors/KpV3_victors_blastp_onGenes.txt", 
+                 query = "KpV3"))'
