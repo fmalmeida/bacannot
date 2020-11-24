@@ -19,12 +19,11 @@ getAttributeField <- function (x, field, attrsep = ";") {
 full_ices <- nrow(ice_genome_blast)
 ```
 
-## Analysis of full-length ICEs
+### Analysis of full-length ICEs
 
-Full-length ICEs are available at [ICEberg database](https://bioinfo-mml.sjtu.edu.cn/ICEberg/download.html) in nucleotide fastas while the proteins found inside these ICEs are in protein fastas. The full-length ICEs are very difficult to be completely found in new genomes, thus they are scanned without coverage or identity thresholds. The filtering and selection of these is up to you.
+Full-length ICEs are available at [ICEberg database](https://bioinfo-mml.sjtu.edu.cn/ICEberg/download.html) in nucleotide fastas while the proteins found inside these ICEs are in protein fastas. Since the ICEfinder script has no licenses to be incorporated to the pipeline, we try to search for the full-length ICEs. However, they are very difficult to be completely found in new genomes, thus they are scanned without coverage or identity thresholds. The filtering and selection of these is up to you. We have found a total of `r full_ices` alignments in the query genome, check it out in table \@ref(tab:write-table-ices-full).
 
-We have found a total of `r full_ices` alignments in the query genome, check it out in table \@ref(tab:write-table-ices-full).
-
+<br>
 <caption>(#tab:write-table-ices-full) Alignment of full-length ICEs to the query genome via BLASTn</caption>
 ```{r}
 blast <- ice_genome_blast
@@ -39,7 +38,7 @@ datatable(blast,
           rownames = T)
 ```
 
-## Analysis of ICE's proteins
+### Analysis of ICE's proteins
 
 ```{r parsing-db, eval=TRUE, include=FALSE, echo=FALSE}
 # Create ID Column
@@ -73,12 +72,13 @@ blast$ICE_ID <- apply(blast, 1, function (x) {
 })
 ```
 
-All query genes predicted by Prokka that have a match in ICEberg database are shown in Table \@ref(tab:write-table-ice-blastp). It is summarised the ICE id and all its genes that were found in the query genome. All of them are linked to the database for further investigations.
+All query genes predicted by Prokka that have a match in ICEberg database are shown in Table \@ref(tab:write-table-ice-blastp). It is summarized the ICE id and all its genes that were found in the query genome. All of them are linked to the database for further investigations.
 
 > Take note: The fact that the genome possess some proteins from ICEs does not necessarily means that the ICE is present in the genome. Please, check the number of proteins that the ICE of origin posses in the [ICEberg database list of ICEs](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/browse_result.php?type=alpha&alpha=100), and them infer based one the alignments you see if your genome have or not one ICE in it.
 
-Users are advised to also use the [ICEfinder](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/tools.html) tool to predict genomic position of known ICEs since we are not allowed to include this step under this pipeline.
+Users are advised to also use the [ICEfinder](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/tools.html) tool to predict the putative genomic position of known ICEs since we are not allowed to include this step under this pipeline.
 
+<br>
 <caption>(#tab:write-table-ice-blastp) ICE genes annotated from ICEberg database via BLASTp</caption>
 ```{r}
 # Render dt

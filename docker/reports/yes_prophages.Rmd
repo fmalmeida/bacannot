@@ -1,0 +1,25 @@
+> All the prophage sequences and genes are available in the genome browser proveided, it is worthy taking notes of prophage's genomic regions for a better exploration using it. The genome browser was automatically created (stored in a dir called `jbrowse`) and can be visualized with [JBROWSE desktop](https://github.com/GMOD/jbrowse) ot [http-server](https://www.npmjs.com/package/http-server).
+
+### Phigaro
+
+```{r, phigaro_conditional_block_TRUE, echo=FALSE, results='asis', eval=phigaro_not_null, child='yes_phigaro.Rmd'}
+```
+
+```{r, phigaro_conditional_block_FALSE, echo=FALSE, results='asis', eval=phigaro_null, child='no_phigaro.Rmd'}
+```
+
+### PhiSpy
+
+```{r, phispy_conditional_block_TRUE, echo=FALSE, results='asis', eval=phispy_not_null, child='yes_phispy.Rmd'}
+```
+
+```{r, phispy_conditional_block_FALSE, echo=FALSE, results='asis', eval=phispy_null, child='no_phispy.Rmd'}
+```
+
+### PHAST database
+
+```{r, phigaro_conditional_block_TRUE, echo=FALSE, results='asis', eval=phast_not_null, child='yes_phast.Rmd'}
+```
+
+```{r, phigaro_conditional_block_FALSE, echo=FALSE, results='asis', eval=phast_null, child='no_phast.Rmd'}
+```

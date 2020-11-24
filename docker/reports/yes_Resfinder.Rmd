@@ -25,6 +25,9 @@ resfinder_tab$Accession.no. <- resfinder_url(resfinder_tab$Accession.no.)
 # Produce Table
 resfinder_tab %>%
   datatable(escape = FALSE,
+            colnames = c("Resistance gene", "Identity (%)", "Alignment/Ref length",
+                         "Coverage (%)", "Position in reference", "Contig",
+                         "Position in contig", "Phenotype", "Acc. num."),
             filter = 'top',
             options = dt_opt_lst,
             extensions = 'Buttons',
@@ -39,7 +42,7 @@ resfinder_tab %>%
 # Produce Table
 resfinder_pheno %>% arrange(desc(N..genes)) %>% filter(Phenotype == "Resistant" | Phenotype == "No resistance") %>%
   datatable(escape = FALSE,
-            colnames = c("Antibiotic", "Drug Class", "Phenotype", "N. genes", "Genetic background"),
+            colnames = c("Antibiotic", "Drug Class", "Phenotype", "Match", "Genetic background"),
             filter = 'top',
             options = dt_opt_lst,
             extensions = 'Buttons',

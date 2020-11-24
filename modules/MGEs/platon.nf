@@ -12,7 +12,7 @@ process platon {
 
   output:
   file("platon")
-  file("platon/${prefix}.tsv")
+  tuple val(prefix), file("platon/${prefix}.tsv")
   file("platon_version.txt")
 
   script:
@@ -27,6 +27,6 @@ process platon {
   tar zxvf /work/platon/db.tar.gz
 
   # Run platon
-  platon --db db/ --output platon --threads ${params.threads} -c $genome ;
+  platon --db db/ --output platon --threads ${params.threads} --mode specificity -c $genome ;
   """
 }

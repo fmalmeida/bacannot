@@ -4,16 +4,16 @@ process phispy {
     else if (filename == "PhiSpy") "prophages/$filename"
     else null
   }
-  tag "Detecting plasmid contigs with platon"
+  tag "Detecting prophages with PhiSpy"
   label 'main'
 
   input:
   tuple val(prefix), file(input)
 
   output:
-  file("PhiSpy")
-  file("PhiSpy/prophage.tsv")
-  file("phispy_version.txt")
+  tuple val(prefix), file("PhiSpy")
+  tuple val(prefix), file("PhiSpy/prophage.tsv")
+  tuple val(prefix), file("phispy_version.txt")
 
   script:
   """

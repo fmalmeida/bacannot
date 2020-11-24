@@ -5,9 +5,8 @@ MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 # Workdir
 WORKDIR /work
 
-# Add local files
+# Get scripts
 ADD scripts/rscripts /work/rscripts
-ADD reports /work/reports
 
 # Set main R dependencies
 ## Add R repo key
@@ -33,14 +32,18 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get --option Acquire::Retries=100 --optio
 RUN DEBIAN_FRONTEND=noninteractive Rscript /work/rscripts/installPack.R && \
 			apt-get clean
 
+# METADATA and REPORTS
+# Add local files
+ADD reports /work/reports
+RUN rm /work/reports/aro_index.tsv /work/reports/victors_metadata.tsv
+
 # Download Victors metadata
 RUN apt-get install -y wget && \
-			mkdir /work/victors && \
-			wget "http://www.phidias.us/victors/export_text.php?c_mc_pathogen_id=&c_phi_function=Virulence%20factor&c_mc_victor_name=&c_gene_locus_tag=&db_type=gene_gi&db_id=&c_max_tmhmm_PredHel=1&c_max_tmhmm_PredHel_check=&c_min_spaan_score_check=&c_min_spaan_score=0.51&keywords=&c_human_alignment=&c_mouse_alignment=&c_localization[]=Any&cog_cat_id[]=" -O /work/victors/victors_metadata.tsv
+			cd /work/reports && \
+			wget "http://www.phidias.us/victors/export_text.php?c_mc_pathogen_id=&c_phi_function=Virulence%20factor&c_mc_victor_name=&c_gene_locus_tag=&db_type=gene_gi&db_id=&c_max_tmhmm_PredHel=1&c_max_tmhmm_PredHel_check=&c_min_spaan_score_check=&c_min_spaan_score=0.51&keywords=&c_human_alignment=&c_mouse_alignment=&c_localization[]=Any&cog_cat_id[]=" -O /work/reports/victors_metadata.tsv
 
 # Download CARD metadata
-RUN mkdir card-data && \
-			cd card-data && \
+RUN cd /work/reports && \
 			wget -O card-data.tar.bz2 https://card.mcmaster.ca/download/0/broadstreet-v3.1.0.tar.bz2 && \
 			tar jxvf card-data.tar.bz2 && \
 			rm card-data.tar.bz2

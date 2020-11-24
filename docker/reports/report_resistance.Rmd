@@ -23,7 +23,7 @@ output:
     number_sections: false
     syntax: espresso
     self_contained: yes
-    theme: paper
+    theme: readable
     #toc: yes
     #toc_collapsed: yes
     #toc_depth: 4
@@ -90,6 +90,10 @@ card_url <- function (x) {
   return(url)
 }
 
+check_lines <- function(x) {
+  return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
+}
+
 #####################
 ### Loading files ###
 #####################
@@ -126,7 +130,8 @@ argminer_blastp <- try(read.delim(params$argminer_blastp, header = TRUE), silent
 #########################################
 
 # Check if NCBI is empty
-if (class(amrtsv) != 'try-error' && nrow(amrtsv) > 0) {
+if (class(amrtsv) != 'try-error' & 
+    check_lines(amrtsv) > 0) {
   amrFinder_not_null <- TRUE
   amrFinder_null <- FALSE
 } else {
@@ -135,7 +140,8 @@ if (class(amrtsv) != 'try-error' && nrow(amrtsv) > 0) {
 }
 
 # Check if NCBI is empty
-if (class(resfinder_tab) != 'try-error' && nrow(resfinder_tab) > 0) {
+if (class(resfinder_tab) != 'try-error' & 
+    check_lines(resfinder_tab) > 0) {
   resfinder_not_null <- TRUE
   resfinder_null <- FALSE
 } else {
@@ -144,7 +150,8 @@ if (class(resfinder_tab) != 'try-error' && nrow(resfinder_tab) > 0) {
 }
 
 # Check if ARGminer is empty
-if (class(argminer_blastp) != 'try-error' && nrow(argminer_blastp) > 0) {
+if (class(argminer_blastp) != 'try-error' & 
+    check_lines(argminer_blastp) > 0) {
   argminer_not_null <- TRUE
   argminer_null <- FALSE
 } else {
@@ -153,7 +160,8 @@ if (class(argminer_blastp) != 'try-error' && nrow(argminer_blastp) > 0) {
 }
 
 # Check if RGI is empty
-if (class(rgi_tsv) != 'try-error' && nrow(rgi_tsv) > 0) {
+if (class(rgi_tsv) != 'try-error' & 
+    check_lines(rgi_tsv) > 0) {
   rgi_not_null <- TRUE
   rgi_null <- FALSE
 } else {
@@ -161,7 +169,8 @@ if (class(rgi_tsv) != 'try-error' && nrow(rgi_tsv) > 0) {
   rgi_null <- TRUE
 }
 
-if (class(rgi_perfect) != 'try-error' && nrow(rgi_perfect) > 0) {
+if (class(rgi_perfect) != 'try-error' & 
+    check_lines(rgi_perfect) > 0) {
   rgi_perfect_not_null <- TRUE
   rgi_perfect_null <- FALSE
 } else {
@@ -169,7 +178,8 @@ if (class(rgi_perfect) != 'try-error' && nrow(rgi_perfect) > 0) {
   rgi_perfect_null <- TRUE
 }
 
-if (class(rgi_strict) != 'try-error' && nrow(rgi_strict) > 0) {
+if (class(rgi_strict) != 'try-error' & 
+    check_lines(rgi_strict) > 0) {
   rgi_strict_not_null <- TRUE
   rgi_strict_null <- FALSE
 } else {

@@ -1,11 +1,10 @@
-All prophages annotated using phigaro are better shown in its own [html report file](`r phigaro_html`). The genomic regions predicted as putative prophage sequences are summarized in Table \@ref(tab:phigaro-table).
+Phigaro is a standalone command-line application that is able to detect prophage regions taking raw genome and metagenome assemblies as an input. It also produces dynamic annotated “prophage genome maps” and marks possible transposon insertion spots inside prophages. Its results can be nicely visualized in its own [html report file](`r phigaro_html`). The genomic regions predicted as putative prophage sequences are also summarized in Table \@ref(tab:phigaro-table).
 
 * Check it out at:
-    + Dir: ``r phigaro_dir``
+    + Dir: `prophages/phigaro` in the main output directory
     + HTML: ``r phigaro_html``
 
-> It is worthy taking notes of prophage's genomic regions for a better exploration using the JBROWSE genome browser provided. This genome browser was automatically created (stored in a dir called `jbrowse`) and can be visualized with [JBROWSE desktop](https://github.com/GMOD/jbrowse).
-
+<br>
 <caption>(#tab:phigaro-table) Putative prophage sequences annotated with phigaro software</caption>
 ```{r}
 # Produce Table
@@ -15,5 +14,5 @@ datatable(phigaro_txt,
           filter = 'top',
           options = dt_opt_lst,
           extensions = 'Buttons',
-          rownames = T)
+          rownames = F)
 ```

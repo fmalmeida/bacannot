@@ -16,7 +16,7 @@ output:
     number_sections: false
     syntax: espresso
     self_contained: yes
-    theme: flatly
+    theme: readable
     #toc: yes
     #toc_collapsed: yes
     #toc_depth: 4
@@ -35,13 +35,18 @@ suppressMessages(library(dplyr))
 suppressMessages(library(stringr))
 suppressMessages(library(ggplot2))
 
+# Line checker
+check_lines <- function(x) {
+  return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
+}
+
 # Load data
 victors_blast <- try(read.delim(params$victors_blast, header = TRUE), silent = TRUE)
 vfdb_blast <- try(read.delim(params$vfdb_blast, header = TRUE), silent = TRUE)
 gff <- try(read.delim(params$gff, header = FALSE), silent = TRUE)
 
 # Check if blast is empty
-if (class(vfdb_blast) != 'try-error' && nrow(vfdb_blast) > 0) {
+if (class(vfdb_blast) != 'try-error' & check_lines(vfdb_blast) > 0) {
   vfdb_not_null <- TRUE
   vfdb_null <- FALSE
 } else {
@@ -49,7 +54,7 @@ if (class(vfdb_blast) != 'try-error' && nrow(vfdb_blast) > 0) {
   vfdb_null <- TRUE
 }
 
-if (class(victors_blast) != 'try-error' && nrow(victors_blast) > 0) {
+if (class(victors_blast) != 'try-error' & check_lines(victors_blast) > 0) {
   victors_not_null <- TRUE
   victors_null <- FALSE
 } else {

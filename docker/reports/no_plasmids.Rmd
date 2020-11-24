@@ -1,3 +1,3 @@
-Not a single plasmid replicon was found in the query genome. This might have happened because your blast thresholds were too stringent or because the genome really does not have plasmids.
+Not a single plasmid replicon was found in the query genome either because the plasmid detection process was not executed or due to the thresholds stringency.
 
 Therefore, it is advisable to take a better look at the parameters used and consider the query genome biology to define which scenario is the one that best suits your data. If you believe that the genome must contain any plasmid you can perform another prediction with [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/).

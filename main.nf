@@ -136,8 +136,9 @@ include { iceberg } from './modules/MGEs/iceberg.nf' params(outdir: params.outdi
   threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
   blast_MGEs_mincov: params.blast_MGEs_mincov)
 
-// Prophage annotation with PHIGARO
+// Genomic Islands detection with Islandpath-DIMOB
 include { find_GIs } from './modules/MGEs/islandPath_DIMOB.nf' params(outdir: params.outdir)
+include { draw_GIs } from './modules/MGEs/draw_gis.nf' params(outdir: params.outdir)
 
 // AMR annotation with ARGMiner
 include { argminer } from './modules/resistance/argminer.nf' params(outdir: params.outdir,
@@ -258,13 +259,15 @@ workflow bacannot_nf {
         phast_output = phast.out[1]
         // Phigaro software
         phigaro(prokka.out[3])
-        phigaro_output = phigaro.out[1]
+        phigaro_output_1 = phigaro.out[0]
+        phigaro_output_2 = phigaro.out[1]
         // PhiSpy
         phispy(prokka.out[2])
         phispy_output = phispy.out[1]
       } else {
         phast_output = Channel.empty()
-        phigaro_output = Channel.empty()
+        phigaro_output_1 = Channel.empty()
+        phigaro_output_2 = Channel.empty()
         phispy_output = Channel.empty()
       }
 
@@ -296,8 +299,8 @@ workflow bacannot_nf {
         // Resfinder
         if (params.resfinder_species) {
           resfinder(prokka.out[3])
-          resfinder_output_2 = resfinder.out[0]
-          resfinder_output_1 = resfinder.out[1]
+          resfinder_output_1 = resfinder.out[0]
+          resfinder_output_2 = resfinder.out[1]
           resfinder_phenotable = resfinder.out[2]
         } else {
           resfinder_output_1 = Channel.empty()
@@ -331,17 +334,20 @@ workflow bacannot_nf {
                                        .join(barrnap.out[0])
                                        .join(compute_gc.out[0])
                                        .join(kofamscan_output, remainder: true)
-                                       .join(vfdb_output, remainder: true)
-                                       .join(victors_output, remainder: true)
+                                       .join(vfdb_output,      remainder: true)
+                                       .join(victors_output,   remainder: true)
                                        .join(amrfinder_output, remainder: true)
-                                       .join(rgi_output, remainder: true)
-                                       .join(iceberg_output, remainder: true)
-                                       .join(phast_output, remainder: true)
-                                       .join(phigaro_output, remainder: true)
-                                       .join(find_GIs.out[0])
+                                       .join(rgi_output,       remainder: true)
+                                       .join(iceberg_output,   remainder: true)
+                                       .join(phast_output,     remainder: true)
+                                       .join(phigaro_output_2, remainder: true)
+                                       .join(find_GIs.out[0],  remainder: true)
 
       // Contatenation of annotations in a single GFF file
       merge_annotations(annotations_files)
+
+      // Plot genomic islands
+      draw_GIs(merge_annotations.out[0].join(find_GIs.out[0]))
 
       // Convert GFF file to GBK file
       gff2gbk(merge_annotations.out[0].join(prokka.out[3]))
@@ -359,14 +365,9 @@ workflow bacannot_nf {
       jbrowse_input = merge_annotations.out[0].join(annotations_files, remainder: true)
                                               .join(methylation_out_1, remainder: true)
                                               .join(methylation_out_2, remainder: true)
+                                              .join(phispy_output,     remainder: true)
       // Jbrowse Creation
       jbrowse(jbrowse_input)
-
-      /*
-
-
-
-
 
       // Render reports
       report(jbrowse_input.join(rgi_output_1,         remainder: true)
@@ -377,8 +378,10 @@ workflow bacannot_nf {
                           .join(plasmidfinder_output, remainder: true)
                           .join(resfinder_output_1,   remainder: true)
                           .join(resfinder_output_2,   remainder: true)
-                          .join(resfinder_phenotable, remainder: true))
-      */
+                          .join(resfinder_phenotable, remainder: true)
+                          .join(draw_GIs.out[1],      remainder: true)
+                          .join(phigaro_output_1,     remainder: true)
+                          .join(platon_output,        remainder: true))
 
 }
 

@@ -2,7 +2,6 @@
 title: "Annotation of mobile genetic elements"
 author: "Produced with bacannot pipeline"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-subtitle: "Query: `r params$query`"
 params:
   blast_id: 
   blast_cov: 
@@ -11,21 +10,24 @@ params:
   ice_genome_blast: 
   ice_prot_blast: 
   phast_prot_blast:
+  phispy_tsv:
   plasmid_finder_tab:
+  platon_tsv:
+  gi_image:
   query: 
   gff: 
 output:
   bookdown::html_document2: 
     css: styles.css
     df_print: paged
-    number_sections: true
+    number_sections: false
     syntax: espresso
     self_contained: yes
-    theme: yeti
-    toc: yes
-    toc_collapsed: yes
-    toc_depth: 4
-    toc_float: yes
+    theme: readable
+    #toc: yes
+    #toc_collapsed: yes
+    #toc_depth: 4
+    #toc_float: yes
     code_folding: "show"
 ---
 
@@ -40,21 +42,18 @@ suppressMessages(library(dplyr))
 suppressMessages(library(stringr))
 suppressMessages(library(ggplot2))
 
-## Read phigaro documents
-phigaro_dir <- params$phigaro_dir
-phigaro_html <- paste0(phigaro_dir, "/", params$query, "_phigaro.html", collapse = "")
-phigaro_txt <- try(read.delim(params$phigaro_txt), silent = TRUE)
-if (class(phigaro_txt) != 'try-error' && nrow(phigaro_txt) > 0) {
-  phigaro_not_null <- TRUE
-  phigaro_null <- FALSE
-} else {
-  phigaro_not_null <- FALSE
-  phigaro_null <- TRUE
+# Line checker
+check_lines <- function(x) {
+  return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
 }
 
 # Read plasmids
 plasmid_finder_tab <- try(read.csv(params$plasmid_finder_tab, sep = "\t"), silent = TRUE)
-if (class(plasmid_finder_tab) != 'try-error' && nrow(plasmid_finder_tab) > 0) {
+platon_tsv <- try(read.csv(params$platon_tsv, sep = "\t"), silent = TRUE)
+if (
+  (class(plasmid_finder_tab) != 'try-error' & check_lines(plasmid_finder_tab) > 0) |
+  (class(platon_tsv) != 'try-error' & check_lines(platon_tsv) > 0)
+  ) {
   plasmids_not_null <- TRUE
   plasmids_null <- FALSE
 } else {
@@ -68,7 +67,7 @@ gff <- read.delim(params$gff, header = FALSE)
 ## Read PHAST documents
 phast_prot_blast <- try(read.delim(params$phast_prot_blast, header = TRUE), silent = TRUE)
 phast_genome_blast <- try(read.delim(params$phast_genome_blast, header = TRUE), silent = TRUE)
-if (class(phast_prot_blast) != 'try-error' && nrow(phast_prot_blast) > 0) {
+if (class(phast_prot_blast) != 'try-error' & check_lines(phast_prot_blast) > 0) {
   phast_not_null <- TRUE
   phast_null <- FALSE
 } else {
@@ -76,10 +75,45 @@ if (class(phast_prot_blast) != 'try-error' && nrow(phast_prot_blast) > 0) {
   phast_null <- TRUE
 }
 
+## Read phigaro documents
+phigaro_dir <- params$phigaro_dir
+phigaro_html <- paste0(phigaro_dir, "/", params$query, "_phigaro.html", collapse = "")
+phigaro_txt <- try(read.delim(params$phigaro_txt), silent = TRUE)
+if (class(phigaro_txt) != 'try-error' & check_lines(phigaro_txt) > 0) {
+  phigaro_not_null <- TRUE
+  phigaro_null <- FALSE
+} else {
+  phigaro_not_null <- FALSE
+  phigaro_null <- TRUE
+}
+
+## Read phispy results
+phispy_tsv <- try(read.delim(params$phispy_tsv), silent = TRUE)
+if (class(phispy_tsv) != 'try-error' & check_lines(phispy_tsv) > 0) {
+  phispy_not_null <- TRUE
+  phispy_null <- FALSE
+} else {
+  phispy_not_null <- FALSE
+  phispy_null <- TRUE
+}
+
+## Prophages conditional
+if (
+  (class(phigaro_txt) != 'try-error' & check_lines(phigaro_txt) > 0) |
+  (class(phast_prot_blast) != 'try-error' & check_lines(phast_prot_blast) > 0) |
+  (class(phispy_tsv) != 'try-error' & check_lines(phispy_tsv) > 0)
+  ) {
+  prophages_not_null <- TRUE
+  prophages_null <- FALSE
+} else {
+  prophages_not_null <- FALSE
+  prophages_null <- TRUE
+}
+
 ## Read ICEberg documents
 ice_prot_blast <- try(read.delim(params$ice_prot_blast, header = TRUE), silent = TRUE)
 ice_genome_blast <- try(read.delim(params$ice_genome_blast, header = TRUE), silent = TRUE)
-if (class(ice_prot_blast) != 'try-error' && nrow(ice_prot_blast) > 0) {
+if (class(ice_prot_blast) != 'try-error' & check_lines(ice_prot_blast) > 0) {
   not_null <- TRUE
   null <- FALSE
 } else {
@@ -101,29 +135,56 @@ dt_opt_lst <- list(pageLength = 5,
                          autoWidth = TRUE)
 ```
 
-# About
+# `r params$query` report of mobile genetic elements (MGEs) {.tabset .tabset-pills}
 
-Mobile genetic elements (MGEs) are a type of genetic materials that can move around within a genome, or that can be transferred from one species or replicon to another. Newly acquired genes through this mechanism can increase fitness by gaining new or additional functions. On the other hand, MGEs can also decrease fitness by introducing disease-causing alleles or mutations. For instance, prophages are bacteriophages that have been inserted and integrated into the bacterial chromosome or plasmid. It is the latent form of a phage. ICEs (integrative and conjugative elements), on the other hand, are integrative mobile genetic elements that encode a conjugation machinery. They can confer selective advantages and can also encode resistance determinants and virulence factors.
+## About
 
-In this context, this pipeline automatically annotates prophage sequences and proteins using [PHAST](https://phaster.ca) database and [phigaro](https://github.com/bobeobibo/phigaro) software. While [ICEberg](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/index.php) database is used to annotate ICEs. Finally, plasmids are detected using [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/).
+Mobile genetic elements (MGEs) are a type of genetic material that can move around within a genome, or that can be transferred from one species or replicon to another. Newly acquired genes through this mechanism can increase fitness by gaining new or additional functions. On the other hand, MGEs can also decrease fitness by introducing disease-causing alleles or mutations. For instance, prophages are bacteriophages that have been inserted and integrated into the bacterial chromosome or plasmid. It is the latent form of a phage. ICEs (integrative and conjugative elements), on the other hand, are integrative mobile genetic elements that encode a conjugation machinery. They can confer selective advantages and can also encode resistance determinants and virulence factors.
 
-About the BLASTs:
+In this context, this pipeline is capable of automatically annotating some mobile genetic elements using public available resources such as:
 
-* [PHAST](https://phaster.ca) is a protein database that contains a vast number of proteins that are commonly found in phages. This database is blasted to the predicted genes via BLASTp;
-* [ICEberg](http://202.120.12.136:7913/ICEberg2/) is a protein and nucleotide database that contains the full-length sequences of known ICEs and also contains the sequences of a multitude of proteins commonly found inside these ICEs. Full-length ICEs are blasted to the genome via BLASTn while the protein sequences are blasted tto the predicted genes via BLASTp.
-* Blast % identity: `> `r params$blast_id`%`
-* Blast % query coverage: `> `r params$blast_cov`%`
-    + For blasts against gene sequences predicted by Prokka, alignments are filtered in a two way manner so they cover at least `r params$blast_cov`% of the reference gene sequence and the of query sequence at the same time
-    + For blasts against the whole genome, alignments are filtered in a one way manner so they cover at least `r params$blast_cov`% of only the reference gene sequence
-    + Since it is extremely difficult to find an intact full-length ICE in a new genome, these alignments are less stringent and are filtered to have a minimum coverage of 15% of the reference sequence represented in the alignment
+1. [PHAST](https://phaster.ca) database;
+    + PHAST (PHAge Search Tool) is a web server designed to rapidly and accurately identify, annotate and graphically display prophage sequences within bacterial genomes or plasmids.
+    + Although it does not have a command line interface it has a protein database of prophage genes that were added to this pipeline and are scanned via `BLASTp`
+2. [Phigaro](https://github.com/bobeobibo/phigaro);
+    + Phigaro is a standalone command-line application that is able to detect prophage regions taking raw genome and metagenome assemblies as an input.
+    + It also produces dynamic annotated “prophage genome maps” and marks possible transposon insertion spots inside prophages.
+3. [PhiSpy](https://github.com/linsalrob/PhiSpy);
+    + PhiSpy identifies prophages in Bacterial (and probably Archaeal) genomes. Given an annotated genome it will use several approaches to identify the most likely prophage regions.
+4. [ICEberg](https://db-mml.sjtu.edu.cn/ICEberg/) database;
+    + ICEberg 2.0 is an updated database of bacterial integrative and conjugative elements.
+5. [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/);
+    + Plasmidfinder is a tool for the _in silico_ detection of plasmids.
+6. [Platon](https://github.com/oschwengers/platon);
+    + Platon detects plasmid contigs within bacterial draft genomes from WGS short-read assemblies.
+    + Therefore, Platon analyzes the natural distribution biases of certain protein coding genes between chromosomes and plasmids.
+7. [IslandPath](https://github.com/brinkmanlab/islandpath).
+    + IslandPath-DIMOB is a standalone software to predict genomic islands in bacterial and archaeal genomes based on the presence of dinucleotide biases and mobility genes.
 
-> The results used to create this report are under the directories called `prophages` and `ICEs` in the output folder of the query `r params$query`.
+### Prediction thresholds
 
-# Genomic Islands prediction
+All the predictions were passed through a user defined threshold for minimum coverage and identity:
 
-Genomic Islands (GIs) are annotated with [islandPath](https://github.com/brinkmanlab/islandpath). Its results are all incorporated into JBrowse output and are drawn in yellow. This result shall be seen by using the genome browser provided in the `jbrowse` directory inside the query main output directory. These genome browser might be opened with [JBrowse Desktop](https://jbrowse.org/docs/jbrowse_desktop.html) sofwtare. Also, a BED file containing the genomic positions of predicted GIs can be found in the `predicted_GIs` directory under the main output directory.
+* Min. Identity (%): `> `r params$blast_id``
+* Min. Coverage (%): `> `r params$blast_cov``
 
-# Plasmid detection
+> [PHAST](https://phaster.ca) is a protein database scanned via BLASTp; [ICEberg](http://202.120.12.136:7913/ICEberg2/) is a protein and nucleotide database that contains the full-length sequences of known ICEs and also contains the sequences of a multitude of proteins commonly found inside these ICEs. Full-length ICEs are blasted to the genome via BLASTn while the protein sequences are blasted tto the predicted genes via BLASTp; [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) is a nucleotide database scanned via BLASTn. The other software have its own metrics.
+
+> The results used to create this report are under the directories called `prophages`, `ICEs` and `Plasmids` in the output folder of the query `r params$query`.
+
+## Genomic Islands prediction
+
+Genomic Islands (GIs) were predicted with [islandPath](https://github.com/brinkmanlab/islandpath). The predicted genomic islands are integrated into the JBrowse genome viewer so that users can interactively interrogate the results and check the genes found inside these islands. The resulting genome browser are provided in the `jbrowse` directory inside the query main output directory. This genome browser can be opened with the [http-server](https://www.npmjs.com/package/http-server) command or the [JBrowse Desktop](https://jbrowse.org/docs/jbrowse_desktop.html) software.
+
+Additionally, these genomic islands were parsed in a very generic manner in order to provide a simple visualization of the annotation in these regions. The plots were rendered with the python package [gff-toolbox](https://github.com/fmalmeida/gff-toolbox/wiki) and are available at the directory: `genomic_islands/plots` in the main query output directory. An example of these plots is shown in Figure \@ref(fig:gi-plot-example).
+
+```{r gi-plot-example, out.width='60%', fig.align='center', fig.show='hold', fig.cap="Examplification of the visualization of genomic islands regions with gff-toolbox package."}
+knitr::include_graphics(params$gi_image)
+```
+
+> As discussed, these images were rendered in a very generic manner just to show some visualization possibilities to the user. If desired, users can check the [gff-toolbox](https://github.com/fmalmeida/gff-toolbox/wiki) package to produce more customized plots.
+
+## Plasmid detection
 
 ```{r, plasmids_conditional_block_TRUE, echo=FALSE, results='asis', eval=plasmids_not_null, child='yes_plasmids.Rmd'}
 ```
@@ -131,23 +192,17 @@ Genomic Islands (GIs) are annotated with [islandPath](https://github.com/brinkma
 ```{r, plasmids_conditional_block_FALSE, echo=FALSE, results='asis', eval=plasmids_null, child='no_plasmids.Rmd'}
 ```
 
-# Phigaro prediction
+## Prophage detection
 
-```{r, phigaro_conditional_block_TRUE, echo=FALSE, results='asis', eval=phigaro_not_null, child='yes_phigaro.Rmd'}
+```{r, prophages_conditional_block_TRUE, echo=FALSE, results='asis', eval=prophages_not_null, child='yes_prophages.Rmd'}
 ```
 
-```{r, phigaro_conditional_block_FALSE, echo=FALSE, results='asis', eval=phigaro_null, child='no_phigaro.Rmd'}
+```{r, prophages_conditional_block_FALSE, echo=FALSE, results='asis', eval=prophages_null, child='no_prophages.Rmd'}
 ```
 
-# PHAST database annotation
+## ICEs detection
 
-```{r, phigaro_conditional_block_TRUE, echo=FALSE, results='asis', eval=phast_not_null, child='yes_phast.Rmd'}
-```
-
-```{r, phigaro_conditional_block_FALSE, echo=FALSE, results='asis', eval=phast_null, child='no_phast.Rmd'}
-```
-
-# ICEberg database annotation
+### ICEberg database
 
 ```{r, ICEberg_conditional_block, echo=FALSE, results='asis', eval=not_null, child='yes_ice.Rmd'}
 ```

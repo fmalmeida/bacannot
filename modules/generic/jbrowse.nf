@@ -7,7 +7,7 @@ process jbrowse {
   tuple val(prefix), file(gff), file(draft), file("prokka_gff"), file(mlst), file(barrnap),
         file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb),
         file(victors), file(amrfinder), file(rgi), file(iceberg), file(phast),
-        file(phigaro), file(genomic_islands), file("methylation"), file("chr.sizes")
+        file(phigaro), file(genomic_islands), file("methylation"), file("chr.sizes"), file(phispy_tsv)
 
   output:
   file "*"

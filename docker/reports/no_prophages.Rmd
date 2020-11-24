@@ -1,0 +1,1 @@
+Not a single prophage sequence was detected by the pipeline either because the prophage detection process was not executed or due two thresholds stringency. If you truly believe that at least one prophage should be present in the query genome, please use the [PHASTER web tool](http://phaster.ca/).

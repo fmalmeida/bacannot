@@ -210,7 +210,7 @@ RUN mkdir -p /work/platon && \
 RUN conda create -y -n Resfinder python=3.7 nomkl && \
 			source activate Resfinder && \
 			conda install -y --freeze-installed -c bioconda kma nomkl && \
-			pip3 install tabulate biopython==1.76 cgecore gitpython setuptools python-dateutil && \
+			pip3 install tabulate biopython cgecore gitpython setuptools python-dateutil && \
 			conda clean -afy
 # Get program
 RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
@@ -228,12 +228,20 @@ RUN cd resfinder/db_resfinder && \
 RUN conda install -y -c bioconda minimap2 nomkl \
 			&& conda clean -afy
 
+# Get scripts and files to plot GIs
+ADD scripts/bscripts /work/bscripts
+RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
+			cd gff-toolbox && \
+			python3 setup.py install && \
+			gff-toolbox -h
+
 # CHECK ENVs
 RUN conda info -e
 
 # Fix permissions
 RUN chmod -R a+rwx /usr/local/lib/python3.8/
 RUN chmod -R a+rwx /miniconda/envs/RGI/lib/python3.6/
+ENV MPLCONFIGDIR="/tmp/"
 
 # For maths
 RUN apt-get install -y bc

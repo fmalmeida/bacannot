@@ -16,7 +16,7 @@ process card_rgi {
   tuple val(prefix), file("Perfect_RGI_${prefix}_hits.txt") optional true
   tuple val(prefix), file("Strict_RGI_${prefix}_hits.txt") optional true
   tuple val(prefix), file("RGI_${prefix}.txt") optional true
-  tuple val(prefix), file("RGI*heatmap*.png") optional true
+  tuple val(prefix), file("heatmap/RGI*heatmap*.png") optional true
   file("heatmap")
   file("*_version.txt")
 

@@ -1,0 +1,18 @@
+PhiSpy is a standalone tool that identifies prophages in Bacterial (and probably Archaeal) genomes. Given an annotated genome it will use several approaches to identify the most likely prophage regions.. The genomic regions predicted as putative prophage sequences are also summarized in Table \@ref(tab:phispy-table).
+
+* Check the results at `prophages/phispy` in the main output directory
+
+<br>
+<div style = "width:50%; height:auto; margin: auto;">
+<caption>(#tab:phispy-table) Putative prophage sequences annotated with phispy software</caption>
+```{r}
+# Produce Table
+datatable(phispy_tsv,
+          escape = FALSE,
+          filter = 'top',
+          colnames = c("Prophage", "Contig", "Start", "End"),
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```
+</div>

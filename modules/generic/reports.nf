@@ -1,22 +1,23 @@
 process report {
   publishDir "${params.outdir}/${prefix}/report_files", mode: 'copy'
   label 'renv'
-  tag "Rendering HTML reports for virulence, ICEs and AMR genes"
+  tag "Rendering HTML reports for Virulence, MGEs and AMR genes"
 
   input:
   tuple val(prefix), file(gff), file(draft), file("prokka_gff"), file(mlst), file(barrnap),
         file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb_blastn), file(victors_blastp),
-        file(amrfinder), file(rgi), file(iceberg_blastp), file(phast_blastp), file(phigaro_txt),
-        file(genomic_islands), file("methylation"), file("chr.sizes"),
+        file(amrfinder), file(rgi), file(iceberg_blastp), file(phast_blastp), file(phigaro_bed),
+        file(genomic_islands), file("methylation"), file("chr.sizes"), file(phispy_tsv),
         file(rgi_perfect), file(rgi_strict), file(rgi_heatmap), file(argminer_out), file(iceberg_blastn),
-        file(plasmids_tsv), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable)
+        file(plasmids_tsv), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable),
+        file(gi_image), file(phigaro_txt), file(platon_tsv)
 
   output:
   file '*.html'
 
   script:
   """
-  cp /work/rscripts/reports/* . ;
+  cp /work/reports/* . ;
 
   ## Generate Resistance Report
   Rscript -e 'rmarkdown::render("report_resistance.Rmd", params = list(\
@@ -49,10 +50,13 @@ process report {
                  blast_cov = ${params.blast_MGEs_mincov}, \
                  phigaro_dir = "${params.outdir}/prophages/phigaro", \
                  phigaro_txt = "$phigaro_txt", \
+                 phispy_tsv = "$phispy_tsv", \
                  ice_prot_blast = "$iceberg_blastp", \
                  ice_genome_blast = "$iceberg_blastn", \
                  plasmid_finder_tab = "$plasmids_tsv", \
+                 platon_tsv = "$platon_tsv", \
                  query = "${prefix}", \
+                 gi_image = "$gi_image", \
                  gff = "$gff", \
                  phast_prot_blast = "$phast_blastp" ))'
   """
