@@ -148,7 +148,7 @@ include { argminer } from './modules/resistance/argminer.nf' params(outdir: para
 // AMR annotation with Resfinder
 include { resfinder } from './modules/resistance/resfinder.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
-  blast_resistance_mincov: params.blast_resistance_mincov, resfinder_species: params.resfinder_species)
+  blast_resistance_mincov: params.blast_resistance_mincov)
 
 // AMR annotation with AMRFinderPlus
 include { amrfinder } from './modules/resistance/amrfinder.nf' params(outdir: params.outdir,
@@ -297,16 +297,10 @@ workflow bacannot_nf {
         argminer(prokka.out[4])
         argminer_output = argminer.out[0]
         // Resfinder
-        if (params.resfinder_species) {
-          resfinder(prokka.out[3])
-          resfinder_output_1 = resfinder.out[0]
-          resfinder_output_2 = resfinder.out[1]
-          resfinder_phenotable = resfinder.out[2]
-        } else {
-          resfinder_output_1 = Channel.empty()
-          resfinder_output_2 = Channel.empty()
-          resfinder_phenotable = Channel.empty()
-        }
+        resfinder(prokka.out[7])
+        resfinder_output_1 = resfinder.out[0]
+        resfinder_output_2 = resfinder.out[1]
+        resfinder_phenotable = resfinder.out[2]
       } else {
         rgi_output = Channel.empty()
         rgi_output_1 = Channel.empty()

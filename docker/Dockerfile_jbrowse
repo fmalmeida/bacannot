@@ -30,4 +30,7 @@ RUN cd /work/jbrowse && \
 # Change Permissions
 RUN mkdir /work/data && chmod -R g+rwx /work/data && chmod -R a+rwx /work/data && chmod -R g+rwx /work/jbrowse && chmod -R a+rwx /work/jbrowse
 
+# Get runner
+ADD scripts/bscripts /work/bscripts
+
 WORKDIR /work/data

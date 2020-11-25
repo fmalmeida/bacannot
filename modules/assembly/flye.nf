@@ -8,12 +8,12 @@ process flye {
   tag "Performing a longreads only assembly with Flye"
 
   input:
-  tuple val(id), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly)
+  tuple val(id), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)
 
   output:
   file "flye_${id}" // Saves all files
   // Keep tuple structure to mixing channels
-  tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("flye_${id}.fasta")
+  tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("flye_${id}.fasta"), val("${resfinder_species}")
   file('flye_version.txt')
 
   when:

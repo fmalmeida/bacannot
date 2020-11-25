@@ -46,6 +46,9 @@ workflow parse_samplesheet {
       // Check assembly
       it['assembly'] = (it.assembly) ? it.assembly : "missing_assembly"
 
+      // Check resfinder
+      it['resfinder'] = (it.resfinder) ? it.resfinder : "missing_resfinder"
+
       // Save
       parsed.add(it)
     }

@@ -1,7 +1,7 @@
 def paramsCheck() {
   // Input parameters
   if (params.genome && (params.sreads_paired || params.sreads_single || params.lreads)) {
-    log.info """
+    println """
     ERROR!
 
     A minor error has occurred
@@ -17,7 +17,7 @@ def paramsCheck() {
 
   // Checking the use of lreads
   if (params.lreads && !params.lreads_type) {
-    log.info """
+    println """
     ERROR!
 
     A minor error has occurred
@@ -33,7 +33,7 @@ def paramsCheck() {
 
   // Prokka parameters
   if (params.prokka_kingdom && !params.prokka_genetic_code) {
-    log.info """
+    println """
     ERROR!
 
     A minor error has occurred
@@ -51,7 +51,7 @@ def paramsCheck() {
 
   // Methylation parameters
   if ((params.nanopolish_fast5_dir && !params.nanopolish_fastq_reads) || (!params.nanopolish_fast5_dir && params.nanopolish_fastq_reads)) {
-    log.info """
+    println """
     ERROR!
 
     A minor error has occurred

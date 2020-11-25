@@ -27,6 +27,6 @@ process platon {
   tar zxvf /work/platon/db.tar.gz
 
   # Run platon
-  platon --db db/ --output platon --threads ${params.threads} --mode specificity -c $genome ;
+  platon --db db/ --output platon --threads ${params.threads} $genome ;
   """
 }

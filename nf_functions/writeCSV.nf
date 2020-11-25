@@ -11,11 +11,17 @@ def write_csv(in_list) {
 
     // Check entrypoint
     if (it.assembly != "missing_assembly") {
-      "${it.id},annotation,${fwd_pair},${rev_pair},${it.single},${it.lreads},${lr_type},${it.fast5},${it.assembly}"
+
+      "${it.id},annotation,${fwd_pair},${rev_pair},${it.single},${it.lreads},${lr_type},${it.fast5},${it.assembly},${it.resfinder}"
+
     } else if (it.assembly == "missing_assembly" && it.paired == "missing_paired" && it.single == "missing_single" && it.lreads != "missing_lreads") {
-      "${it.id},flye,${fwd_pair},${rev_pair},${it.single},${it.lreads},${lr_type},${it.fast5},${it.assembly}"
+
+      "${it.id},flye,${fwd_pair},${rev_pair},${it.single},${it.lreads},${lr_type},${it.fast5},${it.assembly},${it.resfinder}"
+
     } else {
-      "${it.id},unicycler,${fwd_pair},${rev_pair},${it.single},${it.lreads},${lr_type},${it.fast5},${it.assembly}"
+
+      "${it.id},unicycler,${fwd_pair},${rev_pair},${it.single},${it.lreads},${lr_type},${it.fast5},${it.assembly},${it.resfinder}"
+
     }
   }
 

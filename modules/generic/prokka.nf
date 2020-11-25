@@ -8,7 +8,7 @@ process prokka {
     label 'main'
 
     input:
-    tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), file(assembly)
+    tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), file(assembly), val(resfinder_species)
 
     output:
     // Grab all outputs
@@ -20,6 +20,7 @@ process prokka {
     tuple val(prefix), file("annotation/${prefix}.faa") // gene aa sequences
     tuple val(prefix), file("annotation/${prefix}.ffn") // gene nt sequences
     tuple val(prefix), file("annotation/${prefix}.fna"), file("${lreads}"), file("${fast5}") // For methylation calling
+    tuple val(prefix), file("annotation/${prefix}.fna"), val("${resfinder_species}") // For resfinder
     file('prokka_version.txt') // Save prokka version
 
     script:

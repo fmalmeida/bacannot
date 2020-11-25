@@ -8,12 +8,12 @@ process unicycler {
   tag { x }
 
   input:
-  tuple val(id), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly)
+  tuple val(id), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)
 
   output:
   file "unicycler_${id}" // Save everything
   // Keep tuple structure to mixing channels
-  tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("unicycler_${id}.fasta")
+  tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("unicycler_${id}.fasta"), val("${resfinder_species}")
   file('unicycler_version.txt')
 
   when:
