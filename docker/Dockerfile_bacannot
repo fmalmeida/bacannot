@@ -223,6 +223,9 @@ RUN cd resfinder/db_resfinder && \
 			source activate Resfinder && \
 			python3 INSTALL.py $(which kma_index) non_interactive
 
+# Get script to convert resfinder tab to gff
+COPY scripts/pscripts/resfinder2gff.py /usr/local/bin/resfinder2gff.py
+RUN chmod a+x /usr/local/bin/resfinder2gff.py
 
 # Install minimap2
 RUN conda install -y -c bioconda minimap2 nomkl \

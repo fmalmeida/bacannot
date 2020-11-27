@@ -18,6 +18,10 @@ def logMessage() {
   summary['Blast % ID - ICEs or Phages'] = params.blast_MGEs_minid
   summary['Blast query coverage - ICEs or Phages'] = params.blast_MGEs_mincov
   }
+  if (params.skip_plasmid_search == false) {
+  summary['Blast % ID - Plasmids'] = params.plasmids_minid
+  summary['Blast query coverage - Plasmids'] = params.plasmids_mincov
+  }
   if(workflow.revision) summary['Pipeline Release'] = workflow.revision
   summary['Current home']   = "$HOME"
   summary['Current user']   = "$USER"

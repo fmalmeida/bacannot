@@ -29,7 +29,32 @@ def helpMessage() {
    OBS: These reports can also be enabled through the configuration file.
    OPTIONS:
 
-                                  General Parameters
+      # Input configuration -- Analysis of a single genome
+      # Users can give either a genome in FASTA file or raw reads in FASTQ
+      # Please do not use glob. patterns ('*') with these parameters
+
+    --prefix <string>                              Prefix for writing genome assembly and annotatin resulting files.
+                                                   Preferentially the sample name. [Default: out]
+
+    --genome <string>                              Set path to the genome in FASTA file.
+
+    --sreads_paired <string>                       Illumina paired end reads in fastq for assembly before annotation.
+
+    --sreads_single <string>                       Illumina unpaired reads in fastq for assembly before annotation.
+
+    --lreads <string>                              Path to longreads in fastq assembly before annotation (ONT or Pacbio).
+
+    --lreads_type <string>                         Tells the technology of the input longreads: [ nanopore or pacbio ].
+
+      # Input configuration -- Analysis of multiple genomes
+      # Users can give either a genome in FASTA file or raw reads in FASTQ
+      # The analysis of multiple genomes at once is configured via a YAML file
+      # Check the example YAML at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
+
+    --in_yaml <string>                             Set path to the samplesheet in YAML format to analyse more than one
+                                                   genome at once.
+
+      # General Parameters
 
     --outdir <string>                              Output directory name
 
@@ -42,27 +67,8 @@ def helpMessage() {
                                                    for merging. Positive values, such as 5, means the maximum
                                                    distance accepted between features for merging.
 
-                                  Configuring Input options
-                (Users can give either a genome in FASTA file or raw reads in FASTQ)
 
-    --genome <string>                              Set path to the genome in FASTA file. Users can annotate more than
-                                                   one genome at once by using glob patters, such as "*.fasta"
-
-                ( If used together at once, the different NGS reads, short and long reads,
-                 must be from the same sample, one sample at a time. If you want to give
-                 more than one sample at once you must use only one NGS read type as input
-                 since we can't guaratee the order they are picked by nextflow )
-
-    --sreads_paired                                Illumina paired end reads in fastq for assembly before annotation.
-
-    --sreads_single                                Illumina unpaired reads in fastq for assembly before annotation.
-
-    --lreads                                       Path to longreads in fastq assembly before annotation (ONT or Pacbio).
-
-    --lreads_type                                  Tells the technology of the input longreads: [ nanopore or pacbio ].
-
-
-                                  Prokka complementary parameters
+      # Prokka complementary parameters
 
     --prokka_kingdom <string>                      Prokka annotation mode. Possibilities (default 'Bacteria'):
                                                    Archaea|Bacteria|Mitochondria|Viruses
@@ -73,7 +79,7 @@ def helpMessage() {
     --prokka_use_rnammer                           Tells prokka wheter to use rnammer instead of barrnap.
 
 
-                                  Blast alignment parameters
+      # Blast alignment parameters
 
     --blast_virulence_minid                        Min. identity % for virulence annotation. Default 90.
 
@@ -92,13 +98,16 @@ def helpMessage() {
     --plasmids_mincov                              Min. query coverage for plasmid detection. Default 60.
 
 
-                                  Configure resfinder optional parameter
+      # Configure resfinder optional parameter
+      # Only used with analysing a single genome
+      # When analysing multiple genomes it must be set in the YAML file.
+      # Check the example YAML at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
 
     --resfinder_species                            It sets the species to be used for Resfinder annotation. If blank,
                                                    it will not be executed. Must be identical (without the *) as written
                                                    in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
 
-                                  Configure Optional processes
+      # Configure (one/off) optional processes
 
     --skip_virulence_search                        Tells wheter you do not want to execute virulence annotation
 
@@ -113,16 +122,16 @@ def helpMessage() {
     --skip_kofamscan                               Tells wheter you do not want to execute KO annotation with kofamscan
 
 
-                            Configure optional Methylation annotation with nanopolish
+      # Configure optional Methylation annotation with nanopolish
+      # If left blank, it will not be executed. And, with both parameters are set
+      # it will automatically execute nanopolish to call methylation.
+      # Only used with analysing a single genome
+      # When analysing multiple genomes it must be set in the YAML file.
+      # Check the example YAML at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
 
-                    ( If left blank, it will not be executed. And, with both parameters are set
-                      it will automatically execute nanopolish to call methylation. For using
-                      these parameters, the pipeline must be used with one sample at a time
-                      since we can't guaratee the order the files are picked by nextflow )
+    --nanopolish_fast5 <string>                    Path to directory containing FAST5 files
 
-    --nanopolish_fast5_dir <string>                Path to directory containing FAST5 files
-
-    --nanopolish_fastq_reads <string>              Path to fastq files (file related to FAST5 files above)
+    --nanopolish_fastq <string>                    Path to fastq files (file related to FAST5 files above)
 
 
 """.stripIndent()

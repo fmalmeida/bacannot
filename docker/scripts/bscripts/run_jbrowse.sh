@@ -14,7 +14,7 @@ Help()
 	echo "Simple help message for the utilization of this script"
 	echo "It takes the jbrowse data path and all the files that shall be plotted from bacannot"
 	echo
-	echo "Syntax: run_jbrowse.sh [-h|p|g|b|s|f|r|B|P|G|m|S]"
+	echo "Syntax: run_jbrowse.sh [-h|p|g|b|s|f|r|B|P|G|m|S|R]"
 	echo "options:"
 	echo
 	echo "h					Print this help"
@@ -29,12 +29,13 @@ Help()
 	echo "G					Path to genomic islands in BED format from IslandPath-DIMOB"
 	echo "m					Path to Nanopolish methylation results"
 	echo "S					Path to Nanopolish chr sizes"
+	echo "R					Path to Resfinder custom GFF"
 	echo ""
 	echo
 }
 
 # Get the options
-while getopts "hp:g:b:s:f:r:B:P:G:m:S:" option; do
+while getopts "hp:g:b:s:f:r:B:P:G:m:S:R:" option; do
    case $option in
       h) # display Help
          Help
@@ -71,6 +72,9 @@ while getopts "hp:g:b:s:f:r:B:P:G:m:S:" option; do
 				 ;;
 			S) # get nanopolish chr sizes
 				 NANOSIZES="$OPTARG"
+				 ;;
+			R) # get resfinder GFF
+				 RESFINDERGFF="$OPTARG"
 				 ;;
    esac
 done
@@ -295,6 +299,22 @@ remove-track.pl --trackLabel "${PREFIX} CARD-RGI resistance features" --dir data
 																													\"nameAttributes\" : \"CARD_name,CARD_product,Targeted_drug_class,Name,ID,product\", \
 																													\"urlTemplate\" : \"tracks/${PREFIX} CARD-RGI resistance features/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 [ $(grep "CARD" $PROKKAGFF | wc -l) -eq 0 ] || rm -f rgi ;
+
+## Resfinder
+[ ! -s $RESFINDERGFF ] || flatfile-to-json.pl --gff $RESFINDERGFF --key "${PREFIX} Resfinder resistance features" --trackType CanvasFeatures \
+--trackLabel "${PREFIX} Resfinder resistance features" --out "data" --nameAttributes "Resfinder_gene,ID,Resfinder_phenotype" ;
+remove-track.pl --trackLabel "${PREFIX} Resfinder resistance features" --dir data &> /tmp/error
+[ ! -s $RESFINDERGFF ] || echo -E " { \"compress\" : 0, \
+																	 		\"displayMode\" : \"compact\", \
+																			\"key\" : \"${PREFIX} Resfinder resistance features\", \
+																			\"category\" : \"Resistance annotation\", \
+																			\"label\" : \"${PREFIX} Resfinder resistance features\", \
+																			\"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
+																			\"style\" : { \"className\" : \"feature\", \"color\": \"purple\" }, \
+																			\"trackType\" : \"CanvasFeatures\", \
+																			\"type\" : \"CanvasFeatures\", \
+																			\"nameAttributes\" : \"Resfinder_gene,ID,Resfinder_phenotype\", \
+																			\"urlTemplate\" : \"tracks/${PREFIX} Resfinder resistance features/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 
 # Add mobile genetic elements
 ## ICEs

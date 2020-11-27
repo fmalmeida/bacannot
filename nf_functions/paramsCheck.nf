@@ -1,5 +1,10 @@
 def paramsCheck() {
-  // Input parameters
+
+  /*
+
+      User tried to use both raw reads and a assembled genome as input
+
+  */
   if (params.genome && (params.sreads_paired || params.sreads_single || params.lreads)) {
     println """
     ERROR!
@@ -15,7 +20,45 @@ def paramsCheck() {
     exit 1
   }
 
-  // Checking the use of lreads
+  /*
+
+      User tried to use both the options for single and multiple genome analysis
+
+  */
+  if (params.in_yaml && (params.sreads_paired || params.sreads_single || params.lreads
+                         || params.genome || params.lreads_type || params.resfinder_species
+                         || params.nanopolish_fast5_dir || params.nanopolish_fastq_reads)) {
+    println """
+    ERROR!
+
+    A major error has occurred
+      ==> User have set parameters for single and multiple genome analysis.
+
+    This pipeline works either annotating a single genome or multiple genome at once. However, the analysis of multiple
+    genomes is set via the YAML file and it is incompatible with the parameters from single genome analysis.
+
+    Therefore, when using the --in_yaml parameter you cannot use any of the following parameters as they are specific for single genome analysis:
+
+      * --genome
+      * --sreads_paired
+      * --sreads_single
+      * --lreads
+      * --lreads_type
+      * --resfinder_species
+      * --nanopolish_fast5_dir
+      * --nanopolish_fastq_reads
+
+    Cheers.
+    """.stripIndent()
+
+    exit 1
+  }
+
+  /*
+
+      User has given the --lreads parameter but forgot --lreads_type
+
+  */
   if (params.lreads && !params.lreads_type) {
     println """
     ERROR!
@@ -31,7 +74,11 @@ def paramsCheck() {
     exit 1
   }
 
-  // Prokka parameters
+  /*
+
+      Checking the prokka parameters
+
+  */
   if (params.prokka_kingdom && !params.prokka_genetic_code) {
     println """
     ERROR!
@@ -49,13 +96,17 @@ def paramsCheck() {
     exit 1
   }
 
-  // Methylation parameters
-  if ((params.nanopolish_fast5_dir && !params.nanopolish_fastq_reads) || (!params.nanopolish_fast5_dir && params.nanopolish_fastq_reads)) {
+  /*
+
+      Checking nanopolish parameters
+
+  */
+  if ((params.nanopolish_fast5 && !params.nanopolish_fastq) || (!params.nanopolish_fast5 && params.nanopolish_fastq)) {
     println """
     ERROR!
 
     A minor error has occurred
-      ==> User have forget to set both --nanopolish_fast5_dir and --nanopolish_fastq_reads.
+      ==> User forgot to set both --nanopolish_fast5_dir and --nanopolish_fastq_reads.
 
     These parameters must be used together. They are the necessary files to call methylations from ONT data with Nanopolish.
 
@@ -65,33 +116,24 @@ def paramsCheck() {
     exit 1
   }
 
-  params.help = false
-   // Show help emssage
-   if (params.help){
-     helpMessage()
-     exit 0
-  }
-
-  // CLI examples
-  params.examples = false
-   // Show help emssage
-   if (params.examples){
-     exampleMessage()
-     exit 0
-  }
-
   /*
-   * Does the user wants to download the configuration file?
-   */
 
-  params.get_config = false
-  if (params.get_config) {
-    new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
-    println ""
-    println "bacannot.config file saved in working directory"
-    println "After configuration, run:"
-    println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
-    println "Nice code!\n"
-    exit 0
+      Checking resfinder parameters
+
+  */
+  if (params.resfinder_species == "other" || params.resfinder_species == "Other" || params.resfinder_species == "OTHER") {
+    println """
+    ERROR!
+
+    A minor error has occurred
+      ==> User has set the resfinder panel to "Other"
+
+    This is impossible, since the pipeline tries to annotation point finder mutation and these are incompatible with the "Other" panel
+
+    Cheers.
+    """.stripIndent()
+
+    exit 1
   }
+
 }

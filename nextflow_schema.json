@@ -270,12 +270,12 @@
             "default": "",
             "fa_icon": "fas fa-cog",
             "properties": {
-                "nanopolish_fast5_dir": {
+                "nanopolish_fastq": {
                     "type": "string",
                     "description": "Path to directory containing FAST5 files",
                     "help_text": "If blank, the process will not be executed!"
                 },
-                "nanopolish_fastq_reads": {
+                "nanopolish_fastq": {
                     "type": "string",
                     "description": "Path to fastq files (file related to FAST5 files above)",
                     "help_text": "If blank, the process will not be executed!"

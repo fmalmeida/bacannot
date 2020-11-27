@@ -27,6 +27,8 @@
 #
 # assembly: assembled_genome.fasta (assembled genome)
 #
+# resfinder: species panel (one of the available resfinder species panels)
+#
 # Users can give for each sample either the assembled genome or a combination
 # of short and long reads (to perform a short reads only, long reads only or
 # hybrid assembly of raw reads before annotation)
@@ -35,8 +37,8 @@
 # it must either be one or another.
 #
 # Obs: The "illumina:" key is the only one the MUST be give in new idented lines
-# started by "-". All the others (nanopore, pacbio, assembly, fast5) must be given
-# right after the ":", without newlines, quotes or signs.
+# started by "-". All the others (nanopore, pacbio, assembly, fast5, resfinder)
+# must be given right after the ":", without newlines, quotes or signs.
 #
 # A template (with the correct fields, syntax and indentation) is given below:
 
@@ -46,9 +48,11 @@ samplesheet:
       - sample_1/1.fastq
       - sample_1/2.fastq
     nanopore: sample_1/ont.fastq
+    resfinder: Escherichia coli
   - id: sample_2
     assembly: sample_2/assembly.fasta
     fast5: sample_2/fast5_pass
+    resfinder: Klebsiella
   - id: sample_3
     nanopore: sample_3/ont.fastq
     fast5: sample_3/fast5_pass
