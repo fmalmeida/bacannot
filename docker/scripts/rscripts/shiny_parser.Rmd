@@ -1,0 +1,146 @@
+---
+title: "`r params$query` results"
+author: "Produced with bacannot"
+params:
+  query: Query
+output:
+  bookdown::html_document2:
+    df_print: paged
+    number_sections: false
+    syntax: espresso
+    self_contained: yes
+    theme: readable
+    toc: no
+    code_folding: "show"
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+suppressMessages(library(shiny))
+suppressMessages(library(shinyFiles))
+suppressMessages(library(shinythemes))
+suppressMessages(library(dplyr))
+suppressMessages(library(stringr))
+suppressMessages(library(dbplyr))
+suppressMessages(library(RSQLite))
+suppressMessages(library(DT))
+source("shiny_parser_func.R")
+
+# Add directory of static resources to Shiny's web server
+addResourcePath(prefix = "jbrowse", directoryPath = "/work/jbrowse/")
+addResourcePath(prefix = "reports", directoryPath = "/work/report_files/")
+```
+
+```{css, echo=FALSE}
+body { 
+  /* Normal  */
+  font-size: 12pt;
+  line-height: 1.5;
+}
+  
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 11pt;
+    border-left: 5px solid #ec5800;
+}
+  
+.table {
+  width: 95% !important;
+  text-align: center;
+  font-size: 11pt;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.main-container {
+  max-width: 95% !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div.container {
+  width: 100%;
+}
+```
+
+## About
+
+Welcome to the bacannot shiny parser! This app enables users to interrogate and interact with the outputs produced by [bacannot pipeline](https://github.com/fmalmeida/bacannot).
+
+Current features:
+
+* [Indexation of annotation reports](#index)
+* [SQL database parsing](#sqlparser)
+* [JBrowse navigation](#jbrowse)
+
+## Automatic annotation reports {#index}
+
+The bacannot pipeline automatically produces three reports to summarize the annotation of Mobile genetic elements, resistance features and virulence factors. These reports are indexed in the list below so users can rapidly navigate through them.
+
+* [Report of resistance features](reports/report_resistance.html)
+* [Report of virulence features](reports/report_virulence.html)
+* [Report of mobile genetic elements](reports/report_MGEs.html)
+
+## Interrogation of SQL resulting db {#sqlparser}
+
+<center>
+```{r, echo=FALSE}
+parse_sql(DBI::dbConnect(RSQLite::SQLite(), "/work/sqldb/TESTE"))
+```
+</center>
+
+## JBrowse {#jbrowse}
+
+* [Link to open in a new tab](jbrowse/index.html)
+
+<iframe width='100%' height='800px' src='jbrowse/index.html' >
+</iframe>
+
+## Blast the genome
+
+Blasting test
+
+```{r, echo=FALSE}
+shinyApp(
+  
+  ui <- fluidPage(
+    theme = shinytheme("cerulean"),
+    tagList(
+      tags$head(
+      tags$link(rel="stylesheet", type="text/css",href="style.css"),
+      tags$script(type="text/javascript", src = "busy.js")
+    )),
+ 
+  # This block gives us all the inputs:
+  mainPanel(
+     headerPanel('Blast the genome!'),
+     textAreaInput('query', 'Input sequence:', value = "", placeholder = "", width = "600px", height="200px"),
+     selectInput("db", "Database:", choices=c("genome","genes-nt", "genes-aa"), width="120px"),
+     div(style="display:inline-block",
+     selectInput("program", "Program:", choices=c("blastn","tblastn"), width="100px")),
+     div(style="display:inline-block",
+     selectInput("eval", "e-value:", choices=c(1,0.001,1e-4,1e-5,1e-10), width="120px")),
+     actionButton("blast", "BLAST!")
+  ),
+ 
+ #  This snippet generates a 'busy' indicator for long BLASTs
+ div(class = "busy", 
+   p("Calculation in progress.."), 
+   img(src="https://i.stack.imgur.com/8puiO.gif", height = 100, width = 100,align = "center")),
+ 
+ # Basic results output
+ mainPanel(
+   h4("Results"),
+   DT::dataTableOutput("blastResults"),
+   p("Alignment:", tableOutput("clicked") ),
+   verbatimTextOutput("alignment")
+ )
+),
+
+server = function(input, output, session) {
+  
+}
+)
+```

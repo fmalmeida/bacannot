@@ -29,13 +29,13 @@ Full-length ICEs are available at [ICEberg database](https://bioinfo-mml.sjtu.ed
 blast <- ice_genome_blast
 # Render dt
 blast[sapply(blast, is.character)] <- lapply(blast[sapply(blast, is.character)], as.factor)
-colnames(blast) <- c("Contig", "Start", "End", "Strand", "Product", "Coverage_aln", "Gaps", "Coverage %", "Identity %", "Database", "Ref. Accession", "Description")
+colnames(blast) <- c("Contig", "Start", "End", "Strand", "ICE", "Coverage_aln", "Gaps", "Coverage %", "Identity %", "Database", "Ref. Accession", "ICE family", "Description")
 datatable(blast,
           escape = FALSE,
           filter = 'top',
           options = dt_opt_lst,
           extensions = 'Buttons',
-          rownames = T)
+          rownames = F)
 ```
 
 ### Analysis of ICE's proteins
@@ -74,7 +74,7 @@ blast$ICE_ID <- apply(blast, 1, function (x) {
 
 All query genes predicted by Prokka that have a match in ICEberg database are shown in Table \@ref(tab:write-table-ice-blastp). It is summarized the ICE id and all its genes that were found in the query genome. All of them are linked to the database for further investigations.
 
-> Take note: The fact that the genome possess some proteins from ICEs does not necessarily means that the ICE is present in the genome. Please, check the number of proteins that the ICE of origin posses in the [ICEberg database list of ICEs](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/browse_result.php?type=alpha&alpha=100), and them infer based one the alignments you see if your genome have or not one ICE in it.
+> Take note: The fact that the genome possess some proteins from ICEs does not necessarily means that the ICE is present in the genome. Please, check the number of proteins that the ICE of origin posses in the [ICEberg database list of ICEs](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/browse_result.php?type=alpha&alpha=100), and then make inferences based one the alignments you see.
 
 Users are advised to also use the [ICEfinder](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/tools.html) tool to predict the putative genomic position of known ICEs since we are not allowed to include this step under this pipeline.
 
@@ -84,12 +84,13 @@ Users are advised to also use the [ICEfinder](https://bioinfo-mml.sjtu.edu.cn/IC
 # Render dt
 blast[sapply(blast, is.character)] <- lapply(blast[sapply(blast, is.character)], as.factor)
 colnames(blast) <- c("Query Protein", "ICEberg of origin", "Ref. Accession", "Product / Gene", "Description", "Genomic Position")
-datatable(blast,
+datatable(blast %>%
+            select(-7),
           escape = FALSE,
           filter = 'top',
           options = dt_opt_lst,
           extensions = 'Buttons',
-          rownames = T)
+          rownames = F)
 ```
 
 

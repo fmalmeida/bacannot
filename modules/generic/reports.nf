@@ -20,7 +20,8 @@ process report {
   cp /work/reports/* . ;
 
   ## Generate Resistance Report
-  Rscript -e 'rmarkdown::render("report_resistance.Rmd", params = list(\
+  Rscript -e '#!/usr/bin/Rscript\
+  rmarkdown::render("report_resistance.Rmd", params = list(\
     blast_id = ${params.blast_resistance_minid} , \
     blast_cov = ${params.blast_resistance_mincov}, \
     amrfinder = "$amrfinder", \
@@ -36,7 +37,8 @@ process report {
     gff = "$gff"))'
 
   ## Generate Virulence Report
-  Rscript -e 'rmarkdown::render("report_virulence.Rmd" , \
+  Rscript -e '#!/usr/bin/Rscript\
+  rmarkdown::render("report_virulence.Rmd" , \
   params = list( blast_id = ${params.blast_virulence_minid} , \
                  blast_cov = ${params.blast_virulence_mincov}, \
                  vfdb_blast = "$vfdb_blastn", \
@@ -45,7 +47,8 @@ process report {
                  query = "${prefix}"))'
 
   ## Generate MGEs report
-  Rscript -e 'rmarkdown::render("report_MGEs.Rmd", \
+  Rscript -e '#!/usr/bin/Rscript\
+  rmarkdown::render("report_MGEs.Rmd", \
   params = list( blast_id = ${params.blast_MGEs_minid}, \
                  blast_cov = ${params.blast_MGEs_mincov}, \
                  phigaro_dir = "${params.outdir}/prophages/phigaro", \

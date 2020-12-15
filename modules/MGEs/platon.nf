@@ -24,9 +24,10 @@ process platon {
   platon --version > platon_version.txt ;
 
   # Unpack database
-  tar zxvf /work/platon/db.tar.gz
+  tar zxvf /work/platon/db.tar.gz ;
 
   # Run platon
-  platon --db db/ --output platon --threads ${params.threads} $genome ;
+  platon --db db/ --output platon --threads ${params.threads} $genome > tmp.txt || true ;
+  [ -s platon/${prefix}.tsv ] || cat tmp.txt > platon/${prefix}.tsv ;
   """
 }

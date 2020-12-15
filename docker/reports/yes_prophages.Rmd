@@ -1,4 +1,4 @@
-> All the prophage sequences and genes are available in the genome browser proveided, it is worthy taking notes of prophage's genomic regions for a better exploration using it. The genome browser was automatically created (stored in a dir called `jbrowse`) and can be visualized with [JBROWSE desktop](https://github.com/GMOD/jbrowse) ot [http-server](https://www.npmjs.com/package/http-server).
+> All the prophage sequences and genes are available in the genome browser provided, it is worthy taking notes of prophage's genomic regions for a better exploration when using it. The genome browser was automatically created (stored in a dir called `jbrowse`) and can be visualized with [JBROWSE desktop](https://github.com/GMOD/jbrowse) ot [http-server](https://www.npmjs.com/package/http-server).
 
 ### Phigaro
 

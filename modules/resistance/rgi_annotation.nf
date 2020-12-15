@@ -17,7 +17,7 @@ process card_rgi {
   tuple val(prefix), file("Strict_RGI_${prefix}_hits.txt") optional true
   tuple val(prefix), file("RGI_${prefix}.txt") optional true
   tuple val(prefix), file("heatmap/RGI*heatmap*.png") optional true
-  file("heatmap")
+  file("heatmap") optional true
   file("*_version.txt")
 
   script:
@@ -47,10 +47,10 @@ process card_rgi {
   awk '{ if (\$2 == "Strict") print }'  > Strict_RGI_${prefix}_hits.txt
 
   # Draw heatmap for single sample
-  mkdir -p heatmap ;
-  cp RGI_${prefix}_unfiltered.json heatmap/${prefix}.json ;
-  rgi heatmap --input ./heatmap -cat drug_class -d text ;
-  rm heatmap/${prefix}.json
-  mv RGI*heatmap* heatmap ;
+  [ \$(wc -l RGI_${prefix}.txt | cut -d " " -f 1) -eq 1 ] || mkdir -p heatmap ;
+  [ \$(wc -l RGI_${prefix}.txt | cut -d " " -f 1) -eq 1 ] || cp RGI_${prefix}_unfiltered.json heatmap/${prefix}.json ;
+  [ \$(wc -l RGI_${prefix}.txt | cut -d " " -f 1) -eq 1 ] || rgi heatmap --input ./heatmap -cat drug_class -d text ;
+  [ \$(wc -l RGI_${prefix}.txt | cut -d " " -f 1) -eq 1 ] || rm heatmap/${prefix}.json
+  [ \$(wc -l RGI_${prefix}.txt | cut -d " " -f 1) -eq 1 ] || mv RGI*heatmap* heatmap ;
   """
 }

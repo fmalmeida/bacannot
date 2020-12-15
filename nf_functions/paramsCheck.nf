@@ -27,7 +27,7 @@ def paramsCheck() {
   */
   if (params.in_yaml && (params.sreads_paired || params.sreads_single || params.lreads
                          || params.genome || params.lreads_type || params.resfinder_species
-                         || params.nanopolish_fast5_dir || params.nanopolish_fastq_reads)) {
+                         || params.nanopolish_fast5 || params.nanopolish_fastq)) {
     println """
     ERROR!
 
@@ -45,8 +45,8 @@ def paramsCheck() {
       * --lreads
       * --lreads_type
       * --resfinder_species
-      * --nanopolish_fast5_dir
-      * --nanopolish_fastq_reads
+      * --nanopolish_fast5
+      * --nanopolish_fastq
 
     Cheers.
     """.stripIndent()
@@ -106,7 +106,7 @@ def paramsCheck() {
     ERROR!
 
     A minor error has occurred
-      ==> User forgot to set both --nanopolish_fast5_dir and --nanopolish_fastq_reads.
+      ==> User forgot to set both --nanopolish_fast5 and --nanopolish_fastq.
 
     These parameters must be used together. They are the necessary files to call methylations from ONT data with Nanopolish.
 

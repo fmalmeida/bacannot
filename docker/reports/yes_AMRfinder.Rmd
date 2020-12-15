@@ -1,4 +1,4 @@
-The AMRFinderPlus annotation results are summarized below in an interactive table containing the complete annotation information (Table \@ref(tab:ncbi-amr-resistance-genes)) and image showing the targeted drug classes (Figure \@ref(fig:ncbi-resistome-png)). Whenever possible, all feature have links to NCBI database marking the closest reference sequence to each annotated gene. The results obtained with AMRFinderPlus can be roughly divided into two main categories: 
+The AMRFinderPlus annotation results are summarized below in an interactive table containing the complete annotation information (Table \@ref(tab:ncbi-amr-resistance-genes)) and an image displaying the targeted drug classes (Figure \@ref(fig:ncbi-resistome-png)). Whenever possible, features are linked to the NCBI database marking the closest reference sequence to each annotated gene. The results obtained with AMRFinderPlus can be roughly divided into two main categories: 
 
 1. Genes related to antibiotics, called AMR;
 2. Genes related to stress resistance which can be:

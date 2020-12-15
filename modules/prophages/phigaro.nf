@@ -14,7 +14,7 @@ process phigaro {
   // Outputs must be linked to each prefix (tag)
   tuple val(prefix), file("${prefix}_phigaro.tsv")
   tuple val(prefix), file("${prefix}_phigaro.bed")
-  tuple val(prefix), file("${prefix}_phigaro.html")
+  tuple val(prefix), file("${prefix}_phigaro.html") optional true
   file('phigaro_version.txt')
 
   script:
@@ -27,8 +27,8 @@ process phigaro {
   -e html tsv -o out.phg --delete-shorts -p --not-open ;
 
   # Change names
-  mv out.phg/assembly.phigaro.tsv ${prefix}_phigaro.tsv ;
-  mv out.phg/assembly.phigaro.html ${prefix}_phigaro.html;
+  [ ! -s out.phg/assembly.phigaro.tsv  ] || mv out.phg/assembly.phigaro.tsv ${prefix}_phigaro.tsv ;
+  [ ! -s out.phg/assembly.phigaro.html ] || mv out.phg/assembly.phigaro.html ${prefix}_phigaro.html ;
 
   # Create BED
   grep -v "taxonomy" ${prefix}_phigaro.tsv | \

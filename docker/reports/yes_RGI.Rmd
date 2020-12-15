@@ -1,11 +1,11 @@
-The results obtained with RGI tool are summarized in the heatmap produced by the tool itself (Figure \@ref(fig:rgi-summary)). Additionally, the annotation results are also shown in interactive table showing the complete annotation information (Table \@ref(tab:rgi-annotation-table)). They can be roughly divided into two main categories:
+The results obtained with RGI tool are summarized in the heatmap produced by the tool itself (Figure \@ref(fig:rgi-summary)). Additionally, the annotation results are also shown in an interactive table displaying the tool's complete annotation information (Table \@ref(tab:rgi-annotation-table)). They can be roughly divided into two main categories:
 
 1. Perfect hits
     + detects perfect matches to the curated reference sequences and mutations in the CARD
 2. Strict hits
     + detects previously unknown variants of known AMR genes, including secondary screen for key mutations, using detection models with CARD's curated similarity cut-offs to ensure the detected variant is likely a functional AMR gene
 
-> **Obs:** CARD RGI tool always tries to annotate functional AMR genes, however, depending on the assembly, a not functional gene may yet be annotated. There for, users are advised to double check genes annotated under **Strict** category.
+> **Obs:** CARD RGI tool always tries to annotate functional AMR genes, however, depending on the assembly, a not functional gene may yet be annotated. Therefore, users are advised to double check genes annotated under **Strict** category.
 
 <br>
 

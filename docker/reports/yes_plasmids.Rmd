@@ -32,8 +32,6 @@ datatable(results,
 
 * The complete results can be found in the directory `plasmids/platon` under the main output directory.
 
-> This software was executed with the paramater `--mode specificity` to decrease the number of false positives.
-
 <caption>(#tab:platon-results) In silico detection of plasmids with Platon</caption>
 ```{r}
 results <- platon_tsv

@@ -4,7 +4,7 @@ def exampleMessage() {
 
       Simple Klebsiella genome annotation using all pipeline's optional annotation processes
 \$ nextflow run fmalmeida/bacannot --threads 3 --outdir kp25X --genome kp_ont.contigs.fasta --bedtools_merge_distance -20 --blast_virulence_minid 90 \
---blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --nanopolish_fast5_dir ./fast5_pass --nanopolish_fastq_reads ./kp_ont.fastq \
+--blast_virulence_mincov 80 --blast_MGEs_minid 70 --blast_MGEs_mincov 60 --nanopolish_fast5 ./fast5_pass --nanopolish_fastq ./kp_ont.fastq \
 --resfinder_species "Klebsiella"
 
      Various genomes at once

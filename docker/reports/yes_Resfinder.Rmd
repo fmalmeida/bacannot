@@ -1,9 +1,7 @@
-Results obtained with [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) can be roughly divided in two categories:
+Results obtained with [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) can be roughly divided in two categories (both summarized below):
 
 1. Acquired resistance genes;
 2. Point mutations conferring resistance.
-
-Both results are summarized below.
 
 ### Acquired resistance genes
 
@@ -79,6 +77,7 @@ ggplot(amr, aes(x=Phenotype, y=freq, fill=Phenotype)) +
 # Produce Table
 resfinder_point %>%
   datatable(escape = FALSE,
+            colnames = c("Mutation", "Nucl. change", "Amino ac. change", "Resistance", "PMID"),
             filter = 'top',
             options = dt_opt_lst,
             extensions = 'Buttons',

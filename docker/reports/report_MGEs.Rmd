@@ -178,7 +178,7 @@ Genomic Islands (GIs) were predicted with [islandPath](https://github.com/brinkm
 
 Additionally, these genomic islands were parsed in a very generic manner in order to provide a simple visualization of the annotation in these regions. The plots were rendered with the python package [gff-toolbox](https://github.com/fmalmeida/gff-toolbox/wiki) and are available at the directory: `genomic_islands/plots` in the main query output directory. An example of these plots is shown in Figure \@ref(fig:gi-plot-example).
 
-```{r gi-plot-example, out.width='60%', fig.align='center', fig.show='hold', fig.cap="Examplification of the visualization of genomic islands regions with gff-toolbox package."}
+```{r gi-plot-example, out.width='60%', fig.align='center', fig.show='hold', fig.cap="Examplification of the visualization of genomic islands regions with the gff-toolbox package."}
 knitr::include_graphics(params$gi_image)
 ```
 
