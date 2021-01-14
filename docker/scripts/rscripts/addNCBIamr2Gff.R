@@ -68,10 +68,10 @@ sub <- gff %>% filter(ID %in% ids) %>% select(seqname, source, feature, start, e
 not <- gff %>% filter(ID %ni% ids)  %>% select(seqname, source, feature, start, end, score, strand, frame, attributes)
 
 # Create Description
-NCBIamr$description <- paste("Additional_database=NDARO;NDARO_Gene_Name=", NCBIamr$Gene.symbol, ";",
-                     "NDARO_Gene_Product=", NCBIamr$Sequence.name, ";", "NDARO_Resistance_Category=",
-                     NCBIamr$Element.type, ";", "NDARO_Resistance_Target=", NCBIamr$Class, ";",
-                     "NDARO_Method=", NCBIamr$Method, ";", "NDARO_Closest_Sequence=", NCBIamr$Name.of.closest.sequence, sep = "")
+NCBIamr$description <- paste("Additional_database=NDARO;NDARO:Gene_Name=", NCBIamr$Gene.symbol, ";",
+                     "NDARO:Gene_Product=", NCBIamr$Sequence.name, ";", "NDARO:Resistance_Category=",
+                     NCBIamr$Element.type, ";", "NDARO:Resistance_Target=", NCBIamr$Class, ";",
+                     "NDARO:Method=", NCBIamr$Method, ";", "NDARO:Closest_Sequence=", NCBIamr$Name.of.closest.sequence, sep = "")
 NCBIamr$description <- gsub(" ", "_", NCBIamr$description)
     
 ## Add New Source

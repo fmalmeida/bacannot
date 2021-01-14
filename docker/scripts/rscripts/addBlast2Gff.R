@@ -39,14 +39,14 @@ subj_title = function(x, db) {
   desc = strsplit(x, "~~~", fixed=TRUE)
   
   if (db == "PHAST" | db == "Victors") {
-    text <- paste("Additional_database=", desc[[1]][1], ";", desc[[1]][1], "_Target=",
-                  desc[[1]][4], ";", desc[[1]][1], "_Product=", desc[[1]][2], sep = "")
+    text <- paste("Additional_database=", desc[[1]][1], ";", desc[[1]][1], ":Target=",
+                  desc[[1]][4], ";", desc[[1]][1], ":Product=", desc[[1]][2], sep = "")
   } else if (db == "VFDB") {
-    text <- paste("Additional_database=", desc[[1]][1], ";", desc[[1]][1], "_Target=",
-                  desc[[1]][3], ";", desc[[1]][1], "_Product=", desc[[1]][4], sep = "")
+    text <- paste("Additional_database=", desc[[1]][1], ";", desc[[1]][1], ":Target=",
+                  desc[[1]][3], ";", desc[[1]][1], ":Product=", desc[[1]][4], sep = "")
   } else {
-    text <- paste("Additional_database=", desc[[1]][1], ";", desc[[1]][1], "_Target=",
-                  desc[[1]][2], ";", desc[[1]][1], "_Product=", desc[[1]][4], sep = "")
+    text <- paste("Additional_database=", desc[[1]][1], ";", desc[[1]][1], ":Target=",
+                  desc[[1]][2], ";", desc[[1]][1], ":Product=", desc[[1]][4], sep = "")
   }
   
   return(text)

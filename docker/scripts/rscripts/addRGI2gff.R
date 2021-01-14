@@ -98,8 +98,8 @@ if (file.info(opt$input)$size > 0) {
     sub$Drug.Class <- gsub(pattern = "; ", replacement = "_&_",
                            x = sub$Drug.Class)
     sub$NEW_attributes <-
-      paste( "Additional_database=CARD", ";CARD_name=", sub$Best_Hit_ARO, ";RGI_inference=", sub$Model_type,
-             ";CARD_product=", sub$AMR.Gene.Family, ";Targeted_drug_class=",
+      paste( "Additional_database=CARD", ";CARD:Name=", sub$Best_Hit_ARO, ";CARD:Inference=", sub$Model_type,
+             ";CARD:Product=", sub$AMR.Gene.Family, ";CARD:Targeted_drug_class=",
              sub$Drug.Class, sep = "")
     
     sub$NEW_attributes <- gsub(pattern = " ", replacement = "_",

@@ -25,6 +25,8 @@ suppressMessages(library(stringr))
 suppressMessages(library(dbplyr))
 suppressMessages(library(RSQLite))
 suppressMessages(library(DT))
+suppressMessages(library(openxlsx))
+suppressMessages(library(glue))
 source("shiny_parser_func.R")
 
 # Add directory of static resources to Shiny's web server
@@ -42,28 +44,32 @@ body {
 blockquote {
     padding: 10px 20px;
     margin: 0 0 20px;
-    font-size: 11pt;
+    font-size: 9pt;
     border-left: 5px solid #ec5800;
 }
   
 .table {
-  width: 95% !important;
+  width: 100% !important;
   text-align: center;
-  font-size: 11pt;
+  font-size: 10pt;
   margin-left: auto;
   margin-right: auto;
 }
 
 .main-container {
   max-width: 95% !important;
+  max-height: 100% !important;
   margin-left: auto;
   margin-right: auto;
 }
 
 div.container {
   width: 100%;
+  height: 100%;
 }
 ```
+
+# The bacannot shiny parser {.tabset .tabset-pills}
 
 ## About
 
@@ -73,9 +79,9 @@ Current features:
 
 * [Indexation of annotation reports](#index)
 * [SQL database parsing](#sqlparser)
-* [JBrowse navigation](#jbrowse)
+* [JBrowse navigation](jbrowse/index.html)
 
-## Automatic annotation reports {#index}
+### Automatic annotation reports {#index}
 
 The bacannot pipeline automatically produces three reports to summarize the annotation of Mobile genetic elements, resistance features and virulence factors. These reports are indexed in the list below so users can rapidly navigate through them.
 
@@ -83,64 +89,21 @@ The bacannot pipeline automatically produces three reports to summarize the anno
 * [Report of virulence features](reports/report_virulence.html)
 * [Report of mobile genetic elements](reports/report_MGEs.html)
 
-## Interrogation of SQL resulting db {#sqlparser}
+### JBrowse {#jbrowse}
 
-<center>
+* [Open JBrowse genome browser](jbrowse/index.html)
+
+## SQL querying {#sqlparser}
+
 ```{r, echo=FALSE}
 parse_sql(DBI::dbConnect(RSQLite::SQLite(), "/work/sqldb/TESTE"))
 ```
-</center>
-
-## JBrowse {#jbrowse}
-
-* [Link to open in a new tab](jbrowse/index.html)
-
-<iframe width='100%' height='800px' src='jbrowse/index.html' >
-</iframe>
 
 ## Blast the genome
 
-Blasting test
-
 ```{r, echo=FALSE}
-shinyApp(
-  
-  ui <- fluidPage(
-    theme = shinytheme("cerulean"),
-    tagList(
-      tags$head(
-      tags$link(rel="stylesheet", type="text/css",href="style.css"),
-      tags$script(type="text/javascript", src = "busy.js")
-    )),
- 
-  # This block gives us all the inputs:
-  mainPanel(
-     headerPanel('Blast the genome!'),
-     textAreaInput('query', 'Input sequence:', value = "", placeholder = "", width = "600px", height="200px"),
-     selectInput("db", "Database:", choices=c("genome","genes-nt", "genes-aa"), width="120px"),
-     div(style="display:inline-block",
-     selectInput("program", "Program:", choices=c("blastn","tblastn"), width="100px")),
-     div(style="display:inline-block",
-     selectInput("eval", "e-value:", choices=c(1,0.001,1e-4,1e-5,1e-10), width="120px")),
-     actionButton("blast", "BLAST!")
-  ),
- 
- #  This snippet generates a 'busy' indicator for long BLASTs
- div(class = "busy", 
-   p("Calculation in progress.."), 
-   img(src="https://i.stack.imgur.com/8puiO.gif", height = 100, width = 100,align = "center")),
- 
- # Basic results output
- mainPanel(
-   h4("Results"),
-   DT::dataTableOutput("blastResults"),
-   p("Alignment:", tableOutput("clicked") ),
-   verbatimTextOutput("alignment")
- )
-),
-
-server = function(input, output, session) {
-  
-}
-)
+genome_blast(genome = Sys.glob(file.path("/work/annotation/*.fna")),
+             nucl = Sys.glob(file.path("/work/annotation/*.ffn")),
+             prot = Sys.glob(file.path("/work/annotation/*.faa")),
+             sqldb = DBI::dbConnect(RSQLite::SQLite(), "/work/sqldb/TESTE"))
 ```

@@ -16,7 +16,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     unixodbc-dev \
     libcurl4-openssl-dev \
     libssl-dev \
-    r-bioc-biostrings
+    r-bioc-biostrings \
+    r-bioc-iranges \
+    ncbi-blast+
 
 ## update system libraries
 RUN apt-get update && \
@@ -26,13 +28,21 @@ RUN apt-get update && \
 # Set workdir
 WORKDIR /app
 
-# install renv & restore packages
-RUN Rscript -e 'install.packages(c("bookdown", "rmarkdown", "shiny", "shinyFiles", "dplyr", "dbplyr", "RSQLite", "DT", "glue", "stringr", "DataCombine"))'
+# Install Java
+RUN apt-get -y install default-jre r-cran-rjava
+
+# Install renv & restore packages
+RUN Rscript -e 'install.packages(c("bookdown", "rmarkdown", "shiny", "shinyFiles", "dplyr", "dbplyr", "RSQLite", "DT", "glue", "stringr", "DataCombine", "shinythemes", "stringr", "openxlsx"), dependencies=TRUE)'
+
+# Install bedtools
+RUN apt-get install -y bedtools
 
 ## Get scripts
-RUN Rscript -e 'install.packages(c("shinythemes", "stringr"))'
 COPY scripts/rscripts/shiny_parser.Rmd /app/shiny_parser.Rmd
 COPY scripts/rscripts/shiny_parser_func.R /app/shiny_parser_func.R
+COPY scripts/rscripts/get_attributes_field.R /app/get_attributes_field.R
+COPY scripts/rscripts/blast_app.R /app/blast_app.R
+COPY scripts/rscripts/SQL_parser.R /app/SQL_parser.R
 
 # expose port
 EXPOSE 3838
