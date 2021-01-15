@@ -209,10 +209,9 @@ workflow bacannot_batch_nf {
         amrfinder_output = amrfinder.out[0]
         // CARD-RGI
         card_rgi(prokka.out[4])
-        rgi_output = card_rgi.out[3]
-        rgi_output_1 = card_rgi.out[1]
-        rgi_output_2 = card_rgi.out[2]
-        rgi_heatmap = card_rgi.out[4]
+        rgi_output = card_rgi.out[2]
+        rgi_output_parsed = card_rgi.out[1]
+        rgi_heatmap = card_rgi.out[3]
         // ARGMiner
         argminer(prokka.out[4])
         argminer_output = argminer.out[0]
@@ -224,8 +223,7 @@ workflow bacannot_batch_nf {
         resfinder_gff = resfinder.out[3]
       } else {
         rgi_output = Channel.empty()
-        rgi_output_1 = Channel.empty()
-        rgi_output_2 = Channel.empty()
+        rgi_output_parsed = Channel.empty()
         rgi_heatmap = Channel.empty()
         amrfinder_output = Channel.empty()
         argminer_output = Channel.empty()
@@ -287,8 +285,7 @@ workflow bacannot_batch_nf {
       jbrowse(jbrowse_input)
 
       // Render reports
-      report(jbrowse_input.join(rgi_output_1,         remainder: true)
-                          .join(rgi_output_2,         remainder: true)
+      report(jbrowse_input.join(rgi_output_parsed,    remainder: true)
                           .join(rgi_heatmap,          remainder: true)
                           .join(argminer_output,      remainder: true)
                           .join(iceberg_output_2,     remainder: true)

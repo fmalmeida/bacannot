@@ -87,11 +87,19 @@ include { card_rgi } from '../modules/resistance/rgi_annotation.nf' params(outdi
 include { call_methylation } from '../modules/generic/methylation.nf' params(outdir: params.outdir,
   threads: params.threads, nanopolish_fastq: params.nanopolish_fastq, nanopolish_fast5: params.nanopolish_fast5)
 
+// User's custom db annotation
+include { custom_blast } from '../modules/generic/custom_blast.nf' params(outdir: params.outdir,
+  threads: params.threads)
+
 // Merging annotation in GFF
 include { merge_annotations } from '../modules/generic/merge_annotations.nf' params(outdir: params.outdir)
 
 // Convert GFF to GBK
 include { gff2gbk } from '../modules/generic/gff2gbk.nf' params(outdir: params.outdir)
+
+// Convert GFF to SQL
+include { create_sql } from '../modules/generic/gff2sql.nf' params(outdir: params.outdir,
+  prefix: params.prefix)
 
 // Bedtools gff merge
 include { gff_merge } from '../modules/generic/merge_gff.nf' params(outdir: params.outdir,
@@ -119,6 +127,7 @@ workflow bacannot_nf {
       input_genome
       fast5_dir
       fast5_fastqs
+      custom_db
 
   main:
 
@@ -269,7 +278,16 @@ workflow bacannot_nf {
       }
 
       /*
-          Eighth step -- Merge all annotations with the same Prefix value in a single Channel
+
+          Eighth step -- Perform users custom annotation
+
+      */
+      if (params.custom_db) {
+        custom_blast(prokka.out[3], custom_db)
+      }
+
+      /*
+          Nineth step -- Merge all annotations with the same Prefix value in a single Channel
       */
       annotations_files = prokka.out[3].join(prokka.out[1])
                                        .join(mlst.out[0])
@@ -293,6 +311,11 @@ workflow bacannot_nf {
 
       // Convert GFF file to GBK file
       gff2gbk(merge_annotations.out[0].join(prokka.out[3]))
+
+      // Convert GFF file to sqldb
+      create_sql(merge_annotations.out[0].join(prokka.out[5])
+                                         .join(prokka.out[4])
+                                         .join(prokka.out[3]))
 
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {

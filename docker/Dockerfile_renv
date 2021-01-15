@@ -7,6 +7,7 @@ WORKDIR /work
 
 # Get scripts
 ADD scripts/rscripts /work/rscripts
+ADD scripts/bscripts /work/bscripts
 
 # Set main R dependencies
 ## Add R repo key
@@ -51,9 +52,15 @@ RUN cd /work/reports && \
 # Make Rmds executable
 RUN chmod a+rx /work/reports/*.Rmd
 
+# Make rscripts executable
+RUN chmod a+rx /work/rscripts/*
+
+# Make bscripts executable
+RUN chmod a+rx /work/bscripts/*
+
 # Set PATH
-RUN chmod a+x /work/rscripts/*R
 ENV PATH="$PATH:/work/rscripts"
 
 # Re-set workidir
 WORKDIR /work
+RUN chmod -R a+rw /work

@@ -12,7 +12,7 @@ process prokka {
 
     output:
     // Grab all outputs
-    file "annotation/${prefix}.*"
+    file "annotation"
     // Outputs must be linked to each prefix (tag)
     tuple val(prefix), file("annotation/${prefix}.gff") // annotation in gff format
     tuple val(prefix), file("annotation/${prefix}.gbk") // annotation in gbk format

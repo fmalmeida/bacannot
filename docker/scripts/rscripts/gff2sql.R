@@ -21,47 +21,40 @@ opt <- docopt(doc)
 
 # Useful functions
 ## Query the 9th column
-getAttributeField <- function (x, field, attrsep = ";") { 
-  s = strsplit(x, split = attrsep, fixed = TRUE) 
-  sapply(s, function(atts) { 
-    a = strsplit(atts, split = "=", fixed = TRUE) 
-    m = match(field, sapply(a, "[", 1)) 
-    if (!is.na(m)) { rv = a[[m]][2] 
-    } 
-    else { 
-      rv = as.character(NA) 
-    } 
-    return(rv) 
-  }) 
+getAttributeField <- function (x, field, attrsep = ";") {
+  s = strsplit(x, split = attrsep, fixed = TRUE)
+  sapply(s, function(atts) {
+    a = strsplit(atts, split = "=", fixed = TRUE)
+    m = match(field, sapply(a, "[", 1))
+    if (!is.na(m)) { rv = a[[m]][2]
+    }
+    else {
+      rv = as.character(NA)
+    }
+    return(rv)
+  })
 }
 
 ## Add table to SQL db
 addTable <- function (con, sql, input) {
   ## Open db
   suppressWarnings(dbBegin(con))
-  
+
   ## Send rule
   res <- suppressWarnings(dbSendQuery(con, sql))
-  
+
   ## Insert data based on rule
   suppressWarnings(dbBind(res, input))
   suppressWarnings(dbFetch(res))
   suppressWarnings(dbClearResult(res))
-  
+
   ## Close db
   suppressWarnings(dbCommit(con))
 }
 
-# Set up defaults
-opt$out <- "TESTE"
-opt$input <- "/Volumes/falmeida1TB/bacannot_teste/bkp/reference/gffs/reference.gff"
-opt$fasta <- "/Volumes/falmeida1TB/bacannot_teste/bkp/reference/annotation/reference.fna"
-opt$nucleotide <- "/Volumes/falmeida1TB/bacannot_teste/bkp/reference/annotation/reference.ffn"
-opt$aminoacid <- "/Volumes/falmeida1TB/bacannot_teste/bkp/reference/annotation/reference.faa"
-
 # Loading SQL database driver
 drv <- dbDriver("SQLite")
-dbname <- file.path("/Volumes/falmeida1TB/bacannot_teste/bkp/reference/sqldb", opt$out)
+dbname <- file.path("/work", opt$out)
 con <- dbConnect(drv, dbname=dbname)
 
 #####################################
@@ -96,11 +89,11 @@ gff$ID <- getAttributeField(as.character(gff$attributes), "ID", ";")
 # Reorder columns
 gff <- gff %>% select(chr, source, ID, feature, start, end, score, strand, frame, attributes)
 # Create SQL table to store GFF data
-suppressWarnings(dbGetQuery(con, "CREATE Table GFF (Contig TEXT, Source TEXT, ID TEXT, Feature TEXT, 
-           Start INTEGER, End INTEGER, Score INTEGER, Strand TEXT, 
+suppressWarnings(dbGetQuery(con, "CREATE Table GFF (Contig TEXT, Source TEXT, ID TEXT, Feature TEXT,
+           Start INTEGER, End INTEGER, Score INTEGER, Strand TEXT,
            Frame INTEGER, Attributes TEXT)"))
 # Create sql rule
-sql <- "INSERT INTO GFF VALUES ($chr, $source, $ID, $feature, 
+sql <- "INSERT INTO GFF VALUES ($chr, $source, $ID, $feature,
 $start, $end, $score, $strand, $frame, $attributes)"
 # Add to SQL db
 addTable(con, sql, gff)

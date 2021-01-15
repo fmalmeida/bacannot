@@ -9,8 +9,7 @@ params:
   amrfinder:
   gff:
   rgitool:
-  rgiperfect:
-  rgistrict:
+  rgiparsed:
   rgi_heatmap:
   argminer_blastp:
   resfinder_tab:
@@ -118,8 +117,7 @@ resfinder_pheno <- try(
 
 # RGI
 rgi_tsv <- try(read.delim(params$rgitool, header = TRUE), silent = TRUE)
-rgi_perfect <- try(read.delim(params$rgiperfect, header = FALSE), silent = TRUE)
-rgi_strict <- try(read.delim(params$rgistrict, header = FALSE), silent = TRUE)
+rgi_parsed <- try(read.delim(params$rgiparsed, header = FALSE), silent = TRUE)
 
 # ARGminer
 argminer_blastp <- try(read.delim(params$argminer_blastp, header = TRUE), silent = TRUE)
@@ -139,7 +137,7 @@ if (class(amrtsv) != 'try-error' &
   amrFinder_null <- TRUE
 }
 
-# Check if NCBI is empty
+# Check if Resfinder is empty
 if (class(resfinder_tab) != 'try-error' & 
     check_lines(resfinder_tab) > 0) {
   resfinder_not_null <- TRUE
@@ -167,24 +165,6 @@ if (class(rgi_tsv) != 'try-error' &
 } else {
   rgi_not_null <- FALSE
   rgi_null <- TRUE
-}
-
-if (class(rgi_perfect) != 'try-error' & 
-    check_lines(rgi_perfect) > 0) {
-  rgi_perfect_not_null <- TRUE
-  rgi_perfect_null <- FALSE
-} else {
-  rgi_perfect_not_null <- FALSE
-  rgi_perfect_null <- TRUE
-}
-
-if (class(rgi_strict) != 'try-error' & 
-    check_lines(rgi_strict) > 0) {
-  rgi_strict_not_null <- TRUE
-  rgi_strict_null <- FALSE
-} else {
-  rgi_strict_not_null <- FALSE
-  rgi_strict_null <- TRUE
 }
 
 # DT options

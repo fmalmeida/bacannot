@@ -72,6 +72,8 @@ params.lreads_type = ''
 params.prokka_kingdom = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer = false
+// User custom db
+params.custom_db = ''
 // Resfinder parameters
 params.resfinder_species = ''
 // Blast parameters
@@ -166,7 +168,8 @@ workflow {
       // User have an assembled genome
       bacannot_nf(Channel.fromPath(params.genome),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty())
+                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
+                 (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
 
     } else if (params.sreads_single || params.sreads_paired) {
 
@@ -176,7 +179,8 @@ workflow {
                 (params.lreads)        ? Channel.fromPath( params.lreads )                                  : Channel.value(''))
       bacannot_nf(unicycler.out[1],
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty())
+                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
+                 (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
 
     } else if ((params.lreads && params.lreads_type) && (!params.sreads_paired && !params.sreads_single)) {
 
@@ -184,7 +188,8 @@ workflow {
       flye(Channel.fromPath( params.lreads ))
       bacannot_nf(flye.out[1],
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty())
+                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
+                 (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
     }
   }
 }

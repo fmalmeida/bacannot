@@ -8,7 +8,7 @@ process report {
         file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb_blastn), file(victors_blastp),
         file(amrfinder), file(rgi), file(iceberg_blastp), file(phast_blastp), file(phigaro_bed),
         file(genomic_islands), file("methylation"), file("chr.sizes"), file(phispy_tsv), file(resfinder_gff),
-        file(rgi_perfect), file(rgi_strict), file(rgi_heatmap), file(argminer_out), file(iceberg_blastn),
+        file(rgi_parsed), file(rgi_heatmap), file(argminer_out), file(iceberg_blastn),
         file(plasmids_tsv), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable),
         file(gi_image), file(phigaro_txt), file(platon_tsv)
 
@@ -17,37 +17,40 @@ process report {
 
   script:
   """
-  cp /work/reports/* . ;
+  #!/usr/bin/env Rscript
+
+  ## Copy reports
+  system("cp /work/reports/* .") ;
+
+  ## Remove empty files
+  system("rm -f input.??") ;
+  system("rm -f input.?") ;
 
   ## Generate Resistance Report
-  Rscript -e '#!/usr/bin/Rscript\
   rmarkdown::render("report_resistance.Rmd", params = list(\
     blast_id = ${params.blast_resistance_minid} , \
     blast_cov = ${params.blast_resistance_mincov}, \
     amrfinder = "$amrfinder", \
     query = "${prefix}", \
     rgitool = "$rgi", \
-    rgiperfect = "$rgi_perfect", \
-    rgistrict = "$rgi_strict", \
+    rgiparsed = "$rgi_parsed", \
     rgi_heatmap = "$rgi_heatmap", \
     argminer_blastp = "$argminer_out", \
     resfinder_tab = "$resfinder_tab", \
     resfinder_pointfinder = "$resfinder_point", \
     resfinder_phenotype = "$resfinder_phenotable", \
-    gff = "$gff"))'
+    gff = "$gff")) ;
 
   ## Generate Virulence Report
-  Rscript -e '#!/usr/bin/Rscript\
   rmarkdown::render("report_virulence.Rmd" , \
   params = list( blast_id = ${params.blast_virulence_minid} , \
                  blast_cov = ${params.blast_virulence_mincov}, \
                  vfdb_blast = "$vfdb_blastn", \
                  gff = "$gff", \
                  victors_blast = "$victors_blastp", \
-                 query = "${prefix}"))'
+                 query = "${prefix}")) ;
 
   ## Generate MGEs report
-  Rscript -e '#!/usr/bin/Rscript\
   rmarkdown::render("report_MGEs.Rmd", \
   params = list( blast_id = ${params.blast_MGEs_minid}, \
                  blast_cov = ${params.blast_MGEs_mincov}, \
@@ -61,6 +64,6 @@ process report {
                  query = "${prefix}", \
                  gi_image = "$gi_image", \
                  gff = "$gff", \
-                 phast_prot_blast = "$phast_blastp" ))'
+                 phast_prot_blast = "$phast_blastp" )) ;
   """
 }

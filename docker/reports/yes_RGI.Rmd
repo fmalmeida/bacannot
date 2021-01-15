@@ -12,7 +12,7 @@ The results obtained with RGI tool are summarized in the heatmap produced by the
 <caption>(#tab:rgi-annotation-table) RGI annotation results. The perfect hits are highlighted in yellow while the strict hits in light blue.</caption>
 ```{r rgi-annotation-table}
 # Merge data.frame with GFF
-rgi_tsv <- rbind(rgi_perfect, rgi_strict)
+rgi_tsv <- rgi_parsed
 colnames(rgi_tsv) <- c("Protein ID", "Cut_Off", "Product", "ARO", "Drug Class", "Resistance Mechanism", "AMR Gene Family")
 rgi_tsv <- merge.data.frame(gff, rgi_tsv, by.x = "Prokka_ID", by.y = "Protein ID", all.y = TRUE, all.x = FALSE)
 

@@ -1,0 +1,24 @@
+process custom_blast {
+  publishDir "${params.outdir}/${prefix}/${customDB.baseName}_annotation", mode: 'copy'
+  tag "Performing annotation with User's custom db"
+  label 'main'
+
+  input:
+  tuple val(prefix), file(genome)
+  each file(customDB)
+
+  output:
+  // Outputs must be linked to each prefix (tag)
+  tuple val(prefix), file("${prefix}_iceberg_blastn_onGenome.summary.txt")
+  file('*.txt') // Grab all
+
+  script:
+  """
+  # Step 1 - Create blast db
+  makeblastdb -in $customDB -dbtype nucl -out customDB -logfile /dev/null ;
+
+  # Step 2 - Execute blastn
+  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genome --db customDB --minid 0 --mincov 0 --threads ${params.threads} \
+  --out ${prefix}_iceberg_blastn_onGenome.txt > ${prefix}_iceberg_blastn_onGenome.summary.txt ;
+  """
+}

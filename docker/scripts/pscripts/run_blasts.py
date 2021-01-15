@@ -3,7 +3,7 @@
 
 ## Def help message
 """
-Script created exclusevely for executing blast alignments inside Bacannot pipeline.
+Script created exclusively for executing blast alignments inside Bacannot pipeline.
 
 ---
 Copyright (C) 2020 Felipe Marques de Almeida (almeidafmarques@gmail.com)
