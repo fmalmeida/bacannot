@@ -307,7 +307,7 @@ include { iceberg } from './modules/ices_scan_iceberg.nf' params(outdir: params.
   blast_MGEs_mincov: params.blast_MGEs_mincov)
 
 // Prophage annotation with PHIGARO
-include { find_GIs } from './modules/IslandPath_DIMOB.nf' params(outdir: params.outdir)
+include { find_GIs } from './modules/islandPath_DIMOB.nf' params(outdir: params.outdir)
 
 // AMR annotation with ARGMiner
 include { argminer } from './modules/resistance_scan_argminer.nf' params(outdir: params.outdir,
