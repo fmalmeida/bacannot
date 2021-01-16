@@ -85,17 +85,17 @@ def helpMessage() {
 
                                   Configure Optional processes
 
-    --not_run_virulence_search                     Tells wheter you do not want to execute virulence annotation
+    --not_run_virulence_search                     Tells whether you do not want to execute virulence annotation
 
-    --not_run_resistance_search                    Tells wheter you do not want to execute resistance annotation
+    --not_run_resistance_search                    Tells whether you do not want to execute resistance annotation
 
-    --not_run_iceberg_search                       Tells wheter you do not want to execute ICE annotation
+    --not_run_iceberg_search                       Tells whether you do not want to execute ICE annotation
 
-    --not_run_prophage_search                      Tells wheter you do not want to execute prophage annotation
+    --not_run_prophage_search                      Tells whether you do not want to execute prophage annotation
 
-    --not_run_plasmid_search                       Tells wheter you do not want to execute plasmid detection
+    --not_run_plasmid_search                       Tells whether you do not want to execute plasmid detection
 
-    --not_run_kofamscan                            Tells wheter you do not want to execute KO annotation with kofamscan
+    --not_run_kofamscan                            Tells whether you do not want to execute KO annotation with kofamscan
 
 
                             Configure optional Methylation annotation with nanopolish
@@ -306,7 +306,7 @@ include { iceberg } from './modules/ices_scan_iceberg.nf' params(outdir: params.
   threads: params.threads, blast_MGEs_minid: params.blast_MGEs_minid,
   blast_MGEs_mincov: params.blast_MGEs_mincov)
 
-// Prophage annotation with PHIGARO
+// Genomic Islands annotation with IslandPath-DIMOB
 include { find_GIs } from './modules/islandPath_DIMOB.nf' params(outdir: params.outdir)
 
 // AMR annotation with ARGMiner
