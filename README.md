@@ -18,6 +18,14 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 * [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) for in silico plasmid detection
 * And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)
 
+## Note to users
+
+The bacannot pipeline is currently undergoing a huge update (as in issue [#2](https://github.com/fmalmeida/bacannot/issues/2)). In this updating I am fixing a few problems that I have detected in the automatic reports conditionals (some of them were being incorrectely dealt with). Also, this update holds new processes such as Resfinder annotation, a shiny parser for the outputs, and the reestructuration of few contents.
+
+This update is set to be released in January. If you come into an error please contact me so I can check if this error is already being handled in this update or not so I can tackle it in the same release.
+
+Cheers.
+
 ## Further reading
 
 This pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a complete workflow for bacterial genomics analyses.
