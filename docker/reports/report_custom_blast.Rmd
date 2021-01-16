@@ -1,0 +1,107 @@
+---
+title: "Annotation of mobile genetic elements"
+author: "Produced with bacannot pipeline"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+params:
+  blast_id: 
+  blast_cov:
+  custom_blast:
+  blast_db:
+  query: 
+output:
+  bookdown::html_document2: 
+    css: styles.css
+    df_print: paged
+    number_sections: false
+    syntax: espresso
+    self_contained: yes
+    theme: readable
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.pos = 'H')
+suppressMessages(library(magrittr))
+suppressMessages(library(knitr))
+suppressMessages(library(tidyr))
+suppressMessages(library(plyr))
+suppressMessages(library(DT))
+suppressMessages(library(dplyr))
+suppressMessages(library(stringr))
+suppressMessages(library(ggplot2))
+
+# Line checker
+check_lines <- function(x) {
+  return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
+}
+
+## Read ICEberg documents
+ice_prot_blast <- try(read.delim(params$ice_prot_blast, header = TRUE), silent = TRUE)
+ice_genome_blast <- try(read.delim(params$ice_genome_blast, header = TRUE), silent = TRUE)
+if (class(ice_prot_blast) != 'try-error' & check_lines(ice_prot_blast) > 0) {
+  not_null <- TRUE
+  null <- FALSE
+} else {
+  not_null <- FALSE
+  null <- TRUE
+}
+
+# DT options
+# Lists
+dt_opt_lst <- list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE)
+```
+
+# `r params$query` report of user's custom database annotation: `r params$blast_db`
+
+## About
+
+Mobile genetic elements (MGEs) are a type of genetic material that can move around within a genome, or that can be transferred from one species or replicon to another. Newly acquired genes through this mechanism can increase fitness by gaining new or additional functions. On the other hand, MGEs can also decrease fitness by introducing disease-causing alleles or mutations. For instance, prophages are bacteriophages that have been inserted and integrated into the bacterial chromosome or plasmid. It is the latent form of a phage. ICEs (integrative and conjugative elements), on the other hand, are integrative mobile genetic elements that encode a conjugation machinery. They can confer selective advantages and can also encode resistance determinants and virulence factors.
+
+In this context, this pipeline is capable of automatically annotating some mobile genetic elements using public available resources such as:
+
+1. [PHAST](https://phaster.ca) database;
+    + PHAST (PHAge Search Tool) is a web server designed to rapidly and accurately identify, annotate and graphically display prophage sequences within bacterial genomes or plasmids.
+    + Although it does not have a command line interface it has a protein database of prophage genes that were added to this pipeline and are scanned via `BLASTp`
+2. [Phigaro](https://github.com/bobeobibo/phigaro);
+    + Phigaro is a standalone command-line application that is able to detect prophage regions taking raw genome and metagenome assemblies as an input.
+    + It also produces dynamic annotated “prophage genome maps” and marks possible transposon insertion spots inside prophages.
+3. [PhiSpy](https://github.com/linsalrob/PhiSpy);
+    + PhiSpy identifies prophages in Bacterial (and probably Archaeal) genomes. Given an annotated genome it will use several approaches to identify the most likely prophage regions.
+4. [ICEberg](https://db-mml.sjtu.edu.cn/ICEberg/) database;
+    + ICEberg 2.0 is an updated database of bacterial integrative and conjugative elements.
+5. [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/);
+    + Plasmidfinder is a tool for the _in silico_ detection of plasmids.
+6. [Platon](https://github.com/oschwengers/platon);
+    + Platon detects plasmid contigs within bacterial draft genomes from WGS short-read assemblies.
+    + Therefore, Platon analyzes the natural distribution biases of certain protein coding genes between chromosomes and plasmids.
+7. [IslandPath](https://github.com/brinkmanlab/islandpath).
+    + IslandPath-DIMOB is a standalone software to predict genomic islands in bacterial and archaeal genomes based on the presence of dinucleotide biases and mobility genes.
+
+### Prediction thresholds
+
+All the predictions were passed through a user defined threshold for minimum coverage and identity:
+
+* Min. Identity (%): `> `r params$blast_id``
+* Min. Coverage (%): `> `r params$blast_cov``
+
+> [PHAST](https://phaster.ca) is a protein database scanned via BLASTp; [ICEberg](http://202.120.12.136:7913/ICEberg2/) is a protein and nucleotide database that contains the full-length sequences of known ICEs and also contains the sequences of a multitude of proteins commonly found inside these ICEs. Full-length ICEs are blasted to the genome via BLASTn while the protein sequences are blasted tto the predicted genes via BLASTp; [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) is a nucleotide database scanned via BLASTn. The other software have its own metrics.
+
+> The results used to create this report are under the directories called `prophages`, `ICEs` and `Plasmids` in the output folder of the query `r params$query`.
+
+## Genomic Islands prediction
+
+Genomic Islands (GIs) were predicted with [islandPath](https://github.com/brinkmanlab/islandpath). The predicted genomic islands are integrated into the JBrowse genome viewer so that users can interactively interrogate the results and check the genes found inside these islands. The resulting genome browser are provided in the `jbrowse` directory inside the query main output directory. This genome browser can be opened with the [http-server](https://www.npmjs.com/package/http-server) command or the [JBrowse Desktop](https://jbrowse.org/docs/jbrowse_desktop.html) software.
+
+Additionally, these genomic islands were parsed in a very generic manner in order to provide a simple visualization of the annotation in these regions. The plots were rendered with the python package [gff-toolbox](https://github.com/fmalmeida/gff-toolbox/wiki) and are available at the directory: `genomic_islands/plots` in the main query output directory. An example of these plots is shown in Figure \@ref(fig:gi-plot-example).
+
+```{r gi-plot-example, out.width='60%', fig.align='center', fig.show='hold', fig.cap="Examplification of the visualization of genomic islands regions with the gff-toolbox package."}
+knitr::include_graphics(params$gi_image)
+```
+
+> As discussed, these images were rendered in a very generic manner just to show some visualization possibilities to the user. If desired, users can check the [gff-toolbox](https://github.com/fmalmeida/gff-toolbox/wiki) package to produce more customized plots.

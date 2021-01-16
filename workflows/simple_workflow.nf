@@ -99,7 +99,8 @@ include { gff2gbk } from '../modules/generic/gff2gbk.nf' params(outdir: params.o
 
 // Convert GFF to SQL
 include { create_sql } from '../modules/generic/gff2sql.nf' params(outdir: params.outdir,
-  prefix: params.prefix)
+  prefix: params.prefix, blast_custom_mincov: params.blast_custom_mincov,
+  blast_custom_minid: params.blast_custom_minid)
 
 // Bedtools gff merge
 include { gff_merge } from '../modules/generic/merge_gff.nf' params(outdir: params.outdir,

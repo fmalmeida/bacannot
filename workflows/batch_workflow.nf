@@ -93,6 +93,11 @@ include { merge_annotations } from '../modules/generic/merge_annotations.nf' par
 // Convert GFF to GBK
 include { gff2gbk } from '../modules/generic/gff2gbk.nf' params(outdir: params.outdir)
 
+// Convert GFF to SQL
+include { create_sql } from '../modules/generic/gff2sql_batch.nf' params(outdir: params.outdir,
+  prefix: params.prefix, blast_custom_mincov: params.blast_custom_mincov,
+  blast_custom_minid: params.blast_custom_minid)
+
 // Bedtools gff merge
 include { gff_merge } from '../modules/generic/merge_gff.nf' params(outdir: params.outdir,
   bedtools_merge_distance: params.bedtools_merge_distance)
@@ -265,6 +270,9 @@ workflow bacannot_batch_nf {
 
       // Convert GFF file to GBK file
       gff2gbk(merge_annotations.out[0].join(prokka.out[3]))
+
+      // Convert GFF file to sqldb
+      create_sql(merge_annotations.out[0].join(prokka.out[8]))
 
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {

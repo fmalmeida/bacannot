@@ -54,6 +54,10 @@ def helpMessage() {
     --in_yaml <string>                             Set path to the samplesheet in YAML format to analyse more than one
                                                    genome at once.
 
+      # Annotation configuration -- Used for either for the single
+      # genome analysis workflow and the multiple genome analysis
+      # Read it and configure it properly
+
       # General Parameters
 
     --outdir <string>                              Output directory name
@@ -91,11 +95,21 @@ def helpMessage() {
 
     --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation. Default 65.
 
-    --blast_MGEs_mincov                            Min. query coverage for ICEs and prophage annotation. Default 65.
+    --blast_MGEs_mincov                            Min. gene coverage for ICEs and prophage annotation. Default 65.
 
     --plasmids_minid                               Min. identity % for plasmid detection. Default 90.
 
-    --plasmids_mincov                              Min. query coverage for plasmid detection. Default 60.
+    --plasmids_mincov                              Min. coverage for plasmid detection. Default 60.
+
+    --blast_custom_minid                           Min. identity % for the annotation using user's custom database. Default 0.
+
+    --blast_custom_mincov                          Min. gene/subject coverage % for the annotation using user's custom database. Default 0.
+
+      # User's custom database for annotation
+      # Must be in nucleotide FASTA
+
+    --custom_db                                    Path to the nucleotide FASTA file containing the user's custom database for annotation.
+                                                   Multiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,...
 
 
       # Configure resfinder optional parameter

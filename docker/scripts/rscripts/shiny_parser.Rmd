@@ -35,19 +35,19 @@ addResourcePath(prefix = "reports", directoryPath = "/work/report_files/")
 ```
 
 ```{css, echo=FALSE}
-body { 
+body {
   /* Normal  */
   font-size: 12pt;
   line-height: 1.5;
 }
-  
+
 blockquote {
     padding: 10px 20px;
     margin: 0 0 20px;
     font-size: 9pt;
     border-left: 5px solid #ec5800;
 }
-  
+
 .table {
   width: 100% !important;
   text-align: center;
@@ -96,7 +96,7 @@ The bacannot pipeline automatically produces three reports to summarize the anno
 ## SQL querying {#sqlparser}
 
 ```{r, echo=FALSE}
-parse_sql(DBI::dbConnect(RSQLite::SQLite(), "/work/sqldb/TESTE"))
+parse_sql(DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
 ```
 
 ## Blast the genome
@@ -105,5 +105,5 @@ parse_sql(DBI::dbConnect(RSQLite::SQLite(), "/work/sqldb/TESTE"))
 genome_blast(genome = Sys.glob(file.path("/work/annotation/*.fna")),
              nucl = Sys.glob(file.path("/work/annotation/*.ffn")),
              prot = Sys.glob(file.path("/work/annotation/*.faa")),
-             sqldb = DBI::dbConnect(RSQLite::SQLite(), "/work/sqldb/TESTE"))
+             sqldb = DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
 ```

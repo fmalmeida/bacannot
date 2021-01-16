@@ -74,6 +74,8 @@ params.prokka_genetic_code = false
 params.prokka_use_rnammer = false
 // User custom db
 params.custom_db = ''
+params.blast_custom_minid = 0
+params.blast_custom_mincov = 0
 // Resfinder parameters
 params.resfinder_species = ''
 // Blast parameters
