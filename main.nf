@@ -161,7 +161,8 @@ workflow {
     flye_batch(filter_ch(samples_ch, "flye"))
 
     // Run annotation
-    bacannot_batch_nf(filter_ch(samples_ch, "annotation").mix(flye_batch.out[1], unicycler_batch.out[1]))
+    bacannot_batch_nf(filter_ch(samples_ch, "annotation").mix(flye_batch.out[1], unicycler_batch.out[1]),
+                      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
 
   } else {
 

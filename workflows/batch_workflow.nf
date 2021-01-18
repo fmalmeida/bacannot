@@ -87,6 +87,13 @@ include { card_rgi } from '../modules/resistance/rgi_annotation.nf' params(outdi
 include { call_methylation } from '../modules/generic/methylation_batch.nf' params(outdir: params.outdir,
   threads: params.threads)
 
+// User's custom db annotation
+include { custom_blast } from '../modules/generic/custom_blast_batch.nf' params(outdir: params.outdir,
+  threads: params.threads, blast_custom_minid: params.blast_custom_minid, blast_custom_mincov: params.blast_custom_mincov)
+include { custom_blast_report } from '../modules/generic/custom_blast_report.nf' params(outdir: params.outdir,
+    blast_custom_mincov: params.blast_custom_mincov,
+    blast_custom_minid: params.blast_custom_minid)
+
 // Merging annotation in GFF
 include { merge_annotations } from '../modules/generic/merge_annotations.nf' params(outdir: params.outdir)
 
@@ -121,6 +128,7 @@ include { report } from '../modules/generic/reports.nf' params(outdir: params.ou
 workflow bacannot_batch_nf {
   take:
     input_ch
+    custom_db
   main:
 
       // First step -- Prokka annotation
@@ -277,6 +285,16 @@ workflow bacannot_batch_nf {
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {
         gff_merge(merge_annotations.out[0])
+      }
+
+      /*
+
+          Nineth step -- Perform users custom annotation
+
+      */
+      if (params.custom_db) {
+        custom_blast(merge_annotations.out[0].join(prokka.out[3]), custom_db)
+        custom_blast_report(custom_blast.out[0])
       }
 
       /*

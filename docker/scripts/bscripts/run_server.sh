@@ -50,6 +50,10 @@ Start()
 PORT="3838"
 
 # Get the options
+if ["$1" -eq ""] ; then
+	Help
+	exit
+fi
 while getopts "hsd:p" option; do
    case $option in
       h) # display Help
