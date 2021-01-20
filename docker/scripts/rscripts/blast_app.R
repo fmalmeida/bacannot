@@ -3,7 +3,7 @@
 genome_blast <- function(genome, nucl, prot, sqldb) {
   
   shinyApp(
-    options=list(height = '2000px', width = '100%'),
+    options=list(height = '2500px', width = '100%'),
     ui <- fluidPage(
       
       # Custom CSS
@@ -38,35 +38,62 @@ genome_blast <- function(genome, nucl, prot, sqldb) {
       # This block gives us all the inputs:
       mainPanel(
         width = "100%",
-        h2('Blast the genome!'),
-        br(),
+        HTML('<b><h2>Blast the genome!</h2></b>'),
         textAreaInput('query', 'Input sequence:', value = "", placeholder = "", height="200px", width = '850px'),
+        HTML('<b><h3>Blast parameters!</h3></b>'),
         fluidRow(
           column(2, selectInput("db", "Database:", choices=c("genome","genes-nt", "genes-aa"))),
           column(2, selectInput("program", "Program:", choices=c("blastn", "tblastn", "blastx", "blastp"))),
-          column(2, selectInput("eval", "e-value:", choices=c(1,0.001,1e-4,1e-5,1e-10)))
+          column(2, selectInput("eval", "e-value:", choices=c(1,0.001,1e-4,1e-5,1e-10), selected = 0.001))
+        ),
+        fluidRow(
+          column(4, sliderInput("blastID", "Min. % Identity",
+                                min = 0, max = 100, value = 35)),
+          column(4, sliderInput("blastCOV", "Min. % query coverage",
+                                min = 0, max = 100, value = 35))
         ),
         actionButton("blast", "BLAST!"),
-        h3("Blast results"),
         br(),
-        actionButton("reset", "Reset row selection"),
+        uiOutput("blast_result_header"),
+        uiOutput("blast_result_reset_button"),
         br(),
         dataTableOutput("blastResults", width = '100%', height = 'auto'),
-        selectInput("format", "Download format:",
-                    choices = c('tsv', 'csv', 'spreadsheet')),
-        downloadButton("downloadData", "Download"),
-        h3("Annotation intersection!"),
+        uiOutput("blast_result_format_selection"),
+        uiOutput("blast_result_download_button"),
         br(),
-        actionButton("reset2", "Reset row selection"),
+        uiOutput("blast_intersection_header"),
+        uiOutput("blast_intersection_reset_button"),
         br(),
         dataTableOutput("intersection", width = '100%', height = 'auto'),
-        selectInput("format2", "Download format:",
-                    choices = c('gff', 'fasta-nucl', 'fasta-prot','spreadsheet')),
-        downloadButton("downloadData2", "Download"),
+        uiOutput("blast_intersection_format_selection"),
+        uiOutput("blast_intersection_download_button"),
       )
     ),
     
     server = function(input, output, session) {
+      
+      ###################################################
+      ### ENVIRONMENT ORGANIZATION -- CONDITIONAL UIs ###
+      ###################################################
+      observeEvent(input$blast, {
+        
+        # Blast tabular results
+        output$blast_result_header <- renderUI(h3("Blast results"))
+        output$blast_result_reset_button <- renderUI(actionButton("reset", "Reset row selection"))
+        output$blast_result_format_selection <- renderUI(selectInput("format", "Download format:",
+                                                                     choices = c('tsv', 'csv', 'spreadsheet')))
+        output$blast_result_download_button <- renderUI(downloadButton("downloadData", "Download"))
+        
+        # Blast intersection results
+        output$blast_intersection_header <- renderUI(h3("2. Annotation intersection!"))
+        output$blast_intersection_reset_button <-
+          renderUI(actionButton("reset2", "Reset row selection"))
+        output$blast_intersection_format_selection <-
+          renderUI(selectInput("format2", "Download format:",
+                               choices = c('gff', 'fasta-nucl', 'fasta-prot','spreadsheet')))
+        output$blast_intersection_download_button <-
+          renderUI(downloadButton("downloadData2", "Download"))
+      })
       
       #######################################################
       ### Step 0 - create a watcher for the blast results ###
@@ -119,11 +146,14 @@ genome_blast <- function(genome, nucl, prot, sqldb) {
         ### Step 2 - BLAST the query sequence! ###
         ##########################################
         showModal(modalDialog("Executing your BLAST, please wait!", footer=NULL))
+        outfmt="6 qseqid qstart qend qlen sseqid sstart send slen evalue length pident gaps bitscore"
         rv$data <- read.table(
           text = system(
-            paste0(input$program, " -query ", tmp, " -subject ", subject, " -evalue ", input$eval, " -outfmt 6 ", collapse = ""),
+            paste0(input$program, " -query ", tmp, " -subject ", subject, " -evalue ", input$eval, 
+                   " -outfmt '", outfmt, "'", collapse = ""),
             intern = TRUE
-          ), col.names = c("query_id", "subject_id", "pct_identity", "aln_length", "n_of_mismatches", "gap_openings", "q_start", "q_end", "s_start", "s_end", "e_value", "bit_score"), comment.char = "#")
+          ), col.names = c("query_id", "q_start", "q_end", "q_len", "subject_id", "s_start", "s_end", 
+                           "s_len", "evalue", "aln_length", "pct_identity", "n_of_gaps", "bitscore"), comment.char = "#")
         removeModal()
         
         # Call event
@@ -131,14 +161,39 @@ genome_blast <- function(genome, nucl, prot, sqldb) {
         
       }, ignoreNULL = TRUE)
       
+      #########################################
+      ### Step 3 - Filter the BLAST results ###
+      #########################################
+      final_blast <- reactive({
+        
+        # Require results
+        req(rv$data)
+        
+        # Parse
+        data <- rv$data
+        data[,1] <- as.factor(data[,1])
+        
+        # Calc cov
+        data$q_cov <-
+          (( as.integer(data[, "aln_length"]) - as.integer(data[, "n_of_gaps"]) ) / as.integer(data[, "q_len"])) * 100
+        
+        # Call
+        data %>%
+          as.data.frame() %>%
+          filter(pct_identity >= input$blastID) %>%
+          filter(q_cov >= input$blastCOV) %>%
+          select("query_id", "subject_id", "pct_identity", "aln_length", "n_of_gaps", 
+                 "q_start", "q_end", "q_cov", "s_start", "s_end", "evalue", "bitscore")
+
+      })
+      
       ###################################################
-      ### Step 3 - Print the BLAST results to a table ###
+      ### Step 4 - Print the BLAST results to a table ###
       ###################################################
       output$blastResults <- renderDataTable({
         
-        data <- rv$data
-        data[,1] <- as.factor(data[,1])
-        datatable(data,
+        # Render datatable
+        datatable(final_blast(),
                   rownames = F,
                   selection = 'multiple',
                   filter = 'none',
@@ -153,24 +208,24 @@ genome_blast <- function(genome, nucl, prot, sqldb) {
       })
       
       ###############################################
-      ### Step 4 - Understand users row selection ###
+      ### Step 5 - Understand users row selection ###
       ###############################################
       selectedData <- reactive({
         
         if(length(input$blastResults_rows_selected) > 0) {
           row_count <- input$blastResults_rows_selected
-          data <- rv$data
+          data <- final_blast()
           data <- data[row_count, ]
           data
         } else {
-          data <- rv$data
+          data <- final_blast()
           data
         }
         
       })
       
       ##################################################
-      ### Step 5 - Reset row selection, if necessary ###
+      ### Step 6 - Reset row selection, if necessary ###
       ##################################################
       myProxy = DT::dataTableProxy('blastResults')
       observeEvent(input$reset, {
@@ -178,7 +233,7 @@ genome_blast <- function(genome, nucl, prot, sqldb) {
       })
       
       ##############################################
-      ### Step 6 - Handle BLAST results download ###
+      ### Step 7 - Handle BLAST results download ###
       ##############################################
       output$downloadData <- downloadHandler(
         
@@ -204,7 +259,7 @@ genome_blast <- function(genome, nucl, prot, sqldb) {
       )
       
       ##########################################################################
-      ### Step 7 - Detect intersection between blast hits and the annotation ###
+      ### Step 8 - Detect intersection between blast hits and the annotation ###
       ##########################################################################
       annotation_intersection <- eventReactive(input$blast, {
         

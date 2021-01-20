@@ -88,6 +88,7 @@ The bacannot pipeline automatically produces three reports to summarize the anno
 * [Report of resistance features](reports/report_resistance.html)
 * [Report of virulence features](reports/report_virulence.html)
 * [Report of mobile genetic elements](reports/report_MGEs.html)
+* [Directory of reports of custom database analyses](reports/custom_annotations)
 
 ### JBrowse {#jbrowse}
 
