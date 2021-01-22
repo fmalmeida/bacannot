@@ -1,7 +1,4 @@
-.. Generic Archaeal and Bacterial Annotation (bacannot>`_ pipeline documentation master file, created by
-   sphinx-quickstart on Wed Nov 13 09:34:56 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. Generic Archaeal and Bacterial Annotation (bacannot)>`_
 
 Bacannot - A generic genome annotation pipeline for prokaryotes
 ===============================================================
@@ -17,7 +14,6 @@ It wraps up the following tools and databases:
 * `Nanopolish <https://github.com/jts/nanopolish>`_
 * `RGI <https://github.com/arpcard/rgi>`_
 * `AMRFinderPlus <https://github.com/ncbi/amr/wiki>`_
-* `diamond <https://github.com/bbuchfink/diamond>`_
 * `VFDB <http://www.mgc.ac.cn/VFs/main.htm>`_
 * `Victors <http://www.phidias.us/victors/>`_
 * `ICEberg <http://db-mml.sjtu.edu.cn/ICEberg/>`_
@@ -36,6 +32,8 @@ It wraps up the following tools and databases:
    installation
    manual
    config
+   custom-db
+   samplesheet
    examples
 
 Support Contact
