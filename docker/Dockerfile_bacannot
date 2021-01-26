@@ -23,11 +23,11 @@ RUN conda config --add channels defaults && \
 			conda config --add channels conda-forge && \
 			conda init --all
 
-## Install bedtools and ncbi-blast+
+## Install and ncbi-blast+
 RUN rm -rf /var/lib/apt/lists/* && \
-			wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.10.1/ncbi-blast-2.10.1+-x64-linux.tar.gz && \
-			tar -zxvf ncbi-blast-2.10.1+-x64-linux.tar.gz && \
-			cd ncbi-blast-2.10.1+/bin/ && \
+			wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.11.0/ncbi-blast-2.11.0+-x64-linux.tar.gz
+RUN tar -zxvf ncbi-blast-2.11.0+-x64-linux.tar.gz && \
+			cd ncbi-blast-2.11.0+/bin/ && \
 			ln -rs $(ls) /usr/local/bin/
 
 # INSTALL AMRFinderPlus
@@ -201,7 +201,7 @@ RUN conda create -y -n PLASMIDFINDER && \
 ## Install platon
 RUN mkdir -p /work/platon && \
 			conda create -n PLATON -y -c conda-forge -c bioconda -c defaults platon nomkl &&\
-			wget https://zenodo.org/record/4066768/files/db.tar.gz && \
+			wget -O db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz" && \
 			mv db.tar.gz /work/platon && \
 			conda clean -afy
 
@@ -256,5 +256,5 @@ RUN conda clean -afy \
 			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
 			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
 
-# Set WorkDir
+# Set Workdir
 WORKDIR /work

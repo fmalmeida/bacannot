@@ -5,24 +5,24 @@
     "description": "",
     "type": "object",
     "definitions": {
-        "input_output_options": {
-            "title": "Input/output options",
+        "input_parameters_single_genome_analysis": {
+            "title": "Input parameters (single genome analysis)",
             "type": "object",
             "fa_icon": "fas fa-terminal",
-            "description": "Define where the pipeline should find input data and save output data.",
+            "description": "Input files for single genome analysis",
             "properties": {
-                "outdir": {
-                    "type": "string",
-                    "description": "The output directory where the results will be saved.",
-                    "default": "./results",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "All the results will be stored here."
-                },
                 "genome": {
                     "type": "string",
                     "description": "Input genome for annotation (can't be used with raw reads)",
                     "fa_icon": "fas fa-book",
                     "help_text": "Path to the input query genome to be annotated. Cannot be used with raw reads at the same time."
+                },
+                "prefix": {
+                    "type": "string",
+                    "description": "Output prefix for results",
+                    "help_text": "This sets the prefix to be used when writing results",
+                    "fa_icon": "fas fa-align-left",
+                    "default": "out"
                 },
                 "sreads_single": {
                     "type": "string",
@@ -52,10 +52,41 @@
                         "pacbio"
                     ]
                 }
+            }
+        },
+        "input_parameters_multiple_genome_analysis": {
+            "title": "Input parameters (multiple genome analysis)",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "in_yaml": {
+                    "type": "string",
+                    "description": "Input samplesheet in YAML format",
+                    "help_text": "Used when analysis is to be performed with multiple genomes at once. Is incompatible if the parameters for single genome analysis.",
+                    "fa_icon": "fas fa-align-justify"
+                }
+            },
+            "fa_icon": "fas fa-terminal"
+        },
+        "output_directory": {
+            "title": "Output directory",
+            "type": "object",
+            "description": "Define where to store results",
+            "default": "",
+            "properties": {
+                "outdir": {
+                    "type": "string",
+                    "description": "The output directory where the results will be saved.",
+                    "default": "./results",
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "All the results will be stored here."
+                }
             },
             "required": [
                 "outdir"
-            ]
+            ],
+            "fa_icon": "far fa-folder"
         },
         "nf_tower_options": {
             "title": "NF tower options",
@@ -99,6 +130,12 @@
                     "type": "integer",
                     "default": "2",
                     "description": "Number of threads to be used by each software"
+                },
+                "parallel_jobs": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Number of jobs to run in parallel",
+                    "help_text": "Number of jobs to run in parallel. Be aware that each job (in parallel) can consume\nN threads (set above). Be sure to carefully check your resources before augmenting\nthis parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10\nthreads at once."
                 }
             }
         },
@@ -272,20 +309,48 @@
             "properties": {
                 "nanopolish_fastq": {
                     "type": "string",
-                    "description": "Path to directory containing FAST5 files",
-                    "help_text": "If blank, the process will not be executed!"
-                },
-                "nanopolish_fastq": {
-                    "type": "string",
                     "description": "Path to fastq files (file related to FAST5 files above)",
                     "help_text": "If blank, the process will not be executed!"
+                },
+                "nanopolish_fast5": {
+                    "type": "string",
+                    "description": "Path to directory containing FAST5 files",
+                    "help_text": "Set full path to the directory containing the ONT sequencing FAST5 files"
+                }
+            }
+        },
+        "user_custom_database": {
+            "title": "User custom database",
+            "type": "object",
+            "description": "Set up a custom database for analysis",
+            "default": "",
+            "fa_icon": "fas fa-cog",
+            "properties": {
+                "custom_db": {
+                    "type": "string",
+                    "description": "Path to the nucleotide FASTA",
+                    "help_text": "Path to the (properly formatted) nucleotide FASTA file containing the user's custom database for annotation.\nMultiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,..."
+                },
+                "blast_custom_minid": {
+                    "type": "number",
+                    "description": "Min. identity % for the annotation using user's custom database"
+                },
+                "blast_custom_mincov": {
+                    "type": "number",
+                    "description": "Min. gene/subject coverage % for the annotation using user's custom database"
                 }
             }
         }
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/definitions/input_parameters_single_genome_analysis"
+        },
+        {
+            "$ref": "#/definitions/input_parameters_multiple_genome_analysis"
+        },
+        {
+            "$ref": "#/definitions/output_directory"
         },
         {
             "$ref": "#/definitions/nf_tower_options"
@@ -310,6 +375,9 @@
         },
         {
             "$ref": "#/definitions/configure_optional_methylation"
+        },
+        {
+            "$ref": "#/definitions/user_custom_database"
         }
     ]
 }

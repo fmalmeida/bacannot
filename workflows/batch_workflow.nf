@@ -91,8 +91,7 @@ include { call_methylation } from '../modules/generic/methylation_batch.nf' para
 include { custom_blast } from '../modules/generic/custom_blast_batch.nf' params(outdir: params.outdir,
   threads: params.threads, blast_custom_minid: params.blast_custom_minid, blast_custom_mincov: params.blast_custom_mincov)
 include { custom_blast_report } from '../modules/generic/custom_blast_report.nf' params(outdir: params.outdir,
-    blast_custom_mincov: params.blast_custom_mincov,
-    blast_custom_minid: params.blast_custom_minid)
+    blast_custom_mincov: params.blast_custom_mincov, blast_custom_minid: params.blast_custom_minid)
 
 // Merging annotation in GFF
 include { merge_annotations } from '../modules/generic/merge_annotations.nf' params(outdir: params.outdir)

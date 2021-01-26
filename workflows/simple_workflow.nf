@@ -89,7 +89,9 @@ include { call_methylation } from '../modules/generic/methylation.nf' params(out
 
 // User's custom db annotation
 include { custom_blast } from '../modules/generic/custom_blast.nf' params(outdir: params.outdir,
-  threads: params.threads)
+  threads: params.threads, blast_custom_mincov: params.blast_custom_mincov, blast_custom_minid: params.blast_custom_minid)
+include { custom_blast_report } from '../modules/generic/custom_blast_report.nf' params(outdir: params.outdir,
+    blast_custom_mincov: params.blast_custom_mincov, blast_custom_minid: params.blast_custom_minid)
 
 // Merging annotation in GFF
 include { merge_annotations } from '../modules/generic/merge_annotations.nf' params(outdir: params.outdir)
@@ -279,16 +281,7 @@ workflow bacannot_nf {
       }
 
       /*
-
-          Eighth step -- Perform users custom annotation
-
-      */
-      if (params.custom_db) {
-        custom_blast(prokka.out[3], custom_db)
-      }
-
-      /*
-          Nineth step -- Merge all annotations with the same Prefix value in a single Channel
+          Eighth step -- Merge all annotations with the same Prefix value in a single Channel
       */
       annotations_files = prokka.out[3].join(prokka.out[1])
                                        .join(mlst.out[0])
@@ -321,6 +314,16 @@ workflow bacannot_nf {
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {
         gff_merge(merge_annotations.out[0])
+      }
+
+      /*
+
+          Nineth step -- Perform users custom annotation
+
+      */
+      if (params.custom_db) {
+        custom_blast(merge_annotations.out[0].join(prokka.out[3]), custom_db)
+        custom_blast_report(custom_blast.out[0])
       }
 
       /*

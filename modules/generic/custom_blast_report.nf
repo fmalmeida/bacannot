@@ -1,5 +1,8 @@
 process custom_blast_report {
-  publishDir "${params.outdir}/${prefix}/report_files/custom_databases", mode: 'copy'
+  publishDir "${params.outdir}/${prefix}/report_files/custom_databases", mode: 'copy', saveAs: { filename ->
+    if (filename.indexOf(".html") > 0) "report_${customDB}.html"
+    else "$filename"
+  }
   label 'renv'
   tag "Rendering HTML reports for the custom db annotations"
 
@@ -28,8 +31,5 @@ process custom_blast_report {
     custom_blast = "$custom_blast", \
     blast_db = "${customDB}", \
     blast_gff = "$custom_gff")) ;
-
-  ## Change name
-  mv report_custom_blast.html report_${customDB}.html ;
   """
 }

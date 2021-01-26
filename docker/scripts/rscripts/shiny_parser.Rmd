@@ -1,8 +1,6 @@
 ---
-title: "`r params$query` results"
+title: "The bacannot shiny parser"
 author: "Produced with bacannot"
-params:
-  query: Query
 output:
   bookdown::html_document2:
     df_print: paged
@@ -11,7 +9,7 @@ output:
     self_contained: yes
     theme: readable
     toc: no
-    code_folding: "show"
+    #code_folding: "show"
 runtime: shiny
 ---
 
@@ -28,6 +26,10 @@ suppressMessages(library(DT))
 suppressMessages(library(openxlsx))
 suppressMessages(library(glue))
 source("shiny_parser_func.R")
+
+# Check query name
+query_name <-
+  strsplit(basename(Sys.glob(file.path("/work/annotation/*.fna"))), split = ".fna")[[1]]
 
 # Add directory of static resources to Shiny's web server
 addResourcePath(prefix = "jbrowse", directoryPath = "/work/jbrowse/")
@@ -69,7 +71,7 @@ div.container {
 }
 ```
 
-# The bacannot shiny parser {.tabset .tabset-pills}
+# Parsing annotation results of: _`r query_name`_ query genome {.tabset .tabset-pills}
 
 ## About
 
@@ -88,7 +90,7 @@ The bacannot pipeline automatically produces three reports to summarize the anno
 * [Report of resistance features](reports/report_resistance.html)
 * [Report of virulence features](reports/report_virulence.html)
 * [Report of mobile genetic elements](reports/report_MGEs.html)
-* [Directory of reports of custom database analyses](reports/custom_annotations)
+* [Directory of reports of custom database analyses](reports/custom_annotations/)
 
 ### JBrowse {#jbrowse}
 

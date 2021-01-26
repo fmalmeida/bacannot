@@ -87,15 +87,15 @@ def helpMessage() {
 
     --blast_virulence_minid                        Min. identity % for virulence annotation. Default 90.
 
-    --blast_virulence_mincov                       Min. gene coverage for virulence annotation. Default 80.
+    --blast_virulence_mincov                       Min. gene/subject coverage for virulence annotation. Default 80.
 
     --blast_resistance_minid                       Min. identity % for resistance annotation. Default 90.
 
-    --blast_resistance_mincov                      Min. gene coverage for resistance annotation. Default 80.
+    --blast_resistance_mincov                      Min. gene/subject coverage for resistance annotation. Default 80.
 
     --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation. Default 65.
 
-    --blast_MGEs_mincov                            Min. gene coverage for ICEs and prophage annotation. Default 65.
+    --blast_MGEs_mincov                            Min. gene/subject coverage for ICEs and prophage annotation. Default 65.
 
     --plasmids_minid                               Min. identity % for plasmid detection. Default 90.
 
