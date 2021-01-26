@@ -6,7 +6,7 @@ Manual
 Input
 """""
 
-Users can perform the annotation analysis using wither raw reads or assembled genomes as input. When raw reads are used, Unicycler is used to create
+Users can perform the annotation analysis using either raw reads or assembled genomes as input. When raw reads are used, Unicycler is used to create
 shortreads-only and hybrid assemblies while Flye is used to create longreads-only assemblies the annotation process.
 
 * path to genome fasta file **OR** to raw reads.
@@ -15,16 +15,8 @@ shortreads-only and hybrid assemblies while Flye is used to create longreads-onl
 
 .. note::
 
-  Users can analyse more than one genome at once by using glob patterns such as "\*.fasta".
-  However, this is **completely incompatible** with the use of FAST5 information for
-  methylation calling in these cases users must analyse **one** sample at a time.
-
-.. note::
-
-  Users can analyse more than one sample from raw reads once by using glob patterns such as "\*\_sreads\_{1,2}.fastq".
-  However this is **completely incompatible** with the combination of different raw read types such as paired shortreads,
-  unpaired shortreads and/or longreads. When combining different sequencing libraries users must analyse **one** sample at a time.
-  This is also true for the methylation calling information as said above.
+  Users can analyse more than one genome at once by configuring a samplesheet and
+  giving it as input with the ``--in_yaml`` parameter. See :ref:`samplesheet`.
 
 .. note::
 
@@ -158,32 +150,32 @@ Parameters manual
      - NA
      - Activate the resfinder annotation process using the give species panel. Check them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
-   * - ``--not_run_virulence_search``
+   * - ``--skip_virulence_search``
      - N
      - False
      - Tells whether not to run virulence factors annotation. It skips both vfdb and victors annotation
 
-   * - ``--not_run_plasmid_search``
+   * - ``--skip_plasmid_search``
      - N
      - False
      - Tells whether not to run plasmid detection with Plasmidfinder
 
-   * - ``--not_run_resistance_search``
+   * - ``--skip_resistance_search``
      - N
      - False
      - Tells whether not to run resistance genes annotation. It skips AMRFinderPlus and RGI annotation
 
-   * - ``--not_run_iceberg_search``
+   * - ``--skip_iceberg_search``
      - N
      - False
      - Tells whether not to run mobile genetic elements annotation with ICEberg
 
-   * - ``--not_run_prophage_search``
+   * - ``--skip_prophage_search``
      - N
      - False
      - Tells whether not to run prophage annotation with PHAST and Phigaro
 
-   * - ``--not_run_kofamscan``
+   * - ``--skip_kofamscan``
      - N
      - False
      - Tells whether not to run KEGG orthology (KO) annotation with KofamScan
