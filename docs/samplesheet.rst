@@ -51,12 +51,31 @@ File tags
 File tags are the tags that are used to represent/set the input files that shall be used for each sample that
 will be analysed. The available file tags are:
 
-* ``assembly``  -- Used to set path to genomic FASTA of an assembled bacterial genome
-* ``illumina``  -- Used to set path to illumina raw reads (paired, unpaired or both)
-* ``pacbio``    -- Used to set path to pacbio raw reads (mutually excludable with ``nanopore``)
-* ``nanopore``  -- Used to set path to nanopore raw reads (mutually excludable with ``pacbio``)
-* ``fast5``     -- Used to set path to nanopore raw FAST5 data (used in conjunction with ``nanopore`` for calling methylation with Nanopolish)
-* ``resfinder`` -- Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in their manual/web tool)
+.. list-table::
+   :widths: 20 50
+   :header-rows: 1
+
+   * - File tags
+     - Description
+
+   * - ``assembly``
+     - Used to set path to genomic FASTA of an assembled bacterial genome
+
+   * - ``illumina``
+     - Used to set path to illumina raw reads (paired, unpaired or both)
+
+   * - ``pacbio``
+     - Used to set path to pacbio raw reads (mutually excludable with ``nanopore``)
+
+   * - ``nanopore``
+     - Used to set path to nanopore raw reads (mutually excludable with ``pacbio``)
+
+   * - ``fast5``
+     - Used to set path to nanopore raw FAST5 data (used in conjunction with ``nanopore`` for calling methylation with Nanopolish)
+
+   * - ``resfinder``
+     - Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in their manual/web tool)
+
 
 .. note::
 
