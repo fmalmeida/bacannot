@@ -17,7 +17,7 @@ process flye {
 
   script:
   lr = (params.lreads_type == 'nanopore') ? '--nano-raw' : '--pacbio-raw'
-  prefix = params.lreads_type
+  prefix = params.prefix
   """
   source activate flye ;
 

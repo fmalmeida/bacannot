@@ -51,6 +51,7 @@ samplesheet:
     resfinder: Escherichia coli
   - id: sample_2
     assembly: sample_2/assembly.fasta
+    nanopore: sample_2/ont.fastq
     fast5: sample_2/fast5_pass
     resfinder: Klebsiella
   - id: sample_3

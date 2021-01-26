@@ -45,6 +45,26 @@ be used by the pipeline:
       ...:
       ...:
 
+File tags
+"""""""""
+
+File tags are the tags that are used to represent/set the input files that shall be used for each sample that
+will be analysed. The available file tags are:
+
+* ``assembly``  -- Used to set path to genomic FASTA of an assembled bacterial genome
+* ``illumina``  -- Used to set path to illumina raw reads (paired, unpaired or both)
+* ``pacbio``    -- Used to set path to pacbio raw reads (mutually excludable with ``nanopore``)
+* ``nanopore``  -- Used to set path to nanopore raw reads (mutually excludable with ``pacbio``)
+* ``fast5``     -- Used to set path to nanopore raw FAST5 data (used in conjunction with ``nanopore`` for calling methylation with Nanopolish)
+* ``resfinder`` -- Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in their manual/web tool)
+
+.. note::
+
+  The illumina tag is the only one that **must** be set in indented newlines (one line per read) as shown in the complete samplesheet example. The order
+  of the reads in these newlines must be Pair1; Pair2; Unpaired (Whenever they are used) -- Check samples 1, 4 and 5 to understand.
+
+  All the other file tags **must** be set in the same line, right after the separator (":"), without quotations.
+
 Complete samplesheet example
 """"""""""""""""""""""""""""
 
@@ -59,6 +79,7 @@ Complete samplesheet example
       resfinder: Escherichia coli
     - id: sample_2
       assembly: sample_2/assembly.fasta
+      nanopore: sample_2/ont.fastq
       fast5: sample_2/fast5_pass
       resfinder: Klebsiella
     - id: sample_3
