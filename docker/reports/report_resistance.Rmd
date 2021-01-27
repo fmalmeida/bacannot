@@ -16,7 +16,7 @@ params:
   resfinder_pointfinder:
   resfinder_phenotype:
 output:
-  bookdown::html_document2: 
+  bookdown::html_document2:
     css: styles.css
     df_print: paged
     number_sections: false
@@ -63,29 +63,29 @@ getAttributeField <- function (x, field, attrsep = ";") {
 }
 
 amrfinder_url <- function (x) {
-  
+
   id  <- x
   url <- ifelse(!is.na(x), paste0("https://www.ncbi.nlm.nih.gov/gene/?term=", x), paste0("No Reference"))
   url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
-    
+
   return(url)
 }
 
 resfinder_url <- function (x) {
-  
+
   id  <- x
   url <- ifelse(!is.na(x), paste0("https://www.ncbi.nlm.nih.gov/nuccore/?term=", x), paste0("No Reference"))
   url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
-    
+
   return(url)
 }
 
 card_url <- function (x) {
-  
+
   id  <- x
   url <- ifelse(!is.na(x), paste0("https://card.mcmaster.ca/ontology/", x), paste0("No Reference"))
   url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
-    
+
   return(url)
 }
 
@@ -105,15 +105,16 @@ gff$Prokka_ID <- getAttributeField(gff$attributes, "ID", ";")
 
 # Amrfinder
 amrtsv <- try(read.delim(params$amrfinder) %>% select(2,3,4,5,6,7,8,9,10,16), silent = TRUE)
+amrtsv[is.na(amrtsv)] <- "none"
 
 # Resfinder
 resfinder_tab <- try(read.delim(params$resfinder_tab), silent = T)
 resfinder_point <- try(read.delim(params$resfinder_pointfinder), silent = T)
 resfinder_pheno <- try(
   read.delim(params$resfinder_phenotype,
-             comment.char = "#", header = F, 
+             comment.char = "#", header = F,
              col.names = c("Antibiotic", "Drug Class", "Phenotype", "N. genes", "Genetic background")), silent = T)
-  
+
 
 # RGI
 rgi_tsv <- try(read.delim(params$rgitool, header = TRUE), silent = TRUE)
@@ -128,7 +129,7 @@ argminer_blastp <- try(read.delim(params$argminer_blastp, header = TRUE), silent
 #########################################
 
 # Check if NCBI is empty
-if (class(amrtsv) != 'try-error' & 
+if (class(amrtsv) != 'try-error' &
     check_lines(amrtsv) > 0) {
   amrFinder_not_null <- TRUE
   amrFinder_null <- FALSE
@@ -138,7 +139,7 @@ if (class(amrtsv) != 'try-error' &
 }
 
 # Check if Resfinder is empty
-if (class(resfinder_tab) != 'try-error' & 
+if (class(resfinder_tab) != 'try-error' &
     check_lines(resfinder_tab) > 0) {
   resfinder_not_null <- TRUE
   resfinder_null <- FALSE
@@ -148,7 +149,7 @@ if (class(resfinder_tab) != 'try-error' &
 }
 
 # Check if ARGminer is empty
-if (class(argminer_blastp) != 'try-error' & 
+if (class(argminer_blastp) != 'try-error' &
     check_lines(argminer_blastp) > 0) {
   argminer_not_null <- TRUE
   argminer_null <- FALSE
@@ -158,7 +159,7 @@ if (class(argminer_blastp) != 'try-error' &
 }
 
 # Check if RGI is empty
-if (class(rgi_tsv) != 'try-error' & 
+if (class(rgi_tsv) != 'try-error' &
     check_lines(rgi_tsv) > 0) {
   rgi_not_null <- TRUE
   rgi_null <- FALSE
