@@ -18,6 +18,10 @@ Sequence header format
 Sequence headers must follow a 5-field rule separated by "~~~" and spaces. The first 4 fields must be separated by "~~~" and the last one by one space, following the
 example shown below:
 
+.. warning::
+
+  Except for the Description field, the first four (DB name, gene name, gene reference and gene product) must be written **whithou** whitespaces.
+
 .. code-block:: bash
 
     # Sequence header

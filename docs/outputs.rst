@@ -1,0 +1,4 @@
+.. _outputs:
+
+Outputs overview
+================
