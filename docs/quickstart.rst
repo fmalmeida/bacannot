@@ -42,3 +42,31 @@ This command shall write the results under the ``_ANNOTATION`` directory.
 
 Directory tree
 """"""""""""""
+
+After a successful execution, you will have something like this:
+
+.. code-block:: bash
+
+    # Directory tree from the running dir
+    .
+    ├── _ANNOTATION
+    │   └── ecoli
+    │       ├── ICEs
+    │       ├── KOfamscan
+    │       ├── MLST
+    │       ├── annotation
+    │       ├── assembly
+    │       ├── gbk
+    │       ├── genomic_islands
+    │       ├── gffs
+    │       ├── jbrowse
+    │       ├── plasmids
+    │       ├── prophages
+    │       ├── rRNA
+    │       ├── report_files
+    │       ├── resistance
+    │       ├── sqldb
+    │       ├── tools_versioning
+    │       ├── virulence
+    │       └── run_server.sh
+    └── oxford.fasta
