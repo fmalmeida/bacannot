@@ -35,6 +35,7 @@ It wraps up the following tools and databases:
    :hidden:
 
    installation
+   quickstart
    manual
    config
    custom-db
