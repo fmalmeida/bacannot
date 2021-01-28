@@ -51,7 +51,7 @@ After a successful execution, you will have something like this:
     .
     ├── _ANNOTATION
     │   └── ecoli
-    │       ├── ICEs                                            # Results from ICEberg database _ANNOTATION
+    │       ├── ICEs                                            # Results from ICEberg database annotation
     │       ├── KOfamscan                                       # Results from annotation with KEGG database
     │       ├── MLST                                            # MLST results with mlst pipeline
     │       ├── annotation                                      # Prokka annotation files
@@ -73,3 +73,20 @@ After a successful execution, you will have something like this:
 
 Bacannot shiny parser
 """""""""""""""""""""
+
+The bacannot shiny server is wrapped up in a docker image called `fmalmeida/bacannot:server`. This server is triggered by going under the results folder, in our quickstart case,
+the `_ANNOTATION/ecoli` folder, and run the command:
+
+.. code-block:: bash
+
+  # Trigger the server
+  ./run_server.sh -s
+
+  # This will open the pipeline in localhost:3838
+  # log message:
+  The server has started in: http://localhost:3838/
+  When finished, run the command:
+	       docker rm -f {docker container id}
+
+  # To stop the server you just need to execute
+  docker rm -f {docker container id}
