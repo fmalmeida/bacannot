@@ -3,7 +3,7 @@
 Quickstart
 ==========
 
-For a rapid and complete quickstart we will use as input the nanopore raw reads provided in the `Canu quickstart section <https://canu.readthedocs.io/en/latest/quick-start.html#assembling-pacbio-clr-or-nanopore-data>`_.
+For a rapid and simple quickstart we will use as input the nanopore raw reads provided in the `Canu quickstart section <https://canu.readthedocs.io/en/latest/quick-start.html#assembling-pacbio-clr-or-nanopore-data>`_.
 
 Download the data
 -----------------
@@ -51,22 +51,25 @@ After a successful execution, you will have something like this:
     .
     ├── _ANNOTATION
     │   └── ecoli
-    │       ├── ICEs
-    │       ├── KOfamscan
-    │       ├── MLST
-    │       ├── annotation
-    │       ├── assembly
-    │       ├── gbk
-    │       ├── genomic_islands
-    │       ├── gffs
-    │       ├── jbrowse
-    │       ├── plasmids
-    │       ├── prophages
-    │       ├── rRNA
-    │       ├── report_files
-    │       ├── resistance
-    │       ├── sqldb
-    │       ├── tools_versioning
-    │       ├── virulence
-    │       └── run_server.sh
+    │       ├── ICEs                                            # Results from ICEberg database _ANNOTATION
+    │       ├── KOfamscan                                       # Results from annotation with KEGG database
+    │       ├── MLST                                            # MLST results with mlst pipeline
+    │       ├── annotation                                      # Prokka annotation files
+    │       ├── assembly                                        # Assembly files (when raw reads are given)
+    │       ├── gbk                                             # Gbk file produced from the resulting GFF
+    │       ├── genomic_islands                                 # Genomic Islands predicted with IslandPath-DIMOB
+    │       ├── gffs                                            # A copy of the main GFF files produced during the annotation
+    │       ├── jbrowse                                         # The files that set up the JBrowse genome browser
+    │       ├── plasmids                                        # Plasmid annotation results from Platon and Plasmidfinder
+    │       ├── prophages                                       # Prophage annotation results from PhiSpy, Phigaro and PHAST
+    │       ├── rRNA                                            # barrnap annotation results
+    │       ├── report_files                                    # Annotation reports in HTML format
+    │       ├── resistance                                      # AMR annotation results from ARGminer, AMRFinderPlus, RGI and Resfinder
+    │       ├── sqldb                                           # The sqlDB of the annotation used by the shiny server for rapid parsing
+    │       ├── tools_versioning                                # Versions of tools and databases used (whenever available)
+    │       ├── virulence                                       # Virulence genes annotation results from Victors and VFDB databases
+    │       └── run_server.sh                                   # The shiny parser runner that enables a rapid and simple exploration of the results (see below)
     └── oxford.fasta
+
+Bacannot shiny parser
+"""""""""""""""""""""

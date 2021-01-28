@@ -20,7 +20,7 @@ example shown below:
 
 .. warning::
 
-  Except for the Description field, the first four (DB name, gene name, gene reference and gene product) must be written **whithou** whitespaces.
+  Except for the Description field, the first four (DB name, gene name, gene reference and gene product) must be written **whithout** whitespaces.
 
 .. code-block:: bash
 
