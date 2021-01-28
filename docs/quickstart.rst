@@ -74,8 +74,8 @@ After a successful execution, you will have something like this:
 Bacannot shiny parser
 """""""""""""""""""""
 
-The bacannot shiny server is wrapped up in a docker image called `fmalmeida/bacannot:server`. This server is triggered by going under the results folder, in our quickstart case,
-the `_ANNOTATION/ecoli` folder, and run the command:
+The bacannot shiny server is wrapped up in a docker image called ``fmalmeida/bacannot:server``. This server is triggered by going under the results folder, in our quickstart case,
+the ``_ANNOTATION/ecoli`` folder, and run the command:
 
 .. code-block:: bash
 
