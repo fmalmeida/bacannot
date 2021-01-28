@@ -41,7 +41,7 @@ This command shall write the results under the ``_ANNOTATION`` directory.
   use this folder as input, and enable the user to rapidly compare the results between the samples under the same ``--outdir`` folder.
 
 Directory tree
-""""""""""""""
+^^^^^^^^^^^^^^
 
 After a successful execution, you will have something like this:
 
@@ -72,10 +72,10 @@ After a successful execution, you will have something like this:
     └── oxford.fasta
 
 Bacannot shiny parser
-"""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^
 
-The bacannot shiny server is wrapped up in a docker image called ``fmalmeida/bacannot:server``. This server is triggered by going under the results folder, in our quickstart case,
-the ``_ANNOTATION/ecoli`` folder, and run the command:
+The bacannot shiny server is basically a wrapper of the main outputs of the pipeline that is packed up in a docker image called ``fmalmeida/bacannot:server``.
+This server is triggered by going under the results folder, in our quickstart case, the ``_ANNOTATION/ecoli`` folder, and run the command:
 
 .. code-block:: bash
 
@@ -90,3 +90,16 @@ the ``_ANNOTATION/ecoli`` folder, and run the command:
 
   # To stop the server you just need to execute
   docker rm -f {docker container id}
+
+Server homepage
+"""""""""""""""
+
+In the first page it has indexed as url links the main HTML reports and the JBrowse genome browser (Figure 1).
+
+.. image:: images/bacannot_server_home.png
+  :width: 400
+  :alt: Alternative text
+
+1. In the second page, the sqlDB is used to provide a rapid and simple way to query and filter the genome annotation (Figure 2).
+2. In the last page, the server provides a simple way to BLAST the genome with new gene queries and to automatically identify intersections
+between the blast results and the the main annotation (Figure 3).
