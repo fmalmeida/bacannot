@@ -94,12 +94,28 @@ This server is triggered by going under the results folder, in our quickstart ca
 Server homepage
 """""""""""""""
 
-In the first page it has indexed as url links the main HTML reports and the JBrowse genome browser (Figure 1).
+In the first page it has indexed as url links the main HTML reports and the JBrowse genome browser.
 
 .. image:: images/bacannot_server_home.png
-  :width: 400
-  :alt: Alternative text
+  :width: 800
+  :align: center
 
-1. In the second page, the sqlDB is used to provide a rapid and simple way to query and filter the genome annotation (Figure 2).
-2. In the last page, the server provides a simple way to BLAST the genome with new gene queries and to automatically identify intersections
-between the blast results and the the main annotation (Figure 3).
+Server sqlDB parser
+"""""""""""""""""""
+
+In the second page, the sqlDB is used to provide a rapid and simple way to query and filter the genome annotation.
+
+.. image:: images/bacannot_server_sqldb.png
+  :width: 800
+  :align: center
+
+
+Server BLAST app
+""""""""""""""""
+
+In the last page, the server provides a simple way to BLAST the genome with new gene queries and to automatically identify intersections
+between the blast results and the the main annotation.
+
+.. image:: images/bacannot_server_blast.png
+  :width: 800
+  :align: center
