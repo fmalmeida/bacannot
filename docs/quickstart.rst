@@ -105,6 +105,16 @@ Server sqlDB parser
 
 In the second page, the sqlDB is used to provide a rapid and simple way to query and filter the genome annotation.
 
+.. note::
+
+  The sqlDB parser contains a set of features that enables that the users filter the annotation following their desires. It is possible
+  to filter based on the ``contigs``, ``sources``, ``start``, ``end``, ``strand``and more.
+
+  Additionally, the parser accepts as input a file of patterns to filter the annotation based on the values available in the attributes
+  column of the GFF (9th column). Any value available in this column can be used as filters, the only requirement is to write each pattern
+  in one line, exactly as it is found in the annotation result. For example, it can be used to select only a few genes based on their IDs.
+
+
 .. image:: images/bacannot_server_sqldb.png
   :width: 800
   :align: center
