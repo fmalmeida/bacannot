@@ -108,7 +108,7 @@ In the second page, the sqlDB is used to provide a rapid and simple way to query
 .. note::
 
   The sqlDB parser contains a set of features that enables that the users filter the annotation following their desires. It is possible
-  to filter based on the ``contigs``, ``sources``, ``start``, ``end``, ``strand``and more.
+  to filter based on the ``contigs``, ``sources``, ``start``, ``end``, ``strand`` and more.
 
   Additionally, the parser accepts as input a file of patterns to filter the annotation based on the values available in the attributes
   column of the GFF (9th column). Any value available in this column can be used as filters, the only requirement is to write each pattern
