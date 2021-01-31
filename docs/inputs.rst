@@ -29,7 +29,7 @@ The pipeline accepts as input two other input files types that are used to perfo
 
 * path to custom **nucleotide** databases as described in :ref:`custom-db`
 
-   * This custom databases will be used to perform additional annatation processes using BLASTn
+   * These custom databases will be used to perform additional annatation processes using BLASTn
 
 .. note::
 
