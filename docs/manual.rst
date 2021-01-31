@@ -11,8 +11,8 @@ Manual
 Parameters description
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Input files
-"""""""""""
+Input files (single genome analysis)
+""""""""""""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 20 10 20 50
@@ -27,6 +27,11 @@ Input files
      - Y (if raw reads are not used)
      - NA
      - Genome(s) to be annotated in FASTA file. Mutually exclusively with the use of raw reads.
+
+   * - ``--prefix``
+     - Y
+     - out
+     - This sets the prefix to be used when writing results
 
    * - ``--sreads_single``
      - N (Y if assembled genome is not used)
@@ -47,6 +52,40 @@ Input files
      - N (Y if longreads are used)
      - NA
      - Longreads is used? If so, from which tech it is? Options: [ 'nanopore' or 'pacbio' ]
+
+Input files (multiple genome analysis)
+""""""""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 20 10 20 50
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--in_yaml``
+     - Y
+     - NA
+     - Input samplesheet in YAML format. Used when analysis is to be performed with multiple genomes at once. Is incompatible if the parameters for single genome analysis.
+
+Output directory
+""""""""""""""""
+
+.. list-table::
+   :widths: 20 10 20 50
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--outdir``
+     - Y
+     - output
+     - Name of directory to store output values. An sub-directory for each genome will be created inside this main directory.
 
 Nextflow tower
 """"""""""""""
@@ -81,11 +120,6 @@ Other (Fix)
      - Required
      - Default value
      - Description
-
-   * - ``--outdir``
-     - Y
-     - output
-     - Name of directory to store output values
 
    * - ``--threads``
      - N
