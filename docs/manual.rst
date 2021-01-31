@@ -14,8 +14,13 @@ Parameters description
 Input files (single genome analysis)
 """"""""""""""""""""""""""""""""""""
 
+.. note::
+
+  These parameters must only be used when annotation a single genome. If running the pipeline with more than 1 input
+  genomes users must set them in the samplesheet YAML file as described in :ref:`samplesheet`.
+
 .. list-table::
-   :widths: 20 10 20 50
+   :widths: 20 10 20 30
    :header-rows: 1
 
    * - Arguments
@@ -57,7 +62,7 @@ Input files (multiple genome analysis)
 """"""""""""""""""""""""""""""""""""""
 
 .. list-table::
-   :widths: 20 10 20 50
+   :widths: 20 10 20 30
    :header-rows: 1
 
    * - Arguments
@@ -74,7 +79,7 @@ Output directory
 """"""""""""""""
 
 .. list-table::
-   :widths: 20 10 20 50
+   :widths: 20 10 20 30
    :header-rows: 1
 
    * - Arguments
@@ -91,7 +96,7 @@ Nextflow tower
 """"""""""""""
 
 .. list-table::
-   :widths: 20 10 20 50
+   :widths: 20 10 20 30
    :header-rows: 1
 
    * - Arguments
@@ -109,11 +114,11 @@ Nextflow tower
      - NA
      - Your nextflow tower token. Used to launch the pipeline in your nextflow tower account
 
-Other (Fix)
-"""""""""""
+Max job request
+"""""""""""""""
 
 .. list-table::
-   :widths: 20 10 20 50
+   :widths: 20 10 20 30
    :header-rows: 1
 
    * - Arguments
@@ -126,10 +131,22 @@ Other (Fix)
      - 2
      - Number of threads to use
 
-   * - ``--bedtools_merge_distance``
+   * - ``--parallel_jobs``
      - N
-     - 0
-     - Minimum number of required overlapping bases to merge genes
+     - 1
+     - Number of jobs to run in parallel. Each job can consume up to N threads (``--threads``)
+
+Prokka annotation
+"""""""""""""""""
+
+.. list-table::
+   :widths: 20 10 20 30
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
 
    * - ``--prokka_kingdom``
      - N
@@ -145,6 +162,45 @@ Other (Fix)
      - N
      - False
      - Tells Prokka whether to use rnammer instead of barrnap
+
+Resfinder annotation
+""""""""""""""""""""
+
+.. note::
+
+  This parameter must only be used when annotation a single genome. If running the pipeline with more than 1 input
+  genomes users must set it in the samplesheet YAML file as described in :ref:`samplesheet`.
+
+.. list-table::
+   :widths: 20 10 20 30
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--resfinder_species``
+     - N
+     - NA
+     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. \nCheck them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
+
+Other (Fix)
+"""""""""""
+
+.. list-table::
+   :widths: 20 10 20 30
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--bedtools_merge_distance``
+     - N
+     - 0
+     - Minimum number of required overlapping bases to merge genes
 
    * - ``--blast_virulence_minid``
      - N
@@ -185,11 +241,6 @@ Other (Fix)
      - N
      - 85
      - Coverage (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
-
-   * - ``--resfinder_species``
-     - N
-     - NA
-     - Activate the resfinder annotation process using the give species panel. Check them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
    * - ``--skip_virulence_search``
      - N
