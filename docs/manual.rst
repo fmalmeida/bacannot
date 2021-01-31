@@ -184,7 +184,7 @@ Resfinder annotation
    * - ``--resfinder_species``
      - N
      - NA
-     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. \nCheck them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
+     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. \\nCheck them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
 Other (Fix)
 """""""""""

@@ -9,7 +9,7 @@ command wrote the results under the ``_ANNOTATION`` directory.
 .. note::
 
   Please take note that the pipeline uses the directory set with the ``--outdir`` parameter as a storage place in which it will create a folder named as the
-  ``--prefix`` parameter. This ``{prefix}`` folder will contain all the results. Therefore the the same ``--outdir`` can be used for different runs/genomes
+  ``--prefix`` parameter. This ``{prefix}`` folder will contain all the results. Therefore the the same ``--outdir`` can be used for different runs|genomes
   as each one of them will have a different sub-folder. This is useful and required for the genomic comparative pipeline (that is under construction) that will
   use this folder as input, and enable the user to rapidly compare the results between the samples under the same ``--outdir`` folder.
 
@@ -48,7 +48,7 @@ Bacannot shiny parser
 ---------------------
 
 The bacannot shiny server is basically a wrapper of the main outputs of the pipeline that is packed up in a docker image called ``fmalmeida/bacannot:server``.
-This server is triggered by going under the results folder, in our quickstart case, the ``_ANNOTATION/ecoli`` folder, and run the command:
+This server is triggered by going under the results folder, in our quickstart case, the ``_ANNOTATION/ecoli`` folder, and executing the command:
 
 .. code-block:: bash
 

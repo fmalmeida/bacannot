@@ -75,7 +75,7 @@ Bacannot shiny parser
 ^^^^^^^^^^^^^^^^^^^^^
 
 The bacannot shiny server is basically a wrapper of the main outputs of the pipeline that is packed up in a docker image called ``fmalmeida/bacannot:server``.
-This server is triggered by going under the results folder, in our quickstart case, the ``_ANNOTATION/ecoli`` folder, and run the command:
+This server is triggered by going under the results folder, in our quickstart case, the ``_ANNOTATION/ecoli`` folder, and executing the command:
 
 .. code-block:: bash
 
