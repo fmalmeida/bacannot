@@ -16,7 +16,7 @@ Input files (single genome analysis)
 
 .. note::
 
-  These parameters must only be used when annotation a single genome. If running the pipeline with more than 1 input
+  These parameters must only be used when annotating a single genome. If running the pipeline with more than 1 input
   genomes users must set them in the samplesheet YAML file as described in :ref:`samplesheet`.
 
 .. list-table::
@@ -56,7 +56,7 @@ Input files (single genome analysis)
    * - ``--lreads_type``
      - N (Y if longreads are used)
      - NA
-     - Longreads is used? If so, from which tech it is? Options: [ 'nanopore' or 'pacbio' ]
+     - Longreads are used? If so, from which technology it is? Options: [ 'nanopore' or 'pacbio' ]
 
 Input files (multiple genome analysis)
 """"""""""""""""""""""""""""""""""""""
@@ -73,7 +73,8 @@ Input files (multiple genome analysis)
    * - ``--in_yaml``
      - Y
      - NA
-     - Input samplesheet in YAML format. Used when analysis is to be performed with multiple genomes at once. Is incompatible if the parameters for single genome analysis.
+     - Input samplesheet in YAML format. Used when analysis is to be performed with multiple genomes at once.
+       It is incompatible with the parameters for single genome analysis.
 
 Output directory
 """"""""""""""""
@@ -90,7 +91,8 @@ Output directory
    * - ``--outdir``
      - Y
      - output
-     - Name of directory to store output values. An sub-directory for each genome will be created inside this main directory.
+     - Name of directory to store output values. A sub-directory for each
+       genome will be created inside this main directory.
 
 Nextflow tower
 """"""""""""""
@@ -168,7 +170,7 @@ Resfinder annotation
 
 .. note::
 
-  This parameter must only be used when annotation a single genome. If running the pipeline with more than 1 input
+  This parameter must only be used when annotating a single genome. If running the pipeline with more than 1 input
   genomes users must set it in the samplesheet YAML file as described in :ref:`samplesheet`.
 
 .. list-table::
