@@ -36,7 +36,7 @@ It wraps up the following tools and databases:
 
    installation
    quickstart
-   input
+   inputs
    manual
    config
    custom-db

@@ -22,14 +22,20 @@ Default configuration:
 
   */
   params {
-            /*
-             * General parameters
-             */
+
+      /*
+
+              SINGLE GENOME ANALYSIS
+
+      */
+
+  // Prefix for writing genome assembly and annotatin resulting files
+  // Preferentially the sample name
+    prefix = 'out'
 
   // The input file formats are mutually exclusive. Users must choose between giving an
   // assembled genome or raw reads to the pipeline.
-  // Input genome -- Always in FASTA format. Users can annotate more than one genome
-  // at once by using glob patters, such as "*.fasta"
+  // Input genome -- Always in FASTA format.
     genome = ''
 
   // Input raw reads -- Always in FASTQ format. When using raw reads, the fmalmeida/mpgap
@@ -46,6 +52,37 @@ Default configuration:
     lreads = '' // Path to longreads (ONT or Pacbio), if available for the sample
     lreads_type = '' // Longreads is used? If so, from which tech it is? Options: [ nanopore or pacbio ]
 
+  // Species panel to be used when annotating with Resfinder. If blank,
+  // it will not be executed. Must be identical (without the *) as written
+  // in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
+    resfinder_species = ''
+
+  // Configure optional Methylation annotation with nanopolish
+  // If left blank, it will not be executed. When both parameters are set
+  // it will automatically execute nanopolish to call methylation
+
+    nanopolish_fastq = ''   // Path to directory containing FAST5 files
+    nanopolish_fast5 = '' // Path to fastq files (file related to FAST5 files above)
+
+      /*
+
+              MULTIPLE GENOME ANALYSIS
+
+      */
+
+  // When analysing multiple genomes at once, all the parameters described above, must be, whenever
+  // necessary and applicable to your data, set inside a samplesheet file in YAML format. We provide
+  // an well-formated example of this YAML file at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
+  //
+  // Please read the example YAML samplesheet so you can understand how to properly fill it.
+    in_yaml = ''
+
+      /*
+
+              GENERAL PARAMETERS -- FOR BOTH SINGLE AND MULTIPLE GENOME WORKFLOWS
+
+       */
+
   // Main output folder name. More than one bacannot annotation can be redirected
   // to the same output parameter. It is good to keep related annotations together.
   // A subdirectory with the filename will be created inside this directory.
@@ -53,6 +90,12 @@ Default configuration:
 
   // Number of threads to be used by each software
     threads = 2
+
+  // Number of jobs to run in parallel. Be aware that each job (in parallel) can consume
+  // N threads (set above). Be sure to carefully check your resources before augmenting
+  // this parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10
+  // threads at once.
+    parallel_jobs = 1
 
   // Number of minimum overlapping base pairs required for merging
   // Negative values, such as -20, means the number of required overlapping bases for merging.
@@ -82,15 +125,6 @@ Default configuration:
     prokka_use_rnammer = false
 
             /*
-             * Resfinder optional parameter
-             */
-
-  // Species panel to be used when annotating with Resfinder. If blank,
-  // it will not be executed. Must be identical (without the *) as written
-  // in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
-    resfinder_species = ''
-
-            /*
              * Handling the execution of processes
              *
              * By default, all processes are executed. These
@@ -101,22 +135,22 @@ Default configuration:
 
   */
   // (NOT RUN?) Plasmids annotation (controls PlasmidFinder execution)
-    not_run_plasmid_search = false
+    skip_plasmid_search = false
 
   // (NOT RUN?) General Virulence annotation (controls VFDB and Victors scan)
-    not_run_virulence_search = false
+    skip_virulence_search = false
 
   // (NOT RUN?) Resistance annotation (controls AMRfinder and RGI)
-    not_run_resistance_search = false
+    skip_resistance_search = false
 
   // (NOT RUN?) ICE annotation (controls ICEberg annotation)
-    not_run_iceberg_search = false
+    skip_iceberg_search = false
 
   // (NOT RUN?) prophage annotation (controls PHAST and Phigaro)
-    not_run_prophage_search = false
+    skip_prophage_search = false
 
   // (NOT RUN?) KO (KEGG Orthology) annotation
-    not_run_kofamscan = false
+    skip_kofamscan = false
 
             /*
              * Annotation thresholds to be used when scanning specific databases and features
@@ -150,17 +184,11 @@ Default configuration:
   // MGEs (ICEs and Phages) coverage threshold
     blast_MGEs_mincov = 65
 
-            /*
-             * Configure optional Methylation annotation with nanopolish
-             * If left blank, it will not be executed. When both parameters are set
-             * it will automatically execute nanopolish to call methylation
-             *
-             * For using these parameters, the pipeline must be used with one sample at a time
-             * since we can't guaratee the order the files are picked by nextflow.
-             */
+  // User's custom database identity threashold
+    blast_custom_minid = 0
 
-    nanopolish_fast5_dir = ''   // Path to directory containing FAST5 files
-    nanopolish_fastq_reads = '' // Path to fastq files (file related to FAST5 files above)
+  // User's custom database coverage threashold
+    blast_custom_mincov = 0
 
   }
 
@@ -191,11 +219,11 @@ Default configuration:
                         Setting NF tower configurations
   */
   if (params.use_tower) {
-  env.TOWER_ACCESS_TOKEN = params.tower_token
-  tower {
-      accessToken = params.tower_token
-      enabled = params.use_tower
-  }
+    env.TOWER_ACCESS_TOKEN = params.tower_token
+    tower {
+        accessToken = params.tower_token
+        enabled = params.use_tower
+    }
   }
 
   /*
@@ -210,7 +238,11 @@ Default configuration:
   }
 
   // Queue limit
-  executor.$local.queueSize = 1
+  if (params.parallel_jobs) {
+    executor.$local.queueSize = params.parallel_jobs
+  } else {
+    executor.$local.queueSize = 1
+  }
 
   // specific images
   process {
