@@ -73,7 +73,8 @@ Input files (multiple genome analysis)
    * - ``--in_yaml``
      - Y
      - NA
-     - Input samplesheet in YAML format. Used when analysis is to be performed with multiple genomes at once.<br>It is incompatible with the parameters for single genome analysis.
+     - Input samplesheet in YAML format. Used when analysis is to be performed with multiple genomes at once. \
+     It is incompatible with the parameters for single genome analysis.
 
 Output directory
 """"""""""""""""
