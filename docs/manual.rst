@@ -62,7 +62,7 @@ Input files (multiple genome analysis)
 """"""""""""""""""""""""""""""""""""""
 
 .. list-table::
-   :widths: 20 10 20 30
+   :widths: 20 10 20 25
    :header-rows: 1
 
    * - Arguments
@@ -73,8 +73,7 @@ Input files (multiple genome analysis)
    * - ``--in_yaml``
      - Y
      - NA
-     - Input samplesheet in YAML format. Used when analysis is to be performed with multiple genomes at once. \
-     It is incompatible with the parameters for single genome analysis.
+     - Input samplesheet in YAML format. Used when analysis is to be performed with multiple genomes at once. It is incompatible with the parameters for single genome analysis.
 
 Output directory
 """"""""""""""""
