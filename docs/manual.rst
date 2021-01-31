@@ -3,9 +3,13 @@
 Manual
 ======
 
-::
+.. code-block:: bash
 
-   nextflow run fmalmeida/bacannot [OPTIONS]
+  # Get help in the command line
+  nextflow run fmalmeida/bacannot --help
+
+Parameters description
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. list-table::
    :widths: 20 10 20 50
