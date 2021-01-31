@@ -11,6 +11,9 @@ Manual
 Parameters description
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Input files
+"""""""""""
+
 .. list-table::
    :widths: 20 10 20 50
    :header-rows: 1
@@ -19,26 +22,6 @@ Parameters description
      - Required
      - Default value
      - Description
-
-   * - ``--use_tower``
-     - N
-     - False
-     - Triggers the pipeline to be launched via nextflow tower
-
-   * - ``--tower_token``
-     - Y (if ``--use_tower``)
-     - NA
-     - Your nextflow tower token. Used to launch the pipeline in your nextflow tower account
-
-   * - ``--outdir``
-     - Y
-     - output
-     - Name of directory to store output values
-
-   * - ``--threads``
-     - N
-     - 2
-     - Number of threads to use
 
    * - ``--genome``
      - Y (if raw reads are not used)
@@ -64,6 +47,50 @@ Parameters description
      - N (Y if longreads are used)
      - NA
      - Longreads is used? If so, from which tech it is? Options: [ 'nanopore' or 'pacbio' ]
+
+Nextflow tower
+""""""""""""""
+
+.. list-table::
+   :widths: 20 10 20 50
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--use_tower``
+     - N
+     - False
+     - Triggers the pipeline to be launched via nextflow tower
+
+   * - ``--tower_token``
+     - Y (if ``--use_tower``)
+     - NA
+     - Your nextflow tower token. Used to launch the pipeline in your nextflow tower account
+
+Other (Fix)
+"""""""""""
+
+.. list-table::
+   :widths: 20 10 20 50
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--outdir``
+     - Y
+     - output
+     - Name of directory to store output values
+
+   * - ``--threads``
+     - N
+     - 2
+     - Number of threads to use
 
    * - ``--bedtools_merge_distance``
      - N
@@ -175,6 +202,6 @@ All this parameters are configurable through a configuration file. We encourage 
 file since it will keep your execution cleaner and more readable. See a :ref:`config` example.
 
 Examples
-""""""""
+^^^^^^^^
 
 For a better understanding of the usage we provided a feel examples. See :ref:`examples`
