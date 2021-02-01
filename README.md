@@ -22,7 +22,7 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 
 The bacannot pipeline is currently undergoing a huge update (as in issue [#2](https://github.com/fmalmeida/bacannot/issues/2)). In this updating I am fixing a few problems that I have detected in the automatic reports conditionals (some of them were being incorrectely dealt with). Also, this update holds new processes such as Resfinder annotation, a shiny parser for the outputs, and the reestructuration of few contents.
 
-This update is set to be released in January. If you come into an error please contact me so I can check if this error is already being handled in this update or not so I can tackle it in the same release.
+This update is set to be released in February (02/2021). If you come into an error please contact me so I can check if this error is already being handled in this update or not so I can tackle it in the same release.
 
 Cheers.
 
