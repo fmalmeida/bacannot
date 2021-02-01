@@ -14,7 +14,7 @@ runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 suppressMessages(library(shiny))
 suppressMessages(library(shinyFiles))
 suppressMessages(library(shinythemes))
@@ -87,10 +87,24 @@ Current features:
 
 The bacannot pipeline automatically produces three reports to summarize the annotation of Mobile genetic elements, resistance features and virulence factors. These reports are indexed in the list below so users can rapidly navigate through them.
 
-* [Report of resistance features](reports/report_resistance.html)
-* [Report of virulence features](reports/report_virulence.html)
-* [Report of mobile genetic elements](reports/report_MGEs.html)
-* [Directory of reports of custom database analyses](reports/custom_annotations/)
+```{r results='asis'}
+# Read files
+files_list <- list.files("/work/report_files/custom_databases", full.names=TRUE)
+files_list <- gsub(files_list, pattern = "/work/report_files/", replacement = "reports/")
+
+# Cat reports
+cat("* [Report of resistance features](reports/report_resistance.html)\n")
+cat("* [Report of virulence features](reports/report_virulence.html)\n")
+cat("* [Report of mobile genetic elements](reports/report_MGEs.html)\n")
+if (length(files_list) > 0) {
+  string.list <- as.list(files_list)
+  cat("* Reports of custom database annotations:\n")
+  for (report_file in string.list) {
+   cat(paste("\t* [Report: ", trimws(basename(report_file), which = 'both'), 
+             "](", trimws(report_file, which = 'both'), ")"), sep = '\n') 
+  }
+}
+```
 
 ### JBrowse {#jbrowse}
 
