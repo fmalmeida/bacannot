@@ -16,14 +16,6 @@ Users can trigger a graphical and interactive pipeline configuration and executi
      # Lauch pipeline interactive configuration
      nf-core launch fmalmeida/bacannot
 
-.. image:: images/nf-core-launch.png
-  :width: 49%
-  :height: 300
-
-.. image:: images/nf-core-config.png
-  :width: 49%
-  :height: 300
-
 Single genome annotation
 """"""""""""""""""""""""
 
