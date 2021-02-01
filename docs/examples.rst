@@ -6,9 +6,22 @@ Usage examples
 Launching interactive graphical interface
 """""""""""""""""""""""""""""""""""""""""
 
-::
+Users can trigger a graphical and interactive pipeline configuration and execution by using `nf-core launch <https://nf-co.re/launch>`_ utility.
 
+::
+     # Install nf-core
+     pip install nf-core
+
+     # Lauch pipeline interactive configuration
      nf-core launch fmalmeida/bacannot
+
+.. image:: images/nf-core-launch.png
+  :width: 800
+  :align: center
+
+.. image:: images/nf-core-config.png
+  :width: 800
+  :align: center
 
 Single genome annotation
 """"""""""""""""""""""""
