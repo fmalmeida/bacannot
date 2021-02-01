@@ -8,7 +8,8 @@ Launching interactive graphical interface
 
 Users can trigger a graphical and interactive pipeline configuration and execution by using `nf-core launch <https://nf-co.re/launch>`_ utility.
 
-::
+.. code-block:: bash
+
      # Install nf-core
      pip install nf-core
 
