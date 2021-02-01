@@ -184,10 +184,10 @@ Resfinder annotation
    * - ``--resfinder_species``
      - N
      - NA
-     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. \\nCheck them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
+     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. Check them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
-Other (Fix)
-"""""""""""
+On/Off processes
+""""""""""""""""
 
 .. list-table::
    :widths: 20 10 20 30
@@ -197,51 +197,6 @@ Other (Fix)
      - Required
      - Default value
      - Description
-
-   * - ``--bedtools_merge_distance``
-     - N
-     - 0
-     - Minimum number of required overlapping bases to merge genes
-
-   * - ``--blast_virulence_minid``
-     - N
-     - 90
-     - Identity (%) threshold to be used when annotating virulence factors from VFDB and Victors
-
-   * - ``--blast_virulence_mincov``
-     - N
-     - 90
-     - Coverage (%) threshold to be used when annotating virulence factors from VFDB and Victors
-
-   * - ``--blast_resistance_minid``
-     - N
-     - 90
-     - Identity (%) threshold to be used when annotating AMR genes with ARGminer and AMRFinderPlus. CARD-RGI is not affected.
-
-   * - ``--blast_resistance_mincov``
-     - N
-     - 90
-     - Coverage (%) threshold to be used when annotating AMR genes with ARGminer and AMRFinderPlus. CARD-RGI is not affected.
-
-   * - ``--plasmids_minid``
-     - N
-     - 90
-     - Identity (%) threshold to be used when detecting plasmids with Plasmidfinder
-
-   * - ``--plasmids_mincov``
-     - N
-     - 60
-     - Coverage (%) threshold to be used when detecting plasmids with Plasmidfinder
-
-   * - ``--blast_MGEs_minid``
-     - N
-     - 85
-     - Identity (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
-
-   * - ``--blast_MGEs_mincov``
-     - N
-     - 85
-     - Coverage (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
 
    * - ``--skip_virulence_search``
      - N
@@ -273,6 +228,102 @@ Other (Fix)
      - False
      - Tells whether not to run KEGG orthology (KO) annotation with KofamScan
 
+Custom nucl databases
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 20 10 20 30
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--custom_db``
+     - N
+     - NA
+     - Custom gene nucleotide databases to be used for additional annotations against the genome. See :ref:`custom-db`.
+
+Annotation thresholds
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 20 10 20 30
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--blast_virulence_minid``
+     - N
+     - 90
+     - Identity (%) threshold to be used when annotating virulence factors from VFDB and Victors
+
+   * - ``--blast_virulence_mincov``
+     - N
+     - 90
+     - Coverage (%) threshold to be used when annotating virulence factors from VFDB and Victors
+
+   * - ``--blast_resistance_minid``
+     - N
+     - 90
+     - Identity (%) threshold to be used when annotating AMR genes with CARD-RGI, Resfinder, ARGminer and AMRFinderPlus.
+
+   * - ``--blast_resistance_mincov``
+     - N
+     - 90
+     - Coverage (%) threshold to be used when annotating AMR genes with Resfinder, ARGminer and AMRFinderPlus. CARD-RGI is not affected.
+
+   * - ``--plasmids_minid``
+     - N
+     - 90
+     - Identity (%) threshold to be used when detecting plasmids with Plasmidfinder
+
+   * - ``--plasmids_mincov``
+     - N
+     - 60
+     - Coverage (%) threshold to be used when detecting plasmids with Plasmidfinder
+
+   * - ``--blast_MGEs_minid``
+     - N
+     - 85
+     - Identity (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
+
+   * - ``--blast_MGEs_mincov``
+     - N
+     - 85
+     - Coverage (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
+
+   * - ``--blast_custom_minid``
+     - N
+     - 0
+     - Identity (%) threshold to be used when annotating with user's custom databases
+
+   * - ``--blast_custom_mincov``
+     - N
+     - 0
+     - Coverage (%) threshold to be used when annotating with user's custom databases
+
+Methylation call
+""""""""""""""""
+
+.. note::
+
+  This parameter must only be used when annotating a single genome. If running the pipeline with more than 1 input
+  genomes users must set it in the samplesheet YAML file as described in :ref:`samplesheet`.
+
+.. list-table::
+   :widths: 20 10 20 30
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
    * - ``--nanopolish_fast5_dir``
      - N
      - NA
@@ -283,6 +334,22 @@ Other (Fix)
      - NA
      - Path to fastq reads (related to fast5 files) that will be used to call methylation. If null, the analysis will be skipped
 
+Merge distance
+""""""""""""""
+
+.. list-table::
+   :widths: 20 10 20 30
+   :header-rows: 1
+
+   * - Arguments
+     - Required
+     - Default value
+     - Description
+
+   * - ``--bedtools_merge_distance``
+     - N
+     - 0
+     - Minimum number of required overlapping bases to merge genes
 
 All this parameters are configurable through a configuration file. We encourage users to use the configuration
 file since it will keep your execution cleaner and more readable. See a :ref:`config` example.
