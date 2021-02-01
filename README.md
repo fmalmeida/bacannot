@@ -26,6 +26,7 @@ This pipeline has two complementary pipelines (also written in nextflow) for [NG
 ## Table of contents
 
 * [Requirements](https://github.com/fmalmeida/bacannot#requirements)
+* [Installation](https://github.com/fmalmeida/bacannot#installation)
 * [Quickstart](https://github.com/fmalmeida/bacannot#quickstart)
 * [Documentation](https://github.com/fmalmeida/bacannot#documentation)
   * [Full usage](https://github.com/fmalmeida/bacannot#usage)
@@ -43,7 +44,7 @@ This pipeline has two complementary pipelines (also written in nextflow) for [NG
 
 This images have been kept separate to not create massive Docker image and to avoid dependencies conflicts.
 
-## Quickstart
+## Installation
 
 1. If you don't have it already install Docker in your computer. Read more [here](https://docs.docker.com/).
     * You can give this [in-house script](https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh) a try.
@@ -76,6 +77,25 @@ The latest release will always have its docker image in dockerhub.
        nextflow run fmalmeida/bacannot --help
 
 > Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
+
+## Quickstart
+
+For a rapid and simple quickstart we will use as input the nanopore raw reads provided in the [Canu quickstart section](https://canu.readthedocs.io/en/latest/quick-start.html#assembling-pacbio-clr-or-nanopore-data).
+
+```bash
+
+  # Download the data and save it as oxford.fasta
+  curl -L -o oxford.fasta http://nanopore.s3.climb.ac.uk/MAP006-PCR-1_2D_pass.fasta
+
+  # Run the pipeline using the Escherichia coli resfinder database
+  nextflow run fmalmeida/bacannot --prefix ecoli \
+  --lreads oxford.fasta \
+  --lreads_type nanopore \
+  --outdir _ANNOTATION \
+  --threads 4 \
+  --resfinder_species "Escherichia coli"
+
+```
 
 ## Documentation
 
@@ -128,27 +148,12 @@ It will result in the following:
 </p>
 
 <p align="center">
-<img src="./images/nf-core-gui.png" width="400px"/>
+<img src="./images/nf-core-gui.png" width="500px"/>
 </p>
 
 #### nextflow tower
 
 This pipeline also accepts that users track its execution of processes via [nextflow tower](https://tower.nf/). For that users will have to use the parameters `--use_tower` and `--tower_token`.
-
-## Known issues
-
-### Mixed input formats
-
-Some issues can arise when user mixes different samples and different input format types. We tried to summarise them here. Basically, are caused by the simple fact that nextflow's channels are created and used randomly and we can't ensure the order of inputs used. **All of these issues have a simple solution: to use the pipeline with only one sample at a time**, and if desired creating an "outside" loop for executing it to various samples.
-
-* Mixed samples and fast5 for methylation calling.
-    + Nanopolish methylation calling must be used with only one sample as input (**either** from assembled genome **or** raw reads) since we cannot ensure the order that nextflow will grab the inputs.
-    + Otherwise, the inputs could be used in a mixed wrong manner, such as sample 1 genome with the fast5 from sample 2.
-* Mixed NGS read types
-    + When combining different NGS reads (shortreads paired, shortreads unpaired and/or longreads) the pipeline must be used with inputs of only one sample since we cannot ensure the order that nextflow will grab the inputs.
-    + Otherwise, the inputs could be used in a mixed wrong manner, such as shortreads paired from sample 1 with longreads from sample 2.
-
-> For these cases, users are advised to **not** use global patterns that would make nextflow grab files from different samples. Users are advised to explicitly set path to the exact inputs of the same sample.
 
 # Citation
 
