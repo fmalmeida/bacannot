@@ -80,7 +80,7 @@ def helpMessage() {
     --prokka_genetic_code <int>                    Genetic Translation code. Must be set if kingdom is not
                                                    default (in blank).
 
-    --prokka_use_rnammer                           Tells prokka wheter to use rnammer instead of barrnap.
+    --prokka_use_rnammer                           Tells prokka whether to use rnammer instead of barrnap.
 
 
       # Blast alignment parameters
@@ -106,7 +106,7 @@ def helpMessage() {
     --blast_custom_mincov                          Min. gene/subject coverage % for the annotation using user's custom database. Default 0.
 
       # User's custom database for annotation
-      # Must be in nucleotide FASTA
+      # Must be in gene nucleotide FASTA
 
     --custom_db                                    Path to the nucleotide FASTA file containing the user's custom database for annotation.
                                                    Multiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,...
@@ -123,17 +123,17 @@ def helpMessage() {
 
       # Configure (one/off) optional processes
 
-    --skip_virulence_search                        Tells wheter you do not want to execute virulence annotation
+    --skip_virulence_search                        Tells whether you do not want to execute virulence annotation
 
-    --skip_resistance_search                       Tells wheter you do not want to execute resistance annotation
+    --skip_resistance_search                       Tells whether you do not want to execute resistance annotation
 
-    --skip_iceberg_search                          Tells wheter you do not want to execute ICE annotation
+    --skip_iceberg_search                          Tells whether you do not want to execute ICE annotation
 
-    --skip_prophage_search                         Tells wheter you do not want to execute prophage annotation
+    --skip_prophage_search                         Tells whether you do not want to execute prophage annotation
 
-    --skip_plasmid_search                          Tells wheter you do not want to execute plasmid detection
+    --skip_plasmid_search                          Tells whether you do not want to execute plasmid detection
 
-    --skip_kofamscan                               Tells wheter you do not want to execute KO annotation with kofamscan
+    --skip_kofamscan                               Tells whether you do not want to execute KO annotation with kofamscan
 
 
       # Configure optional Methylation annotation with nanopolish

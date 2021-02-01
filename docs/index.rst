@@ -37,12 +37,12 @@ It wraps up the following tools and databases:
    installation
    quickstart
    inputs
+   outputs
    manual
    config
    custom-db
    samplesheet
    examples
-   outputs
 
 Support Contact
 ===============
