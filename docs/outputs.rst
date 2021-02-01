@@ -1,7 +1,7 @@
 .. _outputs:
 
-Outputs overview
-================
+Output files
+============
 
 Following the same results produced in the :ref:`quickstart` section, the outputs are presented again here to provide a specific page for them. The quickstart
 command wrote the results under the ``_ANNOTATION`` directory.

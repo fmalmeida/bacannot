@@ -50,7 +50,7 @@ Start()
 PORT="3838"
 
 # Get the options
-if ["$1" -eq ""] ; then
+if [ "${1}" == "" ] ; then
 	Help
 	exit
 fi

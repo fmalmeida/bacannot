@@ -63,7 +63,7 @@
                 "in_yaml": {
                     "type": "string",
                     "description": "Input samplesheet in YAML format",
-                    "help_text": "Used when analysis is to be performed with multiple genomes at once. Is incompatible if the parameters for single genome analysis.",
+                    "help_text": "Used when analysis is to be performed with multiple genomes at once. It Is incompatible with the parameters for single genome analysis. More information can be found at: https://bacannot.readthedocs.io/en/latest/samplesheet.html",
                     "fa_icon": "fas fa-align-justify"
                 }
             },
@@ -182,7 +182,7 @@
                 "resfinder_species": {
                     "type": "string",
                     "description": "Select the resfinder species panel to use",
-                    "help_text": "If blank, resfinde will not be executed. Users must check Resfinder website to know the panels."
+                    "help_text": "If blank, resfinder will not be executed. Users must check Resfinder website to know the panels. This parameter is to be used with single genome annotation workflows, otherwise it must be set inside the samplesheet YAML file, please check out more at: https://bacannot.readthedocs.io/en/latest/samplesheet.html"
                 }
             },
             "fa_icon": "fas fa-cog"
@@ -329,7 +329,7 @@
                 "custom_db": {
                     "type": "string",
                     "description": "Path to the nucleotide FASTA",
-                    "help_text": "Path to the (properly formatted) nucleotide FASTA file containing the user's custom database for annotation.\nMultiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,..."
+                    "help_text": "Path to the (properly formatted) nucleotide FASTA file containing the user's custom database for annotation.\nMultiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,etc.\n\nThe custom database must be a gene nucleotide FASTA since BLASTn against the genome will be used for annotation.\n\nCheck out the required header format at: https://bacannot.readthedocs.io/en/latest/custom-db.html"
                 },
                 "blast_custom_minid": {
                     "type": "number",

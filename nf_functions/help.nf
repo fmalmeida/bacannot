@@ -50,6 +50,8 @@ def helpMessage() {
       # Users can give either a genome in FASTA file or raw reads in FASTQ
       # The analysis of multiple genomes at once is configured via a YAML file
       # Check the example YAML at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
+      #
+      # Also documented at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
 
     --in_yaml <string>                             Set path to the samplesheet in YAML format to analyse more than one
                                                    genome at once.
@@ -107,6 +109,8 @@ def helpMessage() {
 
       # User's custom database for annotation
       # Must be in gene nucleotide FASTA
+      #
+      # Well documented at: https://bacannot.readthedocs.io/en/latest/custom-db.html
 
     --custom_db                                    Path to the nucleotide FASTA file containing the user's custom database for annotation.
                                                    Multiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,...
@@ -116,10 +120,13 @@ def helpMessage() {
       # Only used with analysing a single genome
       # When analysing multiple genomes it must be set in the YAML file.
       # Check the example YAML at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
+      #
+      # Also documented at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
 
     --resfinder_species                            It sets the species to be used for Resfinder annotation. If blank,
                                                    it will not be executed. Must be identical (without the *) as written
                                                    in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
+                                                   E.g. 'Escherichia coli'; 'Klebsiella' ...
 
       # Configure (one/off) optional processes
 
