@@ -18,11 +18,11 @@ Users can trigger a graphical and interactive pipeline configuration and executi
 
 .. image:: images/nf-core-launch.png
   :width: 49%
-  :height: 150
+  :height: 300
 
 .. image:: images/nf-core-config.png
   :width: 49%
-  :height: 150
+  :height: 300
 
 Single genome annotation
 """"""""""""""""""""""""
