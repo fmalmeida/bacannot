@@ -17,12 +17,10 @@ Users can trigger a graphical and interactive pipeline configuration and executi
      nf-core launch fmalmeida/bacannot
 
 .. image:: images/nf-core-launch.png
-  :width: 800
-  :align: center
+  :width: 40%
 
 .. image:: images/nf-core-config.png
-  :width: 800
-  :align: center
+  :width: 40%
 
 Single genome annotation
 """"""""""""""""""""""""
