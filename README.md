@@ -12,12 +12,12 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 * [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation
 * [JBrowse](http://jbrowse.org/) for genome browser production
 * [bedtools](https://bedtools.readthedocs.io/en/latest/) for annotation merging
-* [AMRFinderPlus](https://github.com/ncbi/amr/wiki) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
-* [Phigaro](https://github.com/bobeobibo/phigaro) for prophage sequences prediction
+* [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
+* [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) for prophage sequences and genes prediction
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
-* [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) for in silico plasmid detection
-* [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) for _in silico_ resistance phenotype prediction of known species
-* And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)
+* [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) for in silico plasmid detection
+* [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) database for the annotation of integrative and conjugative elements
+* [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) for the annotation of virulence genes
 
 ## Further reading
 
@@ -167,9 +167,9 @@ Please cite this pipeline using our Zenodo tag or directly via the github url. A
 * [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation
 * [JBrowse](http://jbrowse.org/) for genome browser production
 * [bedtools](https://bedtools.readthedocs.io/en/latest/) for annotation merging
-* [AMRFinderPlus](https://github.com/ncbi/amr/wiki) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
-* [Phigaro](https://github.com/bobeobibo/phigaro) for prophage sequences prediction
+* [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
+* [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) for prophage sequences and genes prediction
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
-* [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) for in silico plasmid detection
-* [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) for _in silico_ resistance phenotype prediction of known species
-* And the databases: [CARD](https://card.mcmaster.ca/analyze/rgi), [ARGminer](https://bench.cs.vt.edu/argminer/#/classify;gene_id=A0A0Z8UZL1), [PHASTER](https://phaster.ca/), [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266), [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm)
+* [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) for in silico plasmid detection
+* [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) database for the annotation of integrative and conjugative elements
+* [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) for the annotation of virulence genes
