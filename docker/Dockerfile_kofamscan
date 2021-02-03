@@ -30,7 +30,7 @@ RUN cd /work/kofamscan && \
       cd src && \
       wget http://eddylab.org/software/hmmer/hmmer.tar.gz && \
       tar xvzf hmmer.tar.gz && \
-      cd hmmer-3.3.1 && \
+      cd hmmer-3.3.2 && \
       ./configure --prefix=/work/kofamscan/hmmer && \
       make && \
       make install
@@ -48,7 +48,7 @@ RUN mkdir /work/kofamscan/parallel && \
       cd /work/kofamscan/src && \
       wget https://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 && \
       tar xvjf parallel-latest.tar.bz2 && \
-      cd parallel-20200822 && \
+      cd parallel-* && \
       ./configure --prefix=/work/kofamscan/parallel && \
       make && \
       make install
