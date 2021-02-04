@@ -10,5 +10,4 @@
         }
     ],
     "access_right": "open",
-    "additional_notes": "Always download the pipeline from github or nextflow since Zenodo does not keep track of minor changes between major releases."
 }
