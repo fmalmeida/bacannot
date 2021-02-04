@@ -3,7 +3,7 @@ def exampleMessage() {
    Example Usages:
 
       ## Launching interactive graphical interface
-      nf-core launch fmalmeida/bacannot
+\$ nf-core launch fmalmeida/bacannot
 
       ## Single genome annotation, with customization
 \$ nextflow run fmalmeida/bacannot --outdir TESTE --threads 3 --genome assembly.fasta --bedtools_merge_distance -20 --blast_virulence_minid 90 \
