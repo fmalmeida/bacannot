@@ -128,7 +128,7 @@ def helpMessage() {
                                                    in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
                                                    E.g. 'Escherichia coli'; 'Klebsiella' ...
 
-      # Configure (one/off) optional processes
+      # Configure (on/off) optional processes
 
     --skip_virulence_search                        Tells whether you do not want to execute virulence annotation
 
