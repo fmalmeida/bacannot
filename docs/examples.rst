@@ -51,7 +51,7 @@ A little more complex example
 ::
 
       ./nextflow run fmalmeida/bacannot --outdir TESTE --threads 3 --genome assembly.fasta --bedtools_merge_distance -20 \
-      --nanopolish_fastq_reads "fastq/input.fastq" --nanopolish_fast5_dir "fast5_pass_dir" --resfinder_species "Escherichia coli"
+      --nanopolish_fastq "fastq/input.fastq" --nanopolish_fast5 "fast5_pass_dir" --resfinder_species "Escherichia coli"
 
 .. note::
 
@@ -68,7 +68,7 @@ shortreads-only and hybrid assemblies while Flye is used to create longreads-onl
 ::
 
       nextflow run fmalmeida/bacannot --sreads_paired "sample1_{1,2}.fastq" --lreads "sample1_lreads.fastq" --lreads_type nanopore \
-      --outdir TESTE --skip_kofamscan --threads 5 --nanopolish_fastq_reads "sample1_lreads.fastq" --nanopolish_fast5_dir "fast5_pass_dir"
+      --outdir TESTE --skip_kofamscan --threads 5 --nanopolish_fastq "sample1_lreads.fastq" --nanopolish_fast5 "fast5_pass_dir"
 
 .. note::
 
