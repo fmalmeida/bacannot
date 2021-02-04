@@ -33,6 +33,15 @@ query_name <-
 
 # Add directory of static resources to Shiny's web server
 addResourcePath(prefix = "jbrowse", directoryPath = "/work/jbrowse/")
+addResourcePath(prefix = "jbrowse/data", directoryPath = "/work/jbrowse/data/")
+try(
+  addResourcePath(prefix = "jbrowse/data/GC_content.bw", directoryPath = "/work/jbrowse/data/GC_content.bw"),
+  silent = TRUE
+)
+try(
+  addResourcePath(prefix = "jbrowse/data/methylation.bw", directoryPath = "/work/jbrowse/data/methylation.bw"),
+  silent = TRUE
+)
 addResourcePath(prefix = "reports", directoryPath = "/work/report_files/")
 ```
 
@@ -71,7 +80,7 @@ div.container {
 }
 ```
 
-# Parsing annotation results of: _`r query_name`_ query genome {.tabset .tabset-pills}
+# Parsing _`r query_name`_ annotation results {.tabset .tabset-pills}
 
 ## About
 
@@ -79,9 +88,9 @@ Welcome to the bacannot shiny parser! This app enables users to interrogate and 
 
 Current features:
 
-* [Indexation of annotation reports](#index)
-* [SQL database parsing](#sqlparser)
-* [JBrowse navigation](jbrowse/index.html)
+* Indexation of annotation reports
+* SQL database parsing
+* JBrowse navigation
 
 ### Automatic annotation reports {#index}
 

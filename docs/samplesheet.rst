@@ -38,7 +38,7 @@ be used by the pipeline:
 .. code-block:: yaml
 
   samplesheet:
-    - id: sample_1
+    - id: sample_1:
       ...:
       ...:
     - id: sample_2:

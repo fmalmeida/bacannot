@@ -23,6 +23,8 @@ full_ices <- nrow(ice_genome_blast)
 
 Full-length ICEs are available at [ICEberg database](https://bioinfo-mml.sjtu.edu.cn/ICEberg/download.html) in nucleotide fastas while the proteins found inside these ICEs are in protein fastas. Since the ICEfinder script has no licenses to be incorporated to the pipeline, we try to search for the full-length ICEs. However, they are very difficult to be completely found in new genomes, thus they are scanned without coverage or identity thresholds. The filtering and selection of these is up to you. We have found a total of `r full_ices` alignments in the query genome, check it out in table \@ref(tab:write-table-ices-full).
 
+Users are advised to also use the [ICEfinder](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/tools.html) tool to predict the putative genomic position of known ICEs since we are not allowed to include this step under this pipeline.
+
 <br>
 <caption>(#tab:write-table-ices-full) Alignment of full-length ICEs to the query genome via BLASTn</caption>
 ```{r}

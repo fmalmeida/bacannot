@@ -12,6 +12,7 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 * [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation
 * [JBrowse](http://jbrowse.org/) for genome browser production
 * [bedtools](https://bedtools.readthedocs.io/en/latest/) for annotation merging
+* [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) for plotting genomic islands
 * [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
 * [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) for prophage sequences and genes prediction
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
@@ -34,6 +35,7 @@ This pipeline has two complementary pipelines (also written in nextflow) for [NG
   * [Configuration File](https://github.com/fmalmeida/bacannot#using-the-configuration-file)
   * [Interactive and graphical execution](https://github.com/fmalmeida/bacannot#interactive-graphical-configuration-and-execution)
 * [Known issues](https://github.com/fmalmeida/bacannot#known-issues)
+* [Citation](https://github.com/fmalmeida/bacannot#citation)
 
 ## Requirements
 
@@ -155,7 +157,15 @@ It will result in the following:
 
 This pipeline also accepts that users track its execution of processes via [nextflow tower](https://tower.nf/). For that users will have to use the parameters `--use_tower` and `--tower_token`.
 
-# Citation
+## Known issues
+
+1. Sometimes when using navigating through the shiny parser the reports and JBrowse tabs may still be pointing to old, or just different, samples that have been analysed before and not the actual sample in question. For example, you open the shiny server for the Sample 2, but the reports and JBrowse are showing results of Sample 1. This is caused by the browser's data storages and cookies.
+    * To solve this problem user's can just clear the cookies and data cache from the browser.
+2. The JBrowse wrapper in the shiny server is not capable of displaying the GC content and methylation plots when available. It can only display the simpler tracks. If the user wants to visualise and interrogate the GC or methylation tracks it must open the JBrowse outside from the shiny server. For that, to options are available:
+    * You can navigate to the `jbrowse` directory under your sample's output folder and simply execute `http-server`. This command can be found at: https://www.npmjs.com/package/http-server
+    * Or, you can download the [JBrowse Desktop app](https://jbrowse.org/docs/jbrowse_desktop.html) and, from inside the app, select the folder `jbrowse/data` that is available in your sample's output directory. 
+
+## Citation
 
 Please cite this pipeline using our Zenodo tag or directly via the github url. Also, whenever used/helpful, remember to cite the following software:
 
@@ -167,6 +177,7 @@ Please cite this pipeline using our Zenodo tag or directly via the github url. A
 * [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation
 * [JBrowse](http://jbrowse.org/) for genome browser production
 * [bedtools](https://bedtools.readthedocs.io/en/latest/) for annotation merging
+* [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) for plotting genomic islands
 * [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
 * [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) for prophage sequences and genes prediction
 * [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction

@@ -218,11 +218,11 @@ parse_sql <- function(sqldb) {
                       select(ID, Contig, Source, Feature, Start, End, Strand, Attributes),
                     rownames = F, selection = 'multiple', extensions = 'Buttons',
                     options = list(
-                      pageLength = 5,
+                      pageLength = 20,
                       lengthMenu = c(5, 10, 15, 20, 50),
                       scrollX = TRUE,
                       scrollY = '600px',
-                      fixedColumns = TRUE,
+                      fixedColumns = FALSE,
                       autoWidth = TRUE,
                       searching= FALSE,
                       dom = 'lfrtBip',
