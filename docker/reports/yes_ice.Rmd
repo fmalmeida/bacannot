@@ -1,0 +1,111 @@
+```{r setup-iceberg, eval=TRUE, include=FALSE, echo=FALSE}
+# Functions
+
+## Function to get Attribute Fields
+getAttributeField <- function (x, field, attrsep = ";") { 
+  s = strsplit(x, split = attrsep, fixed = TRUE) 
+  sapply(s, function(atts) { 
+    a = strsplit(atts, split = "=", fixed = TRUE) 
+    m = match(field, sapply(a, "[", 1)) 
+    if (!is.na(m)) { rv = a[[m]][2] 
+    } 
+    else { 
+      rv = as.character(NA) 
+    } 
+    return(rv) 
+  }) 
+}
+
+full_ices <- nrow(ice_genome_blast)
+```
+
+### Analysis of full-length ICEs
+
+Full-length ICEs are available at [ICEberg database](https://bioinfo-mml.sjtu.edu.cn/ICEberg/download.html) in nucleotide fastas while the proteins found inside these ICEs are in protein fastas. Since the ICEfinder script has no licenses to be incorporated to the pipeline, we try to search for the full-length ICEs. However, they are very difficult to be completely found in new genomes, thus they are scanned without coverage or identity thresholds. The filtering and selection of these is up to you. We have found a total of `r full_ices` alignments in the query genome, check it out in table \@ref(tab:write-table-ices-full).
+
+Users are advised to also use the [ICEfinder](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/tools.html) tool to predict the putative genomic position of known ICEs since we are not allowed to include this step under this pipeline.
+
+<br>
+<caption>(#tab:write-table-ices-full) Alignment of full-length ICEs to the query genome via BLASTn</caption>
+```{r}
+blast <- ice_genome_blast
+# Render dt
+blast[sapply(blast, is.character)] <- lapply(blast[sapply(blast, is.character)], as.factor)
+colnames(blast) <- c("Contig", "Start", "End", "Strand", "ICE", "Coverage_aln", "Gaps", "Coverage %", "Identity %", "Database", "Ref. Accession", "ICE family", "Description")
+datatable(blast,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```
+
+### Analysis of ICE's proteins
+
+```{r parsing-db, eval=TRUE, include=FALSE, echo=FALSE}
+# Create ID Column
+gff$ID <- getAttributeField(as.character(gff$V9), "ID", ";")
+
+# To upper
+gff$ID <- toupper(gff$ID)
+full_info <- merge.data.frame(ice_prot_blast, gff, by.x = "qseqid", by.y = "ID")
+
+# Create Position Column
+full_info$position <- paste(full_info$V1, ":", full_info$V4, "-", full_info$V5, sep = "")
+
+# Parse BLAST
+blast <- full_info %>% select(qseqid, stitle, position)
+blast$name <- str_split(blast$stitle, pattern = "\\|", simplify = TRUE )[,6]
+blast <- separate(blast, stitle, c("header", "Description"), sep = " ", extra = "merge")
+blast <- separate(blast, header, c("db", "ICE_ID", "ref", "product"), sep = "~~~", extra = "merge")
+blast <- blast %>% select(-db)
+
+# Get urls
+blast$ICE_ID <- sapply(str_split(blast$ICE_ID, "_"), tail, 1)
+blast$product <- gsub(blast$product, pattern = "_", replacement = " ")
+urls <- lapply(blast$ICE_id, function(x){paste0("http://202.120.12.136:7913/ICEberg2/feature_page.php?ice_id=", x)})
+blast$ICE_ID <- apply(blast, 1, function (x) {
+  
+  id <-  x[2]
+  url <- paste0("https://bioinfo-mml.sjtu.edu.cn/ICEberg2/feature_page.php?ice_id=", id, "#ICE")
+  url <- paste0("<a  target=_blank href=", url, ">", id,"</a>" )
+    
+  return(url)
+})
+```
+
+All query genes predicted by Prokka that have a match in ICEberg database are shown in Table \@ref(tab:write-table-ice-blastp). It is summarized the ICE id and all its genes that were found in the query genome. All of them are linked to the database for further investigations.
+
+> Take note: The fact that the genome possess some proteins from ICEs does not necessarily means that the ICE is present in the genome. Please, check the number of proteins that the ICE of origin posses in the [ICEberg database list of ICEs](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/browse_result.php?type=alpha&alpha=100), and then make inferences based one the alignments you see.
+
+Users are advised to also use the [ICEfinder](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/tools.html) tool to predict the putative genomic position of known ICEs since we are not allowed to include this step under this pipeline.
+
+<br>
+<caption>(#tab:write-table-ice-blastp) ICE genes annotated from ICEberg database via BLASTp</caption>
+```{r}
+# Render dt
+blast[sapply(blast, is.character)] <- lapply(blast[sapply(blast, is.character)], as.factor)
+colnames(blast) <- c("Query Protein", "ICEberg of origin", "Ref. Accession", "Product / Gene", "Description", "Genomic Position")
+datatable(blast %>%
+            select(-7),
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```
+
+
+```{r ices-png, fig.align='center', fig.show='hold', fig.cap="The number of genes from known ICEs (from [ICEberg](https://bioinfo-mml.sjtu.edu.cn/ICEberg2/index.php)) found in the query genome", out.width="45%"}
+blast <- full_info %>% select(qseqid, stitle, position)
+blast <- separate(blast, stitle, c("header", "Description"), sep = " ", extra = "merge")
+blast <- separate(blast, header, c("db", "ICE_ID", "ref", "product"), sep = "~~~", extra = "merge")
+summary <- blast %>% select("ICE_ID", "qseqid")
+ices <- plyr::count(summary, "ICE_ID")
+ggplot(ices, aes(x=ICE_ID, y=freq, fill=ICE_ID)) + geom_bar(stat = "identity") +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("Integrative and Conjugative Elements") +
+  ylab("Number of annotated genes") +
+  guides(fill=guide_legend(title = "ICEs"))
+```

@@ -1,0 +1,135 @@
+---
+title: "The bacannot shiny parser"
+author: "Produced with bacannot"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    number_sections: false
+    syntax: espresso
+    self_contained: yes
+    theme: readable
+    toc: no
+    #code_folding: "show"
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+suppressMessages(library(shiny))
+suppressMessages(library(shinyFiles))
+suppressMessages(library(shinythemes))
+suppressMessages(library(dplyr))
+suppressMessages(library(stringr))
+suppressMessages(library(dbplyr))
+suppressMessages(library(RSQLite))
+suppressMessages(library(DT))
+suppressMessages(library(openxlsx))
+suppressMessages(library(glue))
+source("shiny_parser_func.R")
+
+# Check query name
+query_name <-
+  strsplit(basename(Sys.glob(file.path("/work/annotation/*.fna"))), split = ".fna")[[1]]
+
+# Add directory of static resources to Shiny's web server
+addResourcePath(prefix = "jbrowse", directoryPath = "/work/jbrowse/")
+addResourcePath(prefix = "jbrowse/data", directoryPath = "/work/jbrowse/data/")
+try(
+  addResourcePath(prefix = "jbrowse/data/GC_content.bw", directoryPath = "/work/jbrowse/data/GC_content.bw"),
+  silent = TRUE
+)
+try(
+  addResourcePath(prefix = "jbrowse/data/methylation.bw", directoryPath = "/work/jbrowse/data/methylation.bw"),
+  silent = TRUE
+)
+addResourcePath(prefix = "reports", directoryPath = "/work/report_files/")
+```
+
+```{css, echo=FALSE}
+body {
+  /* Normal  */
+  font-size: 12pt;
+  line-height: 1.5;
+}
+
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 9pt;
+    border-left: 5px solid #ec5800;
+}
+
+.table {
+  width: 100% !important;
+  text-align: center;
+  font-size: 10pt;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.main-container {
+  max-width: 95% !important;
+  max-height: 100% !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div.container {
+  width: 100%;
+  height: 100%;
+}
+```
+
+# Parsing _`r query_name`_ annotation results {.tabset .tabset-pills}
+
+## About
+
+Welcome to the bacannot shiny parser! This app enables users to interrogate and interact with the outputs produced by [bacannot pipeline](https://github.com/fmalmeida/bacannot).
+
+Current features:
+
+* Indexation of annotation reports
+* SQL database parsing
+* JBrowse navigation
+
+### Automatic annotation reports {#index}
+
+The bacannot pipeline automatically produces three reports to summarize the annotation of Mobile genetic elements, resistance features and virulence factors. These reports are indexed in the list below so users can rapidly navigate through them.
+
+```{r results='asis'}
+# Read files
+files_list <- list.files("/work/report_files/custom_databases", full.names=TRUE)
+files_list <- gsub(files_list, pattern = "/work/report_files/", replacement = "reports/")
+
+# Cat reports
+cat("* [Report of resistance features](reports/report_resistance.html)\n")
+cat("* [Report of virulence features](reports/report_virulence.html)\n")
+cat("* [Report of mobile genetic elements](reports/report_MGEs.html)\n")
+if (length(files_list) > 0) {
+  string.list <- as.list(files_list)
+  cat("* Reports of custom database annotations:\n")
+  for (report_file in string.list) {
+   cat(paste("\t* [Report: ", trimws(basename(report_file), which = 'both'), 
+             "](", trimws(report_file, which = 'both'), ")"), sep = '\n') 
+  }
+}
+```
+
+### JBrowse {#jbrowse}
+
+* [Open JBrowse genome browser](jbrowse/index.html)
+
+## SQL querying {#sqlparser}
+
+```{r, echo=FALSE}
+parse_sql(DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
+```
+
+## Blast the genome
+
+```{r, echo=FALSE}
+genome_blast(genome = Sys.glob(file.path("/work/annotation/*.fna")),
+             nucl = Sys.glob(file.path("/work/annotation/*.ffn")),
+             prot = Sys.glob(file.path("/work/annotation/*.faa")),
+             sqldb = DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
+```

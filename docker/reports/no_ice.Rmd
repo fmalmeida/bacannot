@@ -1,0 +1,3 @@
+Not a single gene from known ICEs was found in the query genome. This might have happened either because your blast thresholds were too stringent or because the ICE annotation process was not executed.
+
+Therefore, it is advisable to take a better look at the parameters used and consider the query genome biology to define which scenario is the one that best suits your data. If you believe that the genome must contain any ICE you can perform another prediction with [ICEberg tools](https://bioinfo-mml.sjtu.edu.cn/ICEberg/index.php).

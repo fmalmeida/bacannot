@@ -1,0 +1,383 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com//Volumes/falmeida1TB/Git_Repos/bacannot/master/nextflow_schema.json",
+    "title": "/Volumes/falmeida1TB/Git_Repos/bacannot pipeline parameters",
+    "description": "",
+    "type": "object",
+    "definitions": {
+        "input_parameters_single_genome_analysis": {
+            "title": "Input parameters (single genome analysis)",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Input files for single genome analysis",
+            "properties": {
+                "genome": {
+                    "type": "string",
+                    "description": "Input genome for annotation (can't be used with raw reads)",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "Path to the input query genome to be annotated. Cannot be used with raw reads at the same time."
+                },
+                "prefix": {
+                    "type": "string",
+                    "description": "Output prefix for results",
+                    "help_text": "This sets the prefix to be used when writing results",
+                    "fa_icon": "fas fa-align-left",
+                    "default": "out"
+                },
+                "sreads_single": {
+                    "type": "string",
+                    "fa_icon": "fas fa-book",
+                    "description": "Path to input short unpaired reads (can't be used with assembled genomes)",
+                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
+                },
+                "sreads_paired": {
+                    "type": "string",
+                    "fa_icon": "fas fa-book",
+                    "description": "Path to input short paired end reads (can't be used with assembled genomes)",
+                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
+                },
+                "lreads": {
+                    "type": "string",
+                    "fa_icon": "fas fa-book",
+                    "description": "Path to input longreads (ONT or Pacbio) (can't be used with assembled genomes)",
+                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
+                },
+                "lreads_type": {
+                    "type": "string",
+                    "fa_icon": "fas fa-quote-left",
+                    "description": "Using longreads? From which tech it is? Nanopore or Pacbio?",
+                    "help_text": "Must be used if giving longreads as input.",
+                    "enum": [
+                        "nanopore",
+                        "pacbio"
+                    ]
+                }
+            }
+        },
+        "input_parameters_multiple_genome_analysis": {
+            "title": "Input parameters (multiple genome analysis)",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "in_yaml": {
+                    "type": "string",
+                    "description": "Input samplesheet in YAML format",
+                    "help_text": "Used when analysis is to be performed with multiple genomes at once. It Is incompatible with the parameters for single genome analysis. More information can be found at: https://bacannot.readthedocs.io/en/latest/samplesheet.html",
+                    "fa_icon": "fas fa-align-justify"
+                }
+            },
+            "fa_icon": "fas fa-terminal"
+        },
+        "output_directory": {
+            "title": "Output directory",
+            "type": "object",
+            "description": "Define where to store results",
+            "default": "",
+            "properties": {
+                "outdir": {
+                    "type": "string",
+                    "description": "The output directory where the results will be saved.",
+                    "default": "./results",
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "All the results will be stored here."
+                }
+            },
+            "required": [
+                "outdir"
+            ],
+            "fa_icon": "far fa-folder"
+        },
+        "nf_tower_options": {
+            "title": "NF tower options",
+            "type": "object",
+            "description": "Define the required options for launching the pipeline via NF tower",
+            "default": "",
+            "properties": {
+                "use_tower": {
+                    "type": "boolean",
+                    "description": "Launch pipeline in NF tower?"
+                },
+                "tower_token": {
+                    "type": "string",
+                    "description": "Your NF tower token for launching the pipeline in it"
+                }
+            },
+            "fa_icon": "fas fa-gopuram"
+        },
+        "generic_options": {
+            "title": "Generic options",
+            "type": "object",
+            "fa_icon": "fas fa-file-import",
+            "description": "Less common options for the pipeline, typically set in a config file.",
+            "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+            "properties": {
+                "bedtools_merge_distance": {
+                    "type": "number",
+                    "help_text": "Number of minimum overlapping base pairs required for merging\nNegative values, such as -20, means the number of required overlapping bases for merging.\nPositive values, such as 5, means the maximum distance accepted between features for merging.\nBy default (if Blank), this process is not executed. For execution the user needs to provide a value",
+                    "description": "Minimum overlapping base pairs required for merging"
+                }
+            }
+        },
+        "max_job_request_options": {
+            "title": "Max job request options",
+            "type": "object",
+            "fa_icon": "fab fa-acquisitions-incorporated",
+            "description": "Set the top limit for requested resources for any single job.",
+            "help_text": "If you are running on a smaller system, a pipeline step requesting more resources than are available may cause the Nextflow to stop the run with an error. These options allow you to cap the maximum resources requested by any single job so that the pipeline will run on your system.\n\nNote that you can not _increase_ the resources requested by any job using these options. For that you will need your own configuration file. See [the nf-core website](https://nf-co.re/usage/configuration) for details.",
+            "properties": {
+                "threads": {
+                    "type": "integer",
+                    "default": "2",
+                    "description": "Number of threads to be used by each software"
+                },
+                "parallel_jobs": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Number of jobs to run in parallel",
+                    "help_text": "Number of jobs to run in parallel. Be aware that each job (in parallel) can consume\nN threads (set above). Be sure to carefully check your resources before augmenting\nthis parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10\nthreads at once."
+                }
+            }
+        },
+        "prokka_optional_parameters": {
+            "title": "Prokka optional parameters",
+            "type": "object",
+            "description": "Sets parameters specific for prokka",
+            "default": "",
+            "properties": {
+                "prokka_kingdom": {
+                    "type": "string",
+                    "description": "Prokka annotation mode",
+                    "default": "Bacteria",
+                    "help_text": "Select which prokka annotation mode to run",
+                    "enum": [
+                        "Archaea",
+                        "Bacteria",
+                        "Mitochondria",
+                        "Viruses"
+                    ]
+                },
+                "prokka_genetic_code": {
+                    "type": "number",
+                    "default": 11,
+                    "description": "Translation table code"
+                },
+                "prokka_use_rnammer": {
+                    "type": "boolean",
+                    "description": "Use rnammer instead of Barrnap?"
+                }
+            },
+            "fa_icon": "fas fa-cog",
+            "required": [
+                "prokka_kingdom",
+                "prokka_use_rnammer"
+            ]
+        },
+        "resfinder_optional_process": {
+            "title": "Resfinder optional process",
+            "type": "object",
+            "description": "Select the resfinder species panel to use",
+            "default": "",
+            "properties": {
+                "resfinder_species": {
+                    "type": "string",
+                    "description": "Select the resfinder species panel to use",
+                    "help_text": "If blank, resfinder will not be executed. Users must check Resfinder website to know the panels. This parameter is to be used with single genome annotation workflows, otherwise it must be set inside the samplesheet YAML file, please check out more at: https://bacannot.readthedocs.io/en/latest/samplesheet.html"
+                }
+            },
+            "fa_icon": "fas fa-cog"
+        },
+        "select_unselect_tasks_to_be_run": {
+            "title": "Select/unselect tasks to be run",
+            "type": "object",
+            "description": "Select the tasks you want to SKIP",
+            "default": "",
+            "help_text": "When true, the specific task will be skipped (not executed)",
+            "properties": {
+                "skip_plasmid_search": {
+                    "type": "boolean",
+                    "description": "Skip (do not run) plasmidfinder?",
+                    "help_text": "If true, the process will be skipped!"
+                },
+                "skip_virulence_search": {
+                    "type": "boolean",
+                    "description": "Skip (do not run) virulence factors annotation?",
+                    "help_text": "If true, the process will be skipped!"
+                },
+                "skip_resistance_search": {
+                    "type": "boolean",
+                    "description": "Skip (do not run) resistance genes annotation?",
+                    "help_text": "If true, the process will be skipped!"
+                },
+                "skip_iceberg_search": {
+                    "type": "boolean",
+                    "description": "Skip (do not run) ICEs annotation?",
+                    "help_text": "If true, the process will be skipped!"
+                },
+                "skip_prophage_search": {
+                    "type": "boolean",
+                    "description": "Skip (do not run) prophage annotation?",
+                    "help_text": "If true, the process will be skipped!"
+                },
+                "skip_kofamscan": {
+                    "type": "boolean",
+                    "description": "Skip (do not run) KO annotation?",
+                    "help_text": "If true, the process will be skipped!"
+                }
+            },
+            "fa_icon": "fas fa-tasks"
+        },
+        "configure_thresholds_of_annotation_tasks": {
+            "title": "Configure thresholds of annotation tasks",
+            "type": "object",
+            "description": "Set the minimum thresholds for annotation",
+            "default": "",
+            "properties": {
+                "plasmids_minid": {
+                    "type": "number",
+                    "description": "Identity threshold for plasmid annotation",
+                    "default": 90,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "help_text": "Must be between 0 and 100"
+                },
+                "plasmids_mincov": {
+                    "type": "number",
+                    "description": "overage threshold for plasmid annotation",
+                    "default": 60,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "help_text": "Must be between 0 and 100"
+                },
+                "blast_virulence_minid": {
+                    "type": "number",
+                    "description": "Identity threshold for virulence factors annotation",
+                    "default": 90,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "help_text": "Must be between 0 and 100"
+                },
+                "blast_virulence_mincov": {
+                    "type": "number",
+                    "description": "overage threshold for virulence factors annotation",
+                    "default": 90,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "help_text": "Must be between 0 and 100"
+                },
+                "blast_resistance_minid": {
+                    "type": "number",
+                    "description": "Identity threshold for resistance genes annotation",
+                    "default": 90,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "help_text": "Must be between 0 and 100"
+                },
+                "blast_resistance_mincov": {
+                    "type": "number",
+                    "description": "overage threshold for resistance genes annotation",
+                    "default": 90,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "help_text": "Must be between 0 and 100"
+                },
+                "blast_MGEs_minid": {
+                    "type": "number",
+                    "description": "Identity threshold for ICEs and prophages annotation",
+                    "default": 85,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "help_text": "Must be between 0 and 100"
+                },
+                "blast_MGEs_mincov": {
+                    "type": "number",
+                    "description": "overage threshold for ICEs and prophages annotation",
+                    "default": 85,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "help_text": "Must be between 0 and 100"
+                }
+            },
+            "fa_icon": "fas fa-cogs"
+        },
+        "configure_optional_methylation": {
+            "title": "Configure optional Methylation",
+            "type": "object",
+            "description": "Configure nanopolish methylation annotation process",
+            "default": "",
+            "fa_icon": "fas fa-cog",
+            "properties": {
+                "nanopolish_fastq": {
+                    "type": "string",
+                    "description": "Path to fastq files (file related to FAST5 files above)",
+                    "help_text": "If blank, the process will not be executed!"
+                },
+                "nanopolish_fast5": {
+                    "type": "string",
+                    "description": "Path to directory containing FAST5 files",
+                    "help_text": "Set full path to the directory containing the ONT sequencing FAST5 files"
+                }
+            }
+        },
+        "user_custom_database": {
+            "title": "User custom database",
+            "type": "object",
+            "description": "Set up a custom database for analysis",
+            "default": "",
+            "fa_icon": "fas fa-cog",
+            "properties": {
+                "custom_db": {
+                    "type": "string",
+                    "description": "Path to the nucleotide FASTA",
+                    "help_text": "Path to the (properly formatted) nucleotide FASTA file containing the user's custom database for annotation.\nMultiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,etc.\n\nThe custom database must be a gene nucleotide FASTA since BLASTn against the genome will be used for annotation.\n\nCheck out the required header format at: https://bacannot.readthedocs.io/en/latest/custom-db.html"
+                },
+                "blast_custom_minid": {
+                    "type": "number",
+                    "description": "Min. identity % for the annotation using user's custom database"
+                },
+                "blast_custom_mincov": {
+                    "type": "number",
+                    "description": "Min. gene/subject coverage % for the annotation using user's custom database"
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/input_parameters_single_genome_analysis"
+        },
+        {
+            "$ref": "#/definitions/input_parameters_multiple_genome_analysis"
+        },
+        {
+            "$ref": "#/definitions/output_directory"
+        },
+        {
+            "$ref": "#/definitions/nf_tower_options"
+        },
+        {
+            "$ref": "#/definitions/generic_options"
+        },
+        {
+            "$ref": "#/definitions/max_job_request_options"
+        },
+        {
+            "$ref": "#/definitions/prokka_optional_parameters"
+        },
+        {
+            "$ref": "#/definitions/resfinder_optional_process"
+        },
+        {
+            "$ref": "#/definitions/select_unselect_tasks_to_be_run"
+        },
+        {
+            "$ref": "#/definitions/configure_thresholds_of_annotation_tasks"
+        },
+        {
+            "$ref": "#/definitions/configure_optional_methylation"
+        },
+        {
+            "$ref": "#/definitions/user_custom_database"
+        }
+    ]
+}

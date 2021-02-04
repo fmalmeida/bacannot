@@ -1,0 +1,57 @@
+### Plasmidfinder
+
+[Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) is a tool for the _in silico_ detection of plasmids. Its results are summarized in Table \@ref(tab:plasmidfinder-results)
+
+* The complete results can be found in the directory `plasmids/plasmidfinder` under the main output directory.
+
+<caption>(#tab:plasmidfinder-results) In silico detection of plasmids with Plasmidfinder</caption>
+```{r}
+results <- plasmid_finder_tab
+
+# Get urls
+results$Accession.number <- lapply(results$Accession.number, function(x){
+  url <- paste0("https://www.ncbi.nlm.nih.gov/nuccore/", x)
+  url <- paste0("<a  target=_blank href=", url, ">", x,"</a>" )
+  return(url)
+  })
+
+# Render dt
+datatable(results,
+          escape = FALSE,
+          filter = 'top',
+          colnames = c("Database", "Plasmid Replicon", "Identity (%)", "Query/Ref Length", 
+                       "Contig", "Position in Contig", "Notes", "Acc. Num."),
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F )
+```
+
+### Platon
+
+[Platon](https://github.com/oschwengers/platon) detects plasmid contigs within bacterial draft genomes from WGS short-read assemblies. Therefore, Platon analyzes the natural distribution biases of certain protein coding genes between chromosomes and plasmids. This analysis is complemented by comprehensive contig characterizations upon which several heuristics are applied. Its results are summarized in Table \@ref(tab:platon-results).
+
+* The complete results can be found in the directory `plasmids/platon` under the main output directory.
+
+<caption>(#tab:platon-results) In silico detection of plasmids with Platon</caption>
+```{r}
+results <- platon_tsv
+
+# Render dt
+datatable(results,
+          escape = FALSE,
+          filter = 'top',
+          colnames = c("Contig", "Contig Length", "Coverage", "# ORFs", 
+                       "RDS", "Circular", "Inc. Type", "# Replication",
+                       "# Mobilization", "# OriT", "# Conjugation",
+                       "# AMRs", "rRNAs", "# Plasmid Hits"),
+          options = list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(visible=FALSE, targets=c(1,2)))),
+          extensions = 'Buttons',
+          rownames = F)
+```

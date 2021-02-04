@@ -1,0 +1,80 @@
+```{r setup-victors, eval=TRUE, include=FALSE, echo=FALSE}
+# Function to get Attribute Fields
+getAttributeField <- function (x, field, attrsep = ";") { 
+  s = strsplit(x, split = attrsep, fixed = TRUE) 
+  sapply(s, function(atts) { 
+    a = strsplit(atts, split = "=", fixed = TRUE) 
+    m = match(field, sapply(a, "[", 1)) 
+    if (!is.na(m)) { rv = a[[m]][2] 
+    } 
+    else { 
+      rv = as.character(NA) 
+    } 
+    return(rv) 
+  }) 
+}
+
+# Function do get URLs for DATATABLE
+vf_id_url_DT <- function (x) {
+  
+  id <-  x[5]
+  url <- paste0("http://www.phidias.us/victors/gene_detail.php?c_mc_victor_id=", id)
+  url <- paste0("<a  target=_blank href=", url, ">", id,"</a>" )
+  
+  return(url)
+}
+
+# Get Victors Metadata
+victors_meta <- read.delim("victors_metadata.tsv")
+```
+
+```{r parsing-db-victors, eval=TRUE, include=FALSE, echo=FALSE}
+# Parse BLAST
+blast <- victors_blast %>% select(qseqid, stitle)
+blast <- separate(blast, stitle, c("vf_header", "Description"), sep = " ", extra = "merge")
+blast <- separate(blast, vf_header, c("db", "Gene Name", "ref", "VF ID"), sep = "~~~", extra = "merge")
+blast <- separate(blast, `VF ID`, c("db", "VF ID"), sep = "_", extra = "merge")
+blast$`Gene Name` <- gsub(blast$`Gene Name`, pattern = "_", replacement = " ")
+
+# Merge annotation with metadata
+victors_full <- merge.data.frame(blast, victors_meta, by.x = "VF ID", by.y = "NCBI.Protein.GI")
+victors_full <- victors_full[ !duplicated(victors_full$qseqid), ]
+
+# Create ID Column
+gff$ID <- getAttributeField(as.character(gff$V9), "ID", ";")
+
+# To upper
+gff$ID <- toupper(gff$ID)
+
+# Merge with GFF
+victors_full <- merge.data.frame(victors_full, gff, by.x = "qseqid", by.y = "ID")
+
+# Create Position Column
+victors_full$position <- paste(victors_full$V1, ":", victors_full$V4, "-", victors_full$V5, sep = "")
+
+# Create DF for kable
+blast <- victors_full %>% select(qseqid, Gene.Name, Protein.Name, Description, Protegen.ID, position)
+
+# Get urls
+ids <- blast$Protegen.ID
+urls <- lapply(ids, function(x){paste0("http://www.phidias.us/victors/gene_detail.php?c_mc_victor_id=", x)})
+```
+
+All query genes predicted by Prokka that have a match in Victors database are described in Table \@ref(tab:write-table-victors). In order to make further investigations easier, all genes are linked to its matches in Victors database.
+
+> Victors database is protein-only thus genes are scanned via blastp. Victors is a new database and focused in proteins that are important in the interaction pathogen-host, thus it may contain some less known genes.
+
+<caption>(#tab:write-table-victors) Virulence factors annotated using the Victors database via BLASTp</caption>
+```{r}
+# Produce Table
+colnames(blast) <- c("Query Protein ID", "Gene Name", "Product", "Description", "Database ID", "Query Protein Coordinates")
+blast$`Database ID` <- apply(blast, 1, vf_id_url_DT)
+## The conversion
+blast[sapply(blast, is.character)] <- lapply(blast[sapply(blast, is.character)], as.factor)
+datatable(blast,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```

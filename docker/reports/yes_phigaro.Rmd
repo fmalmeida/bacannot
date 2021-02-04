@@ -1,0 +1,18 @@
+Phigaro is a standalone command-line application that is able to detect prophage regions taking raw genome and metagenome assemblies as an input. It also produces dynamic annotated “prophage genome maps” and marks possible transposon insertion spots inside prophages. Its results can be nicely visualized in its own [html report file](`r phigaro_html`). The genomic regions predicted as putative prophage sequences are also summarized in Table \@ref(tab:phigaro-table).
+
+* Check it out at:
+    + Dir: `prophages/phigaro` in the main output directory
+    + HTML: ``r phigaro_html``
+
+<br>
+<caption>(#tab:phigaro-table) Putative prophage sequences annotated with phigaro software</caption>
+```{r}
+# Produce Table
+phigaro_txt[sapply(phigaro_txt, is.character)] <- lapply(phigaro_txt[sapply(phigaro_txt, is.character)], as.factor)
+datatable(phigaro_txt,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```

@@ -1,0 +1,68 @@
+# This is an exemplification of the accepted YAML syntax accepted by the
+# bacannot pipeline in order to analyse multiple genomes at once.
+#
+# The file must contain a header-line with the key "samplesheet:". All the
+# input samples must be given nested to this key. Obs: The header-line and
+# the nest indentation are REQUIRED.
+#
+# Each sample must initiate with the key "id:" listed with a "-". This value
+# is what will be used as prefix for outputs. The input options (raw reads or
+# assembled genomes) must be give right after this key, with the same indent
+# without the "-".
+#
+# The possible inputs are:
+#
+# (obs: When using both paired and unpaired short reads for the same sample,
+# the order: pair1, pair2, unpaired must be followed. Otherwise, just the
+# unpaired read or the pairs 1 and 2)
+# illumina: (illumina short reads)
+#   - pair_1.fq
+#   - pair_2.fq
+#   - unpaired.fq
+#
+# nanopore: ont_nanopore.fastq (Oxford nanopore long reads)
+# fast5: path/to/fast5_pass (Path to dir containing ONT FAST5s for methylation calling)
+#
+# pacbio: pacbio.fastq (Pacbio long reads)
+#
+# assembly: assembled_genome.fasta (assembled genome)
+#
+# resfinder: species panel (one of the available resfinder species panels)
+#
+# Users can give for each sample either the assembled genome or a combination
+# of short and long reads (to perform a short reads only, long reads only or
+# hybrid assembly of raw reads before annotation)
+#
+# Obs: the combination of ONT and pacbio reads for the same sample is not supported,
+# it must either be one or another.
+#
+# Obs: The "illumina:" key is the only one the MUST be give in new idented lines
+# started by "-". All the others (nanopore, pacbio, assembly, fast5, resfinder)
+# must be given right after the ":", without newlines, quotes or signs.
+#
+# A template (with the correct fields, syntax and indentation) is given below:
+
+samplesheet:
+  - id: sample_1
+    illumina:
+      - sample_1/1.fastq
+      - sample_1/2.fastq
+    nanopore: sample_1/ont.fastq
+    resfinder: Escherichia coli
+  - id: sample_2
+    assembly: sample_2/assembly.fasta
+    nanopore: sample_2/ont.fastq
+    fast5: sample_2/fast5_pass
+    resfinder: Klebsiella
+  - id: sample_3
+    nanopore: sample_3/ont.fastq
+    fast5: sample_3/fast5_pass
+  - id: sample_4
+    pacbio: sample_4/pacbio.fastq
+    illumina:
+      - sample_4/merged_unpaired.fastq
+  - id: sample_5
+    illumina:
+      - sample_5/1.fastq
+      - sample_5/2.fastq
+      - sample_5/merged.fastq

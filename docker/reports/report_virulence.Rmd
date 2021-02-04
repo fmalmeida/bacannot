@@ -1,0 +1,112 @@
+---
+title: "Annotation of virulence factors"
+author: "Produced with bacannot pipeline"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+params:
+  blast_id:
+  blast_cov:
+  vfdb_blast: 
+  victors_blast:
+  query: 
+  gff: 
+output:
+  bookdown::html_document2: 
+    css: styles.css
+    df_print: paged
+    number_sections: false
+    syntax: espresso
+    self_contained: yes
+    theme: readable
+    #toc: yes
+    #toc_collapsed: yes
+    #toc_depth: 4
+    #toc_float: yes
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.pos = 'H')
+suppressMessages(library(magrittr))
+suppressMessages(library(knitr))
+suppressMessages(library(tidyr))
+suppressMessages(library(plyr))
+suppressMessages(library(DT))
+suppressMessages(library(dplyr))
+suppressMessages(library(stringr))
+suppressMessages(library(ggplot2))
+
+# Line checker
+check_lines <- function(x) {
+  return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
+}
+
+# Load data
+victors_blast <- try(read.delim(params$victors_blast, header = TRUE), silent = TRUE)
+vfdb_blast <- try(read.delim(params$vfdb_blast, header = TRUE), silent = TRUE)
+gff <- try(read.delim(params$gff, header = FALSE), silent = TRUE)
+
+# Check if blast is empty
+if (class(vfdb_blast) != 'try-error' & check_lines(vfdb_blast) > 0) {
+  vfdb_not_null <- TRUE
+  vfdb_null <- FALSE
+} else {
+  vfdb_not_null <- FALSE
+  vfdb_null <- TRUE
+}
+
+if (class(victors_blast) != 'try-error' & check_lines(victors_blast) > 0) {
+  victors_not_null <- TRUE
+  victors_null <- FALSE
+} else {
+  victors_not_null <- FALSE
+  victors_null <- TRUE
+}
+
+# DT options
+# Lists
+dt_opt_lst <- list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE)
+```
+
+# `r params$query` virulence report {.tabset .tabset-pills}
+
+## About
+
+Virulence factors are molecules produced by bacteria that add effectiveness in their colonization ability of a niche, immunoevasion, immunosuppression and nutrition obtention from the host. In order to detect these molecules in the query genome its gene sequences were aligned against two databases:
+
+1. [VFDB](http://www.mgc.ac.cn/VFs/main.htm);
+    + VFDB is a comprehensive resource, created in 2004, of curated information about virulence factors of pathogenic bacteria. To date, it contains a 1080 virulence factors in its database, from >74 _bacteria genera_.
+    + In this pipeline the VFDB nucleotide core dataset (A) was used for alignment.
+2. [Victors](http://www.phidias.us/victors/).
+    + Victors is a curated database which currently possesses 5296 virulence factors for 194 different pathogens including bacteria, viruses and parasites and is focused in proteins related to interactions pathogen-host.
+    + Victors is a protein database, thus scanned with `BLASTp`.
+    
+### Prediction thresholds
+
+All the predictions were passed through a user defined threshold for minimum coverage and identity:
+
+* Min. Identity (%): `> `r params$blast_id``
+* Min. Coverage (%): `> `r params$blast_cov``
+
+> The results used to create this report are under the directory called `virulence` in the output folder of the query `r params$query`.
+
+## VFDB
+
+```{r, VFDB_conditional_block, echo=FALSE, results='asis', eval=vfdb_not_null, child='yes_vfdb.Rmd'}
+```
+
+```{r, VFDB_conditional_block_2, echo=FALSE, results='asis', eval=vfdb_null, child='no_vfdb.Rmd'}
+```
+
+## Victors
+
+```{r, Victors_conditional_block, echo=FALSE, results='asis', eval=victors_not_null, child='yes_victors.Rmd'}
+```
+
+```{r, Victors_conditional_block_2, echo=FALSE, results='asis', eval=victors_null, child='no_victors.Rmd'}
+```

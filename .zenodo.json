@@ -10,17 +10,5 @@
         }
     ],
     "access_right": "open",
-    "related_identifiers": [
-        {
-            "scheme": "url",
-            "identifier": "https://github.com/fmalmeida/bacannot/tree/v2.1",
-            "relation": "isSupplementTo"
-        },
-        {
-            "scheme": "doi",
-            "identifier": "10.5281/zenodo.3627669",
-            "relation": "isVersionOf"
-        }
-    ],
     "additional_notes": "Always download the pipeline from github or nextflow since Zenodo does not keep track of minor changes between major releases."
 }

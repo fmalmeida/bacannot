@@ -1,0 +1,57 @@
+The results obtained with RGI tool are summarized in the heatmap produced by the tool itself (Figure \@ref(fig:rgi-summary)). Additionally, the annotation results are also shown in an interactive table displaying the tool's complete annotation information (Table \@ref(tab:rgi-annotation-table)). They can be roughly divided into two main categories:
+
+1. Perfect hits
+    + detects perfect matches to the curated reference sequences and mutations in the CARD
+2. Strict hits
+    + detects previously unknown variants of known AMR genes, including secondary screen for key mutations, using detection models with CARD's curated similarity cut-offs to ensure the detected variant is likely a functional AMR gene
+
+> **Obs:** CARD RGI tool always tries to annotate functional AMR genes, however, depending on the assembly, a not functional gene may yet be annotated. Therefore, users are advised to double check genes annotated under **Strict** category.
+
+<br>
+
+<caption>(#tab:rgi-annotation-table) RGI annotation results. The perfect hits are highlighted in yellow while the strict hits in light blue.</caption>
+```{r rgi-annotation-table}
+# Merge data.frame with GFF
+rgi_tsv <- rgi_parsed
+colnames(rgi_tsv) <- c("Protein ID", "Cut_Off", "Product", "ARO", "Drug Class", "Resistance Mechanism", "AMR Gene Family")
+rgi_tsv <- merge.data.frame(gff, rgi_tsv, by.x = "Prokka_ID", by.y = "Protein ID", all.y = TRUE, all.x = FALSE)
+
+# Get CARD metadata
+aro_index <- read.csv("aro_index.tsv", sep = "\t")
+aro_index$ARO.Accession <- str_remove(aro_index$ARO.Accession, "ARO:")
+
+# Change Col name
+names(aro_index)[names(aro_index) == "ARO.Accession"] <- 'ARO'
+aro_index$ARO <- as.integer(aro_index$ARO)
+rgi_tsv$ARO <- as.integer(rgi_tsv$ARO)
+
+# Join
+rgi_tsv <- merge.data.frame(rgi_tsv, aro_index, by = "ARO", all.x = TRUE)
+
+# Create urls
+rgi_tsv$CVTERM.ID <- card_url(rgi_tsv$CVTERM.ID)
+
+# Produce Table
+rgi_tsv %>%
+  select(Prokka_ID, Product, `AMR Gene Family`, `Drug Class`, `Resistance Mechanism`, CVTERM.ID, `Query Protein Coordinates`, `Cut_Off`) %>%
+  arrange(8,1) %>%
+  datatable(escape = FALSE,
+          filter = 'top',
+          options = list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(visible=FALSE, targets=c(7)))),
+          extensions = 'Buttons',
+          rownames = F) %>%
+  formatStyle("Cut_Off", target = 'row', backgroundColor = styleEqual("Perfect", "lightyellow")) %>%
+  formatStyle("Cut_Off", target = 'row', backgroundColor = styleEqual("Strict", "lightblue"))
+```
+<br>
+
+```{r rgi-summary, out.width='60%', fig.align='center', fig.show='hold', fig.cap="RGI's phenotype prediction. AMR genes are listed in alphabetical order and unique resistome profiles are displayed with their frequency. Yellow represents a perfect hit, Blue-green represents a strict hit."}
+knitr::include_graphics(params$rgi_heatmap)
+```

@@ -1,0 +1,55 @@
+The AMRFinderPlus annotation results are summarized below in an interactive table containing the complete annotation information (Table \@ref(tab:ncbi-amr-resistance-genes)) and an image displaying the targeted drug classes (Figure \@ref(fig:ncbi-resistome-png)). Whenever possible, features are linked to the NCBI database marking the closest reference sequence to each annotated gene. The results obtained with AMRFinderPlus can be roughly divided into two main categories: 
+
+1. Genes related to antibiotics, called AMR;
+2. Genes related to stress resistance which can be:
+    + biocide resistance
+    + metal resistance
+    + heat resistance
+    
+### Acquired ARGs detected
+
+```{r results='asis'}
+# Read result
+tab <- amrtsv
+
+# Create List
+string.list <- tab %>% filter(Element.type == "AMR") %>% pull(2) %>% unique()
+cat("- **AMR genes found in the query genome:**\n")
+cat(paste("\t-", string.list), sep = '\n')
+```
+
+### Supporting Data
+
+<caption>(#tab:ncbi-amr-resistance-genes) Resistance genes annotated from NCBI AMR curated database using AMRfinderplus</caption>
+```{r ncbi-amr-resistance-genes}
+# Merge tables
+tab2 <- merge.data.frame(gff, tab, by.x = "Prokka_ID", by.y = "Protein.identifier", all.y = TRUE, all.x = FALSE)
+tab2$Accession.of.closest.sequence <- amrfinder_url(tab2$Accession.of.closest.sequence)
+
+# Produce Table
+tab2 %>%
+  select(Element.type, Element.subtype, Prokka_ID, Gene.symbol, Sequence.name, Class, Subclass, Method, Accession.of.closest.sequence, `Query Protein Coordinates`) %>%
+  dplyr::arrange(Element.type, Prokka_ID) %>%
+  datatable(escape = FALSE,
+            filter = 'top',
+            colnames = c("Resistance type", "Resistance subtype", "Query protein", "Gene", "Product", "Resistance Class", "Resistance subclass", "Detection method", "Ref. Accession", "Genomic coordinates"),
+            options = dt_opt_lst,
+            extensions = 'Buttons',
+            rownames = F)
+```
+
+```{r ncbi-resistome-png, fig.align='center', fig.show='hold', fig.cap="Resistome Predicted using NCBI's AMRFinderplus", out.width="35%"}
+## Grab AMR
+amr <- tab2 %>%
+  select(Prokka_ID, Subclass)
+amr <- plyr::count(amr, "Subclass")
+
+## Plot
+ggplot(amr, aes(x=Subclass, y=freq, fill=Subclass)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("") +
+  ylab("Number of genes") +
+  guides(fill=guide_legend(title = "Targeted drug class"))
+```

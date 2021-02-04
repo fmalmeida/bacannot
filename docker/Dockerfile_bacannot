@@ -1,0 +1,260 @@
+FROM ubuntu:20.04
+
+MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
+SHELL ["/bin/bash", "-c"]
+
+# DEPENDENCIES
+WORKDIR /work
+
+# INSTALL MINICONDA
+RUN apt-get update && \
+			apt-get upgrade -y && \
+			apt-get install -y git libc6-dev build-essential hmmer perl bedtools libidn11 wget python python3 python3-pip && \
+			wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /miniconda.sh && \
+			bash /miniconda.sh -b -p /miniconda
+ENV PATH="$PATH:/miniconda/bin"
+
+# Update do latest
+RUN conda update -y -n base conda
+
+# Configure Miniconda
+RUN conda config --add channels defaults && \
+			conda config --add channels bioconda && \
+			conda config --add channels conda-forge && \
+			conda init --all
+
+## Install and ncbi-blast+
+RUN rm -rf /var/lib/apt/lists/* && \
+			wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.11.0/ncbi-blast-2.11.0+-x64-linux.tar.gz
+RUN tar -zxvf ncbi-blast-2.11.0+-x64-linux.tar.gz && \
+			cd ncbi-blast-2.11.0+/bin/ && \
+			ln -rs $(ls) /usr/local/bin/
+
+# INSTALL AMRFinderPlus
+RUN conda create -y -n AMRFINDERPLUS && \
+			conda install -y --freeze-installed -n AMRFINDERPLUS -c bioconda ncbi-amrfinderplus nomkl && \
+			source activate AMRFINDERPLUS && \
+			amrfinder -u \
+			&& conda clean -afy && \
+			conda deactivate
+
+## Install Diamond
+RUN wget https://github.com/bbuchfink/diamond/releases/download/v0.9.25/diamond-linux64.tar.gz && \
+			tar zxvf diamond-linux64.tar.gz && \
+			mv diamond /usr/local/bin
+
+# INSTALL BARRNAP
+RUN conda install -y --freeze-installed -c bioconda -c conda-forge barrnap nomkl \
+			&& conda clean -afy
+
+# INSTALL EMBOSS
+RUN apt-get update && \
+			DEBIAN_FRONTEND="noninteractive" apt-get install -y libdatetime-perl libxml-simple-perl libdigest-md5-perl default-jre emboss
+
+# INSTALL MLST
+RUN conda create -y -n MLST && \
+			conda install -y --freeze-installed -n MLST -c conda-forge -c bioconda -c defaults mlst nomkl \
+			&& conda clean -afy
+
+# INSTALL NANOPOLISH
+## Configure Conda
+RUN apt-get install -y libhdf5-dev \
+			&& git clone --recursive https://github.com/jts/nanopolish.git \
+			&& cd nanopolish \
+			&& make all
+RUN rm /work/nanopolish/hdf5-1.8.14.tar.gz /work/nanopolish/eigen-3.3.7.tar.bz2
+ENV PATH="$PATH:/work/nanopolish"
+
+# INSTALL PROKKA
+RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz
+RUN conda create -y -n PROKKA && \
+			source activate PROKKA && \
+			conda install -y --freeze-installed -c conda-forge -c bioconda -c defaults nomkl prokka>=1.14 && \
+			conda clean -afy && \
+			gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
+			mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
+			mv TIGRFAMs_15.hmm /miniconda/envs/PROKKA/db/hmm/ && \
+			prokka --setupdb && \
+			apt-get install -y ncbi-tools-bin
+
+# INSTALL PHIGARO
+RUN apt-get install -y tar git libc6-dev gcc g++ locate seqtk && \
+			conda install -y --freeze-installed -c bioconda prodigal hmmer nomkl && \
+			conda clean -afy && \
+			python3 -m pip install phigaro==2.3.0 && \
+			(echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
+			chmod a+rw -R /work/phigaro_pvog
+
+# Help Phigaro Installation
+RUN cd /usr/bin && \
+			for i in * ; do ln -rs "$i" /usr/local/bin ; done
+
+## INSTALL phispy
+RUN conda create -n phispy -y -c bioconda phispy nomkl && \
+			conda clean -afy
+
+# INSTALL RGI
+RUN conda create -y -n RGI -c anaconda -c bioconda -c conda-forge -c defaults openssl=1.0 rgi nomkl python=3.6 && \
+			conda clean -afy && \
+			wget https://card.mcmaster.ca/latest/data && \
+		  tar -xvf data ./card.json && \
+			source activate RGI && \
+			rgi load --card_json ./card.json
+
+# Install IslandPath
+RUN conda create -y -n find_GIs && \
+			conda install -y --freeze-installed -n find_GIs -c bioconda nomkl islandpath && \
+			conda install -y --freeze-installed -n find_GIs -c conda-forge biopython && \
+			conda clean -afy && \
+			git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
+			ln -rs ./islandpath/Dimob.pl /usr/local/bin
+
+# Download pythonScripts
+ADD scripts/pscripts/splitgenbank.py /usr/local/bin/splitgenbank.py
+RUN chmod a+x /usr/local/bin/splitgenbank.py
+
+# Install tbl2asn
+RUN conda install -y --freeze-installed -c bioconda nomkl tbl2asn-forever && \
+			conda clean -afy
+
+# Install samtools
+RUN apt-get install -y samtools
+
+# IMPORTANT ADDITIONAL DATABASES
+workdir /work/dbs
+
+## Pythons scripts for additional databases
+COPY scripts/pscripts/run_blasts.py /usr/local/bin/run_blasts.py
+RUN chmod a+x /usr/local/bin/run_blasts.py && \
+			/miniconda/bin/python3 -m pip install docopt pandas
+
+## VFDB nt
+RUN mkdir vfdb && \
+ 			wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \
+			gzip -d VFDB_setA_nt.fas.gz && \
+				awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setA_nt.fas | \
+				sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \
+				awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences && \
+			makeblastdb -in vfdb/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \
+			rm VFDB_setA_nt.fas
+
+## ARGMiner prot
+RUN mkdir ARGMiner && \
+			wget http://bench.cs.vt.edu/ftp/argminer/release/ARGminer-v1.1.1.A.fasta && \
+			awk -v db=ARGMiner '/>/{ split($0,a,"|"); $0=">" db "~~~" a[3] "~~~" a[1] "~~~" a[2] " " a[4] }1' ARGminer-v1.1.1.A.fasta | \
+			sed -e 's/~>/~/g' -e 's/gi:.*:ref://g' -e 's/gi:.*:gb://g' -e 's/gi:.*:emb://g' -e 's/:~/~/g' > ARGMiner/sequences && \
+			rm ARGminer-v1.1.1.A.fasta && \
+			makeblastdb -in ARGMiner/sequences -title 'argminer' -dbtype prot -logfile /dev/null && \
+			diamond makedb --in ARGMiner/sequences -d ARGMiner/diamond
+
+
+## ICEberg nt (ICEs)
+RUN mkdir iceberg && \
+			wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_seq_experimental_data.fas && \
+			awk -v db=ICEberg '/>/{ split($0,a,"|"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" a[5] "~~~" a[3] " " all }1' ICEberg_seq_experimental_data.fas | \
+			sed -e 's/ >/ /g' > iceberg/sequences && \
+			rm ICEberg_seq_experimental_data.fas && \
+			makeblastdb -in iceberg/sequences -title 'iceberg' -dbtype nucl -logfile /dev/null
+
+## ICEberg prot (genes)
+RUN wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_aa_experimental_data.fas && \
+			awk -v db=ICEberg \
+			'/>/{ split($0,col," "); split(col[1],a,"[|]"); split(col[2],b,"[|]"); split($0,c,"[|]"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" b[4] "~~~" c[6] " " all }1' \
+			ICEberg_aa_experimental_data.fas | sed -e 's/ >/ /g' | awk -F '\\]' \
+			'{ if ($0 ~ />/) { gsub(" ","_",$1); gsub("_\\[","_",$1); gsub("~_","~",$1); print $1,$2 "]" } else { print $0 }}' > iceberg/proteins && \
+			diamond makedb --in iceberg/proteins -d iceberg/diamond && \
+			makeblastdb -in iceberg/proteins -title 'iceberg' -dbtype prot -logfile /dev/null && \
+			rm ICEberg_aa_experimental_data.fas
+
+##  VICTORS prot (genes)
+RUN mkdir victors && \
+			wget -O victors_original.fasta "http://www.phidias.us/victors/downloads/gen_downloads_protein.php" && \
+			grep -v "^[^>M]" victors_original.fasta > victors_prot.fasta && \
+			rm victors_original.fasta && \
+			awk -v db=victors '/>/{ split($0,a,"|"); split(a[5],gene," \\["); all=$0; $0=">" db "~~~" gene[1] "~~~" a[4] "~~~" "Victors_" a[2] " " all }1' victors_prot.fasta | \
+			sed -e 's/ >/ /g' -e 's/~ /~/g' | \
+			awk -F "~~~" ' { if ($0 ~ />/) { gsub(" ", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' > victors/sequences && \
+			diamond makedb --in victors/sequences -d victors/diamond && \
+			makeblastdb -in victors/sequences -title 'victors' -dbtype prot -logfile /dev/null && \
+			rm victors_prot.fasta
+
+## PHAST prot (genes)
+RUN mkdir phast && \
+			wget -O phast_prot.fasta http://phaster.ca/downloads/prophage_virus.db && \
+			awk -v db=phast '/>/{ split($0,a,"|"); split(a[5],gene," \\["); all=$0; $0=">" db "~~~" gene[1] "~~~" a[4]"~~~" "PHAST_" a[2] " " all }1' phast_prot.fasta | \
+			sed -e 's/ >/ /g' -e 's/~ /~/g' | \
+			awk -F "~~~" ' { if ($0 ~ />/) { gsub(" ", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' | \
+			awk -F "~~~" ' { if ($0 ~ />/) { gsub("-", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' > phast/sequences && \
+			rm phast_prot.fasta && \
+			diamond makedb --in phast/sequences -d phast/diamond && \
+			makeblastdb -in phast/sequences -title 'phast' -dbtype prot -logfile /dev/null
+
+## Install plasmidfinder
+workdir /work
+# Get program
+RUN conda create -y -n PLASMIDFINDER && \
+			source activate PLASMIDFINDER && \
+			conda install -y --freeze-installed -c bioconda plasmidfinder nomkl && \
+			download-db.sh && \
+			conda clean -afy
+
+## Install platon
+RUN mkdir -p /work/platon && \
+			conda create -n PLATON -y -c conda-forge -c bioconda -c defaults platon nomkl &&\
+			wget -O db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz" && \
+			mv db.tar.gz /work/platon && \
+			conda clean -afy
+
+## Install resfinder
+# Create env
+RUN conda create -y -n Resfinder python=3.7 nomkl && \
+			source activate Resfinder && \
+			conda install -y --freeze-installed -c bioconda kma nomkl && \
+			pip3 install tabulate biopython cgecore gitpython setuptools python-dateutil && \
+			conda clean -afy
+# Get program
+RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
+			cd resfinder && \
+			git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder && \
+			git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder
+
+# Index databases
+RUN cd resfinder/db_resfinder && \
+			source activate Resfinder && \
+			python3 INSTALL.py $(which kma_index) non_interactive
+
+# Get script to convert resfinder tab to gff
+COPY scripts/pscripts/resfinder2gff.py /usr/local/bin/resfinder2gff.py
+RUN chmod a+x /usr/local/bin/resfinder2gff.py
+
+# Install minimap2
+RUN conda install -y -c bioconda minimap2 nomkl \
+			&& conda clean -afy
+
+# Get scripts and files to plot GIs
+ADD scripts/bscripts /work/bscripts
+RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
+			cd gff-toolbox && \
+			python3 setup.py install && \
+			gff-toolbox -h
+
+# CHECK ENVs
+RUN conda info -e
+
+# Fix permissions
+RUN chmod -R a+rwx /usr/local/lib/python3.8/
+RUN chmod -R a+rwx /miniconda/envs/RGI/lib/python3.6/
+ENV MPLCONFIGDIR="/tmp/"
+
+# For maths
+RUN apt-get install -y bc
+
+# Clean
+RUN conda clean -afy \
+			&& rm diamond_manual.pdf *.tar.gz '=1.14' \
+			&& find /miniconda/ -follow -type f -name '*.a' -delete \
+			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
+			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
+
+# Set Workdir
+WORKDIR /work

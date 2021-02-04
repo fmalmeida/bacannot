@@ -1,0 +1,92 @@
+FROM ubuntu:20.04
+
+MAINTAINER Felipe Marques <marques.felipe@aluno.unb.br>
+
+WORKDIR /work
+
+# Generic dependencies
+RUN apt-get update && \
+      apt-get upgrade -y && \
+      apt-get install -y wget make cmake
+
+# Install KOfam and its dependencies
+## KOFAM DB
+RUN mkdir -p /work/kofamscan/db && \
+      cd /work/kofamscan/db && \
+      wget ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz && \
+      wget ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz && \
+      gunzip ko_list.gz && \
+      tar xvzf profiles.tar.gz
+## KOFAM binaries
+RUN mkdir -p /work/kofamscan/bin && \
+      cd /work/kofamscan/bin && \
+      wget ftp://ftp.genome.jp/pub/tools/kofam_scan/kofam_scan-1.3.0.tar.gz && \
+      tar xvzf kofam_scan-1.3.0.tar.gz && \
+      cp -r kofam_scan-1.3.0/* . && \
+      rm -rf kofam_scan-1.3.0
+## KOFAM HMMER
+RUN cd /work/kofamscan && \
+      mkdir hmmer src && \
+      cd src && \
+      wget http://eddylab.org/software/hmmer/hmmer.tar.gz && \
+      tar xvzf hmmer.tar.gz && \
+      cd hmmer-3.3.2 && \
+      ./configure --prefix=/work/kofamscan/hmmer && \
+      make && \
+      make install
+## KOFAM RUBY
+RUN mkdir /work/kofamscan/ruby && \
+      cd /work/kofamscan/src && \
+      wget https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.3.tar.gz && \
+      tar xvzf ruby-2.6.3.tar.gz && \
+      cd ruby-2.6.3 && \
+      ./configure --prefix=/work/kofamscan/ruby && \
+      make && \
+      make install
+## KOFAM parallel
+RUN mkdir /work/kofamscan/parallel && \
+      cd /work/kofamscan/src && \
+      wget https://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 && \
+      tar xvjf parallel-latest.tar.bz2 && \
+      cd parallel-* && \
+      ./configure --prefix=/work/kofamscan/parallel && \
+      make && \
+      make install
+
+# Install NCBI shared libraries
+RUN apt-get install -y ncbi-tools-bin
+
+# Update path
+ENV PATH=/work/kofamscan/ruby/bin:$PATH
+RUN ln -rs /work/kofamscan/bin/exec_annotation /usr/local/bin/kofamscan
+
+# Edit config.yml
+RUN mv /work/kofamscan/bin/config-template.yml /work/kofamscan/bin/config.yml && \
+      echo "profile: /work/kofamscan/db/profiles" >> /work/kofamscan/bin/config.yml && \
+      echo "ko_list: /work/kofamscan/db/ko_list" >> /work/kofamscan/bin/config.yml && \
+      echo "hmmsearch: /work/kofamscan/hmmer/bin/hmmsearch" >> /work/kofamscan/bin/config.yml && \
+      echo "parallel: /work/kofamscan/parallel/bin/parallel" >> /work/kofamscan/bin/config.yml
+
+## Install kegg decoder
+## Re-init shell
+SHELL ["/bin/bash", "-c"]
+# INSTALL MINICONDA
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /miniconda.sh && \
+			bash /miniconda.sh -b -p /miniconda
+ENV PATH="$PATH:/miniconda/bin"
+
+# Update do latest
+RUN conda update -y -n base conda
+
+RUN conda create -n kegg-decoder-env python=3.7 && \
+      source activate kegg-decoder-env && \
+      python3.7 -m pip install KEGGDecoder
+
+# Clean
+RUN conda clean -afy \
+			&& find /miniconda/ -follow -type f -name '*.a' -delete \
+			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
+			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
+
+# Done
+WORKDIR /work

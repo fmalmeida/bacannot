@@ -1,0 +1,1 @@
+No AMR gene was found using ARGminer database, either because the resistance prediction module was not executed or due to alignment thresholds stringency. If you believe that at least one gene should be present in the query genome, please use the [RGI annotation program from CARD](https://card.mcmaster.ca/analyze/rgi).

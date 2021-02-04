@@ -1,0 +1,101 @@
+Results obtained with [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) can be roughly divided in two categories (both summarized below):
+
+1. Acquired resistance genes;
+2. Point mutations conferring resistance.
+
+### Acquired resistance genes
+
+#### Summary of acquired ARGs
+
+```{r results='asis'}
+# Read result
+tab <- resfinder_tab
+
+# Create List
+string.list <- tab %>% pull(1) %>% unique()
+cat("- **AMR genes found in the query genome:**\n")
+cat(paste("\t-", string.list), sep = '\n')
+```
+
+<caption>(#tab:resfinder-resistance-genes) Resistance genes annotated with Resfinder</caption>
+```{r resfinder-resistance-genes}
+resfinder_tab$Accession.no. <- resfinder_url(resfinder_tab$Accession.no.)
+# Produce Table
+resfinder_tab %>%
+  datatable(escape = FALSE,
+            colnames = c("Resistance gene", "Identity (%)", "Alignment/Ref length",
+                         "Coverage (%)", "Position in reference", "Contig",
+                         "Position in contig", "Phenotype", "Acc. num."),
+            filter = 'top',
+            options = dt_opt_lst,
+            extensions = 'Buttons',
+            rownames = F)
+```
+<br>
+
+#### Phenotype summary
+
+<caption>(#tab:resfinder-pheno-table) Resfinder's phenotype prediction. Resistance phenotypes are shown in green and susceptible phenotypes in red.</caption>
+```{r resfinder-pheno-table}
+# Produce Table
+resfinder_pheno %>% arrange(desc(N..genes)) %>% filter(Phenotype == "Resistant" | Phenotype == "No resistance") %>%
+  datatable(escape = FALSE,
+            colnames = c("Antibiotic", "Drug Class", "Phenotype", "Match", "Genetic background"),
+            filter = 'top',
+            options = dt_opt_lst,
+            extensions = 'Buttons',
+            rownames = F) %>%
+  formatStyle("N..genes", target = 'row', 
+              backgroundColor = styleInterval(c(1, 10, 1000), c('pink','lightgreen','green', 'darkgreen')))
+```
+<br>
+
+```{r resfinder-resistome-png, fig.align='center', fig.show='hold', fig.cap="Resistome Predicted with Resfinder", out.width="35%"}
+## Grab AMR
+amr <- resfinder_tab %>%
+  select(Contig, Phenotype)
+classes <- lapply(amr$Phenotype, function(x) {
+  strsplit(as.character(x), "resistance")[[1]][1] %>% str_trim()
+  })
+amr$Phenotype <- unlist(classes)
+amr <- plyr::count(amr, "Phenotype")
+
+## Plot
+ggplot(amr, aes(x=Phenotype, y=freq, fill=Phenotype)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("") +
+  ylab("Number of genes") +
+  guides(fill=guide_legend(title = "Targeted drug class"))
+```
+
+### Point mutations
+
+<caption>(#tab:resfinder-pointfinder) Point mutations annotated with Resfinder</caption>
+```{r resfinder-pointfinder}
+# Produce Table
+resfinder_point %>%
+  datatable(escape = FALSE,
+            colnames = c("Mutation", "Nucl. change", "Amino ac. change", "Resistance", "PMID"),
+            filter = 'top',
+            options = dt_opt_lst,
+            extensions = 'Buttons',
+            rownames = F)
+```
+
+```{r resfinder-pointfinder-png, fig.align='center', fig.show='hold', fig.cap="Resistome Predicted using Resfinder point mutations", out.width="35%"}
+## Grab AMR
+amr <- resfinder_point %>%
+  select(Mutation, Resistance)
+amr <- plyr::count(amr, "Resistance")
+
+## Plot
+ggplot(amr, aes(x=Resistance, y=freq, fill=Resistance)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("") +
+  ylab("Number of point mutations mutations") +
+  guides(fill=guide_legend(title = "Targeted drug class"))
+```

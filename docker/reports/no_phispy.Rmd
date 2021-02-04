@@ -1,0 +1,1 @@
+Not a single prophage sequence was predicted using PhiSpy pipeline. If you truly believe that at least one prophage should be present in the query genome, please use the [PHASTER web tool](http://phaster.ca/).

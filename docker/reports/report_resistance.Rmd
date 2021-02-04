@@ -1,0 +1,259 @@
+---
+title: "Annotation of amr determinants"
+author: "Produced with bacannot pipeline"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+params:
+  blast_id:
+  blast_cov:
+  query:
+  amrfinder:
+  gff:
+  rgitool:
+  rgiparsed:
+  rgi_heatmap:
+  argminer_blastp:
+  resfinder_tab:
+  resfinder_pointfinder:
+  resfinder_phenotype:
+output:
+  bookdown::html_document2:
+    css: styles.css
+    df_print: paged
+    number_sections: false
+    syntax: espresso
+    self_contained: yes
+    theme: readable
+    #toc: yes
+    #toc_collapsed: yes
+    #toc_depth: 4
+    #toc_float: yes
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.pos = 'H', message = FALSE)
+suppressMessages(library(magrittr))
+suppressMessages(library(ballgown))
+suppressMessages(library(knitr))
+suppressMessages(library(stringr))
+suppressMessages(library(tidyr))
+suppressMessages(library(plyr))
+suppressMessages(library(DT))
+suppressMessages(library(dplyr))
+suppressMessages(library(stringr))
+suppressMessages(library(ggplot2))
+
+
+########################
+### Useful functions ###
+########################
+
+getAttributeField <- function (x, field, attrsep = ";") {
+  s = strsplit(x, split = attrsep, fixed = TRUE)
+  sapply(s, function(atts) {
+    a = strsplit(atts, split = "=", fixed = TRUE)
+    m = match(field, sapply(a, "[", 1))
+    if (!is.na(m)) { rv = a[[m]][2]
+    }
+    else {
+      rv = as.character(NA)
+    }
+    return(rv)
+  })
+}
+
+amrfinder_url <- function (x) {
+
+  id  <- x
+  url <- ifelse(!is.na(x), paste0("https://www.ncbi.nlm.nih.gov/gene/?term=", x), paste0("No Reference"))
+  url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
+
+  return(url)
+}
+
+resfinder_url <- function (x) {
+
+  id  <- x
+  url <- ifelse(!is.na(x), paste0("https://www.ncbi.nlm.nih.gov/nuccore/?term=", x), paste0("No Reference"))
+  url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
+
+  return(url)
+}
+
+card_url <- function (x) {
+
+  id  <- x
+  url <- ifelse(!is.na(x), paste0("https://card.mcmaster.ca/ontology/", x), paste0("No Reference"))
+  url <- ifelse(!is.na(x), paste0("<a  target=_blank href=", url, ">", id, "</a>" ), paste0("No Reference"))
+
+  return(url)
+}
+
+check_lines <- function(x) {
+  return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
+}
+
+#####################
+### Loading files ###
+#####################
+
+# Prokka GFF
+gff <- try(gffRead(params$gff), silent = TRUE)
+## Adding IDs and coordinates to the GFF
+gff$`Query Protein Coordinates` <- paste(gff$seqname, ":", gff$start, "-", gff$end, sep = "")
+gff$Prokka_ID <- getAttributeField(gff$attributes, "ID", ";")
+
+# Amrfinder
+amrtsv <- try(read.delim(params$amrfinder) %>% select(2,3,4,5,6,7,8,9,10,16), silent = TRUE)
+amrtsv[is.na(amrtsv)] <- "none"
+
+# Resfinder
+resfinder_tab <- try(read.delim(params$resfinder_tab), silent = T)
+resfinder_point <- try(read.delim(params$resfinder_pointfinder), silent = T)
+resfinder_pheno <- try(
+  read.delim(params$resfinder_phenotype,
+             comment.char = "#", header = F,
+             col.names = c("Antibiotic", "Drug Class", "Phenotype", "N. genes", "Genetic background")), silent = T)
+
+
+# RGI
+rgi_tsv <- try(read.delim(params$rgitool, header = TRUE), silent = TRUE)
+rgi_parsed <- try(read.delim(params$rgiparsed, header = FALSE), silent = TRUE)
+
+# ARGminer
+argminer_blastp <- try(read.delim(params$argminer_blastp, header = TRUE), silent = TRUE)
+
+
+#########################################
+### Checking if input files are empty ###
+#########################################
+
+# Check if NCBI is empty
+if (class(amrtsv) != 'try-error' &
+    check_lines(amrtsv) > 0) {
+  amrFinder_not_null <- TRUE
+  amrFinder_null <- FALSE
+} else {
+  amrFinder_not_null <- FALSE
+  amrFinder_null <- TRUE
+}
+
+# Check if Resfinder is empty
+if (class(resfinder_tab) != 'try-error' &
+    check_lines(resfinder_tab) > 0) {
+  resfinder_not_null <- TRUE
+  resfinder_null <- FALSE
+} else {
+  resfinder_not_null <- FALSE
+  resfinder_null <- TRUE
+}
+
+# Check if ARGminer is empty
+if (class(argminer_blastp) != 'try-error' &
+    check_lines(argminer_blastp) > 0) {
+  argminer_not_null <- TRUE
+  argminer_null <- FALSE
+} else {
+  argminer_not_null <- FALSE
+  argminer_null <- TRUE
+}
+
+# Check if RGI is empty
+if (class(rgi_tsv) != 'try-error' &
+    check_lines(rgi_tsv) > 0) {
+  rgi_not_null <- TRUE
+  rgi_null <- FALSE
+} else {
+  rgi_not_null <- FALSE
+  rgi_null <- TRUE
+}
+
+# DT options
+# Lists
+dt_opt_lst <- list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE)
+```
+
+# `r params$query` ARGs report {.tabset .tabset-pills}
+
+## About
+
+Antimicrobial resistance genes (ARGs) are genes that encode resistance determinants capable of conferring to the bacteria the ability to tolerate or resist some antibiotics or antimicrobials, making bacteria less susceptible to its effects. In this pipeline, ARGs have been predicted/detected with four main AMR resources:
+
+1. [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/)
+    + Resfinder is a very popular database of acquired resistance genes and chromosomal point mutations hosted by the Center for Genomic Epidemiology.
+2. [AMRFinderPlus](https://github.com/ncbi/amr/wiki)
+    + AMRFinder is a software distributed by NCBI that allows users to query the National Database of Antibiotic Resistant Organisms ([NDARO](https://www.ncbi.nlm.nih.gov/pathogens/antimicrobial-resistance/)).
+    + NDARO is a NCBI curated database that aggregates resistance genes from other databases such as [Resfams](http://www.dantaslab.org/resfams), [CARD](https://card.mcmaster.ca/), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/), Pasteur Institute Beta Lactamases and others.
+    + For more information please read the following [link](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA313047). NCBI's efforts were done in order to standardize and confer reliability to AMR predictions.
+3. [CARD RGI](https://github.com/arpcard/rgi)
+    + RGI is a software distributed by the CARD database which enables the detection of new variants and mutations that confer resistance to antibiotics, analyzing genomes or proteome sequences under three paradigms: **Perfect**, **Strict**, and **Loose** (a.k.a. Discovery).
+    + **The Perfect algorithm** is most often applied to clinical surveillance as it detects perfect matches to the curated reference sequences and mutations in the CARD database.
+    + In contrast, **the Strict algorithm** detects previously unknown variants of known AMR genes, including secondary screen for key mutations, using detection models with CARD's curated similarity cut-offs to ensure the detected variant is likely a functional AMR gene.
+4. [ARGminer](https://bench.cs.vt.edu/argminer/#/home)
+    + RGminer database is an online resource for the inspection and curation of ARGs based on crowdsourcing as well as a platform to promote interaction and collaboration for the ARG scientific community. It is used in this pipeline in order to diversify the insights about the resistance genes found. It can not be used as the sole source of prediction, but it may be a useful contribution for analyses and AMR descriptions because it tries to aggregate and create nomenclature standards between databases.
+
+### Prediction thresholds
+
+All the predictions were passed through a user defined threshold for minimum coverage and identity:
+
+* Min. Identity (%): `> `r params$blast_id``
+* Min. Coverage (%): `> `r params$blast_cov``
+
+> [CARD RGI](https://github.com/arpcard/rgi) have their own detection models thresholds obtained by curation. Therefore, the only result from CARD that have been filtered like that is their final tabular output (shown in this report).
+
+> The results used to create this report are under the directory called `resistance` in the output folder of the query `r params$query`.
+
+## Resfinder
+
+```{r, Resfinder_conditional_block, echo=FALSE, results='asis', eval=resfinder_not_null, child='yes_Resfinder.Rmd'}
+```
+
+```{r, Resfinder_conditional_block_2, echo=FALSE, results='asis', eval=resfinder_null, child='no_Resfinder.Rmd'}
+```
+
+## CARD RGI
+
+```{r, rgi_conditional_block, echo=FALSE, results='asis', eval=rgi_not_null, child='yes_RGI.Rmd'}
+```
+
+```{r, rgi_conditional_block_2, echo=FALSE, results='asis', eval=rgi_null, child='no_RGI.Rmd'}
+```
+
+## AMRFinder
+
+```{r, AMRFinder_conditional_block, echo=FALSE, results='asis', eval=amrFinder_not_null, child='yes_AMRfinder.Rmd'}
+```
+
+```{r, AMRFinder_conditional_block_2, echo=FALSE, results='asis', eval=amrFinder_null, child='no_AMRfinder.Rmd'}
+```
+
+## ARGminer
+
+```{r, argminer_conditional_block, echo=FALSE, results='asis', eval=argminer_not_null, child='yes_argminer.Rmd'}
+```
+
+```{r, argminer_conditional_block_2, echo=FALSE, results='asis', eval=argminer_null, child='no_argminer.Rmd'}
+```
+
+## Prokka
+
+Additionally, Prokka generically annotates a few proteins that are related to any type of resistance. One must take caution when evaluating this result because this annotation can be very generic and therefore not so meaningful. Because it uses hmms, sometimes the annotation of genes can be based on a single detected motif thus its results must be checked whether they are correctly annotated and/or functional. These are showed in Table \@ref(tab:prokka-general-resistance).
+
+<caption>(#tab:prokka-general-resistance) Generic annotation of resistance determinants by Prokka</caption>
+```{r prokka-general-resistance, echo=FALSE}
+gff %>%
+  filter(str_detect(attributes, "resistance|Resistance")) %>%
+  select("seqname", "start", "end", "attributes") %>%
+  datatable(escape = FALSE,
+          filter = 'top',
+          colnames = c("Contig", "Start", "End", "Description"),
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```

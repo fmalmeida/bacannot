@@ -1,0 +1,1 @@
+No AMR gene was annotated either because [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) has not been executed (based on user's input parameters) or the given alignment thresholds were too strict. If you believe that at least one gene should be present in the query genome you may try different thresholds.
