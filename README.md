@@ -56,15 +56,17 @@ This images have been kept separate to not create massive Docker image and to av
           docker pull fmalmeida/bacannot:kofamscan
           docker pull fmalmeida/bacannot:jbrowse
           docker pull fmalmeida/bacannot:renv
+          docker pull fmalmeida/bacannot:server (For the shiny parser)
           docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
 
     * Each image can be built by using the Dockerfiles in the docker folder
 
           cd docker
-          docker build -t fmalmeida/bacannot -f Dockerfile_bacannot .
-          docker build -t fmalmeida/kofamscan -f Dockerfile_kofamscan .
-          docker build -t fmalmeida/jbrowse -f Dockerfile_jbrowse .
-          docker build -t fmalmeida/renv -f Dockerfile_renv .
+          docker build -t fmalmeida/bacannot:latest -f Dockerfile_bacannot .
+          docker build -t fmalmeida/bacannot:kofamscan -f Dockerfile_kofamscan .
+          docker build -t fmalmeida/bacannot:jbrowse -f Dockerfile_jbrowse .
+          docker build -t fmalmeida/bacannot:renv -f Dockerfile_renv .
+          docker build -t fmalmeida/bacannot:server -f Dockerfile_server .
 
 > Each release is accompanied by a Dockerfile in the docker folder. When using releases older releases, users can create the correct image using
 the Dockerfile that goes alongside with the release (Remember to give the image the correct name, as it is in dockerhub and the nextflow script).
