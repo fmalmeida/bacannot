@@ -84,7 +84,7 @@ def paramsCheck() {
     ERROR!
 
     A minor error has occurred
-      ==> User have set --prokka_kingdom but forget --prokka_genetic_code.
+      ==> User have set --prokka_kingdom but forgot --prokka_genetic_code.
 
     These parameters must be used together. If you change prokka defaults kingdom parameter you must set the genetic code to be used for translation.
 
@@ -129,6 +129,24 @@ def paramsCheck() {
       ==> User has set the resfinder panel to "Other"
 
     This is impossible, since the pipeline tries to annotation point finder mutation and these are incompatible with the "Other" panel
+
+    Cheers.
+    """.stripIndent()
+
+    exit 1
+  }
+
+  /*
+      Checking for nf tower parameters
+  */
+  if ((params.use_tower && !params.tower_token) || (!params.use_tower && params.tower_token)) {
+    println """
+    ERROR!
+
+    A minor error has occurred
+      ==> User forgot to set (together) both --use_tower and --tower_token.
+
+    These parameters must be used together. They are the necessary to run the pipeline using the amazing Nextflow Tower!
 
     Cheers.
     """.stripIndent()
