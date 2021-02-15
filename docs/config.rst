@@ -118,8 +118,8 @@ Default configuration:
     prokka_kingdom = ''
 
   // Translation table code. Must be set if the above is set.
-  // Example: params.prokka_genetic.code = 11
-    prokka_genetic.code = false
+  // Example: params.prokka_genetic_code = 11
+    prokka_genetic_code = false
 
   // Use rnammer instead of Barrnap? False or True?
     prokka_use_rnammer = false
