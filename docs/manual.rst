@@ -93,28 +93,6 @@ Output directory
      - Name of directory to store output values. A sub-directory for each
        genome will be created inside this main directory.
 
-Nextflow tower
-""""""""""""""
-
-.. list-table::
-   :widths: 20 10 20 30
-   :header-rows: 1
-
-   * - Arguments
-     - Required
-     - Default value
-     - Description
-
-   * - ``--use_tower``
-     - N
-     - False
-     - Triggers the pipeline to be launched via nextflow tower
-
-   * - ``--tower_token``
-     - Y (if ``--use_tower``)
-     - NA
-     - Your nextflow tower token. Used to launch the pipeline in your nextflow tower account
-
 Max job request
 """""""""""""""
 

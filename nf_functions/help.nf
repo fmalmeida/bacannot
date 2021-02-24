@@ -29,13 +29,6 @@ def helpMessage() {
    OBS: These reports can also be enabled through the configuration file.
    OPTIONS:
 
-      # Nextflow tower parameters
-      # Used to display the pipeline execution in nextflow tower page
-      # very useful when combined with nextflow -bg (for running in backgroung)
-
-    --use_tower                                    Triggers the pipeline to be launched via nextflow tower
-    --tower_token <token>                          Your nextflow tower token. Used to launch the pipeline in your nextflow tower account
-
       # Input configuration -- Analysis of a single genome
       # Users can give either a genome in FASTA file or raw reads in FASTQ
       # Please do not use glob. patterns ('*') with these parameters

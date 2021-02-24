@@ -88,23 +88,6 @@
             ],
             "fa_icon": "far fa-folder"
         },
-        "nf_tower_options": {
-            "title": "NF tower options",
-            "type": "object",
-            "description": "Define the required options for launching the pipeline via NF tower",
-            "default": "",
-            "properties": {
-                "use_tower": {
-                    "type": "boolean",
-                    "description": "Launch pipeline in NF tower?"
-                },
-                "tower_token": {
-                    "type": "string",
-                    "description": "Your NF tower token for launching the pipeline in it"
-                }
-            },
-            "fa_icon": "fas fa-gopuram"
-        },
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -351,9 +334,6 @@
         },
         {
             "$ref": "#/definitions/output_directory"
-        },
-        {
-            "$ref": "#/definitions/nf_tower_options"
         },
         {
             "$ref": "#/definitions/generic_options"

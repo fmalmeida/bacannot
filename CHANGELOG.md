@@ -57,8 +57,6 @@ We have added a nextflow parameter schema in json that is compliant with nf-core
 nf-core launch fmalmeida/bacannot
 ```
 
-Checkout the paremeters `--use_tower` and `--tower_token` to activate pipeline execution in nextflow tower.
-
 ### plasmidfinder
 
 _In silico_ plasmid detection has been added with Plasmidfinder. In order to not execute this parameter, users will need to use `--not_run_plasmid_search`. Otherwise, its thresholds can be configured with `--plasmids_minid` and `--plasmids_mincov`.

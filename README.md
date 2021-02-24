@@ -155,10 +155,6 @@ It will result in the following:
 <img src="./images/nf-core-gui.png" width="500px"/>
 </p>
 
-#### nextflow tower
-
-This pipeline also accepts that users track its execution of processes via [nextflow tower](https://tower.nf/). For that users will have to use the parameters `--use_tower` and `--tower_token`.
-
 ## Known issues
 
 1. Sometimes when navigating through the shiny parser the reports and JBrowse tabs may still be pointing to old, or just different, samples that have been analysed before and not the actual sample in question. For example, you open the shiny server for the Sample 2, but the reports and JBrowse are showing results of Sample 1. This is caused by the browser's data storages and cookies.
