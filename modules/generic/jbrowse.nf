@@ -17,6 +17,7 @@ process jbrowse {
   # Get JBrowse Files in working directory
   cp -R /work/jbrowse/* . ;
   cp /work/bscripts/run_jbrowse.sh . ;
+  chmod a+x run_jbrowse.sh ;
 
   # Render genome browser
   ./run_jbrowse.sh -p $prefix -g $draft -b $gc_bedGraph -s $gc_chrSizes -f $gff -r $barrnap -B $phigaro \
