@@ -20,9 +20,11 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 * [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) database for the annotation of integrative and conjugative elements
 * [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) for the annotation of virulence genes
 
-## Further reading
+## Further reading and complementary analyses
 
-This pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a complete workflow for bacterial genomics analyses.
+In order to make the pipeline more robust, and more comprehensive, a toolkit called [bacannot-compare](https://github.com/fmalmeida/bacannot-compare) is under development. It is a toolkit for comparative genomics analyses using this pipeline results. It still is very new and yet incomplete, but under constant development. This toolkit may grow based on the community needs.
+
+Moreover, this pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a complete workflow for bacterial genomics analyses.
 
 ## Table of contents
 
