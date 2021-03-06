@@ -28,6 +28,6 @@ process kofamscan {
   kofamscan -o KOfamscan/${prefix}_ko_detailed.txt --cpu=${params.threads} proteins.faa ;
 
   # Re-run kofamscan with mapper-output
-  kofamscan -o KOfamscan/${prefix}_ko_forKEGGMapper.txt --reannotation --cpu=${params.threads} -f mapper proteins.faa ;
+  kofamscan -o KOfamscan/${prefix}_ko_forKEGGMapper.txt --reannotate --cpu=${params.threads} -f mapper proteins.faa ;
   """
 }
