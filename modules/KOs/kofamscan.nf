@@ -3,6 +3,8 @@ process kofamscan {
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "$filename"
   }
+  errorStrategy 'retry'
+  maxRetries 2
   tag "Executing KOfamscan - Its outputs can be viewed in KEGG-mapper"
   label 'kofam'
 
@@ -25,7 +27,7 @@ process kofamscan {
   # Run kofamscan with detailed output
   kofamscan -o KOfamscan/${prefix}_ko_detailed.txt --cpu=${params.threads} proteins.faa ;
 
-  # Run kofamscan with mapper-output
-  kofamscan -o KOfamscan/${prefix}_ko_forKEGGMapper.txt --cpu=${params.threads} -f mapper proteins.faa ;
+  # Re-run kofamscan with mapper-output
+  kofamscan -o KOfamscan/${prefix}_ko_forKEGGMapper.txt --reannotation --cpu=${params.threads} -f mapper proteins.faa ;
   """
 }
