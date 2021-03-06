@@ -149,7 +149,7 @@ workflow {
     new Yaml().load(parameter_yaml).each { k, v -> params[k] = v }
 
     // Read YAML file
-    parse_samplesheet(params.samplesheet)
+    parse_samplesheet(params.in_yaml)
 
     // Convert it to CSV for usability
     samples_ch = write_csv(parse_samplesheet.out)
