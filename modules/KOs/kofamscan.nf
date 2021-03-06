@@ -25,7 +25,7 @@ process kofamscan {
   mkdir KOfamscan ;
 
   # Run kofamscan with detailed output
-  kofamscan -o KOfamscan/${prefix}_ko_detailed.txt --cpu=${params.threads} proteins.faa ;
+  kofamscan -o KOfamscan/${prefix}_ko_detailed.txt --keep-tabular --cpu=${params.threads} proteins.faa ;
 
   # Re-run kofamscan with mapper-output
   kofamscan -o KOfamscan/${prefix}_ko_forKEGGMapper.txt --reannotate --cpu=${params.threads} -f mapper proteins.faa ;
