@@ -16,12 +16,20 @@ RUN mkdir -p /work/kofamscan/db && \
       wget ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz && \
       wget ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz && \
       gunzip ko_list.gz && \
-      tar xvzf profiles.tar.gz
+      tar xvzf profiles.tar.gz && \
+      rm -rf profiles.tar.gz
+
+  # for the sake of size and fastness
+  # let's select only the KOs from prokaryotes
+RUN cd /work/kofamscan/db/profiles && \
+      for dirs in *.hmm ; do if ! grep -qxFe "$dirs" prokaryote.hal ; then rm -rf $dirs ; fi; done
+
 ## KOFAM binaries
 RUN mkdir -p /work/kofamscan/bin && \
       cd /work/kofamscan/bin && \
       wget ftp://ftp.genome.jp/pub/tools/kofam_scan/kofam_scan-1.3.0.tar.gz && \
       tar xvzf kofam_scan-1.3.0.tar.gz && \
+      rm -f kofam_scan-1.3.0.tar.gz  && \
       cp -r kofam_scan-1.3.0/* . && \
       rm -rf kofam_scan-1.3.0
 ## KOFAM HMMER
@@ -30,6 +38,7 @@ RUN cd /work/kofamscan && \
       cd src && \
       wget http://eddylab.org/software/hmmer/hmmer.tar.gz && \
       tar xvzf hmmer.tar.gz && \
+      rm -f hmmer.tar.gz && \
       cd hmmer-3.3.2 && \
       ./configure --prefix=/work/kofamscan/hmmer && \
       make && \
@@ -39,6 +48,7 @@ RUN mkdir /work/kofamscan/ruby && \
       cd /work/kofamscan/src && \
       wget https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.3.tar.gz && \
       tar xvzf ruby-2.6.3.tar.gz && \
+      rm -f ruby-2.6.3.tar.gz && \
       cd ruby-2.6.3 && \
       ./configure --prefix=/work/kofamscan/ruby && \
       make && \
@@ -48,6 +58,7 @@ RUN mkdir /work/kofamscan/parallel && \
       cd /work/kofamscan/src && \
       wget https://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 && \
       tar xvjf parallel-latest.tar.bz2 && \
+      rm -f parallel-latest.tar.bz2 && \
       cd parallel-* && \
       ./configure --prefix=/work/kofamscan/parallel && \
       make && \
@@ -62,7 +73,7 @@ RUN ln -rs /work/kofamscan/bin/exec_annotation /usr/local/bin/kofamscan
 
 # Edit config.yml
 RUN mv /work/kofamscan/bin/config-template.yml /work/kofamscan/bin/config.yml && \
-      echo "profile: /work/kofamscan/db/profiles" >> /work/kofamscan/bin/config.yml && \
+      echo "profile: /work/kofamscan/db/profiles/prokaryote.hal" >> /work/kofamscan/bin/config.yml && \
       echo "ko_list: /work/kofamscan/db/ko_list" >> /work/kofamscan/bin/config.yml && \
       echo "hmmsearch: /work/kofamscan/hmmer/bin/hmmsearch" >> /work/kofamscan/bin/config.yml && \
       echo "parallel: /work/kofamscan/parallel/bin/parallel" >> /work/kofamscan/bin/config.yml

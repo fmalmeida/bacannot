@@ -6,11 +6,11 @@ The tracking for changes started in v2.1
 
 ### Automatic reports
 
-Some problems with the automatic reports, such as not understanding missing or empty files, and conditinals between processes, have been addressed and fixed.
+Some problems with the automatic reports, such as not understanding missing or empty files, and conditionals between processes, have been addressed and fixed.
 
 ### VFDB database
 
-VFDB database has been set again to use onle the core (A) virulence gene dataset. The use of complete (B) dataset were returning lots of spurious hits.
+VFDB database has been set again to use only the core (A) virulence gene dataset. The use of complete (B) dataset were returning lots of spurious hits.
 
 ### Resistance annotation
 
