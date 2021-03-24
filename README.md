@@ -1,6 +1,26 @@
-# Bacterial Annotation (bacannot) Pipeline
+<!--
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Docker build](https://img.shields.io/docker/cloud/build/fmalmeida/bacannot)](https://hub.docker.com/r/fmalmeida/bacannot) ![Docker Pulls](https://img.shields.io/docker/pulls/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/ngs-preprocess/blob/master/LICENSE)
+-->
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) ![](https://img.shields.io/github/v/release/fmalmeida/bacannot) [![Build Status](https://travis-ci.com/fmalmeida/bacannot.svg?branch=master)](https://travis-ci.com/fmalmeida/bacannot) ![](https://img.shields.io/badge/dependencies-docker-informational) [![Documentation Status](https://readthedocs.org/projects/bacannot/badge/?version=latest)](https://bacannot.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/badge/Nextflow-v20.07-yellowgreen)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) ![Docker Pulls](https://img.shields.io/docker/pulls/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/ngs-preprocess/blob/master/LICENSE)
+
+<p align="center">
+
+  <h1 align="center">bacannot pipeline</h2>
+
+  <p align="center">
+    <h3 align="center">A generic but comprehensive bacterial annotation pipeline</h3>
+    <br />
+    <a href="https://bacannot.readthedocs.io/en/latest/index.html"><strong>See the documentation »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/fmalmeida/bacannot/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/fmalmeida/bacannot/issues">Request Feature</a>
+  </p>
+</p>
+
+## About
 
 Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-the-art software for prokaryotic genome annotation. It is a wrapper around a several tools that enables a better understanding of prokaryotic genomes. It uses:
 
