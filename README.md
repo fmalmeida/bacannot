@@ -1,8 +1,4 @@
-<!--
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Docker build](https://img.shields.io/docker/cloud/build/fmalmeida/bacannot)](https://hub.docker.com/r/fmalmeida/bacannot) ![Docker Pulls](https://img.shields.io/docker/pulls/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/ngs-preprocess/blob/master/LICENSE)
--->
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) ![Docker Pulls](https://img.shields.io/docker/pulls/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/ngs-preprocess/blob/master/LICENSE)
 
 <p align="center">
 
@@ -79,7 +75,7 @@ This images have been kept separate to not create massive Docker image and to av
           docker pull fmalmeida/bacannot:server (For the shiny parser)
           docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
 
-    * Each image can be built by using the Dockerfiles in the docker folder
+    * Or, if you prefer to build it yourself, each image can be built by using the Dockerfiles in the `docker` folder:
 
           cd docker
           docker build -t fmalmeida/bacannot:latest -f Dockerfile_bacannot .
@@ -168,11 +164,11 @@ nf-core launch fmalmeida/bacannot
 It will result in the following:
 
 <p align="center">
-<img src="./images/nf-core-asking.png" width="500px"/>
+<img src="https://github.com/fmalmeida/bacannot/raw/master/images/nf-core-asking.png" width="500px"/>
 </p>
 
 <p align="center">
-<img src="./images/nf-core-gui.png" width="500px"/>
+<img src="https://github.com/fmalmeida/bacannot/raw/master/images/nf-core-gui.png" width="500px"/>
 </p>
 
 ## Known issues
