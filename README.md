@@ -40,19 +40,6 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 
 Moreover, this pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a complete workflow for bacterial genomics analyses.
 
-## Table of contents
-
-* [Requirements](https://github.com/fmalmeida/bacannot#requirements)
-* [Installation](https://github.com/fmalmeida/bacannot#installation)
-* [Quickstart](https://github.com/fmalmeida/bacannot#quickstart)
-* [Documentation](https://github.com/fmalmeida/bacannot#documentation)
-  * [Full usage](https://github.com/fmalmeida/bacannot#usage)
-  * [Usage Examples](https://github.com/fmalmeida/bacannot#usage-examples)
-  * [Configuration File](https://github.com/fmalmeida/bacannot#using-the-configuration-file)
-  * [Interactive and graphical execution](https://github.com/fmalmeida/bacannot#interactive-graphical-configuration-and-execution)
-* [Known issues](https://github.com/fmalmeida/bacannot#known-issues)
-* [Citation](https://github.com/fmalmeida/bacannot#citation)
-
 ## Requirements
 
 * Unix-like operating system (Linux, macOS, etc)
