@@ -53,3 +53,7 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 .. note::
 
 	 If using singularity you can use:  ``singularity pull docker://{docker image}``
+
+.. note::
+
+	The pipeline requires a UNIX system, therefore, Windows users may successfully use this pipeline via the `Linux subsystem for windows <https://docs.microsoft.com/pt-br/windows/wsl/install-win10>`_.
