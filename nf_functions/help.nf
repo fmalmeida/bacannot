@@ -26,13 +26,6 @@ def helpMessage() {
 
    OPTIONS:
 
-      # Use Singularity instead of Docker to manage containers?
-
-    --singularity                                  This will tell the pipeline to use Singularity instead of Docker.
-                                                   If using singularity, nextflow automatically downloads and converts
-                                                   the docker images, just remember to properly set the NXF_SINGULARITY_CACHEDIR 
-                                                   env variable as described at https://www.nextflow.io/docs/latest/singularity.html
-
       # Input configuration -- Analysis of a single genome
       # Users can give either a genome in FASTA file or raw reads in FASTQ
       # Please do not use glob. patterns ('*') with these parameters

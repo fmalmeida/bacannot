@@ -48,16 +48,15 @@ Moreover, this pipeline has two complementary pipelines (also written in nextflo
     + https://www.nextflow.io/docs/latest/getstarted.html
     + https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
 * Java 8
-* Docker or Singularity
+* Docker
   + `fmalmeida/bacannot:{latest, kofamscan, jbrowse, renv}`
 
 This images have been kept separate to not create massive Docker image and to avoid dependencies conflicts.
 
 ## Installation
 
-1. If you don't have it already install [Docker](https://docs.docker.com/) or [Singularity](https://sylabs.io/guides/3.5/user-guide/introduction.html) in your computer.
+1. If you don't have it already install [Docker](https://docs.docker.com/) in your computer.
     * After installed, you need to download the required Docker images
-    * If using singularity, nextflow automatically downloads and converts the docker images, just remember to properly set the `NXF_SINGULARITY_CACHEDIR` env variable as described at https://www.nextflow.io/docs/latest/singularity.html
 
           docker pull fmalmeida/bacannot:latest
           docker pull fmalmeida/bacannot:kofamscan

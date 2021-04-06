@@ -329,25 +329,6 @@ Merge distance
      - 0
      - Minimum number of required overlapping bases to merge genes
 
-Container manager
-"""""""""""""""""
-
-If using singularity, nextflow automatically downloads and converts the docker images, just remember to properly set the ``NXF_SINGULARITY_CACHEDIR`` env variable as described at https://www.nextflow.io/docs/latest/singularity.html
-
-.. list-table::
-   :widths: 20 10 20 30
-   :header-rows: 1
-
-   * - Arguments
-     - Required
-     - Default value
-     - Description
-
-   * - ``--singularity``
-     - N
-     - False
-     - Use Singularity instead of Docker to manage containers?
-
 All this parameters are configurable through a configuration file. We encourage users to use the configuration
 file since it will keep your execution cleaner and more readable. See a :ref:`config` example.
 

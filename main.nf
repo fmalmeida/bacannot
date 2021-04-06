@@ -56,8 +56,6 @@ if (params.get_config) {
  * Load general parameters and establish defaults
  */
 
-// Container manager
-params.singularity = false
 // General parameters
 params.outdir = 'outdir'
 params.threads = 2

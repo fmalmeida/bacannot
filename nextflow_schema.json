@@ -360,9 +360,5 @@
             "$ref": "#/definitions/user_custom_database"
         }
     ],
-    "properties": {
-        "singularity": {
-            "type": "string"
-        }
-    }
+    "properties": {}
 }

@@ -4,10 +4,6 @@ The tracking for changes started in v2.1
 
 ## v2.2
 
-### Update in 04-2021
-
-Added a parameter `--singularity` so that users can easily use Singularity instead of Docker, if wanted.
-
 ### Automatic reports
 
 Some problems with the automatic reports, such as not understanding missing or empty files, and conditionals between processes, have been addressed and fixed.
