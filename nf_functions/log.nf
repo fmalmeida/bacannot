@@ -1,7 +1,7 @@
 def logMessage() {
-  log.info "=============================================================="
-  log.info " Docker-based, fmalmeida/bacannot, Genome Annotation Pipeline "
-  log.info "=============================================================="
+  log.info "================================================================="
+  log.info " Container-based, fmalmeida/bacannot, Genome Annotation Pipeline "
+  log.info "================================================================="
   def summary = [:]
   if (params.genome) { summary['Input genomes'] = params.genome }
   summary['Output dir']   = "${params.outdir}"

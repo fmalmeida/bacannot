@@ -44,16 +44,16 @@ Moreover, this pipeline has two complementary pipelines (also written in nextflo
 
 * Unix-like operating system (Linux, macOS, etc)
 * Java 8
-* Docker
+* Docker or Singularity
   * `fmalmeida/bacannot:{latest, kofamscan, jbrowse, renv}`
 
 This images have been kept separate to not create massive Docker image and to avoid dependencies conflicts.
 
 ## Installation
 
-1. If you don't have it already install Docker in your computer. Read more [here](https://docs.docker.com/).
-    * You can give this [in-house script](https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh) a try.
+1. If you don't have it already install [Docker](https://docs.docker.com/) or [Singularity](https://sylabs.io/guides/3.5/user-guide/introduction.html) in your computer.
     * After installed, you need to download the required Docker images
+    * If using singularity you can use: `singularity pull docker://{docker image}`
 
           docker pull fmalmeida/bacannot:latest
           docker pull fmalmeida/bacannot:kofamscan
@@ -108,11 +108,12 @@ For a rapid and simple quickstart we will use as input the nanopore raw reads pr
 
 ### Usage
 
+<a href="https://bacannot.readthedocs.io/en/latest/index.html"><strong>Users are advised to read the complete documentation »</strong></a>
+
 * Complete command line explanation of parameters:
     + `nextflow run fmalmeida/bacannot --help`
 * See usage examples in the command line:
     + `nextflow run fmalmeida/bacannot --examples`
-* However, users are encouraged to read the [complete online documentation](https://bacannot.readthedocs.io/en/latest/).
 
 ### Command line usage examples
 

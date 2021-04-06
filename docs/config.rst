@@ -55,6 +55,7 @@ Default configuration:
   // Species panel to be used when annotating with Resfinder. If blank,
   // it will not be executed. Must be identical (without the *) as written
   // in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
+  // E.g. 'Escherichia coli'; 'Klebsiella' ...
     resfinder_species = ''
 
   // Configure optional Methylation annotation with nanopolish
@@ -62,7 +63,7 @@ Default configuration:
   // it will automatically execute nanopolish to call methylation
 
     nanopolish_fastq = ''   // Path to directory containing FAST5 files
-    nanopolish_fast5 = '' // Path to fastq files (file related to FAST5 files above)
+    nanopolish_fast5 = ''   // Path to fastq files (file related to FAST5 files above)
 
       /*
 
@@ -75,6 +76,8 @@ Default configuration:
   // an well-formated example of this YAML file at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
   //
   // Please read the example YAML samplesheet so you can understand how to properly fill it.
+  //
+  // It is also documented in the main manual: https://bacannot.readthedocs.io/en/latest/samplesheet.html
     in_yaml = ''
 
       /*
@@ -94,7 +97,7 @@ Default configuration:
   // Number of jobs to run in parallel. Be aware that each job (in parallel) can consume
   // N threads (set above). Be sure to carefully check your resources before augmenting
   // this parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10
-  // threads at once.
+  // threads at once. Only works if running with 'local' executor.
     parallel_jobs = 1
 
   // Number of minimum overlapping base pairs required for merging
@@ -111,7 +114,7 @@ Default configuration:
     prokka_kingdom = ''
 
   // Translation table code. Must be set if the above is set.
-  // Example: params.prokka_genetic_code = 11
+  // Example: params.prokka_genetic.code = 11
     prokka_genetic_code = false
 
   // Use rnammer instead of Barrnap? False or True?
@@ -144,6 +147,16 @@ Default configuration:
 
   // (NOT RUN?) KO (KEGG Orthology) annotation
     skip_kofamscan = false
+
+            /*
+             * Custom databases can be used to annotate additional genes in the genome.
+             * It runs a BLASTn alignment against the genome, therefore, the custom database
+             * MUST be a nucleotide fasta of genes. More than one custom database can be given
+             * separated by commas. Gene headers must be properly formated as described in the
+             * documentation: https://bacannot.readthedocs.io/en/latest/custom-db.html
+             */
+  // Custom nucleotide fastas
+    custom_db = ''
 
             /*
              * Annotation thresholds to be used when scanning specific databases and features
@@ -183,6 +196,12 @@ Default configuration:
   // User's custom database coverage threashold
     blast_custom_mincov = 0
 
+      /*
+       *      Use singularity instead of Docker?
+       */
+  // Use singularity instead of Docker
+    singularity = false
+
   }
 
   /*
@@ -209,15 +228,9 @@ Default configuration:
   }
 
   /*
-                  Configuration of Docker images usage
+                  Configuration of Docker and Singularity usage
                   DO NOT change any of those
   */
-
-  // Docker permissions
-  docker {
-    enabled = true
-    runOptions = '-u $(id -u):root'
-  }
 
   // Queue limit
   if (params.parallel_jobs) {
@@ -247,4 +260,23 @@ Default configuration:
       withLabel: 'assembly' {
           container = 'fmalmeida/mpgap'
       }
+  }
+
+  // Container usage and permission
+  if (params.singularity) {
+    docker {
+      enabled = false
+      runOptions = '-u $(id -u):root'
+    }
+    singularity {
+      enabled = true
+    }
+  } else {
+    docker {
+      enabled = true
+      runOptions = '-u $(id -u):root'
+    }
+    singularity {
+      enabled = false
+    }
   }

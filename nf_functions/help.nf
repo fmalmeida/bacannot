@@ -29,6 +29,10 @@ def helpMessage() {
    OBS: These reports can also be enabled through the configuration file.
    OPTIONS:
 
+      # Use Singularity instead of Docker to manage containers?
+      
+    --singularity                                  This will tell the pipeline to use Singularity instead of Docker.
+
       # Input configuration -- Analysis of a single genome
       # Users can give either a genome in FASTA file or raw reads in FASTQ
       # Please do not use glob. patterns ('*') with these parameters
