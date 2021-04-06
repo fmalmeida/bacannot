@@ -12,7 +12,7 @@ def helpMessage() {
    to be huge. Therefore, it is extremely recommended to use the nextflow.config configuration file in order to make
    parameterization easier and more readable.
 
-   Creating a configuration file:
+   Get template configuration file:
 
    nextflow run fmalmeida/bacannot [--get_config]
 
@@ -22,15 +22,12 @@ def helpMessage() {
 
    Execution Reports:
 
-   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-report
-   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-trace
-   nextflow run fmalmeida/bacannot [ -c nextflow.config ] -with-timeline
+   nextflow run fmalmeida/bacannot [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
 
-   OBS: These reports can also be enabled through the configuration file.
    OPTIONS:
 
       # Use Singularity instead of Docker to manage containers?
-      
+
     --singularity                                  This will tell the pipeline to use Singularity instead of Docker.
 
       # Input configuration -- Analysis of a single genome
@@ -73,7 +70,7 @@ def helpMessage() {
     --parallel_jobs <int>                          Number of jobs to run in parallel. Each job can consume up
                                                    to N threads (--threads). Default: 1.
 
-    --bedtools_merge_distance                      By default, this process is not executed. For execution
+    --bedtools_merge_distance <int>                By default, this process is not executed. For execution
                                                    one needs to provide a value.Minimum number of overlapping
                                                    bases for gene merge using bedtools merge. Negative values,
                                                    such as -20, means the number of required overlapping bases
@@ -94,32 +91,32 @@ def helpMessage() {
 
       # Blast alignment parameters
 
-    --blast_virulence_minid                        Min. identity % for virulence annotation. Default 90.
+    --blast_virulence_minid <int>                  Min. identity % for virulence annotation. Default 90.
 
-    --blast_virulence_mincov                       Min. gene/subject coverage for virulence annotation. Default 80.
+    --blast_virulence_mincov <int>                 Min. gene/subject coverage for virulence annotation. Default 80.
 
-    --blast_resistance_minid                       Min. identity % for resistance annotation. Default 90.
+    --blast_resistance_minid <int>                 Min. identity % for resistance annotation. Default 90.
 
-    --blast_resistance_mincov                      Min. gene/subject coverage for resistance annotation. Default 80.
+    --blast_resistance_mincov <int>                Min. gene/subject coverage for resistance annotation. Default 80.
 
-    --blast_MGEs_minid                             Min. identity % for ICEs and prophage annotation. Default 65.
+    --blast_MGEs_minid <int>                       Min. identity % for ICEs and prophage annotation. Default 65.
 
-    --blast_MGEs_mincov                            Min. gene/subject coverage for ICEs and prophage annotation. Default 65.
+    --blast_MGEs_mincov <int>                      Min. gene/subject coverage for ICEs and prophage annotation. Default 65.
 
-    --plasmids_minid                               Min. identity % for plasmid detection. Default 90.
+    --plasmids_minid <int>                         Min. identity % for plasmid detection. Default 90.
 
-    --plasmids_mincov                              Min. coverage for plasmid detection. Default 60.
+    --plasmids_mincov <int>                        Min. coverage for plasmid detection. Default 60.
 
-    --blast_custom_minid                           Min. identity % for the annotation using user's custom database. Default 0.
+    --blast_custom_minid <int>                     Min. identity % for the annotation using user's custom database. Default 0.
 
-    --blast_custom_mincov                          Min. gene/subject coverage % for the annotation using user's custom database. Default 0.
+    --blast_custom_mincov <int>                    Min. gene/subject coverage % for the annotation using user's custom database. Default 0.
 
       # User's custom database for annotation
       # Must be in gene nucleotide FASTA
       #
       # Well documented at: https://bacannot.readthedocs.io/en/latest/custom-db.html
 
-    --custom_db                                    Path to the nucleotide FASTA file containing the user's custom database for annotation.
+    --custom_db <string>                           Path to the nucleotide FASTA file containing the user's custom database for annotation.
                                                    Multiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,...
 
 
@@ -130,7 +127,7 @@ def helpMessage() {
       #
       # Also documented at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
 
-    --resfinder_species                            It sets the species to be used for Resfinder annotation. If blank,
+    --resfinder_species <string>                   It sets the species to be used for Resfinder annotation. If blank,
                                                    it will not be executed. Must be identical (without the *) as written
                                                    in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
                                                    E.g. 'Escherichia coli'; 'Klebsiella' ...
