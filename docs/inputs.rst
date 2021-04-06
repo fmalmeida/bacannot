@@ -10,8 +10,8 @@ To execute the annotation pipeline users **must** provide genomic data as either
 assemblers are used to create, respectively, shortreads-only and hybrid assemblies, or longreads-only assemblies for the annotation process. Which means, the minimum
 required input files are:
 
-* An assembled genome in FASTA format, **or**;
-* Raw sequencing reads.
++ An assembled genome in FASTA format, **or**;
++ Raw sequencing reads.
 
 .. note::
 
@@ -23,13 +23,13 @@ Optional
 
 The pipeline accepts as input two other input files types that are used to perform additional annotation processes, they are:
 
-* path to a directory of FAST5 and path to ONT fastq
++ path to a directory of FAST5 and path to ONT fastq
 
-   * This data will be used for the methylation calling process
+   + This data will be used for the methylation calling process
 
-* path to custom **nucleotide** databases as described in :ref:`custom-db`
++ path to custom **nucleotide** databases as described in :ref:`custom-db`
 
-   * These custom databases will be used to perform additional annatation processes using BLASTn
+   + These custom databases will be used to perform additional annatation processes using BLASTn
 
 .. note::
 

@@ -10,14 +10,14 @@ genome analysis (shown below):
 
 The use of a samplesheet is **incompatible** with:
 
-* ``--genome``
-* ``--sreads_paired``
-* ``--sreads_single``
-* ``--lreads``
-* ``--lreads_type``
-* ``--resfinder_species``
-* ``--nanopolish_fast5``
-* ``--nanopolish_fastq``
++ ``--genome``
++ ``--sreads_paired``
++ ``--sreads_single``
++ ``--lreads``
++ ``--lreads_type``
++ ``--resfinder_species``
++ ``--nanopolish_fast5``
++ ``--nanopolish_fastq``
 
 Samplesheet header
 """"""""""""""""""

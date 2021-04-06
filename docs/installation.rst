@@ -11,8 +11,8 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
 1. Installing Docker
 
-  * Read more in their `manual <https://docs.docker.com/>`_
-  * Alternatively users can use `Singularity <https://sylabs.io/singularity/>`_ instead.
+  + Read more in their `manual <https://docs.docker.com/>`_
+  + Alternatively users can use `Singularity <https://sylabs.io/singularity/>`_ instead.
 
 2. Installing Nextflow
 
