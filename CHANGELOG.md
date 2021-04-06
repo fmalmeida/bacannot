@@ -2,11 +2,11 @@
 
 The tracking for changes started in v2.1
 
-## v2.2.1
+## v2.2
+
+### Update in 04-2021
 
 Added a parameter `--singularity` so that users can easily use Singularity instead of Docker, if wanted.
-
-## v2.2
 
 ### Automatic reports
 
