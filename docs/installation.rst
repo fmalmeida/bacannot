@@ -28,8 +28,6 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
 5. Download required Docker images
 
-    * If using singularity you can use:  ``singularity pull docker://{docker image}``
-
     ``docker pull fmalmeida/bacannot:latest``
 
     ``docker pull fmalmeida/bacannot:kofamscan``
@@ -51,3 +49,7 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
   Now, everything is set up and ready to run.
   Remember to always keep your Docker images up to date
   (Docker pull will always download the latest).
+
+.. note::
+
+	 If using singularity you can use:  ``singularity pull docker://{docker image}``
