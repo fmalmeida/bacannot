@@ -10,8 +10,9 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 `Nextflow <https://www.nextflow.io/docs/latest/index.html>`_ to run.
 
 1. Installing Docker
+
   * Read more in their `manual <https://docs.docker.com/>`_
-  * Or give this `in-house script <https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh>`_ a try.
+  * Alternatively users can use `Singularity <https://sylabs.io/singularity/>`_ instead.
 
 2. Installing Nextflow
 
@@ -26,6 +27,8 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
     ``./nextflow run fmalmeida/bacannot --help``
 
 5. Download required Docker images
+
+    * If using singularity you can use:  ``singularity pull docker://{docker image}``
 
     ``docker pull fmalmeida/bacannot:latest``
 
