@@ -43,9 +43,13 @@ Moreover, this pipeline has two complementary pipelines (also written in nextflo
 ## Requirements
 
 * Unix-like operating system (Linux, macOS, etc)
+  + Windows users maybe can execute it using the linux subsystem for windows as shown in:
+    + https://docs.microsoft.com/pt-br/windows/wsl/install-win10
+    + https://www.nextflow.io/docs/latest/getstarted.html
+    + https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
 * Java 8
 * Docker or Singularity
-  * `fmalmeida/bacannot:{latest, kofamscan, jbrowse, renv}`
+  + `fmalmeida/bacannot:{latest, kofamscan, jbrowse, renv}`
 
 This images have been kept separate to not create massive Docker image and to avoid dependencies conflicts.
 
