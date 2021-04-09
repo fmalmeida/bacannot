@@ -98,7 +98,8 @@ For a rapid and simple quickstart we will use as input the nanopore raw reads pr
   curl -L -o oxford.fasta http://nanopore.s3.climb.ac.uk/MAP006-PCR-1_2D_pass.fasta
 
   # Run the pipeline using the Escherichia coli resfinder database
-  nextflow run fmalmeida/bacannot --prefix ecoli \
+  nextflow run fmalmeida/bacannot \
+  --prefix ecoli \
   --lreads oxford.fasta \
   --lreads_type nanopore \
   --outdir _ANNOTATION \

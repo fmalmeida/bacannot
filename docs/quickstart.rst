@@ -21,7 +21,8 @@ For examplification purposes and to get a major overview we will execute the pip
 .. code-block:: bash
 
   # Run the pipeline using the Escherichia coli resfinder database
-  nextflow run fmalmeida/bacannot --prefix ecoli \
+  nextflow run fmalmeida/bacannot \
+  --prefix ecoli \
   --lreads oxford.fasta \
   --lreads_type nanopore \
   --outdir _ANNOTATION \
