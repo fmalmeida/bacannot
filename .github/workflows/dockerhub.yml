@@ -1,8 +1,8 @@
 name: docker build
 
 on:
-  - workflow_dispatch
-  - schedule:
+  workflow_dispatch
+  schedule:
     - cron: '0 0 1 3 *'
 
 jobs:
