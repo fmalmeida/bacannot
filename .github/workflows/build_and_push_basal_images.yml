@@ -1,0 +1,41 @@
+name: docker build and push (skeleton images)
+# This builds and push the docker images to dockerhub
+# designed to build the (skeleton images) once every six months (or when dispatched manually)
+# in order to either maintain the images active and update to new versions of available tools
+# these are the "basal" that have mainly scripts and tools: renv ; kofamscan ; server ; jbrowse
+# Obs: the jbrowse image will always use the jbrowse 1.16 version since it is the last
+# stable release before v2 (which has a totally different syntax)
+on:
+  schedule:
+    - cron: '0 0 1 */6 *'
+  workflow_dispatch:
+
+jobs:
+  push_dockerhub:
+    name: Push new Docker image to Docker Hub (release)
+    runs-on: ubuntu-latest
+    # Only run for the nf-core repo, for releases and merged PRs
+    if: ${{ github.repository == 'fmalmeida/bacannot' }}
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v2
+
+      - name: Build docker images
+        run: |
+          docker build --no-cache -t fmalmeida/bacannot_main_tools -f Dockerfile_main_tools ./docker
+          docker build --no-cache -t fmalmeida/bacannot:kofamscan  -f Dockerfile_kofamscan  ./docker
+          docker build --no-cache -t fmalmeida/bacannot:renv       -f Dockerfile_renv       ./docker
+          docker build --no-cache -t fmalmeida/bacannot:jbrowse    -f Dockerfile_jbrowse    ./docker
+
+      - name: Push Docker image to DockerHub (all)
+        run: |
+          echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker push fmalmeida/bacannot_main_tools
+          docker push fmalmeida/bacannot:kofamscan
+          docker push fmalmeida/bacannot:renv
+          docker push fmalmeida/bacannot:jbrowse
+#          docker tag nfcore/eager:latest nfcore/eager:${{ github.event.release.tag_name }}
+#          docker push nfcore/eager:${{ github.event.release.tag_name }}
