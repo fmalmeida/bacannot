@@ -51,7 +51,7 @@ Moreover, this pipeline has two complementary pipelines (also written in nextflo
 * Docker
   + `fmalmeida/bacannot:{latest, kofamscan, jbrowse, renv}`
 
-This images have been kept separate to not create massive Docker image and to avoid dependencies conflicts.
+These images have been kept separate to not create massive Docker image and to avoid dependencies conflicts.
 
 ## Installation
 
@@ -73,12 +73,6 @@ This images have been kept separate to not create massive Docker image and to av
           docker build -t fmalmeida/bacannot:jbrowse -f Dockerfile_jbrowse .
           docker build -t fmalmeida/bacannot:renv -f Dockerfile_renv .
           docker build -t fmalmeida/bacannot:server -f Dockerfile_server .
-
-> Github actions have been set to build and push the docker images to dockerhub every 3 months in order to keep them up-to-date.
-
-> Each release is accompanied by a Dockerfile in the docker folder. When using older releases, users can create the correct image using
-the Dockerfile that goes alongside with the release (Remember to give the image the correct name, as it is in dockerhub and the nextflow script).
-The latest release will always have its docker image in dockerhub.
 
 2. Install Nextflow (version 20.07 or higher):
 
