@@ -88,11 +88,11 @@ RUN conda install -y minimap2 && \
 		conda clean -afy
 
 ## Install plasmidfinder
-RUN conda create -n PLASMIDFINDER -y plasmidfinder && \
+RUN conda create -n PLASMIDFINDER -y plasmidfinder nomkl && \
 		conda clean -afy
 
 ## Install platon
-RUN conda create -n PLATON -y platon && \
+RUN conda create -n PLATON -y platon nomkl && \
 		conda clean -afy
 
 #######################
