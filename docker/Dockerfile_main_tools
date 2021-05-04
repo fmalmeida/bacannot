@@ -1,0 +1,144 @@
+FROM ubuntu:20.04
+
+MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
+SHELL ["/bin/bash", "-c"]
+
+# Workdir
+WORKDIR /work
+
+# DEPENDENCIES
+
+############################
+### apt-get dependencies ###
+############################
+RUN apt-get update     && \
+		apt-get upgrade -y && \
+		DEBIAN_FRONTEND="noninteractive" apt-get install -y git libc6-dev build-essential hmmer bedtools libidn11 wget python3 python3-pip   \
+		libhdf5-dev ncbi-tools-bin tar gcc g++ locate seqtk samtools bc
+
+##########################
+### conda dependencies ###
+##########################
+# INSTALL MINICONDA
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /miniconda.sh && \
+		bash /miniconda.sh -b -p /miniconda
+RUN chmod -R 777 /miniconda
+ENV PATH="$PATH:/miniconda/bin"
+
+# Configure Miniconda
+RUN conda config --add channels defaults    && \
+		conda config --add channels bioconda    && \
+		conda config --add channels conda-forge && \
+		conda config --add channels anaconda    && \
+		conda config --add channels falmeida    && \
+		conda config --add channels r           && \
+		conda init --all
+
+## Install nomkl in base env to diminish libraries
+RUN conda install -y nomkl && \
+    conda clean -afy
+
+## Install and ncbi-blast+
+RUN conda install -y blast
+
+# Install AMRFinderPlus
+RUN conda create -n AMRFINDERPLUS -y ncbi-amrfinderplus nomkl && \
+		conda clean -afy
+
+## Install Diamond
+RUN conda install -y diamond && \
+    conda clean -afy
+
+# Install BARRNAP
+RUN conda install -y barrnap && \
+		conda clean -afy
+
+# Install emboss
+RUN conda install -y emboss && \
+    conda clean -afy
+
+# Install MLST
+RUN conda create -n MLST -y mlst nomkl && \
+		conda clean -afy
+
+# Install PROKKA
+RUN conda create -n PROKKA -y prokka nomkl && \
+		conda clean -afy
+
+## Install phispy
+RUN conda create -n phispy -y phispy nomkl && \
+		conda clean -afy
+
+## Install RGI
+RUN conda create -y -n RGI rgi nomkl && \
+		conda clean -afy
+
+## Install IslandPath
+RUN conda create -y -n find_GIs nomkl islandpath biopython && \
+		conda clean -afy && \
+		git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
+		ln -rs ./islandpath/Dimob.pl /usr/local/bin
+
+## Install tbl2asn
+RUN conda install -y tbl2asn-forever && \
+		conda clean -afy
+
+## Install minimap2
+RUN conda install -y minimap2 && \
+		conda clean -afy
+
+## Install plasmidfinder
+RUN conda create -n PLASMIDFINDER -y plasmidfinder && \
+		conda clean -afy
+
+## Install platon
+RUN conda create -n PLATON -y platon && \
+		conda clean -afy
+
+#######################
+### github packages ###
+#######################
+# Get scripts and files to plot GIs
+ADD scripts/bscripts /work/bscripts
+RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
+		cd gff-toolbox && \
+		python3 setup.py install && \
+		gff-toolbox -h
+
+# Install NANOPOLISH
+RUN git clone --recursive https://github.com/jts/nanopolish.git \
+		&& cd nanopolish \
+		&& make all
+RUN rm /work/nanopolish/hdf5-1.8.14.tar.gz /work/nanopolish/eigen-3.3.7.tar.bz2
+ENV PATH="$PATH:/work/nanopolish"
+
+#######################
+### python packages ###
+#######################
+# Download pythonScripts
+ADD scripts/pscripts/splitgenbank.py /usr/local/bin/splitgenbank.py
+RUN chmod a+x /usr/local/bin/splitgenbank.py
+
+COPY scripts/pscripts/resfinder2gff.py /usr/local/bin/resfinder2gff.py
+RUN chmod a+x /usr/local/bin/resfinder2gff.py
+
+COPY scripts/pscripts/run_blasts.py /usr/local/bin/run_blasts.py
+RUN chmod a+x /usr/local/bin/run_blasts.py && \
+			/miniconda/bin/python3 -m pip install docopt pandas
+
+## Install resfinder
+RUN conda create -y -n Resfinder python=3.7 kma nomkl && \
+		conda run -n Resfinder pip3 install tabulate biopython cgecore gitpython setuptools python-dateutil && \
+		conda clean -afy
+
+### Get program
+RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git
+
+# INSTALL PHIGARO
+RUN conda install -y prodigal hmmer nomkl && \
+			conda clean -afy
+RUN python3 -m pip install phigaro==2.3.0
+
+# Help Phigaro Installation
+RUN cd /usr/bin && \
+			for i in * ; do ln -rs "$i" /usr/local/bin ; done
