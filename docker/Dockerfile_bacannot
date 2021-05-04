@@ -8,8 +8,8 @@ FROM fmalmeida/bacannot:main_tools
 WORKDIR /work/dbs
 
 # Platon DB
-RUN mkdir -p /work/platon
-RUN wget -O /work/platon/db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz"
+RUN mkdir -p /work/platon && \
+		wget -O /work/platon/db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz"
 
 # Resfinder databases
 RUN cd /work/resfinder && \
@@ -22,20 +22,27 @@ RUN cd /work/resfinder/db_resfinder && \
 			python3 INSTALL.py $(which kma_index) non_interactive
 
 # Plasmidfinder database
-RUN download-db.sh
+RUN source activate PLASMIDFINDER && \
+		download-db.sh
 
 # CARD-RGI database
 RUN wget https://card.mcmaster.ca/latest/data && \
 		tar -xvf data ./card.json && \
 		rm data && \
-		conda run -n RGI rgi load --card_json ./card.json
+		source activate RGI && \
+		rgi load --card_json ./card.json
 
 # AMRFinderPlus database
-RUN amrfinder --force_update
+RUN source activate AMRFINDERPLUS && \
+		amrfinder --force_update
 
 # Update prokka database with PGAP hmm
-RUN wget -O /miniconda/envs/db/hmm/PGAP.hmm https://ftp.ncbi.nlm.nih.gov/hmm/current/hmm_PGAP.LIB
-RUN prokka --setupdb
+RUN wget https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/TIGRFAMs_15.0_HMM.LIB.gz
+RUN gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
+		mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
+		mv TIGRFAMs_15.hmm /miniconda/envs/PROKKA/db/hmm/
+RUN source activate PROKKA && \
+		prokka --setupdb
 
 # Phigaro database
 RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
