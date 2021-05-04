@@ -116,7 +116,6 @@ RUN mkdir phast && \
 # Fix permissions
 RUN chmod -R a+rwx /usr/local/lib/python3.8/
 RUN chmod -R a+rwx /miniconda/envs/RGI/lib/python3.6/
-RUN chmod -R a+rwx /work
 ENV MPLCONFIGDIR="/tmp/"
 
 # Clean
