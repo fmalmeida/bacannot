@@ -13,7 +13,7 @@ WORKDIR /work
 ############################
 RUN apt-get update     && \
 		apt-get upgrade -y && \
-		DEBIAN_FRONTEND="noninteractive" apt-get install -y git libc6-dev build-essential hmmer bedtools libidn11 wget python3 python3-pip   \
+		DEBIAN_FRONTEND="noninteractive" apt-get install -y git libc6-dev build-essential hmmer bedtools libidn11 wget \
 		libhdf5-dev ncbi-tools-bin tar gcc g++ locate seqtk samtools bc
 
 ##########################
@@ -25,7 +25,7 @@ RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -
 RUN chmod -R 777 /miniconda
 ENV PATH="$PATH:/miniconda/bin"
 
-# Configure Miniconda
+# Now configure Miniconda
 RUN conda config --add channels defaults    && \
 		conda config --add channels bioconda    && \
 		conda config --add channels conda-forge && \
@@ -37,6 +37,10 @@ RUN conda config --add channels defaults    && \
 ## Install nomkl in base env to diminish libraries
 RUN conda install -y nomkl && \
     conda clean -afy
+
+## Install RGI
+RUN conda create -y -n RGI rgi nomkl && \
+		conda clean -afy
 
 ## Install and ncbi-blast+
 RUN conda install -y blast
@@ -67,10 +71,6 @@ RUN conda create -n PROKKA -y prokka nomkl && \
 
 ## Install phispy
 RUN conda create -n phispy -y phispy nomkl && \
-		conda clean -afy
-
-## Install RGI
-RUN conda create -y -n RGI rgi nomkl && \
 		conda clean -afy
 
 ## Install IslandPath
