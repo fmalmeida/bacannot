@@ -6,9 +6,9 @@ name: docker build and push (skeleton images)
 # Obs: the jbrowse image will always use the jbrowse 1.16 version since it is the last
 # stable release before v2 (which has a totally different syntax)
 on:
-  schedule:
-    - cron: '0 0 1 */6 *'
   workflow_dispatch:
+#  schedule:
+#    - cron: '0 0 1 */6 *'
 
 jobs:
   push_dockerhub:
