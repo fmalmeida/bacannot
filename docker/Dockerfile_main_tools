@@ -25,75 +25,52 @@ RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -
 RUN chmod -R 777 /miniconda
 ENV PATH="/miniconda/bin:$PATH"
 
-# Now configure Miniconda
-RUN conda config --add channels defaults    && \
-		conda config --add channels bioconda    && \
-		conda config --add channels conda-forge && \
-		conda config --add channels anaconda    && \
-		conda config --add channels falmeida    && \
-		conda config --add channels r           && \
-		conda init --all
-
 ## Install nomkl in base env to diminish libraries
-RUN conda install -y nomkl && \
-    conda clean -afy
+RUN conda install -y -c bioconda -c conda-forge -c defaults nomkl
 
 ## Install RGI
-RUN conda create -y -n RGI "python>=3.6" "rgi>=5.2.0" nomkl && \
-		conda clean -afy
+RUN conda create -y -c bioconda -c conda-forge -c defaults -n RGI "python>=3.6" "rgi>=5.2.0" nomkl
 
 ## Install and ncbi-blast+
-RUN conda install -y "blast>=2.11.0"
+RUN conda install -y -c bioconda -c conda-forge -c defaults "blast>=2.11.0"
 
 # Install AMRFinderPlus
-RUN conda create -n AMRFINDERPLUS -y ncbi-amrfinderplus nomkl && \
-		conda clean -afy
+RUN conda create -c bioconda -c conda-forge -c defaults -n AMRFINDERPLUS -y ncbi-amrfinderplus nomkl
 
 ## Install Diamond
-RUN conda install -y "diamond>=2.0.9" && \
-    conda clean -afy
+RUN conda install -y -c bioconda -c conda-forge -c defaults "diamond>=2.0.9"
 
 # Install BARRNAP
-RUN conda install -y barrnap && \
-		conda clean -afy
+RUN conda install -y -c bioconda -c conda-forge -c defaults barrnap
 
 # Install emboss
-RUN conda install -y emboss && \
-    conda clean -afy
+RUN conda install -y -c bioconda -c conda-forge -c defaults emboss
 
 # Install MLST
-RUN conda create -n MLST -y mlst nomkl && \
-		conda clean -afy
+RUN conda create -n MLST -c bioconda -c conda-forge -c defaults -y mlst nomkl
 
 # Install PROKKA
-RUN conda create -n PROKKA -y prokka nomkl && \
-		conda clean -afy
+RUN conda create -n PROKKA -c bioconda -c conda-forge -c defaults -y prokka nomkl
 
 ## Install phispy
-RUN conda create -n phispy -y phispy nomkl && \
-		conda clean -afy
+RUN conda create -n phispy -c bioconda -c conda-forge -c defaults -y phispy nomkl
 
 ## Install IslandPath
-RUN conda create -y -n find_GIs nomkl islandpath biopython && \
-		conda clean -afy && \
+RUN conda create -y -c bioconda -c conda-forge -c defaults -n find_GIs nomkl islandpath biopython && \
 		git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
 		ln -rs ./islandpath/Dimob.pl /usr/local/bin
 
 ## Install tbl2asn
-RUN conda install -y tbl2asn-forever && \
-		conda clean -afy
+RUN conda install -y -c bioconda -c conda-forge -c defaults tbl2asn-forever
 
 ## Install minimap2
-RUN conda install -y minimap2 && \
-		conda clean -afy
+RUN conda install -y -c bioconda -c conda-forge -c defaults minimap2
 
 ## Install plasmidfinder
-RUN conda create -n PLASMIDFINDER -y plasmidfinder nomkl && \
-		conda clean -afy
+RUN conda create -n PLASMIDFINDER -y -c bioconda -c conda-forge -c defaults plasmidfinder nomkl
 
 ## Install platon
-RUN conda create -n PLATON -y platon nomkl && \
-		conda clean -afy
+RUN conda create -n PLATON -c bioconda -c conda-forge -c defaults -y platon nomkl
 
 #######################
 ### github packages ###
@@ -109,8 +86,8 @@ RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
 # Install NANOPOLISH
 RUN git clone --recursive https://github.com/jts/nanopolish.git \
 		&& cd nanopolish \
-		&& make all
-RUN rm /work/nanopolish/hdf5-1.8.14.tar.gz /work/nanopolish/eigen-3.3.7.tar.bz2
+		&& make all \
+		&& rm /work/nanopolish/hdf5-1.8.14.tar.gz /work/nanopolish/eigen-3.3.7.tar.bz2
 ENV PATH="$PATH:/work/nanopolish"
 
 #######################
@@ -137,9 +114,14 @@ RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git
 
 # INSTALL PHIGARO
 RUN conda install -y prodigal hmmer nomkl && \
-			conda clean -afy
-RUN python3 -m pip install phigaro==2.3.0
+			conda clean -afy && \
+			python3 -m pip install phigaro==2.3.0
 
 # Help Phigaro Installation
 RUN cd /usr/bin && \
 			for i in * ; do ln -rs "$i" /usr/local/bin ; done
+
+# Clean caches
+RUN apt-get clean && \
+		apt-get autoremove && \
+		conda clean -afy
