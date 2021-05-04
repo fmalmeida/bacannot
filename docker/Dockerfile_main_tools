@@ -100,10 +100,7 @@ RUN conda create -n PLATON -y platon nomkl && \
 #######################
 # Get scripts and files to plot GIs
 ADD scripts/bscripts /work/bscripts
-RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
-		cd gff-toolbox && \
-		python3 setup.py install && \
-		gff-toolbox -h
+RUN conda install -y gff-toolbox
 
 # Install NANOPOLISH
 RUN git clone --recursive https://github.com/jts/nanopolish.git \
