@@ -23,7 +23,7 @@ RUN apt-get update     && \
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /miniconda.sh && \
 		bash /miniconda.sh -b -p /miniconda
 RUN chmod -R 777 /miniconda
-ENV PATH="$PATH:/miniconda/bin"
+ENV PATH="/miniconda/bin:$PATH"
 
 # Now configure Miniconda
 RUN conda config --add channels defaults    && \
