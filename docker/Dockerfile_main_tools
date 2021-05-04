@@ -39,8 +39,8 @@ RUN conda install -y nomkl && \
     conda clean -afy
 
 ## Install RGI
-RUN conda create -y -n RGI python=3.6 && \
-		conda install -y -n RGI rgi nomkl && \
+RUN conda create -y -n RGI python=3.6 rgi>=5.1.1 biopython=1.78 \
+		pandas>=0.15.0 blast=2.9.0 diamond=0.8.36 nomkl && \
 		conda clean -afy
 
 ## Install and ncbi-blast+
