@@ -50,7 +50,7 @@ RUN conda create -n AMRFINDERPLUS -y ncbi-amrfinderplus nomkl && \
 		conda clean -afy
 
 ## Install Diamond
-RUN conda install -y diamond && \
+RUN conda install -y "diamond>=2.0.9" && \
     conda clean -afy
 
 # Install BARRNAP
