@@ -18,7 +18,7 @@ process find_GIs {
   source activate find_GIs ;
 
   # Split genbank files
-  python /usr/local/bin/splitgenbank.py annotation.gbk && rm annotation.gbk ;
+  splitgenbank.py annotation.gbk && rm annotation.gbk ;
 
   # Run islandpath in each
   for file in \$(ls *.gbk); do grep -q "CDS" \$file && Dimob.pl \$file \${file%%.gbk}_GIs.txt 2> dimob.err ; done

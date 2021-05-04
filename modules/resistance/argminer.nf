@@ -14,8 +14,8 @@ process argminer {
   script:
   """
   # With predicted gene sequences
-  
-  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastp --query $genes --db /work/dbs/ARGMiner/diamond.dmnd --minid ${params.blast_resistance_minid} \
+
+  run_blasts.py blastp --query $genes --db /work/dbs/ARGMiner/diamond.dmnd --minid ${params.blast_resistance_minid} \
   --mincov ${params.blast_resistance_mincov} --threads ${params.threads} --out ${prefix}_argminer_blastp_onGenes.txt --2way > ${prefix}_argminer_blastp_onGenes.summary.txt ;
   """
 }
