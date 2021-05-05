@@ -302,12 +302,12 @@ Methylation call
      - Default value
      - Description
 
-   * - ``--nanopolish_fast5_dir``
+   * - ``--nanopolish_fast5``
      - N
      - NA
      - Path to directory containing fast5 files to be used to call methylation. If null, the analysis will be skipped
 
-   * - ``--nanopolish_fastq_reads``
+   * - ``--nanopolish_fastq``
      - N
      - NA
      - Path to fastq reads (related to fast5 files) that will be used to call methylation. If null, the analysis will be skipped
