@@ -70,8 +70,8 @@ RUN chmod a+x /usr/local/bin/run_blasts.py && \
 ### month with the Github-actions   ###
 #######################################
 # Update prokka database with TIGRFAMs hmm
-RUN wget https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/TIGRFAMs_15.0_HMM.LIB.gz
-RUN gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
+RUN wget https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/TIGRFAMs_15.0_HMM.LIB.gz && \
+		gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
 		mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
 		mv TIGRFAMs_15.hmm /opt/conda/envs/PERL_env/db/hmm/ && \
     conda run -n PERL_env prokka --setupdb
