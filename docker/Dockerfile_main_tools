@@ -195,6 +195,7 @@ RUN conda install -y -c bioconda -c conda-forge -c defaults ncbi-amrfinderplus &
 		conda clean -afy
 RUN amrfinder_update --force_update
 RUN ln -s /opt/conda /opt/conda/envs/AMRFINDERPLUS
+RUN mkdir -p /opt/conda/share/amrfinderplus && ln -s /opt/conda/bin/data/ /opt/conda/share/amrfinderplus/data/
 RUN ln -s /opt/conda/envs/PY36_env /opt/conda/envs/RGI
 RUN ls /opt/conda/envs/AMRFINDERPLUS/share/amrfinderplus/data/
 ENV MPLCONFIGDIR="/tmp/"
