@@ -196,7 +196,8 @@ RUN conda install -y -c bioconda -c conda-forge -c defaults ncbi-amrfinderplus &
 RUN amrfinder_update --force_update
 RUN ln -s /opt/conda /opt/conda/envs/AMRFINDERPLUS
 RUN ln -s /opt/conda/envs/PY36_env /opt/conda/envs/RGI
-
+RUN ls /opt/conda/envs/AMRFINDERPLUS/share/amrfinderplus/data/
+ENV MPLCONFIGDIR="/tmp/"
 #
 # # Install emboss
 # RUN conda install -y -c bioconda -c conda-forge -c defaults emboss
