@@ -172,6 +172,7 @@ WORKDIR /work
 
 # Install minimap2
 RUN conda install -y -c bioconda -c conda-forge -c defaults minimap2
+RUN conda install -y -c bioconda -c conda-forge -c defaults bedtools
 
 #####################################################################################
 ### CONDA env fixes to maintain compatibility with previous (until v2.2) versions ###
