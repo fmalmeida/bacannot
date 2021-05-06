@@ -95,12 +95,12 @@ RUN cd /work/resfinder/db_resfinder && \
 			cd ../db_pointfinder && \
 			python3 INSTALL.py $(which kma_index) non_interactive
 
+# plasmidfinder database
+RUN download-db.sh
+
 # Phigaro database
 RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
 		chmod a+rw -R /work/phigaro_pvog
-
-# plasmidfinder database
-RUN download-db.sh
 
 WORKDIR /work/dbs
 
@@ -183,7 +183,8 @@ RUN ln -s /opt/conda /opt/conda/envs/phispy
 RUN ln -s /opt/conda /opt/conda/envs/Resfinder
 RUN ln -s /opt/conda /opt/conda/envs/PLATON
 RUN ln -s /opt/conda /opt/conda/envs/PLASMIDFINDER
-RUN alias plasmidfinder.py='/opt/conda/bin/plasmidfinder.py'
+# plasmidfinder database
+RUN download-db.sh
 
 #
 # # Install emboss
