@@ -184,7 +184,7 @@ RUN ln -s /opt/conda /opt/conda/envs/Resfinder
 RUN ln -s /opt/conda /opt/conda/envs/PLATON
 RUN ln -s /opt/conda /opt/conda/envs/PLASMIDFINDER
 # plasmidfinder database
-RUN download-db.sh
+RUN download-db.sh -p /opt/conda/share/plasmidfinder-2.1.1-1/database/
 
 #
 # # Install emboss
