@@ -14,7 +14,6 @@ process amrfinder {
   tuple val(prefix), file("AMRFinder_resistance-only.tsv")
   tuple val(prefix), file("AMRFinder_complete.tsv")
   file("${prefix}_args.faa")
-  file("${prefix}_mutations.txt")
   file("amrfinder_version.txt")
 
   script:
@@ -26,7 +25,7 @@ process amrfinder {
   amrfinder -p $proteins --plus -o AMRFinder_complete.tsv --threads ${params.threads} \
   --ident_min \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
   --coverage_min \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
-  --name ${prefix} --mutation_all ${prefix}_mutations.txt --protein_output ${prefix}_args.faa;
+  --name ${prefix} --protein_output ${prefix}_args.faa ;
   awk -F '\t' '{ if (\$3 != "") { print } }' AMRFinder_complete.tsv > AMRFinder_resistance-only.tsv ;
   """
 }
