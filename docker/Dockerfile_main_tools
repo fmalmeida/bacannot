@@ -170,6 +170,9 @@ RUN mkdir ARGMiner && \
 # Return env
 WORKDIR /work
 
+# Install minimap2
+RUN conda install -y -c bioconda -c conda-forge -c defaults minimap2
+
 #####################################################################################
 ### CONDA env fixes to maintain compatibility with previous (until v2.2) versions ###
 #####################################################################################
@@ -187,8 +190,6 @@ RUN ln -s /opt/conda /opt/conda/envs/Resfinder
 # ## Install tbl2asn
 # RUN conda install -y -c bioconda -c conda-forge -c defaults tbl2asn-forever
 #
-# ## Install minimap2
-# RUN conda install -y -c bioconda -c conda-forge -c defaults minimap2
 #
 # #######################
 # ### python packages ###
