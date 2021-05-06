@@ -47,7 +47,9 @@ RUN wget https://card.mcmaster.ca/latest/data && \
 RUN mkdir -p /work/platon && \
 		wget -O /work/platon/db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz"
 
+##############################################################################
 # other tools that are required and must be organized after (main_tools)
+##############################################################################
 RUN conda install -c bioconda -c conda-forge -c defaults -y samtools
 
 # Install platon
@@ -173,6 +175,7 @@ WORKDIR /work
 # Install minimap2
 RUN conda install -y -c bioconda -c conda-forge -c defaults minimap2
 RUN conda install -y -c bioconda -c conda-forge -c defaults bedtools
+RUN conda install -y -c conda-forge bc
 
 #####################################################################################
 ### CONDA env fixes to maintain compatibility with previous (until v2.2) versions ###
