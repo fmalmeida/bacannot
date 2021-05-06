@@ -29,7 +29,8 @@ process prokka {
     gcode   = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}"     : ''
     rnammer = (params.prokka_use_rnammer)  ? "--rnammer"                                 : ''
     """
-    source activate PROKKA ;
+    # activate env
+    source activate PERL_env ;
 
     # Save Prokka version
     prokka -v &> prokka_version.txt ;

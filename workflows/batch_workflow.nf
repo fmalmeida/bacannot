@@ -100,7 +100,7 @@ include { merge_annotations } from '../modules/generic/merge_annotations.nf' par
 include { gff2gbk } from '../modules/generic/gff2gbk.nf' params(outdir: params.outdir)
 
 // Convert GFF to SQL
-include { create_sql } from '../modules/generic/gff2sql_batch.nf' params(outdir: params.outdir,
+include { create_sql } from '../modules/generic/gff2sql.nf' params(outdir: params.outdir,
   prefix: params.prefix, blast_custom_mincov: params.blast_custom_mincov,
   blast_custom_minid: params.blast_custom_minid)
 

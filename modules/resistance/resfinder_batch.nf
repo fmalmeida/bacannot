@@ -19,9 +19,6 @@ process resfinder {
 
   script:
   """
-  # Activate env
-  source activate Resfinder;
-
   # Run resfinder acquired resistance
   /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${resfinder_species}\" \
   --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
@@ -41,7 +38,6 @@ process resfinder {
   mv resfinder/pheno_table.txt resfinder/mutation_pheno_table.txt &> /dev/null || true ;
 
   # Convert to GFF
-  conda deactivate ;
   resfinder2gff.py -i resfinder/results_tab.txt > resfinder/results_tab.gff ;
   """
 }

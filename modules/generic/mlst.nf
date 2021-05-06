@@ -16,7 +16,8 @@ process mlst {
 
    script:
    """
-   source activate MLST ;
+   # activate env
+   source activate PERL_env ;
 
    # Save mlst tool version
    mlst --version > mlst_version.txt ;

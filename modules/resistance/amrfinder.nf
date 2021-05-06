@@ -19,9 +19,6 @@ process amrfinder {
 
   script:
   """
-  # Activate environment
-  source activate AMRFINDERPLUS ;
-
   # Get tool version
   amrfinder --version > amrfinder_version.txt ;
 

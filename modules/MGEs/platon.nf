@@ -17,9 +17,6 @@ process platon {
 
   script:
   """
-  # Activate conda environment
-  source activate PLATON ;
-
   # Get version
   platon --version > platon_version.txt ;
 

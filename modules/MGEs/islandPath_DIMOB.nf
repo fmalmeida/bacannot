@@ -14,8 +14,8 @@ process find_GIs {
 
   script:
   """
-  # Activate environment
-  source activate find_GIs ;
+  # activate env
+  source activate PERL_env ;
 
   # Split genbank files
   splitgenbank.py annotation.gbk && rm annotation.gbk ;
