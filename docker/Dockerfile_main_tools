@@ -23,7 +23,46 @@ RUN conda create -y -c bioconda -c conda-forge -c defaults -n PY36_env "python>=
 #####################################
 ### tools that rely on ANY PYTHON ###
 #####################################
-RUN conda install -c bioconda -c conda-forge -c defaults -y phispy "blast>=2.11.0" "diamond>=2" nomkl
+RUN conda install -c bioconda -c conda-forge -c defaults -y samtools "platon>=1.6.0" "biopython>=1.71" \
+		plasmidfinder phispy "blast>=2.11.0" "diamond>=2" prodigal hmmer minimap2 bedtools bc nomkl  && \
+		conda clean -afy
+RUN python3 -m pip install phigaro==2.3.0
+RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
+		cd gff-toolbox && \
+		python3 -m pip install setuptools && \
+		python3 setup.py install && \
+		gff-toolbox -h
+
+# Install resfinder
+RUN conda install -c bioconda -c conda-forge -c defaults -y kma && \
+		python3 -m pip install tabulate biopython cgecore gitpython setuptools python-dateutil
+RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git
+
+###################
+### other tools ###
+###################
+# Install NANOPOLISH
+RUN apt-get update && apt-get install -y build-essential libhdf5-dev
+RUN git clone --recursive https://github.com/jts/nanopolish.git \
+		&& cd nanopolish \
+		&& make all \
+		&& rm /work/nanopolish/hdf5-1.8.14.tar.gz /work/nanopolish/eigen-3.3.7.tar.bz2
+ENV PATH="$PATH:/work/nanopolish"
+
+#########################
+### my custom scripts ###
+#########################
+COPY scripts/bscripts /work/bscripts
+
+COPY scripts/pscripts/splitgenbank.py /usr/local/bin/splitgenbank.py
+RUN chmod a+x /usr/local/bin/splitgenbank.py
+
+COPY scripts/pscripts/resfinder2gff.py /usr/local/bin/resfinder2gff.py
+RUN chmod a+x /usr/local/bin/resfinder2gff.py
+
+COPY scripts/pscripts/run_blasts.py /usr/local/bin/run_blasts.py
+RUN chmod a+x /usr/local/bin/run_blasts.py && \
+			python3 -m pip install docopt pandas
 
 #######################################
 ### Download up-to-date databases   ###
@@ -47,45 +86,6 @@ RUN wget https://card.mcmaster.ca/latest/data && \
 RUN mkdir -p /work/platon && \
 		wget -O /work/platon/db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz"
 
-##############################################################################
-# other tools that are required and must be organized after (main_tools)
-##############################################################################
-RUN conda install -c bioconda -c conda-forge -c defaults -y samtools
-
-# Install platon
-RUN conda install -c bioconda -c conda-forge -c defaults -y "platon>=1.6.0" "biopython>=1.71"
-
-ADD scripts/bscripts /work/bscripts
-RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
-		cd gff-toolbox && \
-		python3 -m pip install setuptools && \
-		python3 setup.py install && \
-		gff-toolbox -h
-
-# Download pythonScripts
-ADD scripts/pscripts/splitgenbank.py /usr/local/bin/splitgenbank.py
-RUN chmod a+x /usr/local/bin/splitgenbank.py
-
-COPY scripts/pscripts/resfinder2gff.py /usr/local/bin/resfinder2gff.py
-RUN chmod a+x /usr/local/bin/resfinder2gff.py
-
-COPY scripts/pscripts/run_blasts.py /usr/local/bin/run_blasts.py
-RUN chmod a+x /usr/local/bin/run_blasts.py && \
-			python3 -m pip install docopt pandas
-
-# Install NANOPOLISH
-RUN apt-get update && apt-get install -y build-essential libhdf5-dev
-RUN git clone --recursive https://github.com/jts/nanopolish.git \
-		&& cd nanopolish \
-		&& make all \
-		&& rm /work/nanopolish/hdf5-1.8.14.tar.gz /work/nanopolish/eigen-3.3.7.tar.bz2
-ENV PATH="$PATH:/work/nanopolish"
-
-# Install resfinder
-RUN conda install -c bioconda -c conda-forge -c defaults -y kma && \
-		python3 -m pip install tabulate biopython cgecore gitpython setuptools python-dateutil
-RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git
-
 # Resfinder databases
 RUN cd /work/resfinder && \
 		git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder && \
@@ -94,10 +94,6 @@ RUN cd /work/resfinder/db_resfinder && \
 			python3 INSTALL.py $(which kma_index) non_interactive && \
 			cd ../db_pointfinder && \
 			python3 INSTALL.py $(which kma_index) non_interactive
-
-# INSTALL PHIGARO
-RUN conda install -y prodigal hmmer nomkl && \
-			python3 -m pip install phigaro==2.3.0
 
 # Phigaro database
 RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
@@ -172,11 +168,6 @@ RUN mkdir ARGMiner && \
 # Return env
 WORKDIR /work
 
-# Install minimap2
-RUN conda install -y -c bioconda -c conda-forge -c defaults minimap2
-RUN conda install -y -c bioconda -c conda-forge -c defaults bedtools
-RUN conda install -y -c conda-forge bc
-
 #####################################################################################
 ### CONDA env fixes to maintain compatibility with previous (until v2.2) versions ###
 #####################################################################################
@@ -188,6 +179,7 @@ RUN mkdir -p /miniconda/bin/ && ln -s /opt/conda/bin/python3 /miniconda/bin/pyth
 RUN ln -s /opt/conda /opt/conda/envs/phispy
 RUN ln -s /opt/conda /opt/conda/envs/Resfinder
 RUN ln -s /opt/conda /opt/conda/envs/PLATON
+RUN ln -s /opt/conda /opt/conda/envs/PLASMIDFINDER
 
 #
 # # Install emboss
