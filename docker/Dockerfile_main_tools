@@ -183,6 +183,7 @@ RUN ln -s /opt/conda /opt/conda/envs/phispy
 RUN ln -s /opt/conda /opt/conda/envs/Resfinder
 RUN ln -s /opt/conda /opt/conda/envs/PLATON
 RUN ln -s /opt/conda /opt/conda/envs/PLASMIDFINDER
+RUN alias plasmidfinder.py='/opt/conda/bin/plasmidfinder.py'
 
 #
 # # Install emboss
