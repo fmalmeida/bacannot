@@ -195,6 +195,7 @@ RUN conda install -y -c bioconda -c conda-forge -c defaults ncbi-amrfinderplus &
 		conda clean -afy
 RUN amrfinder -U
 RUN ln -s /opt/conda /opt/conda/envs/AMRFINDERPLUS
+RUN ln -s /opt/conda/envs/PY36_env /opt/conda/envs/RGI
 #
 # # Install emboss
 # RUN conda install -y -c bioconda -c conda-forge -c defaults emboss
