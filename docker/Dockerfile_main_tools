@@ -95,6 +95,9 @@ RUN cd /work/resfinder/db_resfinder && \
 			cd ../db_pointfinder && \
 			python3 INSTALL.py $(which kma_index) non_interactive
 
+# plasmidfinder database
+RUN download-db.sh
+
 # Phigaro database
 RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
 		chmod a+rw -R /work/phigaro_pvog
