@@ -167,6 +167,14 @@ RUN mkdir ARGMiner && \
 		makeblastdb -in ARGMiner/sequences -title 'argminer' -dbtype prot -logfile /dev/null && \
 		diamond makedb --in ARGMiner/sequences -d ARGMiner/diamond
 
+# Return env
+WORKDIR /work
+
+########################################################################
+### CONDA env fixes to maintain compatibility with previous versions ###
+########################################################################
+RUN ln -s /opt/conda/envs/PERL_env /opt/conda/envs/PROKKA
+
 #
 # # Install emboss
 # RUN conda install -y -c bioconda -c conda-forge -c defaults emboss
