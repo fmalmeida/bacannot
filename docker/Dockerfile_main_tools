@@ -178,6 +178,7 @@ RUN ln -s /opt/conda/envs/PERL_env /opt/conda/envs/MLST
 RUN ln -s /opt/conda/envs/PERL_env /opt/conda/envs/find_GIs
 RUN mkdir -p /miniconda/bin/ && ln -s /opt/conda/bin/python3 /miniconda/bin/python3
 RUN ln -s /opt/conda /opt/conda/envs/phispy
+RUN ln -s /opt/conda /opt/conda/envs/Resfinder
 
 #
 # # Install emboss
