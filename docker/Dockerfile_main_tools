@@ -170,11 +170,12 @@ RUN mkdir ARGMiner && \
 # Return env
 WORKDIR /work
 
-########################################################################
-### CONDA env fixes to maintain compatibility with previous versions ###
-########################################################################
+#####################################################################################
+### CONDA env fixes to maintain compatibility with previous (until v2.2) versions ###
+#####################################################################################
 RUN ln -s /opt/conda/envs/PERL_env /opt/conda/envs/PROKKA
 RUN ln -s /opt/conda/envs/PERL_env /opt/conda/envs/MLST
+RUN mkdir -p /miniconda/bin/ && ln -s /opt/conda/bin/python3 /miniconda/bin/python3
 RUN ln -s /opt/conda /opt/conda/envs/phispy
 
 #
