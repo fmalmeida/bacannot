@@ -10,10 +10,16 @@ RUN conda update -n base -c defaults conda
 ###############################
 RUN conda create -n PERL_env -c bioconda -c conda-forge -c defaults -y "prokka>=1.14" mlst nomkl islandpath
 
+# Update prokka database with TIGRFAMs hmm
+RUN wget https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/TIGRFAMs_15.0_HMM.LIB.gz && \
+		gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
+		mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
+		mv TIGRFAMs_15.hmm /opt/conda/envs/PERL_env/db/hmm/ && \
+    conda run -n PERL_env prokka --setupdb
+
 # fix islandpath-dimob pl script
 RUN git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
 		ln -rs ./islandpath/Dimob.pl /usr/local/bin
-
 
 ######################################
 ### tools that rely on PYTHON 3.6 ###
@@ -24,7 +30,8 @@ RUN conda create -y -c bioconda -c conda-forge -c defaults -n PY36_env "python>=
 ### tools that rely on ANY PYTHON ###
 #####################################
 RUN conda install -c bioconda -c conda-forge -c defaults -y samtools "platon>=1.6.0" "biopython>=1.71" \
-		plasmidfinder phispy "blast>=2.11.0" "diamond>=2" prodigal hmmer minimap2 bedtools bc nomkl  && \
+		plasmidfinder phispy "blast>=2.11.0" "diamond>=2" prodigal hmmer minimap2 bedtools bc ncbi-amrfinderplus \
+		emboss nomkl  && \
 		conda clean -afy
 RUN python3 -m pip install phigaro==2.3.0
 RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
@@ -53,6 +60,7 @@ ENV PATH="$PATH:/work/nanopolish"
 ### my custom scripts ###
 #########################
 COPY scripts/bscripts /work/bscripts
+RUN chmod a+rwx /work/bscripts/*
 
 COPY scripts/pscripts/splitgenbank.py /usr/local/bin/splitgenbank.py
 RUN chmod a+x /usr/local/bin/splitgenbank.py
@@ -63,163 +71,3 @@ RUN chmod a+x /usr/local/bin/resfinder2gff.py
 COPY scripts/pscripts/run_blasts.py /usr/local/bin/run_blasts.py
 RUN chmod a+x /usr/local/bin/run_blasts.py && \
 			python3 -m pip install docopt pandas
-
-#######################################
-### Download up-to-date databases   ###
-### this image will be updated each ###
-### month with the Github-actions   ###
-#######################################
-# Update prokka database with TIGRFAMs hmm
-RUN wget https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/TIGRFAMs_15.0_HMM.LIB.gz && \
-		gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
-		mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
-		mv TIGRFAMs_15.hmm /opt/conda/envs/PERL_env/db/hmm/ && \
-    conda run -n PERL_env prokka --setupdb
-
-# Update CARD-RGI database
-RUN wget https://card.mcmaster.ca/latest/data && \
-		tar -xvf data ./card.json && \
-		rm data && \
-		conda run -n PY36_env rgi load --card_json ./card.json
-
-# Platon DB
-RUN mkdir -p /work/platon && \
-		wget -O /work/platon/db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz"
-
-# Resfinder databases
-RUN cd /work/resfinder && \
-		git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder && \
-		git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder
-RUN cd /work/resfinder/db_resfinder && \
-			python3 INSTALL.py $(which kma_index) non_interactive && \
-			cd ../db_pointfinder && \
-			python3 INSTALL.py $(which kma_index) non_interactive
-
-# plasmidfinder database
-RUN download-db.sh
-
-# Phigaro database
-RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
-		chmod a+rw -R /work/phigaro_pvog
-
-WORKDIR /work/dbs
-
-#######################
-### BLAST databases ###
-#######################
-
-## VFDB nt
-RUN mkdir vfdb && \
-		wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \
-		gzip -d VFDB_setA_nt.fas.gz && \
-		awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setA_nt.fas | \
-		sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \
-		awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences && \
-		makeblastdb -in vfdb/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \
-		rm VFDB_setA_nt.fas
-
-## ICEberg nt (ICEs)
-RUN mkdir iceberg && \
-		wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_seq_experimental_data.fas && \
-		awk -v db=ICEberg '/>/{ split($0,a,"|"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" a[5] "~~~" a[3] " " all }1' ICEberg_seq_experimental_data.fas | \
-		sed -e 's/ >/ /g' > iceberg/sequences && \
-		rm ICEberg_seq_experimental_data.fas && \
-		makeblastdb -in iceberg/sequences -title 'iceberg' -dbtype nucl -logfile /dev/null
-
-## ICEberg prot (genes)
-RUN wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICEberg_aa_experimental_data.fas && \
-		awk -v db=ICEberg \
-		'/>/{ split($0,col," "); split(col[1],a,"[|]"); split(col[2],b,"[|]"); split($0,c,"[|]"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" b[4] "~~~" c[6] " " all }1' \
-		ICEberg_aa_experimental_data.fas | sed -e 's/ >/ /g' | awk -F '\\]' \
-		'{ if ($0 ~ />/) { gsub(" ","_",$1); gsub("_\\[","_",$1); gsub("~_","~",$1); print $1,$2 "]" } else { print $0 }}' > iceberg/proteins && \
-		diamond makedb --in iceberg/proteins -d iceberg/diamond && \
-		makeblastdb -in iceberg/proteins -title 'iceberg' -dbtype prot -logfile /dev/null && \
-		rm ICEberg_aa_experimental_data.fas
-
-##  VICTORS prot (genes)
-RUN mkdir victors && \
-		wget -O victors_original.fasta "http://www.phidias.us/victors/downloads/gen_downloads_protein.php" && \
-		grep -v "^[^>M]" victors_original.fasta > victors_prot.fasta && \
-		rm victors_original.fasta && \
-		awk -v db=victors '/>/{ split($0,a,"|"); split(a[5],gene," \\["); all=$0; $0=">" db "~~~" gene[1] "~~~" a[4] "~~~" "Victors_" a[2] " " all }1' victors_prot.fasta | \
-		sed -e 's/ >/ /g' -e 's/~ /~/g' | \
-		awk -F "~~~" ' { if ($0 ~ />/) { gsub(" ", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' > victors/sequences && \
-		diamond makedb --in victors/sequences -d victors/diamond && \
-		makeblastdb -in victors/sequences -title 'victors' -dbtype prot -logfile /dev/null && \
-		rm victors_prot.fasta
-
-## PHAST prot (genes)
-RUN mkdir phast && \
-		wget -O phast_prot.fasta http://phaster.ca/downloads/prophage_virus.db && \
-		awk -v db=phast '/>/{ split($0,a,"|"); split(a[5],gene," \\["); all=$0; $0=">" db "~~~" gene[1] "~~~" a[4]"~~~" "PHAST_" a[2] " " all }1' phast_prot.fasta | \
-		sed -e 's/ >/ /g' -e 's/~ /~/g' | \
-		awk -F "~~~" ' { if ($0 ~ />/) { gsub(" ", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' | \
-		awk -F "~~~" ' { if ($0 ~ />/) { gsub("-", "_", $2); print $1 "~~~" $2 "~~~" $3 "~~~" $4 } else { print $0 }}' > phast/sequences && \
-		rm phast_prot.fasta && \
-		diamond makedb --in phast/sequences -d phast/diamond && \
-		makeblastdb -in phast/sequences -title 'phast' -dbtype prot -logfile /dev/null
-
-## ARGMiner prot
-RUN mkdir ARGMiner && \
-		wget http://bench.cs.vt.edu/ftp/argminer/release/ARGminer-v1.1.1.A.fasta && \
-		awk -v db=ARGMiner '/>/{ split($0,a,"|"); $0=">" db "~~~" a[3] "~~~" a[1] "~~~" a[2] " " a[4] }1' ARGminer-v1.1.1.A.fasta | \
-		sed -e 's/~>/~/g' -e 's/gi:.*:ref://g' -e 's/gi:.*:gb://g' -e 's/gi:.*:emb://g' -e 's/:~/~/g' > ARGMiner/sequences && \
-		rm ARGminer-v1.1.1.A.fasta && \
-		makeblastdb -in ARGMiner/sequences -title 'argminer' -dbtype prot -logfile /dev/null && \
-		diamond makedb --in ARGMiner/sequences -d ARGMiner/diamond
-
-# Return env
-WORKDIR /work
-
-#####################################################################################
-### CONDA env fixes to maintain compatibility with previous (until v2.2) versions ###
-#####################################################################################
-RUN ln -s /opt/conda/envs/PERL_env /opt/conda/envs/PROKKA
-RUN ln -s /opt/conda/envs/PERL_env /opt/conda/envs/MLST
-RUN ln -s /opt/conda/envs/PERL_env /opt/conda/envs/find_GIs
-RUN ln -s /opt/conda/envs/PERL_env/bin/barrnap /opt/conda/bin/barrnap
-RUN mkdir -p /miniconda/bin/ && ln -s /opt/conda/bin/python3 /miniconda/bin/python3
-RUN ln -s /opt/conda /opt/conda/envs/phispy
-RUN ln -s /opt/conda /opt/conda/envs/Resfinder
-RUN ln -s /opt/conda /opt/conda/envs/PLATON
-RUN ln -s /opt/conda /opt/conda/envs/PLASMIDFINDER
-# plasmidfinder database
-RUN mkdir -p /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
-		cd /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
-		wget https://bitbucket.org/genomicepidemiology/plasmidfinder_db/get/2.1.tar.gz && \
-		tar -xvf 2.1.tar.gz --strip-components 1 && \
-		rm *.tar.gz && \
-		python INSTALL.py
-
-RUN conda install -y -c bioconda -c conda-forge -c defaults ncbi-amrfinderplus && \
-		conda clean -afy
-RUN amrfinder_update --force_update
-RUN ln -s /opt/conda /opt/conda/envs/AMRFINDERPLUS
-RUN mkdir -p /opt/conda/share/amrfinderplus/ && \
-		ln -s /opt/conda/bin/data /opt/conda/share/amrfinderplus/data
-RUN ln -s /opt/conda/envs/PY36_env /opt/conda/envs/RGI
-RUN ls /opt/conda/envs/AMRFINDERPLUS/share/amrfinderplus/data/
-ENV MPLCONFIGDIR="/tmp/"
-RUN chmod -R a+rwx /opt/conda/envs/PY36_env/lib/python3.6/site-packages/app/
-#
-# # Install emboss
-# RUN conda install -y -c bioconda -c conda-forge -c defaults emboss
-#
-# ## Install tbl2asn
-# RUN conda install -y -c bioconda -c conda-forge -c defaults tbl2asn-forever
-#
-#
-# #######################
-# ### python packages ###
-# #######################
-#
-#
-#
-# # Help Phigaro Installation
-# RUN cd /usr/bin && \
-# 			for i in * ; do ln -rs "$i" /usr/local/bin ; done
-#
-# # Clean caches
-# RUN apt-get clean && \
-# 		apt-get autoremove && \
-# 		conda clean -afy
