@@ -119,7 +119,7 @@ For a rapid and simple quickstart we will use as input the nanopore raw reads pr
 
 Command line executions are exemplified [in the manual](https://bacannot.readthedocs.io/en/latest/examples.html).
 
-## Using the configuration file
+#### Using the configuration file
 
 All the parameters showed above can be, and are advised to be, set through the configuration file. When a configuration file is set the pipeline is run by simply executing `nextflow run fmalmeida/bacannot -c ./configuration-file`
 
@@ -131,20 +131,24 @@ Create a configuration file in your working directory:
 
 ### Interactive graphical configuration and execution
 
-Users can trigger a graphical and interactive pipeline configuration and execution by using [nf-core launch](https://nf-co.re/launch) utility.
+#### Via NF tower launchpad (good for cloud env execution)
 
-#### Install nf-core
+Nextflow has an awesome feature called [NF tower](https://tower.nf). It allows that users quickly customise and set-up the execution and configuration of cloud enviroments to execute any nextflow pipeline from nf-core, github (this one included), bitbucket, etc. By having a compliant JSON schema for pipeline configuration it means that the configuration of parameters in NF tower will be easier because the system will render an input form.
+
+Checkout more about this feature at: https://seqera.io/blog/orgs-and-launchpad/
+
+<p align="center">
+<img src="https://j.gifs.com/GRnqm7.gif" width="500px"/>
+</p>
+
+#### Via nf-core launch (good for local execution)
+
+Users can trigger a graphical and interactive pipeline configuration and execution by using [nf-core launch](https://nf-co.re/launch) utility. nf-core launch will start an interactive form in your web browser or command line so you can configure the pipeline step by step and start the execution of the pipeline in the end.
 
 ```bash
 # Install nf-core
 pip install nf-core
-```
 
-#### launch the pipeline
-
-nf-core launch will start an interactive form in your web browser or command line so you can configure the pipeline step by step and start the execution of the pipeline in the end.
-
-```bash
 # Launch the pipeline
 nf-core launch fmalmeida/bacannot
 ```
