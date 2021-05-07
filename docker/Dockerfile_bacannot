@@ -137,3 +137,8 @@ RUN chmod -R a+rwx /opt/conda/envs/PY36_env/lib/python3.6/site-packages/app/
 ### Fix AMRFinderPlus missing env ###
 #####################################
 ENV AMRFINDER_DB=/opt/conda/share/amrfinderplus/data
+
+#####################################################################
+### Fix plasmidfinder that do not find the database automatically ###
+#####################################################################
+RUN alias plasmidfinder.py='plasmidfinder.py -p /opt/conda/share/plasmidfinder*/database'
