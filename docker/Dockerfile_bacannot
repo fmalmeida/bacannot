@@ -26,14 +26,13 @@ RUN cd /work/resfinder/db_resfinder && \
 		cd ../db_pointfinder && \
 		python3 INSTALL.py $(which kma_index) non_interactive
 
-# plasmidfinder database
-#RUN mkdir -p /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
-#		cd /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
-#		git clone https://bitbucket.org/genomicepidemiology/plasmidfinder_db.git && \
-#    mv plasmidfinder_db/* . && \
-#		rm -rf plasmidfinder_db && \
-#		python INSTALL.py
-RUN download-db.sh
+plasmidfinder database
+RUN mkdir -p /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
+		cd /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
+		git clone https://bitbucket.org/genomicepidemiology/plasmidfinder_db.git && \
+   mv plasmidfinder_db/* . && \
+		rm -rf plasmidfinder_db && \
+		python INSTALL.py
 
 # Phigaro database
 RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
