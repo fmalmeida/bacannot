@@ -133,7 +133,7 @@ Create a configuration file in your working directory:
 
 #### Via NF tower launchpad (good for cloud env execution)
 
-Nextflow has an awesome feature called [NF tower](https://tower.nf). It allows that users quickly customise and set-up the execution and configuration of cloud enviroments to execute any nextflow pipeline from nf-core, github (this one included), bitbucket, etc. By having a compliant JSON schema for pipeline configuration it means that the condiguration of parameters in NF tower will be easier because the system will render an input form.
+Nextflow has an awesome feature called [NF tower](https://tower.nf). It allows that users quickly customise and set-up the execution and configuration of cloud enviroments to execute any nextflow pipeline from nf-core, github (this one included), bitbucket, etc. By having a compliant JSON schema for pipeline configuration it means that the configuration of parameters in NF tower will be easier because the system will render an input form.
 
 Checkout more about this feature at: https://seqera.io/blog/orgs-and-launchpad/
 
