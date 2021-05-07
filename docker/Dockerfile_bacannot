@@ -143,5 +143,5 @@ ENV AMRFINDER_DB=/opt/conda/share/amrfinderplus/data
 #####################################################################
 RUN mv /opt/conda/bin/plasmidfinder.py /opt/conda/bin/plasmidfinder_source.py && \
 		echo "#!/bin/bash" >> /usr/local/bin/plasmidfinder.py && \
-		echo "/opt/conda/bin/plasmidfinder_source.py -p /opt/conda/share/plasmidfinder*/database" >> /usr/local/bin/plasmidfinder.py && \
+		echo "/opt/conda/bin/plasmidfinder_source.py -p /opt/conda/share/plasmidfinder*/database \$@" >> /usr/local/bin/plasmidfinder.py && \
 		chmod a+rwx /usr/local/bin/plasmidfinder.py
