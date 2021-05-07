@@ -1,5 +1,6 @@
 FROM continuumio/miniconda3
 MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
+SHELL ["/bin/bash", "-c"]
 WORKDIR /work
 
 # update conda

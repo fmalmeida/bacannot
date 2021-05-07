@@ -1,4 +1,5 @@
 FROM fmalmeida/bacannot:main_tools
+SHELL ["/bin/bash", "-c"]
 
 #######################################
 ### Download up-to-date databases   ###
@@ -21,9 +22,9 @@ RUN cd /work/resfinder && \
 		git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder && \
 		git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder
 RUN cd /work/resfinder/db_resfinder && \
-			python3 INSTALL.py $(which kma_index) non_interactive && \
-			cd ../db_pointfinder && \
-			python3 INSTALL.py $(which kma_index) non_interactive
+		python3 INSTALL.py $(which kma_index) non_interactive && \
+		cd ../db_pointfinder && \
+		python3 INSTALL.py $(which kma_index) non_interactive
 
 # plasmidfinder database
 RUN mkdir -p /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
