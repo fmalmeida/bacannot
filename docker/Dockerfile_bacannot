@@ -123,8 +123,8 @@ RUN ln -s /opt/conda /opt/conda/envs/Resfinder
 RUN ln -s /opt/conda /opt/conda/envs/PLATON
 RUN ln -s /opt/conda /opt/conda/envs/PLASMIDFINDER
 RUN ln -s /opt/conda /opt/conda/envs/AMRFINDERPLUS
-RUN mkdir -p /opt/conda/share/amrfinderplus/ && \
-		ln -s /opt/conda/bin/data /opt/conda/share/amrfinderplus/data
+# RUN mkdir -p /opt/conda/share/amrfinderplus/ && \
+# 		ln -s /opt/conda/bin/data /opt/conda/share/amrfinderplus/data
 RUN ln -s /opt/conda/envs/PY36_env /opt/conda/envs/RGI
 
 ###########################
@@ -138,7 +138,7 @@ RUN chmod -R a+rwx /opt/conda/envs/PY36_env/lib/python3.6/site-packages/app/
 #####################################################################
 RUN mv /opt/conda/bin/amrfinder /opt/conda/bin/amrfinder_source && \
 		echo "#!/bin/bash" >> /opt/conda/bin/amrfinder && \
-		echo "/opt/conda/bin/amrfinder_source --database /opt/conda/bin/data/latest \$@" >> /opt/conda/bin/amrfinder && \
+		echo "/opt/conda/bin/amrfinder_source --database /opt/conda/share/amrfinderplus/data/latest \$@" >> /opt/conda/bin/amrfinder && \
 		chmod a+rwx /opt/conda/bin/amrfinder
 
 #####################################################################
