@@ -39,7 +39,7 @@ RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /
 		chmod a+rw -R /work/phigaro_pvog
 
 # AMRFinderPlus database
-RUN amrfinder_update --force_update
+RUN amrfinder -u
 
 WORKDIR /work/dbs
 
