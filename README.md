@@ -141,7 +141,7 @@ Checkout more about this feature at: https://seqera.io/blog/orgs-and-launchpad/
 <img src="https://j.gifs.com/GRnqm7.gif" width="500px"/>
 </p>
 
-#### Via nf-core (launch) the pipeline (good for local execution)
+#### Via nf-core launch (good for local execution)
 
 Users can trigger a graphical and interactive pipeline configuration and execution by using [nf-core launch](https://nf-co.re/launch) utility. nf-core launch will start an interactive form in your web browser or command line so you can configure the pipeline step by step and start the execution of the pipeline in the end.
 
