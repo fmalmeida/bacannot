@@ -28,6 +28,6 @@ process draw_GIs {
 
   # Get one image
   name=\$(ls plots/product_label | head -n 1)
-  cp "plots/product_label/\${name}" ./teste.png ;
+  [[ \$(ls plots/product_label/) ]] && cp "plots/product_label/\${name}" ./teste.png || echo "empty" ;
   """
 }
