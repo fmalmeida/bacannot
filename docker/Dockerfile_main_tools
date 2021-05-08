@@ -18,9 +18,10 @@ RUN wget https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/TIGRFAMs_15.0_HM
 		mv TIGRFAMs_15.hmm /opt/conda/envs/PERL_env/db/hmm/ && \
     conda run -n PERL_env prokka --setupdb
 
-# fix islandpath-dimob pl script
+# fix islandpath-dimob pl script (and splitgenbank script biopython dependency)
 RUN git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
-		ln -rs ./islandpath/Dimob.pl /usr/local/bin
+		ln -rs ./islandpath/Dimob.pl /usr/local/bin && \
+		conda run -n PERL_env python -m pip install biopython
 
 ######################################
 ### tools that rely on PYTHON 3.6 ###
