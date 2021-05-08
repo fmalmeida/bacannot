@@ -11,7 +11,7 @@ process draw_GIs {
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("plots") optional true
+  tuple val(prefix), file("plots")     optional true
   tuple val(prefix), file("teste.png") optional true
 
   script:
