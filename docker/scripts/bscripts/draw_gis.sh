@@ -69,4 +69,4 @@ while read line ; do
 done<$gis_bed
 
 # Clean
-rm -f *.gff
+# rm -f *.gff
