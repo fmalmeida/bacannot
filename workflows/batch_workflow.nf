@@ -2,6 +2,9 @@
  * Include modules (Execution setup)
  */
 
+// Species identification
+include { refseq_masher } from '../modules/generic/mash.nf' params(outdir: params.outdir)
+
 // Prokka annotation
 include { prokka } from '../modules/generic/prokka_batch.nf' params(outdir: params.outdir,
   prokka_kingdom: params.prokka_kingdom, prokka_genetic_code: params.prokka_genetic_code,
@@ -63,6 +66,9 @@ include { iceberg } from '../modules/MGEs/iceberg.nf' params(outdir: params.outd
 // Genomic Islands detection with Islandpath-DIMOB
 include { find_GIs } from '../modules/MGEs/islandPath_DIMOB.nf' params(outdir: params.outdir)
 include { draw_GIs } from '../modules/MGEs/draw_gis.nf' params(outdir: params.outdir)
+
+// IS identification
+include { digis } from '../modules/MGEs/digIS.nf' params(outdir: params.outdir)
 
 // AMR annotation with ARGMiner
 include { argminer } from '../modules/resistance/argminer.nf' params(outdir: params.outdir,
@@ -251,6 +257,18 @@ workflow bacannot_batch_nf {
       call_methylation(prokka.out[6])
       methylation_out_1 = call_methylation.out[2]
       methylation_out_2 = call_methylation.out[3]
+
+      /*
+
+          Additional steps created after main releases
+
+       */
+
+      // species identification
+      refseq_masher(prokka.out[3])
+
+      // IS identification
+      digis(prokka.out[3].join(prokka.out[2]))
 
       /*
           Eighth step -- Merge all annotations with the same Prefix value in a single Channel
