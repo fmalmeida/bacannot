@@ -15,6 +15,9 @@ process digis {
 
   script:
   """
+  # activate env
+  conda activate digIS ;
+  
   # run digIS
   python3 /work/digIS/digIS_search.py -i $genome -g $genbank -o digIS
   """

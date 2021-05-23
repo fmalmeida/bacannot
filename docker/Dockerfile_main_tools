@@ -6,6 +6,10 @@ WORKDIR /work
 # update conda
 RUN conda update -n base -c defaults conda
 
+# install procps
+RUN apt-get update && \
+		apt-get install -y procps
+
 ###############################
 ### tools that rely on PERL ###
 ###############################
@@ -26,7 +30,8 @@ RUN git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
 ######################################
 ### tools that rely on PYTHON 3.6 ###
 ######################################
-RUN conda create -y -c bioconda -c conda-forge -c defaults -n PY36_env "python>=3.6" "rgi>=5.2.0" refseq_masher nomkl
+RUN conda create -y -c bioconda -c conda-forge -c defaults -n PY36_env "python>=3.6" "rgi>=5.2.0" refseq_masher nomkl && \
+		conda clean -afy
 
 #####################################
 ### tools that rely on ANY PYTHON ###
@@ -46,6 +51,15 @@ RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
 RUN conda install -c bioconda -c conda-forge -c defaults -y kma && \
 		python3 -m pip install tabulate biopython cgecore gitpython setuptools python-dateutil
 RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git
+
+###############################################################
+### tool that require specific version of a specific module ###
+###############################################################
+RUN conda create -y -n digIS 'python=3.7' nomkl && \
+		conda activate digIS && \
+		pip3 install biopython==1.73 numpy bcbio-gff && \
+		conda deactivate && \
+		conda clean -afy
 
 ###################
 ### other tools ###
