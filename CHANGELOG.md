@@ -2,6 +2,16 @@
 
 The tracking for changes started in v2.1
 
+## v2.3
+
+### Dockerfile
+
+talk about databases, the image and github actions
+
+### New modules
+
+refseq_masher ; digIS
+
 ## v2.2
 
 ### Automatic reports
