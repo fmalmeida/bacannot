@@ -286,10 +286,9 @@ workflow bacannot_batch_nf {
                                        .join(phast_output,     remainder: true)
                                        .join(phigaro_output_2, remainder: true)
                                        .join(find_GIs.out[0],  remainder: true)
-                                       .join(digis.out[1],     remainder: true)
 
       // Contatenation of annotations in a single GFF file
-      merge_annotations(annotations_files)
+      merge_annotations(annotations_files.join(digis.out[1],     remainder: true))
 
       // Plot genomic islands
       draw_GIs(merge_annotations.out[0].join(find_GIs.out[0]))
@@ -325,6 +324,7 @@ workflow bacannot_batch_nf {
                                               .join(methylation_out_2, remainder: true)
                                               .join(phispy_output,     remainder: true)
                                               .join(resfinder_gff,     remainder: true)
+                                              .join(merge_annotations.out[8], remainder: true) // parsed and changed digIS
       // Jbrowse Creation
       jbrowse(jbrowse_input)
 

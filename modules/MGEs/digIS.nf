@@ -12,7 +12,7 @@ process digis {
   output:
   // Grab results
   file("digIS")
-  file("digIS/results/*.gff") optional true
+  tuple val(prefix), file("digIS/results/*.gff") optional true
 
   script:
   """
