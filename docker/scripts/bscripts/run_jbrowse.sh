@@ -30,6 +30,7 @@ Help()
 	echo "m					Path to Nanopolish methylation results"
 	echo "S					Path to Nanopolish chr sizes"
 	echo "R					Path to Resfinder custom GFF"
+	echo "d         Path to digIS custom GFF"
 	echo ""
 	echo
 }
@@ -75,6 +76,9 @@ while getopts "hp:g:b:s:f:r:B:P:G:m:S:R:" option; do
 				 ;;
 			R) # get resfinder GFF
 				 RESFINDERGFF="$OPTARG"
+				 ;;
+			d) # get digIS GFF
+				 DIGISGFF="$OPTARG"
 				 ;;
    esac
 done
@@ -400,6 +404,22 @@ remove-track.pl --trackLabel "${PREFIX} putative prophages predicted by phispy" 
 																\"trackType\" : \"CanvasFeatures\", \
 																\"type\" : \"CanvasFeatures\", \
 																\"urlTemplate\" : \"tracks/${PREFIX} putative genomic islands/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
+
+## digIS transposable elements
+[ $(grep "digIS" $DIGISGFF | wc -l) -eq 0 ] || flatfile-to-json.pl --gff $DIGISGFF --key "${PREFIX} Insertion Sequences predicted with digIS" --trackType CanvasFeatures \
+--trackLabel "${PREFIX} Insertion Sequences predicted with digIS" --out "data" --nameAttributes "class_level,class_sim_all,class_sim_is,class_sim_orf,score,ID" ;
+remove-track.pl --trackLabel "${PREFIX} Insertion Sequences predicted with digIS" --dir data &> /tmp/error
+[ $(grep "PHAST" $PROKKAGFF | wc -l) -eq 0 ] || echo -E " {  \"compress\" : 0, \
+																											 		\"displayMode\" : \"compact\", \
+																													\"key\" : \"${PREFIX} Insertion Sequences predicted with digIS\", \
+																													\"category\" : \"MGEs annotation\", \
+																													\"label\" : \"${PREFIX} Insertion Sequences predicted with digIS\", \
+																													\"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
+																													\"style\" : { \"className\" : \"feature\", \"color\": \"#71dd13\" }, \
+																													\"trackType\" : \"CanvasFeatures\", \
+																													\"type\" : \"CanvasFeatures\", \
+																													\"nameAttributes\" : \"class_level,class_sim_all,class_sim_is,class_sim_orf,score,ID\", \
+																													\"urlTemplate\" : \"tracks/${PREFIX} Insertion Sequences predicted with digIS/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 
 # Form -fat bedGraphs
 ## cpg

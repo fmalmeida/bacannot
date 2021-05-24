@@ -7,7 +7,7 @@ process merge_annotations {
   tuple val(prefix), file(draft), file("prokka_gff"), file(mlst), file(barrnap),
         file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb),
         file(victors), file(amrfinder), file(rgi), file(iceberg), file(phast),
-        file(phigaro), file(genomic_islands)
+        file(phigaro), file(genomic_islands), file("digIS.gff")
 
   output:
   tuple val(prefix), file("${prefix}.gff")                  // Get main gff file
@@ -55,5 +55,8 @@ process merge_annotations {
   #### AMRFinderPlus
   [ \$(cat AMRFinder_resistance-only.tsv | wc -l) -eq 1 ] || addNCBIamr2Gff.R -g ${prefix}.gff -i $amrfinder -o ${prefix}.gff -t Resistance -d AMRFinderPlus ;
   [ \$(grep "AMRFinderPlus" ${prefix}.gff | wc -l) -eq 0 ] || grep "AMRFinderPlus" ${prefix}.gff > resistance_amrfinderplus.gff ;
+
+  ### digIS transposable elements
+  [ ! -s digIS.gff ] || cat ${prefix}.gff | sed 's/id=/ID=/g' | bedtools sort > tmp.gff && cat tmp.gff > ${prefix}.gff && rm tmp.gff ;
   """
 }

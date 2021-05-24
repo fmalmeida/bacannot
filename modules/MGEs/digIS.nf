@@ -12,6 +12,7 @@ process digis {
   output:
   // Grab results
   file("digIS")
+  file("digIS/results/*.gff") optional true
 
   script:
   """
