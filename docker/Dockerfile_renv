@@ -12,7 +12,7 @@ ADD scripts/bscripts /work/bscripts
 # Set main R dependencies
 ## Add R repo key
 RUN apt-get update && \
-			DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common gnupg build-essential && \
+			DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common gnupg build-essential bedtools && \
 			apt-get update && \
 			rm -rf /var/lib/apt/lists/* && \
 			apt-get clean  && \
