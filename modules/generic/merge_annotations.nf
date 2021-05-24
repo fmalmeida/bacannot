@@ -60,6 +60,6 @@ process merge_annotations {
   ### digIS transposable elements
   [ ! -s tmp.digis.gff ] || ( cat tmp.digis.gff | sed 's/id=/ID=/g' > digIS.gff && rm tmp.digis.gff ) ;
   [ ! -s digIS.gff ] || cat ${prefix}.gff digIS.gff | bedtools sort > tmp.out.gff ;
-  [ ! -s tmp.out.gff ] || ( cat tmp.out.gff > ${prefix}.gff && rm tmp.gff );
+  [ ! -s tmp.out.gff ] || ( cat tmp.out.gff > ${prefix}.gff && rm tmp.out.gff );
   """
 }
