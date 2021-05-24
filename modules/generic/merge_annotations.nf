@@ -58,10 +58,8 @@ process merge_annotations {
   [ \$(grep "AMRFinderPlus" ${prefix}.gff | wc -l) -eq 0 ] || grep "AMRFinderPlus" ${prefix}.gff > resistance_amrfinderplus.gff ;
 
   ### digIS transposable elements
-  [ ! -s tmp.digis.gff ] || tmp.digis.gff | sed 's/id=/ID=/g' > digIS.gff ;
-  [ ! -s tmp.digis.gff ] || rm tmp.digis.gff ;
+  [ ! -s tmp.digis.gff ] || ( cat tmp.digis.gff | sed 's/id=/ID=/g' > digIS.gff && rm tmp.digis.gff ) ;
   [ ! -s digIS.gff ] || cat ${prefix}.gff digIS.gff | bedtools sort > tmp.out.gff ;
-  [ ! -s tmp.out.gff ] || cat tmp.out.gff > ${prefix}.gff ;
-  [ ! -s tmp.out.gff ] || rm tmp.gff ) ;
+  [ ! -s tmp.out.gff ] || ( cat tmp.out.gff > ${prefix}.gff && rm tmp.gff );
   """
 }
