@@ -286,6 +286,7 @@ workflow bacannot_batch_nf {
                                        .join(phast_output,     remainder: true)
                                        .join(phigaro_output_2, remainder: true)
                                        .join(find_GIs.out[0],  remainder: true)
+                                       .join(digis.out[1],     remainder: true)
 
       // Contatenation of annotations in a single GFF file
       merge_annotations(annotations_files)
