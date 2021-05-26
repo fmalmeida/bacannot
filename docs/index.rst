@@ -8,6 +8,7 @@ prokaryotic genomes, `bacannot <https://github.com/fmalmeida/bacannot>`_ is deve
 and `Docker <https://www.docker.com/>`_. It can annotate resistance genes, virulence factors, genomic islands, prophages, methylation and more.
 It wraps up the following tools and databases:
 
++ `Refseq masher <https://github.com/phac-nml/refseq_masher>`_
 + `Prokka <https://github.com/tseemann/prokka>`_
 + `barrnap <https://github.com/tseemann/barrnap>`_
 + `mlst <https://github.com/tseemann/mlst>`_
@@ -19,6 +20,7 @@ It wraps up the following tools and databases:
 + `VFDB <http://www.mgc.ac.cn/VFs/main.htm>`_
 + `Victors <http://www.phidias.us/victors/>`_
 + `ICEberg <http://db-mml.sjtu.edu.cn/ICEberg/>`_
+* `digIS <https://github.com/janka2012/digIS>`_
 + `PHAST <http://phast.wishartlab.com/>`_
 + `Phigaro <https://github.com/bobeobibo/phigaro>`_
 + `PhySpy <https://github.com/linsalrob/PhiSpy>`_
