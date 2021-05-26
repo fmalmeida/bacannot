@@ -182,4 +182,4 @@ It will result in the following:
 
 ## Citation
 
-Please cite this pipeline using our Zenodo tag or directly via the github url. Also, whenever its outputs are used/helpful, **remember** to cite the correct the used software (Check the list of tools).
+Please cite this pipeline using our Zenodo tag or directly via the github url. Also, whenever its outputs are used/helpful, **remember** to cite the correct the used software (Check [the list of tools](list_of_tools.md)).
