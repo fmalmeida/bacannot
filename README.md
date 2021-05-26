@@ -79,7 +79,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 ### Maintaining databases up-to-date
 
-By default, github actions have been set to build the docker image containing the databases (`fmalmeida/bacannot:latest`) in the first day of every month. Therefore, to use the most up-to-date database files users can run `docker pull fmalmeida/bacannot:latest` before running the pipeline.
+By default, github actions have been set to build the docker image containing the databases (`fmalmeida/bacannot:latest`) in the first day of every month. Therefore, to use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:latest` before running the pipeline.
 
 Additionally, a custom script is provided to allow users to update the database image any time.
 
@@ -124,6 +124,8 @@ For a rapid and simple quickstart we will use as input the nanopore raw reads pr
   --resfinder_species "Escherichia coli"
 
 ```
+
+### Overview of outputs
 
 A nice overview of the output directory structure and the main tools/features produced by the pipeline is provided at https://bacannot.readthedocs.io/en/latest/outputs.html.
 
