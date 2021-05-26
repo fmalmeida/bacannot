@@ -72,7 +72,7 @@ By default, github actions have been set to build the docker image containing th
 Additionally, a custom script is provided to allow users to update the database image any time.
 
 ```bash
-$ bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/develop/bin/update_database_image.sh)
+bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/develop/bin/update_database_image.sh)
 ```
 
 > This command line will trigger a custom script that downloads the databases and build the fmalmeida/bacannot:latest docker image.
