@@ -27,7 +27,7 @@ then
     echo
     echo "# Starting docker local build!"
     wget --quiet -O my_dockerfile https://github.com/fmalmeida/bacannot/raw/master/docker/Dockerfile_bacannot
-    #docker build -t fmalmeida/bacannot:latest -f my_dockerfile .
+    docker build -t fmalmeida/bacannot:latest -f my_dockerfile .
     rm my_dockerfile
     echo
     echo "Image built!"
