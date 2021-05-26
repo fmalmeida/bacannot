@@ -22,9 +22,11 @@ Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-t
 
 See [the list of tools](list_of_tools.md).
 
+### Release notes
+
 Are you curious about changes between releases? See the [changelog](CHANGELOG.md).
 
-## Further reading and complementary analyses
+### Complementary pipelines
 
 Moreover, this pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a complete workflow for bacterial genomics analyses.
 
