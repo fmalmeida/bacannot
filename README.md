@@ -73,22 +73,6 @@ Additionally, a custom script is provided to allow users to update the database 
 
 ```bash
 $ bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/develop/bin/update_database_image.sh)
-
-# Bacannot shell script for updating the docker image which contains the database files
-#
-# It is useful to maintain the databases up-to-date. By default, with github actions, the
-# image is updated in the first day of each month, however, this script enables that you
-# update the database image any time.
-#
-# When building (locally or in github actions), the image will always update the databases.
-#
-# Author: Felipe M. Almeida (almeidafmarques@outlook.com)
-#
-# The script will now begin the image update!
-#
-# Remember: docker must be available in $PATH
-
-Do you really want to build it locally? (y/N)
 ```
 
 > This command line will trigger a custom script that downloads the databases and build the fmalmeida/bacannot:latest docker image.
