@@ -67,15 +67,6 @@ These images have been kept separate to not create massive Docker image and to a
           docker pull fmalmeida/bacannot:server (For the shiny parser)
           docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
 
-    * Or, if you prefer to build it yourself, each image can be built by using the Dockerfiles in the `docker` folder:
-
-          cd docker
-          docker build -t fmalmeida/bacannot:latest -f Dockerfile_bacannot .
-          docker build -t fmalmeida/bacannot:kofamscan -f Dockerfile_kofamscan .
-          docker build -t fmalmeida/bacannot:jbrowse -f Dockerfile_jbrowse .
-          docker build -t fmalmeida/bacannot:renv -f Dockerfile_renv .
-          docker build -t fmalmeida/bacannot:server -f Dockerfile_server .
-
 2. Install Nextflow (version 20.07 or higher):
 
        curl -s https://get.nextflow.io | bash
@@ -85,6 +76,34 @@ These images have been kept separate to not create massive Docker image and to a
        nextflow run fmalmeida/bacannot --help
 
 > Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
+
+### Maintaining databases up-to-date
+
+By default, github actions have been set to build the docker image containing the databases (`fmalmeida/bacannot:latest`) in the first day of every month. Therefore, to use the most up-to-date database files users can run `docker pull fmalmeida/bacannot:latest` before running the pipeline.
+
+Additionally, a custom script is provided to allow users to update the database image any time.
+
+```bash
+$ bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/develop/bin/update_database_image.sh)
+
+# Bacannot shell script for updating the docker image which contains the database files
+#
+# It is useful to maintain the databases up-to-date. By default, with github actions, the
+# image is updated in the first day of each month, however, this script enables that you
+# update the database image any time.
+#
+# When building (locally or in github actions), the image will always update the databases.
+#
+# Author: Felipe M. Almeida (almeidafmarques@outlook.com)
+#
+# The script will now begin the image update!
+#
+# Remember: docker must be available in $PATH
+
+Do you really want to build it locally? (y/N)
+```
+
+> This command line will trigger a custom script that downloads the databases and build the fmalmeida/bacannot:latest docker image.
 
 ## Quickstart
 
@@ -105,6 +124,8 @@ For a rapid and simple quickstart we will use as input the nanopore raw reads pr
   --resfinder_species "Escherichia coli"
 
 ```
+
+A nice overview of the output directory structure and the main tools/features produced by the pipeline is provided at https://bacannot.readthedocs.io/en/latest/outputs.html.
 
 ## Documentation
 

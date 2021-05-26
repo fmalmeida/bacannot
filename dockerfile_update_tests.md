@@ -1,6 +1,0 @@
-- [x] Pipeline **v2.3** e 1 genoma só
-- [x] Pipeline **v2.2** e 1 genoma só
-- [ ] Pipeline **v2.3** com mais de 1 genoma
-- [ ] Pipeline **v2.2** com mais de 1 genoma
-- [x] Módulo do custom blast
-- [x] Módulo do Nanopolish
