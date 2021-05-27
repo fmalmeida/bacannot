@@ -1,17 +1,17 @@
 ```{r parsing-db, eval=TRUE, include=FALSE, echo=FALSE}
 # Function to get Attribute Fields
-getAttributeField <- function (x, field, attrsep = ";") { 
-  s = strsplit(x, split = attrsep, fixed = TRUE) 
-  sapply(s, function(atts) { 
-    a = strsplit(atts, split = "=", fixed = TRUE) 
-    m = match(field, sapply(a, "[", 1)) 
-    if (!is.na(m)) { rv = a[[m]][2] 
-    } 
-    else { 
-      rv = as.character(NA) 
-    } 
-    return(rv) 
-  }) 
+getAttributeField <- function (x, field, attrsep = ";") {
+  s = strsplit(x, split = attrsep, fixed = TRUE)
+  sapply(s, function(atts) {
+    a = strsplit(atts, split = "=", fixed = TRUE)
+    m = match(field, sapply(a, "[", 1))
+    if (!is.na(m)) { rv = a[[m]][2]
+    }
+    else {
+      rv = as.character(NA)
+    }
+    return(rv)
+  })
 }
 
 # Function to get VF IDs
@@ -23,7 +23,7 @@ vf_id_url <- function (x) {
     id <-  str_split(x[4], "\\(")[[1]][1]
     url <- paste0("http://www.mgc.ac.cn/cgi-bin/VFs/comp_gene.cgi?RID=", id)
   }
-  
+
   return(url)
 }
 
@@ -38,7 +38,7 @@ vf_id_url_list <- function (x) {
     id <-  str_split(x[4], "\\(")[[1]][1]
     url <- paste0("[", name, "]", "(http://www.mgc.ac.cn/cgi-bin/VFs/comp_gene.cgi?RID=", id, ")")
   }
-  
+
   return(url)
 }
 
@@ -53,7 +53,7 @@ vf_id_url_DT <- function (x) {
     url <- paste0("http://www.mgc.ac.cn/cgi-bin/VFs/comp_gene.cgi?RID=", id)
     url <- paste0("<a  target=_blank href=", url, ">", id,"</a>" )
   }
-  
+
   return(url)
 }
 
@@ -103,17 +103,21 @@ cat("- Virulence factors found in the query genome:\n")
 cat(paste("\t-", string.list), sep = '\n')
 ```
 
-```{r vfs-png, fig.align='center', fig.show='hold', fig.cap="Virulence Factors annotated from [VFDB](http://www.mgc.ac.cn/VFs/main.htm) database", out.width="35%"}
+```{r vfs-png, fig.align='center', fig.show='hold', fig.cap="Virulence Factors annotated from [VFDB](http://www.mgc.ac.cn/VFs/main.htm) database", out.width="45%"}
 summary <- blast %>%
   select("Virulence Factor Name", "Gene Name")
 colnames(summary) <- c("Virulence_Factor_Name", "Gene_Name")
+summary$Virulence_Factor_Name <- word(summary$Virulence_Factor_Name, 1)
 vfs <- plyr::count(summary, "Virulence_Factor_Name")
 ggplot(vfs, aes(x=Virulence_Factor_Name, y=freq, fill=Virulence_Factor_Name)) + geom_bar(stat = "identity") +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank()) +
   xlab("Virulence Factors") +
   ylab("Number of genes") +
-  guides(fill=guide_legend(title = "Virulence Factors"))
+  guides(fill=guide_legend(title = "Virulence Factors")) +
+  theme(legend.position="bottom") +
+  guides(fill=guide_legend(nrow=5, byrow=TRUE)) +
+  theme(legend.key.size = unit(0.3, "cm"), legend.title = element_blank())
 ```
 
 ### Detailed information

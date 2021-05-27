@@ -17,7 +17,7 @@ process barrnap {
    script:
    """
    # Save barrnap tool version
-   barrnap --version> barrnap_version.txt ;
+   barrnap --version &> barrnap_version.txt ;
 
    # Run barrnap
    barrnap -o ${prefix}_rRNA.fa < $genome > ${prefix}_rRNA.gff

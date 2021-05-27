@@ -96,7 +96,6 @@ For a rapid and simple quickstart we will use as input the _Escherichia coli_ re
   --outdir _ANNOTATION \
   --threads 4 \
   --resfinder_species "Escherichia coli"
-
 ```
 
 ### Overview of outputs
