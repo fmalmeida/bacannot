@@ -92,16 +92,16 @@ Bacannot will use `R Markdown <https://rmarkdown.rstudio.com/>`_ to produce auto
 
 * Report of Antimicrobial resistance (AMR) genes annotation
 
-  - See `the AMR example report <https://htmlpreview.github.io/?https://raw.githubusercontent.com/fmalmeida/bacannot/master/docs/reports/report_resistance.html>`_
+  - See `the AMR example report <https://fmalmeida.github.io/reports/report_resistance.html>`_
 
 * Report of virulence genes annotation
 
-  - See `the virulence example report <https://htmlpreview.github.io/?https://raw.githubusercontent.com/fmalmeida/bacannot/master/docs/reports/report_virulence.html>`_
+  - See `the virulence example report <hhttps://fmalmeida.github.io/reports/report_virulence.html>`_
 
 * Report of mobile genetic elements annotation
 
   - Including plasmids, prophages, ICEs and genomic islands.
-  - See `the MGE example report <https://htmlpreview.github.io/?https://raw.githubusercontent.com/fmalmeida/bacannot/master/docs/reports/report_MGEs.html>`_
+  - See `the MGE example report <https://fmalmeida.github.io/reports/report_MGEs.html>`_
 
 * Report of user's custom db annotations.
 
