@@ -68,15 +68,6 @@ These images have been kept separate to not create massive Docker image and to a
           docker pull fmalmeida/bacannot:server (For the shiny parser)
           docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
 
-    * Or, if you prefer to build it yourself, each image can be built by using the Dockerfiles in the `docker` folder:
-
-          cd docker
-          docker build -t fmalmeida/bacannot:latest -f Dockerfile_bacannot .
-          docker build -t fmalmeida/bacannot:kofamscan -f Dockerfile_kofamscan .
-          docker build -t fmalmeida/bacannot:jbrowse -f Dockerfile_jbrowse .
-          docker build -t fmalmeida/bacannot:renv -f Dockerfile_renv .
-          docker build -t fmalmeida/bacannot:server -f Dockerfile_server .
-
 2. Install Nextflow (version 20.07 or higher):
 
        curl -s https://get.nextflow.io | bash
@@ -106,6 +97,10 @@ For a rapid and simple quickstart we will use as input the nanopore raw reads pr
   --resfinder_species "Escherichia coli"
 
 ```
+
+### Overview of outputs
+
+A nice overview of the output directory structure and the main tools/features produced by the pipeline is provided at https://bacannot.readthedocs.io/en/latest/outputs.html.
 
 ## Documentation
 
