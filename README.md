@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Docker build](https://img.shields.io/docker/cloud/build/fmalmeida/bacannot)](https://hub.docker.com/r/fmalmeida/bacannot) ![Docker Pulls](https://img.shields.io/docker/pulls/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
 
 <p align="center">
 
@@ -18,23 +18,26 @@
 
 ## About
 
-Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-the-art software for prokaryotic genome annotation. It is a wrapper around a several tools that enables a better understanding of prokaryotic genomes. It uses:
+Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-the-art software for prokaryotic genome annotation. It is a wrapper around a several tools that enables a better understanding of prokaryotic genomes.
 
-* [Prokka](https://github.com/tseemann/prokka) for generic annotation
-* [barrnap](https://github.com/tseemann/barrnap) for rRNA prediction
-* [mlst](https://github.com/tseemann/mlst) for classification within multi-locus sequence types (STs)
-* [KofamScan](https://github.com/takaram/kofam_scan) for KO annotation
-* [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) for drawing KO annotation
-* [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation
-* [JBrowse](http://jbrowse.org/) for genome browser production
-* [bedtools](https://bedtools.readthedocs.io/en/latest/) for annotation merging
-* [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) for plotting genomic islands
-* [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
-* [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) for prophage sequences and genes prediction
-* [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
-* [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) for in silico plasmid detection
-* [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) database for the annotation of integrative and conjugative elements
-* [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) for the annotation of virulence genes
+Its main steps are:
+
+| Analysis steps | Used software or databases |
+| :------------- | :------------------------- |
+| Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
+| rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
+| Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |
+| KEGG KO annotation and visualization | [KofamScan](https://github.com/takaram/kofam_scan) and [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) |
+| Methylation annotation | [Nanopolish](https://github.com/jts/nanopolish) |
+| Annotation of antimicrobial (AMR) genes | [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) |
+| Annotation of virulence genes |  [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
+| Prophage sequences and genes annotation | [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) |
+| Annotation of integrative and conjugative elements | [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) |
+| _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
+| Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
+| Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
+| Renderization of results in a Genome Browser | [JBrowse](http://jbrowse.org/) |
+| Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/) and [Shiny](https://shiny.rstudio.com/) |
 
 ## Further reading and complementary analyses
 
@@ -173,20 +176,6 @@ It will result in the following:
 
 ## Citation
 
-Please cite this pipeline using our Zenodo tag or directly via the github url. Also, whenever used/helpful, remember to cite the following software:
+Please cite this pipeline using our Zenodo tag or directly via the github url.
 
-* [Prokka](https://github.com/tseemann/prokka) for generic annotation
-* [barrnap](https://github.com/tseemann/barrnap) for rRNA prediction
-* [mlst](https://github.com/tseemann/mlst) for classification within multi-locus sequence types (STs)
-* [KofamScan](https://github.com/takaram/kofam_scan) for KO annotation
-* [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) for drawing KO annotation
-* [Nanopolish](https://github.com/jts/nanopolish) for methylation annotation
-* [JBrowse](http://jbrowse.org/) for genome browser production
-* [bedtools](https://bedtools.readthedocs.io/en/latest/) for annotation merging
-* [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) for plotting genomic islands
-* [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) for antimicrobial genes annotation
-* [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) for prophage sequences and genes prediction
-* [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) for genomic islands prediction
-* [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) for in silico plasmid detection
-* [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) database for the annotation of integrative and conjugative elements
-* [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) for the annotation of virulence genes
+Please, do not forget to cite the software that were used whenever you use its outputs. See [the list](https://github.com/fmalmeida/bacannot#about). 
