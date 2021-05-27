@@ -26,6 +26,7 @@ See [the list of tools](list_of_tools.md).
 
 Are you curious about changes between releases? See the [changelog](CHANGELOG.md).
 
+* If you want to execute a release that is not the latest, you must build the docker image of that specific release since available tools and image strucure may change. [See the instructions for that](earlier_releases_instructions.md).
 * Versions below 2.0 are no long supported.
 
 ### Complementary pipelines
