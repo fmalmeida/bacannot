@@ -36,10 +36,9 @@ RUN rm -rf /var/lib/apt/lists/* && \
 
 # INSTALL AMRFinderPlus
 RUN conda create -y -n AMRFINDERPLUS && \
-			conda install -y --freeze-installed -n AMRFINDERPLUS -c bioconda ncbi-amrfinderplus nomkl && \
+			conda install -y -n AMRFINDERPLUS -c bioconda 'ncbi-amrfinderplus==3.8.28' && \
 			source activate AMRFINDERPLUS && \
-			amrfinder -u \
-			&& conda clean -afy && \
+			amrfinder -u && \
 			conda deactivate
 
 ## Install Diamond
@@ -48,9 +47,8 @@ RUN wget https://github.com/bbuchfink/diamond/releases/download/v0.9.25/diamond-
 			mv diamond /usr/local/bin
 
 # INSTALL BARRNAP
-RUN conda install -y --freeze-installed -c bioconda -c conda-forge barrnap nomkl \
+RUN conda install -y --freeze-installed -c bioconda -c conda-forge 'barrnap==0.9' nomkl \
 			&& conda clean -afy
-
 
 # INSTALL EMBOSS
 RUN apt-get update && \
@@ -58,7 +56,7 @@ RUN apt-get update && \
 
 # INSTALL MLST
 RUN conda create -y -n MLST && \
-			conda install -y --freeze-installed -n MLST -c conda-forge -c bioconda -c defaults mlst nomkl \
+			conda install -y --freeze-installed -n MLST -c conda-forge -c bioconda -c defaults 'mlst==2.19.0' nomkl \
 			&& conda clean -afy
 
 # INSTALL NANOPOLISH
@@ -67,8 +65,8 @@ RUN conda create -y -n NANOPOLISH python=3.7 && \
 			source activate NANOPOLISH && \
 			conda config --add channels r && \
 			conda config --add channels bioconda && \
-			conda install -y --freeze-installed pysam nomkl && \
-			conda install -y --freeze-installed -c anaconda hdf5 && \
+			conda install -y pysam && \
+			conda install -y -c anaconda hdf5 && \
 			conda install -c bioconda htslib && \
 			conda install -c anaconda biopython && \
 			conda install -c conda-forge eigen && \
@@ -76,22 +74,24 @@ RUN conda create -y -n NANOPOLISH python=3.7 && \
 			conda config --add channels defaults && \
 			conda config --add channels conda-forge && \
 			conda config --add channels bioconda && \
-			conda install -y --freeze-installed nanopolish && \
+			conda install -y 'nanopolish==0.13.2' && \
 			git clone --recursive https://github.com/jts/nanopolish.git && \
+			cd nanopolish && \
+			git checkout v0.13.2 && \
+			cd .. && \
 			mv nanopolish/scripts /work/nanopolish_scripts && \
 			rm -r nanopolish && \
-			conda install -y --freeze-installed -c bioconda minimap2 && \
-			conda install -y --freeze-installed -c bioconda samtools  && \
-			conda install -y --freeze-installed -c bioconda seqtk && \
-			conda install -y --freeze-installed -c conda-forge parallel \
-			&& conda clean -afy
+			conda install -y -c bioconda 'minimap2==2.17' && \
+			conda install -y -c bioconda samtools  && \
+			conda install -y -c bioconda seqtk && \
+			conda install -y -c conda-forge parallel
 
 
 # INSTALL PROKKA
 RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz
 RUN conda create -y -n PROKKA && \
 			source activate PROKKA && \
-			conda install -y --freeze-installed -c conda-forge -c bioconda -c defaults nomkl prokka>=1.14 && \
+			conda install -y --freeze-installed -c conda-forge -c bioconda -c defaults nomkl 'prokka==1.14.6' && \
 			conda clean -afy && \
 			gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
 			mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
@@ -103,7 +103,7 @@ RUN conda create -y -n PROKKA && \
 RUN apt-get install -y tar git libc6-dev gcc g++ locate seqtk && \
 			conda install -y --freeze-installed -c bioconda prodigal hmmer nomkl && \
 			conda clean -afy && \
-			python3 -m pip install phigaro && \
+			python3 -m pip install phigaro==2.2.6 && \
 			(echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
 			chmod a+rw -R /work/phigaro_pvog
 
@@ -112,7 +112,7 @@ RUN cd /usr/bin && \
 			for i in * ; do ln -rs "$i" /usr/local/bin ; done
 
 # INSTALL RGI
-RUN conda create -y -n RGI -c bioconda rgi nomkl python=3.6 && \
+RUN conda create -y -n RGI -c bioconda 'rgi==5.1.1' nomkl python=3.6 && \
 			conda clean -afy && \
 			wget https://card.mcmaster.ca/latest/data && \
 		  tar -xvf data ./card.json && \
@@ -121,7 +121,7 @@ RUN conda create -y -n RGI -c bioconda rgi nomkl python=3.6 && \
 
 # Install IslandPath
 RUN conda create -y -n find_GIs && \
-			conda install -y --freeze-installed -n find_GIs -c bioconda nomkl islandpath && \
+			conda install -y --freeze-installed -n find_GIs -c bioconda nomkl 'islandpath==1.0.4' && \
 			conda install -y --freeze-installed -n find_GIs -c conda-forge biopython && \
 			conda clean -afy && \
 			git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
@@ -129,6 +129,9 @@ RUN conda create -y -n find_GIs && \
 
 # Download pythonScripts
 RUN git clone https://github.com/fmalmeida/pythonScripts.git && \
+			cd pythonScripts && \
+			git checkout 027742b && \
+			cd .. && \
 			ln -rs pythonScripts/*.py /usr/local/bin/
 
 # Update blast2gff.py
@@ -160,8 +163,9 @@ RUN apt-get install -y samtools
 workdir /work/dbs
 
 ## Pythons scripts for additional databases
+RUN conda install -y -c anaconda pip
 RUN /miniconda/bin/python3 -m pip install docopt pandas && \
-			wget https://github.com/fmalmeida/pythonScripts/raw/master/run_blasts.py && \
+			wget https://github.com/fmalmeida/pythonScripts/raw/027742bc85edc32818f62cc285481ad55a25e486/run_blasts.py && \
 			chmod a+x run_blasts.py && \
 			mv run_blasts.py /usr/local/bin
 
@@ -257,7 +261,6 @@ RUN git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git
 RUN cd resfinder/db_resfinder && \
 			source activate Resfinder && \
 			python3 INSTALL.py $(which kma_index) non_interactive
-
 
 # Clean
 RUN conda clean -afy \
