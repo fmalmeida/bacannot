@@ -18,7 +18,7 @@
 
 ## About
 
-Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-the-art software for prokaryotic genome annotation. It is a wrapper around a several tools that enables a better understanding of prokaryotic genomes.
+Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-the-art software for prokaryotic genome annotation. It is a wrapper around several tools that enables a better understanding of prokaryotic genomes.
 
 Its main steps are:
 
