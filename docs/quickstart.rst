@@ -3,15 +3,16 @@
 Quickstart
 ==========
 
-For a rapid and simple quickstart we will use as input the nanopore raw reads provided in the `Canu quickstart section <https://canu.readthedocs.io/en/latest/quick-start.html#assembling-pacbio-clr-or-nanopore-data>`_.
+For a rapid and simple quickstart we will use as input the *Escherichia coli* reference genome.
 
 Download the data
 -----------------
 
 .. code-block:: bash
 
-  # Download and save as oxford.fasta
-  curl -L -o oxford.fasta http://nanopore.s3.climb.ac.uk/MAP006-PCR-1_2D_pass.fasta
+  # Download the ecoli ref genome
+  wget -O ecoli_ref.fna.gz https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/865/GCF_000008865.2_ASM886v2/GCF_000008865.2_ASM886v2_genomic.fna.gz
+  gzip -d ecoli_ref.fna.gz
 
 Run the pipeline
 ----------------
@@ -23,8 +24,7 @@ For examplification purposes and to get a major overview we will execute the pip
   # Run the pipeline using the Escherichia coli resfinder database
   nextflow run fmalmeida/bacannot \
   --prefix ecoli \
-  --lreads oxford.fasta \
-  --lreads_type nanopore \
+  --genome ecoli_ref.fna \
   --outdir _ANNOTATION \
   --threads 4 \
   --resfinder_species "Escherichia coli"
@@ -92,16 +92,16 @@ Bacannot will use `R Markdown <https://rmarkdown.rstudio.com/>`_ to produce auto
 
 * Report of Antimicrobial resistance (AMR) genes annotation
 
-  - See `the AMR example report <https://htmlpreview.github.io/?https://github.com/fmalmeida/bacannot/tree/master/docs/reports/report_resistance.html>`_
+  - See `the AMR example report <https://raw.githubusercontent.com/fmalmeida/bacannot/master/docs/reports/report_resistance.html>`_
 
 * Report of virulence genes annotation
 
-  - See `the virulence example report <https://htmlpreview.github.io/?https://github.com/fmalmeida/bacannot/tree/master/docs/reports/report_virulence.html>`_
+  - See `the virulence example report <https://raw.githubusercontent.com/fmalmeida/bacannot/master/docs/reports/report_virulence.html>`_
 
 * Report of mobile genetic elements annotation
 
   - Including plasmids, prophages, ICEs and genomic islands.
-  - See `the MGE example report <https://htmlpreview.github.io/?https://github.com/fmalmeida/bacannot/tree/master/docs/reports/report_MGEs.html>`_
+  - See `the MGE example report <https://raw.githubusercontent.com/fmalmeida/bacannot/master/docs/reports/report_MGEs.html>`_
 
 * Report of user's custom db annotations.
 

@@ -81,18 +81,18 @@ These images have been kept separate to not create massive Docker image and to a
 
 ## Quickstart
 
-For a rapid and simple quickstart we will use as input the nanopore raw reads provided in the [Canu quickstart section](https://canu.readthedocs.io/en/latest/quick-start.html#assembling-pacbio-clr-or-nanopore-data).
+For a rapid and simple quickstart we will use as input the _Escherichia coli_ reference genome.
 
 ```bash
 
-  # Download the data and save it as oxford.fasta
-  curl -L -o oxford.fasta http://nanopore.s3.climb.ac.uk/MAP006-PCR-1_2D_pass.fasta
+  # Download the ecoli ref genome
+  wget -O ecoli_ref.fna.gz https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/865/GCF_000008865.2_ASM886v2/GCF_000008865.2_ASM886v2_genomic.fna.gz
+  gzip -d ecoli_ref.fna.gz
 
   # Run the pipeline using the Escherichia coli resfinder database
   nextflow run fmalmeida/bacannot \
   --prefix ecoli \
-  --lreads oxford.fasta \
-  --lreads_type nanopore \
+  --genome ecoli_ref.fna \
   --outdir _ANNOTATION \
   --threads 4 \
   --resfinder_species "Escherichia coli"
@@ -174,4 +174,4 @@ It will result in the following:
 
 Please cite this pipeline using our Zenodo tag or directly via the github url.
 
-Please, do not forget to cite the software that were used whenever you use its outputs. See [the list](https://github.com/fmalmeida/bacannot#about). 
+Please, do not forget to cite the software that were used whenever you use its outputs. See [the list](https://github.com/fmalmeida/bacannot#about).
