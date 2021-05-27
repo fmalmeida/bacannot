@@ -24,6 +24,7 @@ Its main steps are:
 
 | Analysis steps | Used software or databases |
 | :------------- | :------------------------- |
+| Genome assembly (if raw reads are given) |  [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
 | Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
 | rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
 | Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |
@@ -39,9 +40,9 @@ Its main steps are:
 | Renderization of results in a Genome Browser | [JBrowse](http://jbrowse.org/) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/) and [Shiny](https://shiny.rstudio.com/) |
 
-## Further reading and complementary analyses
+### Further reading and complementary analyses
 
-Moreover, this pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a complete workflow for bacterial genomics analyses.
+Moreover, this pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a more thorough and robust workflow for bacterial genomics analyses.
 
 ## Requirements
 
