@@ -24,7 +24,7 @@ RUN conda config --add channels defaults && \
 
 ## Install bedtools, ncbi-blast+ and custom scripts
 RUN rm -rf /var/lib/apt/lists/* && \
-			wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.10.1+-x64-linux.tar.gz && \
+			wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.10.1/ncbi-blast-2.10.1+-x64-linux.tar.gz && \
 			tar -zxvf ncbi-blast-2.10.1+-x64-linux.tar.gz && \
 			cd ncbi-blast-2.10.1+/bin/ && \
 			ln -rs $(ls) /usr/local/bin/ && \
@@ -36,7 +36,7 @@ RUN rm -rf /var/lib/apt/lists/* && \
 
 # INSTALL AMRFinderPlus
 RUN conda create -y -n AMRFINDERPLUS && \
-			conda install -y -n AMRFINDERPLUS -c bioconda ncbi-amrfinderplus && \
+			conda install -y -n AMRFINDERPLUS -c bioconda 'ncbi-amrfinderplus==3.8.4' && \
 			source activate AMRFINDERPLUS && \
 			amrfinder -u && \
 			conda deactivate
@@ -47,7 +47,7 @@ RUN wget https://github.com/bbuchfink/diamond/releases/download/v0.9.25/diamond-
 			mv diamond /usr/local/bin
 
 # INSTALL BARRNAP
-RUN conda install -y -c bioconda -c conda-forge barrnap
+RUN conda install -y -c bioconda -c conda-forge 'barrnap==0.9'
 
 # INSTALL EMBOSS
 RUN apt-get update && \
@@ -55,7 +55,7 @@ RUN apt-get update && \
 
 # INSTALL MLST
 RUN conda create -y -n MLST && \
-			conda install -y -n MLST -c conda-forge -c bioconda -c defaults mlst
+			conda install -y -n MLST -c conda-forge -c bioconda -c defaults 'mlst==2.19.0'
 
 # INSTALL NANOPOLISH
 ## Configure Conda
@@ -72,11 +72,14 @@ RUN conda create -y -n NANOPOLISH python=3.7 && \
 			conda config --add channels defaults && \
 			conda config --add channels conda-forge && \
 			conda config --add channels bioconda && \
-			conda install -y nanopolish && \
+			conda install -y 'nanopolish==0.13.2' && \
 			git clone --recursive https://github.com/jts/nanopolish.git && \
+			cd nanopolish && \
+			git checkout v0.13.2 && \
+			cd .. && \
 			mv nanopolish/scripts /work/nanopolish_scripts && \
 			rm -r nanopolish && \
-			conda install -y -c bioconda minimap2 && \
+			conda install -y -c bioconda 'minimap2==2.17' && \
 			conda install -y -c bioconda samtools  && \
 			conda install -y -c bioconda seqtk && \
 			conda install -y -c conda-forge parallel
@@ -87,7 +90,7 @@ RUN conda create -y -n NANOPOLISH python=3.7 && \
 RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz && \
 			conda create -y -n PROKKA && \
 			source activate PROKKA && \
-			conda install -y -c conda-forge -c bioconda -c defaults prokka>=1.14 && \
+			conda install -y -c conda-forge -c bioconda -c defaults 'prokka==1.14.6' && \
 			gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
 			mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
 			mv TIGRFAMs_15.hmm /miniconda/envs/PROKKA/db/hmm/ && \
@@ -97,7 +100,7 @@ RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz && \
 # INSTALL PHIGARO
 RUN apt-get install -y tar git libc6-dev gcc g++ locate seqtk && \
 			conda install -y -c bioconda prodigal hmmer && \
-			python3 -m pip install phigaro && \
+			python3 -m pip install phigaro==2.2.6 && \
 			(echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
 			chmod a+rw -R /work/phigaro_pvog
 
@@ -106,7 +109,7 @@ RUN cd /usr/bin && \
 			for i in * ; do ln -rs "$i" /usr/local/bin ; done
 
 # INSTALL RGI
-RUN conda create -y -n RGI -c bioconda rgi && \
+RUN conda create -y -n RGI -c bioconda 'rgi==5.1.1' && \
 			wget https://card.mcmaster.ca/latest/data && \
 		  tar -xvf data ./card.json && \
 			source activate RGI && \
@@ -114,13 +117,16 @@ RUN conda create -y -n RGI -c bioconda rgi && \
 
 # Install IslandPath
 RUN conda create -y -n find_GIs && \
-			conda install -y -n find_GIs -c bioconda islandpath && \
+			conda install -y -n find_GIs -c bioconda 'islandpath==1.0.4' && \
 			conda install -y -n find_GIs -c conda-forge biopython && \
 			git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
 			ln -rs ./islandpath/Dimob.pl /usr/local/bin
 
 # Download pythonScripts
 RUN git clone https://github.com/fmalmeida/pythonScripts.git && \
+			cd pythonScripts && \
+			git checkout 027742b && \
+			cd .. && \
 			ln -rs pythonScripts/*.py /usr/local/bin/
 
 # Update blast2gff.py
@@ -158,8 +164,9 @@ RUN apt-get install -y samtools
 workdir /work/dbs
 
 ## Pythons scripts for additional databases
+RUN conda install -y -c anaconda pip
 RUN /miniconda/bin/python3 -m pip install docopt pandas && \
-			wget https://github.com/fmalmeida/pythonScripts/raw/master/run_blasts.py && \
+			wget https://github.com/fmalmeida/pythonScripts/raw/027742bc85edc32818f62cc285481ad55a25e486/run_blasts.py && \
 			chmod a+x run_blasts.py && \
 			mv run_blasts.py /usr/local/bin
 
