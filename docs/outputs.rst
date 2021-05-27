@@ -44,6 +44,59 @@ After a successful execution, you will have something like this:
     │       └── run_server.sh                                   # The shiny parser runner that enables a rapid and simple exploration of the results (see below)
     └── oxford.fasta
 
+KEGG KO annotation heatmap
+--------------------------
+
+Using both `KofamScan <https://github.com/takaram/kofam_scan>`_ and `KEGGDecoder <https://github.com/bjtully/BioData/tree/master/KEGGDecoder>`_, bacannot is capable of annotating KOs and plotting a heatmap of detected pathways as exemplified below.
+
+.. tip::
+
+	Click on the image to zoom it! :)
+
+.. image:: images/ecoli_kegg-decoder_heatmap-static.svg
+  :width: 100%
+  :align: center
+
+Bacannot automatic reports
+--------------------------
+
+Bacannot will use `R Markdown <https://rmarkdown.rstudio.com/>`_ to produce automatic annotation reports. To date, the available reports are:
+
+* Report of Antimicrobial resistance (AMR) genes annotation
+
+  - See `the AMR example report <https://fmalmeida.github.io/reports/report_resistance.html>`_
+
+* Report of virulence genes annotation
+
+  - See `the virulence example report <hhttps://fmalmeida.github.io/reports/report_virulence.html>`_
+
+* Report of mobile genetic elements annotation
+
+  - Including plasmids, prophages, ICEs and genomic islands.
+  - See `the MGE example report <https://fmalmeida.github.io/reports/report_MGEs.html>`_
+
+* Report of user's custom db annotations.
+
+  - See :ref:`custom-db`.
+
+Genome Browser
+--------------
+
+With aid of `JBrowse <http://jbrowse.org/>`_, Bacannot already give users a totally customised and redered Genome Browser for exploration of genome annotation.
+
+.. image:: images/jbrowse.png
+  :width: 800
+  :align: center
+
+In order to provide an integrative solution, the genome browser is already packed inside the shiny app that can be used with the ``run_server.sh`` script or the server docker image (See below at Bacannot shiny parser).
+
+.. warning::
+
+  The JBrowse wrapper in the shiny server is not capable of displaying the GC content and methylation plots when available. It can only display the simpler tracks. If the user wants to visualise and interrogate the GC or methylation tracks it must open the JBrowse outside from the shiny server. For that, two options are available:
+    * You can navigate to the ``jbrowse`` directory under your sample's output folder and simply execute `http-server`. This command can be found at: https://www.npmjs.com/package/http-server
+    * Or, you can download the `JBrowse Desktop app <https://jbrowse.org/docs/jbrowse_desktop.html>`_ and, from inside the app, select the folder `jbrowse/data` that is available in your sample's output directory.
+
+
 Bacannot shiny parser
 ---------------------
 
@@ -67,7 +120,7 @@ This server is triggered by going under the results folder, in our quickstart ca
 Server homepage
 ^^^^^^^^^^^^^^^
 
-In the first page it has indexed as url links the main HTML reports and the JBrowse genome browser.
+In the first page it has indexed as url links the main HTML reports and the **JBrowse genome browser**.
 
 .. image:: images/bacannot_server_home.png
   :width: 800
@@ -91,7 +144,6 @@ In the second page, the sqlDB is used to provide a rapid and simple way to query
 .. image:: images/bacannot_server_sqldb.png
   :width: 800
   :align: center
-
 
 Server BLAST app
 ^^^^^^^^^^^^^^^^

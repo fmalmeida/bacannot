@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Docker build](https://img.shields.io/docker/cloud/build/fmalmeida/bacannot)](https://hub.docker.com/r/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
 
 <p align="center">
 
@@ -18,9 +18,27 @@
 
 ## About
 
-Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-the-art software for prokaryotic genome annotation. It is a wrapper around a several tools that enables a better understanding of prokaryotic genomes.
+Bacannot is an easy to use nextflow docker-based pipeline that adopts state-of-the-art software for prokaryotic genome annotation. It is a wrapper around several tools that enables a better understanding of prokaryotic genomes.
 
-See [the list of tools](list_of_tools.md).
+Its main steps are:
+
+| Analysis steps | Used software or databases |
+| :------------- | :------------------------- |
+| Genome assembly (if raw reads are given) |  [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
+| Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
+| rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
+| Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |
+| KEGG KO annotation and visualization | [KofamScan](https://github.com/takaram/kofam_scan) and [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) |
+| Methylation annotation | [Nanopolish](https://github.com/jts/nanopolish) |
+| Annotation of antimicrobial (AMR) genes | [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) |
+| Annotation of virulence genes |  [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
+| Prophage sequences and genes annotation | [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) |
+| Annotation of integrative and conjugative elements | [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) |
+| _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
+| Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
+| Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
+| Renderization of results in a Genome Browser | [JBrowse](http://jbrowse.org/) |
+| Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/) and [Shiny](https://shiny.rstudio.com/) |
 
 ### Release notes
 
@@ -29,9 +47,9 @@ Are you curious about changes between releases? See the [changelog](CHANGELOG.md
 * If you want to execute a release that is not the latest, you must build the docker image of that specific release since available tools and image strucure may change. [See the instructions for that](earlier_releases_instructions.md).
 * Versions below 2.0 are no long supported.
 
-### Complementary pipelines
+### Further reading and complementary analyses
 
-Moreover, this pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a complete workflow for bacterial genomics analyses.
+Moreover, this pipeline has two complementary pipelines (also written in nextflow) for [NGS preprocessing](https://github.com/fmalmeida/ngs-preprocess) and [Genome assembly](https://github.com/fmalmeida/MpGAP) that can give the user a more thorough and robust workflow for bacterial genomics analyses.
 
 ## Requirements
 
@@ -82,22 +100,21 @@ bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/develop/
 
 ## Quickstart
 
-For a rapid and simple quickstart we will use as input the nanopore raw reads provided in the [Canu quickstart section](https://canu.readthedocs.io/en/latest/quick-start.html#assembling-pacbio-clr-or-nanopore-data).
+For a rapid and simple quickstart we will use as input the _Escherichia coli_ reference genome.
 
 ```bash
 
-  # Download the data and save it as oxford.fasta
-  curl -L -o oxford.fasta http://nanopore.s3.climb.ac.uk/MAP006-PCR-1_2D_pass.fasta
+  # Download the ecoli ref genome
+  wget -O ecoli_ref.fna.gz https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/865/GCF_000008865.2_ASM886v2/GCF_000008865.2_ASM886v2_genomic.fna.gz
+  gzip -d ecoli_ref.fna.gz
 
   # Run the pipeline using the Escherichia coli resfinder database
   nextflow run fmalmeida/bacannot \
   --prefix ecoli \
-  --lreads oxford.fasta \
-  --lreads_type nanopore \
+  --genome ecoli_ref.fna \
   --outdir _ANNOTATION \
   --threads 4 \
   --resfinder_species "Escherichia coli"
-
 ```
 
 ### Overview of outputs
@@ -173,4 +190,6 @@ It will result in the following:
 
 ## Citation
 
-Please cite this pipeline using our Zenodo tag or directly via the github url. Also, whenever its outputs are used/helpful, **remember** to cite the correct the used software (Check [the list of tools](list_of_tools.md)).
+Please cite this pipeline using our Zenodo tag or directly via the github url.
+
+Please, do not forget to cite the software that were used whenever you use its outputs. See [the list of tools](list_of_tools.md).
