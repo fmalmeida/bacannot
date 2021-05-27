@@ -42,7 +42,7 @@ After a successful execution, you will have something like this:
     │       ├── tools_versioning                                # Versions of tools and databases used (whenever available)
     │       ├── virulence                                       # Virulence genes annotation results from Victors and VFDB databases
     │       └── run_server.sh                                   # The shiny parser runner that enables a rapid and simple exploration of the results (see below)
-    └── oxford.fasta
+    └── ecoli_ref.fna
 
 KEGG KO annotation heatmap
 --------------------------

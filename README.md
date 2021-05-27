@@ -24,6 +24,7 @@ Its main steps are:
 
 | Analysis steps | Used software or databases |
 | :------------- | :------------------------- |
+| Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
 | Genome assembly (if raw reads are given) |  [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
 | Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
 | rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
@@ -36,6 +37,7 @@ Its main steps are:
 | Annotation of integrative and conjugative elements | [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) |
 | _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
 | Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
+| Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
 | Renderization of results in a Genome Browser | [JBrowse](http://jbrowse.org/) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/) and [Shiny](https://shiny.rstudio.com/) |
