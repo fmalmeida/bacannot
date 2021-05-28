@@ -157,8 +157,10 @@ workflow bacannot_nf {
         kofamscan(prokka.out[4])
         kegg_decoder(kofamscan.out[1])
         kofamscan_output = kofamscan.out[1]
+        kegg_decoder_svg = kegg_decoder.out[1]
       } else {
         kofamscan_output = Channel.empty()
+        kegg_decoder_svg = Channel.empty()
       }
 
       /*
@@ -370,6 +372,9 @@ workflow bacannot_nf {
                           .join(resfinder_phenotable, remainder: true)
                           .join(draw_GIs.out[1],      remainder: true)
                           .join(phigaro_output_1,     remainder: true)
-                          .join(platon_output,        remainder: true))
+                          .join(platon_output,        remainder: true)
+                          .join(prokka_out[6],        remainder: true)
+                          .join(kegg_decoder_svg,     remainder: true)
+                          .join(refseq_masher.out[0], remainder: true))
 
 }

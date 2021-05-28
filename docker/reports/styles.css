@@ -1,12 +1,12 @@
 body{ /* Normal  */
-      font-size: 12pt;
+      font-size: 14pt;
       line-height: 1.5;
   }
   
 blockquote {
     padding: 10px 20px;
     margin: 0 0 20px;
-    font-size: 11pt;
+    font-size: 12pt;
     border-left: 5px solid #ec5800;
 }
   

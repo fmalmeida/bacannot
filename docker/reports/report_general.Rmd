@@ -1,0 +1,142 @@
+---
+title: "Generic annotation"
+author: "Produced with bacannot pipeline"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+params:
+  prokka:
+  kegg:
+  barrnap:
+  mlst:
+  refseq_masher:
+  query:
+output:
+  bookdown::html_document2: 
+    css: styles.css
+    df_print: paged
+    number_sections: false
+    syntax: espresso
+    self_contained: yes
+    theme: readable
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.pos = 'H')
+suppressMessages(library(magrittr))
+suppressMessages(library(knitr))
+suppressMessages(library(DT))
+suppressMessages(library(ballgown))
+
+# Line checker
+check_lines <- function(x) {
+  return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
+}
+
+# Load data
+prokka_txt <- try(read.delim(params$prokka, header = FALSE, sep = ":"), silent = TRUE)
+mlst_txt <- try(read.delim(params$mlst, header = FALSE), silent = TRUE)
+barrnap_gff <- try(gffRead(params$barrnap), silent = TRUE)
+refseq_masher_txt <- try(read.delim(params$refseq_masher, header = TRUE), silent = TRUE)
+if (file.exists(params$kegg)) {
+  kegg_not_null <- TRUE
+  kegg_svg <- params$kegg
+} else {
+  kegg_not_null <- FALSE
+}
+
+# DT options
+# Lists
+dt_opt_lst <- list(pageLength = 1,
+                         lengthMenu = c(1, 5, 10),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE)
+
+# tabset
+# {.tabset .tabset-pills}
+```
+
+# `r params$query` general annotation report
+
+## About
+
+This report was built to summarise in a report the results of the most generic annotation contents, which are: Prokka, Barrnap, mlst, KofamScan and refseq_masher. If you'd like to see any other result included in this report please flag an [enhancement issue on Github](https://github.com/fmalmeida/bacannot/issues).
+
+## RefSeq Masher
+
+[RefSeq Masher](https://github.com/phac-nml/refseq_masher) is a tool that enables to rapidly find what NCBI RefSeq genomes match or are contained within your sequence data using Mash MinHash with a Mash sketch database of NCBI RefSeq Genomes. The results are shown below (bacannot outputs only the top 10).
+
+```{r refseq_masher, echo=FALSE}
+datatable(refseq_masher_txt,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F
+        )
+```
+
+
+## MLST
+
+Bacannot uses the [mlst](https://github.com/tseemann/mlst) package to scan the PubMLST schemes available in order to classify the genome under public multilocus sequence type schemes. The results for `r params$query` are shown below.
+
+```{r mlst_stats, echo=FALSE}
+sketch = htmltools::withTags(table(
+  class = 'display',
+  thead(
+    tr(
+      th(rowspan = 1, 'Assembly'),
+      th(rowspan = 1, 'Scheme'),
+      th(rowspan = 1, 'ST'),
+      th(colspan = ncol(mlst_txt)-3, 'Alleles')
+    )
+  )
+))
+datatable(mlst_txt,
+          escape = FALSE,
+          filter = 'top',
+          container = sketch,
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F
+        )
+```
+
+## Prokka
+
+[Prokka](https://github.com/tseemann/prokka) is rapid prokaryotic genome annotation tool that quickly produces standards-compliant output files.
+
+> In bacannot, the prokka database is incremented with TIGRFAM's hmm [hosted at NCBI](https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/).
+
+```{r prokka_stats, echo=FALSE}
+setNames(data.frame(t(prokka_txt[,-1])), prokka_txt[,1]) %>%
+  datatable(
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F
+          )
+```
+
+## Barrnap
+
+[Barrnap](https://github.com/tseemann/barrnap) is a fast Ribosomal RNA predictor for bacterias, from the same developer of Prokka. It is fast and produces a GFF of the predicted rRNAs (See below).
+
+```{r barrnap_gff, echo=FALSE}
+datatable(barrnap_gff,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F
+          )
+```
+
+
+```{r kegg_svg, echo=FALSE, results='asis', eval=kegg_not_null, child='yes_kegg.Rmd'}
+```
+
