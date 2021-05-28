@@ -342,7 +342,7 @@ workflow bacannot_batch_nf {
                           .join(draw_GIs.out[1],      remainder: true)
                           .join(phigaro_output_1,     remainder: true)
                           .join(platon_output,        remainder: true)
-                          .join(prokka_out[9],        remainder: true)
+                          .join(prokka.out[9],        remainder: true)
                           .join(kegg_decoder_svg,     remainder: true)
                           .join(refseq_masher.out[0], remainder: true))
 
