@@ -418,7 +418,7 @@ workflow bacannot_nf {
         phast_output = phast.out[1]
         // Phigaro software
         phigaro(prokka.out[3])
-        phigaro_output = phigaro.out[0]
+        phigaro_output = phigaro.out[1]
       } else {
         phast_output = Channel.empty()
         phigaro_output = Channel.empty()
