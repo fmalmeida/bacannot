@@ -46,8 +46,10 @@ Its main steps are:
 
 Are you curious about changes between releases? See the [changelog](CHANGELOG.md).
 
-* If you want to execute a release that is not the latest, you must build the docker image of that specific release since available tools and image strucure may change. [See the instructions for that](earlier_releases_instructions.md).
-* Versions below 2.0 are no long supported.
+* I **strongly**, **vividly**, **mightily** recommend the usage of the latest versions hosted in master branch, which is nextflow's default.
+    + The latest will always have support, bug fixes and generally maitain the same processes (I mainly add things instead of removing) that also were in previous versions.
+    + But, if you **really** want to execute an earlier release, please [see the instructions for that](earlier_releases_instructions.md).
+* Versions below 2.0 are no longer supported.
 
 ### Further reading and complementary analyses
 
