@@ -55,22 +55,10 @@ This images have been kept separate to not create massive Docker image and to av
     * You can give this [in-house script](https://github.com/fmalmeida/bioinfo/blob/master/dockerfiles/docker_install.sh) a try.
     * After installed, you need to download the required Docker images
 
-          docker pull fmalmeida/bacannot:latest
+          docker pull fmalmeida/bacannot:v2.1
           docker pull fmalmeida/bacannot:kofamscan
           docker pull fmalmeida/bacannot:jbrowse
-          docker pull fmalmeida/bacannot:renv
-
-    * Each image can be built by using the Dockerfiles in the docker folder
-
-          cd docker
-          docker build -t fmalmeida/bacannot -f Dockerfile_bacannot .
-          docker build -t fmalmeida/kofamscan -f Dockerfile_kofamscan .
-          docker build -t fmalmeida/jbrowse -f Dockerfile_jbrowse .
-          docker build -t fmalmeida/renv -f Dockerfile_renv .
-
-> Each release is accompanied by a Dockerfile in the docker folder. When using releases older releases, users can create the correct image using
-the Dockerfile that goes alongside with the release (Remember to give the image the correct name, as it is in dockerhub and the nextflow script).
-The latest release will always have its docker image in dockerhub.
+          docker pull fmalmeida/bacannot:v2.1_renv
 
 2. Install Nextflow (version 20.07 or higher):
 

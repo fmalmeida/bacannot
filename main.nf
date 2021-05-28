@@ -183,7 +183,7 @@ params.examples = false
 
 params.get_config = false
 if (params.get_config) {
-  new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
+  new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/v2.1_compatibility/nextflow.config").getText())
   println ""
   println "bacannot.config file saved in working directory"
   println "After configuration, run:"
