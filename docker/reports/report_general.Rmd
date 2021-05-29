@@ -10,7 +10,7 @@ params:
   refseq_masher:
   query:
 output:
-  bookdown::html_document2: 
+  bookdown::html_document2:
     css: styles.css
     df_print: paged
     number_sections: false
@@ -112,14 +112,15 @@ datatable(mlst_txt,
 > In bacannot, the prokka database is incremented with TIGRFAM's hmm [hosted at NCBI](https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/).
 
 ```{r prokka_stats, echo=FALSE}
-setNames(data.frame(t(prokka_txt[,-1])), prokka_txt[,1]) %>%
-  datatable(
+df <- data.frame(prokka_txt[,-1])
+rownames(df) <- prokka_txt[,1]
+datatable(t(df),
           escape = FALSE,
           filter = 'top',
           options = dt_opt_lst,
           extensions = 'Buttons',
           rownames = F
-          )
+        )
 ```
 
 ## Barrnap
@@ -139,4 +140,3 @@ datatable(barrnap_gff,
 
 ```{r kegg_svg, echo=FALSE, results='asis', eval=kegg_not_null, child='yes_kegg.Rmd'}
 ```
-
