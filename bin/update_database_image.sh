@@ -16,18 +16,41 @@ cat << EOF
 #
 # Remember: docker must be available in \$PATH
 
-
 EOF
 
+# default tag
+get_latest_release() {
+  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' |                                            # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+}
+DEF_TAG=$(get_latest_release fmalmeida/bacannot)
+
+# default reply
 REPLY="N"
-read -p "Do you really want to build it locally? (y/N) " -n 1 -r
+
+# actual code
+read -p "Do you really want to build it locally? (y/N) " -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+
+    echo "Set a different release? Default is ${DEF_TAG}"
+    echo "It will create the image fmalmeida/bacannot:${DEF_TAG}"
+    read -p "Your answer? (y/N) " -r
+    echo    # (optional) move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        read -p "Which tag? " -r
+        echo    # (optional) move to a new line
+        DEF_TAG=$REPLY
+    else
+      echo
+    fi
     echo
-    echo "# Starting docker local build!"
+    echo "# Starting docker image fmalmeida/bacannot:${DEF_TAG} local build!"
     wget --quiet -O my_dockerfile https://github.com/fmalmeida/bacannot/raw/master/docker/Dockerfile_bacannot
-    docker build -t fmalmeida/bacannot:latest -f my_dockerfile .
+    docker build -t fmalmeida/bacannot:${DEF_TAG} -f my_dockerfile .
     rm my_dockerfile
     echo
     echo "Image built!"
