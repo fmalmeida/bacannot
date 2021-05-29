@@ -27,13 +27,13 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
 5. Download required Docker images
 
-    ``docker pull fmalmeida/bacannot:latest``
+    ``docker pull fmalmeida/bacannot:{latest_tag}``
 
     ``docker pull fmalmeida/bacannot:kofamscan``
 
     ``docker pull fmalmeida/bacannot:jbrowse``
 
-    ``docker pull fmalmeida/bacannot:renv``
+    ``docker pull fmalmeida/bacannot:{latest_tag}_renv``
 
 6. (Optional) Install nf-core utility
 
@@ -45,10 +45,6 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
 .. note::
 
-  Now, everything is set up and ready to run.
-  Remember to always keep your Docker images up to date
-  (Docker pull will always download the latest).
+  Now, everything is set up and ready to run. Remember to always keep your Docker images up to date (Docker pull will always download the latest).
 
-.. note::
-
-	The pipeline requires a UNIX system, therefore, Windows users may successfully use this pipeline via the `Linux subsystem for windows <https://docs.microsoft.com/pt-br/windows/wsl/install-win10>`_.
+  The pipeline requires a UNIX system, therefore, Windows users may successfully use this pipeline via the `Linux subsystem for windows <https://docs.microsoft.com/pt-br/windows/wsl/install-win10>`_.
