@@ -44,11 +44,11 @@ Its main steps are:
 
 ### Release notes
 
-Are you curious about changes between releases? See the [changelog](CHANGELOG.md).
+Are you curious about changes between releases? See the [changelog](markdown/CHANGELOG.md).
 
 * I **strongly**, **vividly**, **mightily** recommend the usage of the latest versions hosted in master branch, which is nextflow's default.
     + The latest will always have support, bug fixes and generally maitain the same processes (I mainly add things instead of removing) that also were in previous versions.
-    + But, if you **really** want to execute an earlier release, please [see the instructions for that](earlier_releases_instructions.md).
+    + But, if you **really** want to execute an earlier release, please [see the instructions for that](markdown/earlier_releases_instructions.md).
 * Versions below 2.0 are no longer supported.
 
 ### Further reading and complementary analyses
@@ -196,4 +196,4 @@ It will result in the following:
 
 Please cite this pipeline using our Zenodo tag or directly via the github url.
 
-Please, do not forget to cite the software that were used whenever you use its outputs. See [the list of tools](list_of_tools.md).
+Please, do not forget to cite the software that were used whenever you use its outputs. See [the list of tools](markdown/list_of_tools.md).
