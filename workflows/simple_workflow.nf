@@ -319,7 +319,7 @@ workflow bacannot_nf {
                                        .join(digis.out[1],     remainder: true)
 
       // Contatenation of annotations in a single GFF file
-      merge_annotations(annotations_files.join(digis.out[1],     remainder: true))
+      merge_annotations(annotations_files)
 
       // Plot genomic islands
       draw_GIs(merge_annotations.out[0].join(find_GIs.out[0]))
