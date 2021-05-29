@@ -35,10 +35,10 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
     .. code-block:: bash
 
-      docker pull fmalmeida/bacannot:{latest_tag} ;
+      docker pull fmalmeida/bacannot:v2.3 ;
       docker pull fmalmeida/bacannot:kofamscan ;
       docker pull fmalmeida/bacannot:jbrowse ;
-      docker pull fmalmeida/bacannot:{latest_tag}_renv
+      docker pull fmalmeida/bacannot:v2.3_renv
 
 6. (Optional) Install nf-core utility
 

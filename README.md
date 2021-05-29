@@ -73,10 +73,10 @@ These images have been kept separate to not create massive Docker image and to a
 1. If you don't have it already install [Docker](https://docs.docker.com/) in your computer.
     * After installed, you need to download the required Docker images
 
-          docker pull fmalmeida/bacannot:latest
+          docker pull fmalmeida/bacannot:v2.3
+          docker pull fmalmeida/bacannot:v2.3_renv
           docker pull fmalmeida/bacannot:kofamscan
           docker pull fmalmeida/bacannot:jbrowse
-          docker pull fmalmeida/bacannot:renv
           docker pull fmalmeida/bacannot:server (For the shiny parser)
           docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
 
