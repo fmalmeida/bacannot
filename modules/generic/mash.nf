@@ -11,7 +11,7 @@ process refseq_masher {
 
   output:
   // Grab results
-  file("refseq_masher_results.txt")
+  tuple val(prefix), file("refseq_masher_results.txt")
   file("*_version.txt")
 
   script:
