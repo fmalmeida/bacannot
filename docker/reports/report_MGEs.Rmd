@@ -14,6 +14,7 @@ params:
   plasmid_finder_tab:
   platon_tsv:
   gi_image:
+  digis:
   query: 
   gff: 
 output:
@@ -24,16 +25,13 @@ output:
     syntax: espresso
     self_contained: yes
     theme: readable
-    #toc: yes
-    #toc_collapsed: yes
-    #toc_depth: 4
-    #toc_float: yes
     code_folding: "show"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.pos = 'H')
 suppressMessages(library(magrittr))
+suppressMessages(library(ballgown))
 suppressMessages(library(knitr))
 suppressMessages(library(tidyr))
 suppressMessages(library(plyr))
@@ -63,6 +61,16 @@ if (
 
 ## Read GFF
 gff <- read.delim(params$gff, header = FALSE)
+
+## Read digIS GFF
+digis_gff <- try(gffRead(params$digis), silent = TRUE)
+if (class(digis_gff) != 'try-error' & check_lines(digis_gff) > 0) {
+  digis_not_null <- TRUE
+  digis_null <- FALSE
+} else {
+  digis_not_null <- FALSE
+  digis_null <- TRUE
+}
 
 ## Read PHAST documents
 phast_prot_blast <- try(read.delim(params$phast_prot_blast, header = TRUE), silent = TRUE)
@@ -114,15 +122,12 @@ if (
 ice_prot_blast <- try(read.delim(params$ice_prot_blast, header = TRUE), silent = TRUE)
 ice_genome_blast <- try(read.delim(params$ice_genome_blast, header = TRUE), silent = TRUE)
 if (class(ice_prot_blast) != 'try-error' & check_lines(ice_prot_blast) > 0) {
-  not_null <- TRUE
-  null <- FALSE
+  ice_not_null <- TRUE
+  ice_null <- FALSE
 } else {
-  not_null <- FALSE
-  null <- TRUE
+  ice_not_null <- FALSE
+  ice_null <- TRUE
 }
-
-## Read GFF
-gff <- read.delim(params$gff, header = FALSE)
 
 # DT options
 # Lists
@@ -160,6 +165,8 @@ In this context, this pipeline is capable of automatically annotating some mobil
     + Therefore, Platon analyzes the natural distribution biases of certain protein coding genes between chromosomes and plasmids.
 7. [IslandPath](https://github.com/brinkmanlab/islandpath).
     + IslandPath-DIMOB is a standalone software to predict genomic islands in bacterial and archaeal genomes based on the presence of dinucleotide biases and mobility genes.
+8. [digIS](https://github.com/janka2012/digIS).
+    + digIS is a command-line tool for detection of insertion sequences (IS) in prokaryotic genomes.
 
 ### Prediction thresholds
 
@@ -169,8 +176,6 @@ All the predictions were passed through a user defined threshold for minimum cov
 * Min. Coverage (%): `> `r params$blast_cov``
 
 > [PHAST](https://phaster.ca) is a protein database scanned via BLASTp; [ICEberg](http://202.120.12.136:7913/ICEberg2/) is a protein and nucleotide database that contains the full-length sequences of known ICEs and also contains the sequences of a multitude of proteins commonly found inside these ICEs. Full-length ICEs are blasted to the genome via BLASTn while the protein sequences are blasted tto the predicted genes via BLASTp; [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) is a nucleotide database scanned via BLASTn. The other software have its own metrics.
-
-> The results used to create this report are under the directories called `prophages`, `ICEs` and `Plasmids` in the output folder of the query `r params$query`.
 
 ## Genomic Islands prediction
 
@@ -204,8 +209,16 @@ knitr::include_graphics(params$gi_image)
 
 ### ICEberg database
 
-```{r, ICEberg_conditional_block, echo=FALSE, results='asis', eval=not_null, child='yes_ice.Rmd'}
+```{r, ICEberg_conditional_block, echo=FALSE, results='asis', eval=ice_not_null, child='yes_ice.Rmd'}
 ```
 
-```{r, ICEberg_conditional_block_2, echo=FALSE, results='asis', eval=null, child='no_ice.Rmd'}
+```{r, ICEberg_conditional_block_2, echo=FALSE, results='asis', eval=ice_null, child='no_ice.Rmd'}
+```
+
+## IS detection
+
+```{r, digis_conditional_block, echo=FALSE, results='asis', eval=digis_not_null, child='yes_digis.Rmd'}
+```
+
+```{r, digis_conditional_block_2, echo=FALSE, results='asis', eval=digis_null, child='no_digis.Rmd'}
 ```

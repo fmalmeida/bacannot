@@ -1,0 +1,3 @@
+Not a single insertion sequence has been predicted by [digIS](https://github.com/janka2012/digIS). This might have happened either because your genome really do not have insertion sequences, because the insertion sequences in the genome are too different from the ones digIS use as reference or due to misassemblies.
+
+We recommend that you check the annotation logs at ``r params$query`/digIS/logs`

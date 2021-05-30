@@ -1,0 +1,22 @@
+Insertions sequences have been predicted with [digIS](https://github.com/janka2012/digIS). The digIS search pipeline operates in the following steps:
+
+1. The whole input nucleic acid sequence is translated into amino acid sequences (all six frames).
+2. The translated sequences are searched using manually curated pHMMs.
+3. The seeds are filtered by domain e-value, and those that overlap or follow each other within a certain distance are merged.
+4. The seeds are extended according to sequence similarity with known IS elements in the ISFinder database.
+5. Extended seeds are filtered by noise cutoff score and length, and duplicated hits, corresponding to the same IS element, are removed.
+6. Remaining hits are classified based on sequence similarity and GenBank annotation (if available) to help assess their quality.
+7. Finally, the classified outputs are reported in the CSV and GFF3 format.
+
+> The program is executed **with** the GenBank annotation
+
+<br>
+<caption>(#tab:write-table-ices-full) Insertions sequences predicted by digIS in GFF format.</caption>
+```{r}
+datatable(digis_gff,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```
