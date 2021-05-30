@@ -101,14 +101,17 @@ parse_sql <- function(sqldb) {
       # Create selection for sources
       output$sources <- renderUI({
         selectInput("sources", "Sources:",
-                    sort(c("CARD", "AMRFinderPlus", "barrnap", "PHAST", "ICEberg", "VFDB", "Victors", "Prodigal", "Aragorn")), 
+                    sort(c("CARD", "AMRFinderPlus", "barrnap", "PHAST", 
+                           "ICEberg", "VFDB", "Victors", "Prodigal", 
+                           "Aragorn", "digIS")), 
                     multiple = TRUE)
       })
       
       # Create selection for features
       output$features <- renderUI({
         selectInput("features", "Features:",
-                    sort(c("CDS", "tRNA", "rRNA", "ICE", "Resistance", "Virulence", "Prophage")), 
+                    sort(c("CDS", "tRNA", "rRNA", "ICE", 
+                           "Resistance", "Virulence", "Prophage", "transposable_element")), 
                     multiple = TRUE)
       })
       
