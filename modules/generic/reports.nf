@@ -73,6 +73,7 @@ process report {
                  platon_tsv = "$platon_tsv", \
                  query = "${prefix}", \
                  gi_image = "$gi_image", \
+                 digis = "$digIS", \
                  gff = "$gff", \
                  phast_prot_blast = "$phast_blastp" )) ;
   """
