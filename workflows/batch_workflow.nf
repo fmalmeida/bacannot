@@ -299,7 +299,9 @@ workflow bacannot_batch_nf {
       gff2gbk(merge_annotations.out[0].join(prokka.out[3]))
 
       // Convert GFF file to sqldb
-      create_sql(merge_annotations.out[0].join(prokka.out[8]))
+      create_sql(merge_annotations.out[0].join(prokka.out[5])
+                                         .join(prokka.out[4])
+                                         .join(prokka.out[3]).join(digis.out[2]))
 
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {
@@ -342,7 +344,7 @@ workflow bacannot_batch_nf {
                           .join(draw_GIs.out[1],      remainder: true)
                           .join(phigaro_output_1,     remainder: true)
                           .join(platon_output,        remainder: true)
-                          .join(prokka.out[9],        remainder: true)
+                          .join(prokka.out[8],        remainder: true)
                           .join(kegg_decoder_svg,     remainder: true)
                           .join(refseq_masher.out[0], remainder: true))
 

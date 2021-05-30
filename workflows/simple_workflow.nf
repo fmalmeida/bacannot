@@ -329,7 +329,8 @@ workflow bacannot_nf {
       // Convert GFF file to sqldb
       create_sql(merge_annotations.out[0].join(prokka.out[5])
                                          .join(prokka.out[4])
-                                         .join(prokka.out[3]))
+                                         .join(prokka.out[3])
+                                         .join(digis.out[2]))
 
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {

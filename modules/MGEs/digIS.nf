@@ -13,8 +13,8 @@ process digis {
   output:
   // Grab results
   file("digIS")
-  tuple val(prefix), file("digIS/results/*.gff") optional true
-  tuple val(prefix), file("${prefix}.gff"), file("digIS/results/fastas/${prefix}_is.fa"), file("digIS/results/fastas/${prefix}_is.faa") optional true
+  tuple val(prefix), file("digIS/results/*.gff")
+  tuple val(prefix), file("${prefix}.gff"), file("digIS/results/fastas/${prefix}_is.fa"), file("digIS/results/fastas/${prefix}_is.faa")
 
   script:
   """

@@ -21,7 +21,6 @@ process prokka {
     tuple val(prefix), file("annotation/${prefix}.ffn") // gene nt sequences
     tuple val(prefix), file("annotation/${prefix}.fna"), file("${lreads}"), file("${fast5}") // For methylation calling
     tuple val(prefix), file("annotation/${prefix}.fna"), val("${resfinder_species}") // For resfinder
-    tuple val(prefix), file("annotation/${prefix}.ffn"), file("annotation/${prefix}.faa"), file("annotation/${prefix}.fna") // For sqldb creation
     tuple val(prefix), file("annotation/${prefix}.txt") // prokka stats
     file('prokka_version.txt') // Save prokka version
 
