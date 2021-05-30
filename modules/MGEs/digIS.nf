@@ -27,7 +27,8 @@ process digis {
   # parse digIS to get nucleotide and aminoacide
   # also put ids in uppercase
   # required for annotation merging and sqldb
-  mkdir -p results/fastas ;
+  conda deactivate ;
+  mkdir -p digIS/results/fastas ;
   sed -e 's/id=/ID=/g' digIS/results/${prefix}.gff > ${prefix}.gff ;
   gff-toolbox convert -i ${prefix}.gff -f fasta-nt --fasta $genome --fasta_features transposable_element > digIS/results/fastas/${prefix}_is.fa  ;
   gff-toolbox convert -i ${prefix}.gff -f fasta-aa --fasta $genome --fasta_features transposable_element > digIS/results/fastas/${prefix}_is.faa ;
