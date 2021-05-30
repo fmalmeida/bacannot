@@ -67,7 +67,7 @@ def helpMessage() {
                                                    to N threads (--threads). Default: 1.
 
     --bedtools_merge_distance <int>                By default, this process is not executed. For execution
-                                                   one needs to provide a value.Minimum number of overlapping
+                                                   one needs to provide a minimum number of overlapping
                                                    bases for gene merge using bedtools merge. Negative values,
                                                    such as -20, means the number of required overlapping bases
                                                    for merging. Positive values, such as 5, means the maximum

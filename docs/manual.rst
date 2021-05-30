@@ -326,8 +326,8 @@ Merge distance
 
    * - ``--bedtools_merge_distance``
      - N
-     - 0
-     - Minimum number of required overlapping bases to merge genes
+     - NA
+     - Minimum number of required overlapping bases to merge genes. By default it is not executed.
 
 All this parameters are configurable through a configuration file. We encourage users to use the configuration
 file since it will keep your execution cleaner and more readable. See a :ref:`config` example.
