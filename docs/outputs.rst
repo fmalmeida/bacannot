@@ -74,7 +74,7 @@ Bacannot will use `R Markdown <https://rmarkdown.rstudio.com/>`_ to produce auto
 
 * Report of virulence genes annotation
 
-  - See `the virulence example report <hhttps://fmalmeida.github.io/reports/report_virulence.html>`_
+  - See `the virulence example report <https://fmalmeida.github.io/reports/report_virulence.html>`_
 
 * Report of mobile genetic elements annotation
 

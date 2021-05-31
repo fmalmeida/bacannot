@@ -4,8 +4,8 @@ These are the tools that wrapped inside bacannot. **Cite** the tools whenever yo
 
 | Analysis steps | Used software or databases |
 | :------------- | :------------------------- |
-| Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
 | Genome assembly (if raw reads are given) |  [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
+| Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
 | Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
 | rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
 | Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |

@@ -14,10 +14,13 @@ Its main steps are:
    :header-rows: 1
 
    * - Analysis steps
-     - Used software or databases
+     - Used software or databasesa
 
    * - Genome assembly (if raw reads are given)
      - `Flye <https://github.com/fenderglass/Flye>`_ and `Unicycler <https://github.com/rrwick/Unicycler>`_
+
+   * - Identification of closest 10 NCBI Refseq genomes
+     - `RefSeq Masher <https://github.com/phac-nml/refseq_masher>`_
 
    * - Generic annotation and gene prediction
      - `Prokka <https://github.com/tseemann/prokka>`_
@@ -45,6 +48,9 @@ Its main steps are:
 
    * - Annotation of integrative and conjugative elements
      - `ICEberg <http://db-mml.sjtu.edu.cn/ICEberg/>`_
+
+   * - Focused detection of insertion sequences
+     - `digIS <https://github.com/janka2012/digIS>`_
 
    * - *In silico* detection of plasmids
      - `Plasmidfinder <https://cge.cbs.dtu.dk/services/PlasmidFinder/>`_ and `Platon <https://github.com/oschwengers/platon>`_
