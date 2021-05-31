@@ -19,9 +19,9 @@ process create_sql {
   cat $gff digIS.gff | bedtools sort > input.gff
   cat $genes_nt digIS.fa  > input.fa
   cat $genes_aa digIS.faa > input.faa
-  
+
   # Create SQL db
-  gff2sql.R -i input.gff -o ${prefix}.sqlite -n input.fa -a input.faa -f $genome ;
+  gff2sql.R -i input.gff -o ${prefix}.sqlite -n input.fa -a input.faa -f $genome &> gff2sql.log;
   mv /work/${prefix}.sqlite . ;
 
   # Save parser
