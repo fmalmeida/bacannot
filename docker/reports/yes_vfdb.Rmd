@@ -114,7 +114,6 @@ cat(paste("\t-", string.list), sep = '\n')
 summary <- blast %>%
   select("Virulence Factor Name", "Gene Name")
 colnames(summary) <- c("Virulence_Factor_Name", "Gene_Name")
-strsplit(summary$Virulence_Factor_Name, " (", fixed = TRUE)
 summary$Virulence_Factor_Name <- sapply(strsplit(summary$Virulence_Factor_Name, " (", fixed = TRUE), head, 1)
 vfs <- plyr::count(summary, "Virulence_Factor_Name")
 ggplot(vfs, aes(x=Virulence_Factor_Name, y=freq, fill=Virulence_Factor_Name)) + geom_bar(stat = "identity") +
