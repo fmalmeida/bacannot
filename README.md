@@ -80,7 +80,7 @@ These images have been kept separate to not create massive Docker image and to a
           docker pull fmalmeida/bacannot:server (For the shiny parser)
           docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
 
-> Nextflow can also automaticaly handle images download on the fly when executed.
+> Nextflow can also automatically handle images download on the fly when executed.
 
 2. Install Nextflow (version 20.07 or higher):
 
