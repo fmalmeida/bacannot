@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot?label=Latest%20release)](https://github.com/fmalmeida/bacannot/releases) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/fmalmeida/bacannot?include_prereleases&label=Latest%20release) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
 
 <p align="center">
 
@@ -94,15 +94,15 @@ These images have been kept separate to not create massive Docker image and to a
 
 ### Maintaining databases up-to-date
 
-By default, github actions have been set to build the docker image containing the databases (`fmalmeida/bacannot:latest`) in the first day of every month. Therefore, to use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:latest` before running the pipeline.
+By default, github actions have been set to build the docker image containing the databases (`fmalmeida/bacannot:v2.3`) in the first day of every month. Therefore, to use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:v2.3` before running the pipeline.
 
 Additionally, a custom script is provided to allow users to update the database image any time.
 
 ```bash
-bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/develop/bin/update_database_image.sh)
+bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/master/bin/update_database_image.sh)
 ```
 
-> This command line will trigger a custom script that downloads the databases and build the fmalmeida/bacannot:latest docker image.
+> This command line will trigger a custom script that downloads the databases and build the fmalmeida/bacannot:v2.3 docker image.
 
 ## Quickstart
 
