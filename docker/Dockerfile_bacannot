@@ -69,7 +69,7 @@ ENV PATH="$PATH:/work/nanopolish"
 RUN wget ftp://ftp.jcvi.org/pub/data/TIGRFAMs/TIGRFAMs_15.0_HMM.LIB.gz
 RUN conda create -y -n PROKKA && \
 			source activate PROKKA && \
-			conda install -y --freeze-installed -c conda-forge -c bioconda -c defaults nomkl prokka>=1.14 && \
+			conda install -y --freeze-installed -c conda-forge -c bioconda -c defaults nomkl 'prokka>=1.14' && \
 			conda clean -afy && \
 			gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
 			mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
@@ -124,6 +124,7 @@ RUN apt-get install -y samtools
 workdir /work/dbs
 
 ## Pythons scripts for additional databases
+RUN conda install -y -c anaconda pip
 COPY scripts/pscripts/run_blasts.py /usr/local/bin/run_blasts.py
 RUN chmod a+x /usr/local/bin/run_blasts.py && \
 			/miniconda/bin/python3 -m pip install docopt pandas
