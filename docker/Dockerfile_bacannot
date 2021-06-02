@@ -252,7 +252,7 @@ RUN apt-get install -y bc
 
 # Clean
 RUN conda clean -afy \
-			&& rm diamond_manual.pdf *.tar.gz '=1.14' \
+			&& rm -f diamond_manual.pdf *.tar.gz '=1.14' \
 			&& find /miniconda/ -follow -type f -name '*.a' -delete \
 			&& find /miniconda/ -follow -type f -name '*.pyc' -delete \
 			&& find /miniconda/ -follow -type f -name '*.js.map' -delete
