@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 
@@ -12,19 +12,12 @@ ADD scripts/bscripts /work/bscripts
 # Set main R dependencies
 ## Add R repo key
 RUN apt-get update && \
-			DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common gnupg build-essential && \
-			apt-get update && \
-			rm -rf /var/lib/apt/lists/* && \
-			apt-get clean  && \
-			apt-get update && \
-			apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
-			add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+			DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common gnupg build-essential bedtools && \
+			apt-get update
 
 ## Install R
-RUN DEBIAN_FRONTEND=noninteractive apt update && \
-			DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && \
-			add-apt-repository ppa:marutter/c2d4u3.5 && \
-			DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y r-api-3.5 r-base r-base-core
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && \
+			DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y r-base r-base-core r-api-3.5
 
 ## Install R-packages
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \

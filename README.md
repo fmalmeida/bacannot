@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![Releases](https://img.shields.io/github/v/release/fmalmeida/bacannot)](https://github.com/fmalmeida/bacannot/releases) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/fmalmeida/bacannot?include_prereleases&label=Latest%20release) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
 
 <p align="center">
 
@@ -25,6 +25,7 @@ Its main steps are:
 | Analysis steps | Used software or databases |
 | :------------- | :------------------------- |
 | Genome assembly (if raw reads are given) |  [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
+| Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
 | Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
 | rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
 | Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |
@@ -36,9 +37,19 @@ Its main steps are:
 | Annotation of integrative and conjugative elements | [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) |
 | _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
 | Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
+| Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
 | Renderization of results in a Genome Browser | [JBrowse](http://jbrowse.org/) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/) and [Shiny](https://shiny.rstudio.com/) |
+
+### Release notes
+
+Are you curious about changes between releases? See the [changelog](markdown/CHANGELOG.md).
+
+* I **strongly**, **vividly**, **mightily** recommend the usage of the latest versions hosted in master branch, which is nextflow's default.
+    + The latest will always have support, bug fixes and generally maitain the same processes (I mainly add things instead of removing) that also were in previous versions.
+    + But, if you **really** want to execute an earlier release, please [see the instructions for that](markdown/earlier_releases_instructions.md).
+* Versions below 2.0 are no longer supported.
 
 ### Further reading and complementary analyses
 
@@ -52,8 +63,8 @@ Moreover, this pipeline has two complementary pipelines (also written in nextflo
     + https://www.nextflow.io/docs/latest/getstarted.html
     + https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
 * Java 8
-* Docker
-  + `fmalmeida/bacannot:{latest, kofamscan, jbrowse, renv}`
+* [Nextflow](https://www.nextflow.io/)
+* [Docker](https://docs.docker.com/get-docker/)
 
 These images have been kept separate to not create massive Docker image and to avoid dependencies conflicts.
 
@@ -62,12 +73,14 @@ These images have been kept separate to not create massive Docker image and to a
 1. If you don't have it already install [Docker](https://docs.docker.com/) in your computer.
     * After installed, you need to download the required Docker images
 
-          docker pull fmalmeida/bacannot:latest
+          docker pull fmalmeida/bacannot:v2.3
+          docker pull fmalmeida/bacannot:v2.3_renv
           docker pull fmalmeida/bacannot:kofamscan
           docker pull fmalmeida/bacannot:jbrowse
-          docker pull fmalmeida/bacannot:renv
           docker pull fmalmeida/bacannot:server (For the shiny parser)
           docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
+
+> Nextflow can also automatically handle images download on the fly when executed.
 
 2. Install Nextflow (version 20.07 or higher):
 
@@ -78,6 +91,18 @@ These images have been kept separate to not create massive Docker image and to a
        nextflow run fmalmeida/bacannot --help
 
 > Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
+
+### Maintaining databases up-to-date
+
+By default, github actions have been set to build the docker image containing the databases (`fmalmeida/bacannot:v2.3`) in the first day of every month. Therefore, to use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:v2.3` before running the pipeline.
+
+Additionally, a custom script is provided to allow users to update the database image any time.
+
+```bash
+bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/master/bin/update_database_image.sh)
+```
+
+> This command line will trigger a custom script that downloads the databases and build the fmalmeida/bacannot:v2.3 docker image.
 
 ## Quickstart
 
@@ -173,4 +198,4 @@ It will result in the following:
 
 Please cite this pipeline using our Zenodo tag or directly via the github url.
 
-Please, do not forget to cite the software that were used whenever you use its outputs. See [the list](https://github.com/fmalmeida/bacannot#about).
+Please, do not forget to cite the software that were used whenever you use its outputs. See [the list of tools](markdown/list_of_tools.md).

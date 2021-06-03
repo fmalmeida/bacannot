@@ -1,5 +1,7 @@
-# Split GBK
+#!/usr/bin/env python3
+# coding: utf-8
 
+# Split GBK
 from Bio import SeqIO
 import sys
 

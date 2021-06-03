@@ -3,8 +3,7 @@
 Output files
 ============
 
-Following the same results produced in the :ref:`quickstart` section, the outputs are presented again here to provide a specific page for them. The quickstart
-command wrote the results under the ``_ANNOTATION`` directory.
+Here, using the results produced in the :ref:`quickstart` section, we give users a glimpse over the main outputs produced by bacannot. The command used in the quickstart wrote the results under the ``_ANNOTATION`` directory.
 
 .. note::
 
@@ -24,25 +23,28 @@ After a successful execution, you will have something like this:
     .
     ├── _ANNOTATION
     │   └── ecoli
-    │       ├── ICEs                                            # Results from ICEberg database annotation
-    │       ├── KOfamscan                                       # Results from annotation with KEGG database
-    │       ├── MLST                                            # MLST results with mlst pipeline
-    │       ├── annotation                                      # Prokka annotation files
     │       ├── assembly                                        # Assembly files (when raw reads are given)
+    │       ├── annotation                                      # Prokka annotation files
+    │       ├── digIS                                           # Insertion sequences predicted with digIS
     │       ├── gbk                                             # Gbk file produced from the resulting GFF
-    │       ├── genomic_islands                                 # Genomic Islands predicted with IslandPath-DIMOB
     │       ├── gffs                                            # A copy of the main GFF files produced during the annotation
+    │       ├── genomic_islands                                 # Genomic Islands predicted with IslandPath-DIMOB
+    │       ├── ICEs                                            # Results from ICEberg database annotation
     │       ├── jbrowse                                         # The files that set up the JBrowse genome browser
+    │       ├── KOfamscan                                       # Results from annotation with KEGG database
+    │       ├── methylations                                    # Methylated sites predicted with Nanopolish
+    │       ├── MLST                                            # MLST results with mlst pipeline
     │       ├── plasmids                                        # Plasmid annotation results from Platon and Plasmidfinder
     │       ├── prophages                                       # Prophage annotation results from PhiSpy, Phigaro and PHAST
-    │       ├── rRNA                                            # barrnap annotation results
+    │       ├── refseq_masher                                   # Closest NCBI Resfseq genomes identified with refseq_masher
     │       ├── report_files                                    # Annotation reports in HTML format
     │       ├── resistance                                      # AMR annotation results from ARGminer, AMRFinderPlus, RGI and Resfinder
+    │       ├── rRNA                                            # barrnap annotation results
     │       ├── sqldb                                           # The sqlDB of the annotation used by the shiny server for rapid parsing
     │       ├── tools_versioning                                # Versions of tools and databases used (whenever available)
     │       ├── virulence                                       # Virulence genes annotation results from Victors and VFDB databases
     │       └── run_server.sh                                   # The shiny parser runner that enables a rapid and simple exploration of the results (see below)
-    └── oxford.fasta
+    └── ecoli_ref.fna
 
 KEGG KO annotation heatmap
 --------------------------
@@ -62,13 +64,17 @@ Bacannot automatic reports
 
 Bacannot will use `R Markdown <https://rmarkdown.rstudio.com/>`_ to produce automatic annotation reports. To date, the available reports are:
 
+* Report of general annotation features
+
+  - See `the general example report <https://fmalmeida.github.io/reports/report_general.html>`_
+
 * Report of Antimicrobial resistance (AMR) genes annotation
 
   - See `the AMR example report <https://fmalmeida.github.io/reports/report_resistance.html>`_
 
 * Report of virulence genes annotation
 
-  - See `the virulence example report <hhttps://fmalmeida.github.io/reports/report_virulence.html>`_
+  - See `the virulence example report <https://fmalmeida.github.io/reports/report_virulence.html>`_
 
 * Report of mobile genetic elements annotation
 
@@ -77,6 +83,7 @@ Bacannot will use `R Markdown <https://rmarkdown.rstudio.com/>`_ to produce auto
 
 * Report of user's custom db annotations.
 
+  - The quickstart does not produce an example, however, the report is similar to the ICEberg section in the MGE example report.
   - See :ref:`custom-db`.
 
 Genome Browser
@@ -99,6 +106,10 @@ In order to provide an integrative solution, the genome browser is already packe
 
 Bacannot shiny parser
 ---------------------
+
+.. image:: images/bacannot_shiny.gif
+  :width: 50%
+  :align: center
 
 The bacannot shiny server is basically a wrapper of the main outputs of the pipeline that is packed up in a docker image called ``fmalmeida/bacannot:server``.
 This server is triggered by going under the results folder, in our quickstart case, the ``_ANNOTATION/ecoli`` folder, and executing the command:

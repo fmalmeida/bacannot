@@ -1,0 +1,8 @@
+## KEGG KOs
+
+KEGG KOs are annotated with [KofamScan](https://github.com/takaram/kofam_scan), which is a gene function annotation tool based on KEGG Orthology and hidden Markov model. You need KOfam database to use this tool. Online version is available on https://www.genome.jp/tools/kofamkoala/.
+
+After annotation, the results are plotted with [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) (See below).
+```{r, out.width='100%', fig.cap='KEGGDecoder heatmap of KofamScan annotation results.', fig.align='center'}
+include_graphics(params$kegg)
+```

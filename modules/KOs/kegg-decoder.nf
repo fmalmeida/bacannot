@@ -9,6 +9,7 @@ process kegg_decoder {
   output:
   // Grab all outputs
   file("*") // Get all files to input directory
+  tuple val(prefix), file("*.svg") // get svg
 
   script:
   """

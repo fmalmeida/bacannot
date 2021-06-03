@@ -2,6 +2,9 @@
  * Include modules (Execution setup)
  */
 
+// Species identification
+include { refseq_masher } from '../modules/generic/mash.nf' params(outdir: params.outdir)
+
 // Prokka annotation
 include { prokka } from '../modules/generic/prokka_batch.nf' params(outdir: params.outdir,
   prokka_kingdom: params.prokka_kingdom, prokka_genetic_code: params.prokka_genetic_code,
@@ -64,6 +67,9 @@ include { iceberg } from '../modules/MGEs/iceberg.nf' params(outdir: params.outd
 include { find_GIs } from '../modules/MGEs/islandPath_DIMOB.nf' params(outdir: params.outdir)
 include { draw_GIs } from '../modules/MGEs/draw_gis.nf' params(outdir: params.outdir)
 
+// IS identification
+include { digis } from '../modules/MGEs/digIS.nf' params(outdir: params.outdir)
+
 // AMR annotation with ARGMiner
 include { argminer } from '../modules/resistance/argminer.nf' params(outdir: params.outdir,
   threads: params.threads, blast_resistance_minid: params.blast_resistance_minid,
@@ -100,7 +106,7 @@ include { merge_annotations } from '../modules/generic/merge_annotations.nf' par
 include { gff2gbk } from '../modules/generic/gff2gbk.nf' params(outdir: params.outdir)
 
 // Convert GFF to SQL
-include { create_sql } from '../modules/generic/gff2sql_batch.nf' params(outdir: params.outdir,
+include { create_sql } from '../modules/generic/gff2sql.nf' params(outdir: params.outdir,
   prefix: params.prefix, blast_custom_mincov: params.blast_custom_mincov,
   blast_custom_minid: params.blast_custom_minid)
 
@@ -147,8 +153,10 @@ workflow bacannot_batch_nf {
         kofamscan(prokka.out[4])
         kegg_decoder(kofamscan.out[1])
         kofamscan_output = kofamscan.out[1]
+        kegg_decoder_svg = kegg_decoder.out[1]
       } else {
         kofamscan_output = Channel.empty()
+        kegg_decoder_svg = Channel.empty()
       }
 
       /*
@@ -253,6 +261,18 @@ workflow bacannot_batch_nf {
       methylation_out_2 = call_methylation.out[3]
 
       /*
+
+          Additional steps created after main releases
+
+       */
+
+      // species identification
+      refseq_masher(prokka.out[3])
+
+      // IS identification
+      digis(prokka.out[3].join(prokka.out[2]))
+
+      /*
           Eighth step -- Merge all annotations with the same Prefix value in a single Channel
       */
       annotations_files = prokka.out[3].join(prokka.out[1])
@@ -270,7 +290,7 @@ workflow bacannot_batch_nf {
                                        .join(find_GIs.out[0],  remainder: true)
 
       // Contatenation of annotations in a single GFF file
-      merge_annotations(annotations_files)
+      merge_annotations(annotations_files.join(digis.out[1],     remainder: true))
 
       // Plot genomic islands
       draw_GIs(merge_annotations.out[0].join(find_GIs.out[0]))
@@ -279,7 +299,9 @@ workflow bacannot_batch_nf {
       gff2gbk(merge_annotations.out[0].join(prokka.out[3]))
 
       // Convert GFF file to sqldb
-      create_sql(merge_annotations.out[0].join(prokka.out[8]))
+      create_sql(merge_annotations.out[0].join(prokka.out[5])
+                                         .join(prokka.out[4])
+                                         .join(prokka.out[3]).join(digis.out[2]))
 
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {
@@ -306,6 +328,7 @@ workflow bacannot_batch_nf {
                                               .join(methylation_out_2, remainder: true)
                                               .join(phispy_output,     remainder: true)
                                               .join(resfinder_gff,     remainder: true)
+                                              .join(merge_annotations.out[8], remainder: true) // parsed and changed digIS
       // Jbrowse Creation
       jbrowse(jbrowse_input)
 
@@ -320,6 +343,9 @@ workflow bacannot_batch_nf {
                           .join(resfinder_phenotable, remainder: true)
                           .join(draw_GIs.out[1],      remainder: true)
                           .join(phigaro_output_1,     remainder: true)
-                          .join(platon_output,        remainder: true))
+                          .join(platon_output,        remainder: true)
+                          .join(prokka.out[8],        remainder: true)
+                          .join(kegg_decoder_svg,     remainder: true)
+                          .join(refseq_masher.out[0], remainder: true))
 
 }

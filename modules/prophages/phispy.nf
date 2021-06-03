@@ -17,9 +17,6 @@ process phispy {
 
   script:
   """
-  # Activate conda environment
-  source activate phispy ;
-
   # Get tool version
   PhiSpy.py -v > phispy_version.txt ;
 

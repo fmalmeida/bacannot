@@ -8,7 +8,7 @@ process jbrowse {
         file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb),
         file(victors), file(amrfinder), file(rgi), file(iceberg), file(phast),
         file(phigaro), file(genomic_islands), file("methylation"), file("chr.sizes"),
-        file(phispy_tsv), file(resfinder_gff)
+        file(phispy_tsv), file(resfinder_gff), file("digIS.gff")
 
   output:
   file "*"
@@ -21,6 +21,6 @@ process jbrowse {
 
   # Render genome browser
   ./run_jbrowse.sh -p $prefix -g $draft -b $gc_bedGraph -s $gc_chrSizes -f $gff -r $barrnap -B $phigaro \
-  -P $phispy_tsv -G $genomic_islands -m methylation -S chr.sizes -R $resfinder_gff
+  -P $phispy_tsv -G $genomic_islands -m methylation -S chr.sizes -R $resfinder_gff -d digIS.gff
   """
 }

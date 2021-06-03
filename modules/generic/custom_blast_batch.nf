@@ -18,7 +18,7 @@ process custom_blast {
   makeblastdb -in $customDB -dbtype nucl -out customDB ;
 
   # Step 2 - Execute blastn
-  /miniconda/bin/python3 /usr/local/bin/run_blasts.py blastn --query $genome --db customDB --minid ${params.blast_custom_minid} \
+  run_blasts.py blastn --query $genome --db customDB --minid ${params.blast_custom_minid} \
   --mincov ${params.blast_custom_mincov} --threads ${params.threads} --out ${prefix}_${customDB.baseName}_blastn.txt > ${prefix}_${customDB.baseName}_blastn.summary.txt ;
 
   # Step 3 - Get BED from blastn

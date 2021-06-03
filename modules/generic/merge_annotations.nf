@@ -7,7 +7,7 @@ process merge_annotations {
   tuple val(prefix), file(draft), file("prokka_gff"), file(mlst), file(barrnap),
         file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb),
         file(victors), file(amrfinder), file(rgi), file(iceberg), file(phast),
-        file(phigaro), file(genomic_islands)
+        file(phigaro), file(genomic_islands), file("tmp.digis.gff")
 
   output:
   tuple val(prefix), file("${prefix}.gff")                  // Get main gff file
@@ -18,6 +18,7 @@ process merge_annotations {
   file "resistance_amrfinderplus.gff" optional true         // Get NDARO resistance file
   file "*.gff"                        optional true         // Get all subsets
   file "virulence_victors.gff"        optional true         // Get Victors virulence file
+  tuple val(prefix), file("digIS.gff")                    optional true         // Get digIS file
 
   script:
   """
@@ -55,5 +56,10 @@ process merge_annotations {
   #### AMRFinderPlus
   [ \$(cat AMRFinder_resistance-only.tsv | wc -l) -eq 1 ] || addNCBIamr2Gff.R -g ${prefix}.gff -i $amrfinder -o ${prefix}.gff -t Resistance -d AMRFinderPlus ;
   [ \$(grep "AMRFinderPlus" ${prefix}.gff | wc -l) -eq 0 ] || grep "AMRFinderPlus" ${prefix}.gff > resistance_amrfinderplus.gff ;
+
+  ### digIS transposable elements
+  [ ! -s tmp.digis.gff ] || ( cat tmp.digis.gff | sed 's/id=/ID=/g' > digIS.gff && rm tmp.digis.gff ) ;
+  [ ! -s digIS.gff ] || cat ${prefix}.gff digIS.gff | bedtools sort > tmp.out.gff ;
+  [ ! -s tmp.out.gff ] || ( cat tmp.out.gff > ${prefix}.gff && rm tmp.out.gff );
   """
 }

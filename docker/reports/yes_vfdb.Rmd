@@ -14,6 +14,12 @@ getAttributeField <- function (x, field, attrsep = ";") {
   })
 }
 
+# first letter to upper
+firstup <- function(x) {
+  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+  x
+}
+
 # Function to get VF IDs
 vf_id_url <- function (x) {
   if (grepl("VF.*[0-9]+", x[8])) {
@@ -29,7 +35,7 @@ vf_id_url <- function (x) {
 
 # Function to get URLs for VF List
 vf_id_url_list <- function (x) {
-  if (grepl("VF.*[0-9]+", x[8])) {
+  if (grepl("^VF.*[0-9]+", x[8])) {
     name <- x[5]
     id <- x[8]
     url <- paste0("[", name, "]", "(http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=", id, "#", id, ")")
@@ -44,7 +50,7 @@ vf_id_url_list <- function (x) {
 
 # Function do get URLs for DATATABLE
 vf_id_url_DT <- function (x) {
-  if (grepl("VF.*[0-9]+", x[8])) {
+  if (grepl("^VF.*[0-9]+", x[8])) {
     id <- x[8]
     url <- paste0("http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=", id, "#", id)
     url <- paste0('<a  target=_blank href=', url, '>', id,'</a>' )
@@ -79,6 +85,7 @@ blast <- separate(blast, vf_header, c("db", "Gene Name", "ref", "Virulence Facto
 blast$`Virulence Factor Name` <- gsub(blast$`Virulence Factor`, pattern = "\\[", replacement = "")
 blast$`Virulence Factor Name` <- gsub(blast$`Virulence Factor`, pattern = "\\]", replacement = "")
 blast$`Virulence Factor Name` <- gsub(blast$`Virulence Factor`, pattern = "_", replacement = " ")
+blast$`Virulence Factor Name` <- firstup(blast$`Virulence Factor Name`)
 vfs <- str_split(blast$`Virulence Factor Name`, " ")
 blast$`Virulence Factor ID` <- sapply(vfs, tail, 1)
 blast$`Virulence Factor ID` <- gsub(blast$`Virulence Factor ID`, pattern = "\\(", replacement = "")
@@ -107,7 +114,7 @@ cat(paste("\t-", string.list), sep = '\n')
 summary <- blast %>%
   select("Virulence Factor Name", "Gene Name")
 colnames(summary) <- c("Virulence_Factor_Name", "Gene_Name")
-summary$Virulence_Factor_Name <- word(summary$Virulence_Factor_Name, 1)
+summary$Virulence_Factor_Name <- sapply(strsplit(summary$Virulence_Factor_Name, " (", fixed = TRUE), head, 1)
 vfs <- plyr::count(summary, "Virulence_Factor_Name")
 ggplot(vfs, aes(x=Virulence_Factor_Name, y=freq, fill=Virulence_Factor_Name)) + geom_bar(stat = "identity") +
   theme(axis.text.x = element_blank(),

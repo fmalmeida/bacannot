@@ -94,7 +94,7 @@ Current features:
 
 ### Automatic annotation reports {#index}
 
-The bacannot pipeline automatically produces three reports to summarize the annotation of Mobile genetic elements, resistance features and virulence factors. These reports are indexed in the list below so users can rapidly navigate through them.
+The bacannot pipeline automatically produces reports to summarize most of the steps and processes during genome annotation. These reports are indexed in the list below so users can rapidly navigate through them.
 
 ```{r results='asis'}
 # Read files
@@ -102,15 +102,31 @@ files_list <- list.files("/work/report_files/custom_databases", full.names=TRUE)
 files_list <- gsub(files_list, pattern = "/work/report_files/", replacement = "reports/")
 
 # Cat reports
-cat("* [Report of resistance features](reports/report_resistance.html)\n")
-cat("* [Report of virulence features](reports/report_virulence.html)\n")
-cat("* [Report of mobile genetic elements](reports/report_MGEs.html)\n")
+for (file in list.files("/work/report_files/", full.names = FALSE, include.dirs = FALSE)) {
+
+  # get names
+  if (grepl("resistance", file)) {
+    name <- "Report of resistance features"
+  }
+  if (grepl("virulence", file)) {
+    name <- "Report of virulence features"
+  }
+  if (grepl("MGEs", file)) {
+    name <- "Report of MGEs features"
+  }
+  if (grepl("general", file)) {
+    name <- "Report of general features"
+  }
+
+  # cat
+  cat(paste("* [", trimws(name), "](reports/", trimws(file), ")", sep = ''), sep = '\n')
+}
 if (length(files_list) > 0) {
   string.list <- as.list(files_list)
   cat("* Reports of custom database annotations:\n")
   for (report_file in string.list) {
-   cat(paste("\t* [Report: ", trimws(basename(report_file), which = 'both'), 
-             "](", trimws(report_file, which = 'both'), ")"), sep = '\n') 
+   cat(paste("\t* [Report: ", trimws(basename(report_file), which = 'both'),
+             "](", trimws(report_file, which = 'both'), ")"), sep = '\n')
   }
 }
 ```

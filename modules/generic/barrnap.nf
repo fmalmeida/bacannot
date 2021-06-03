@@ -16,6 +16,9 @@ process barrnap {
 
    script:
    """
+   # activate env
+   source activate PERL_env ;
+
    # Save barrnap tool version
    barrnap --version &> barrnap_version.txt ;
 

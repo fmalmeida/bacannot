@@ -19,9 +19,6 @@ process plasmidfinder {
   [ "${params.plasmids_mincov}" > 1 ] && mincov=\$(( ${params.plasmids_mincov} / 100 )) || mincov=${params.plasmids_mincov}
   [ "${params.plasmids_minid}" > 1 ] && minid=\$(( ${params.plasmids_minid} / 100 )) || minid=${params.plasmids_minid}
 
-  # Activate conda environment
-  source activate PLASMIDFINDER ;
-
   # Run plasmidfinder
   mkdir plasmidfinder ;
   plasmidfinder.py -i $genome -o plasmidfinder -l \$mincov -t \$minid -x

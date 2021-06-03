@@ -19,6 +19,7 @@ process prokka {
     tuple val(prefix), file("annotation/${prefix}.fna") // renamed genome
     tuple val(prefix), file("annotation/${prefix}.faa") // gene aa sequences
     tuple val(prefix), file("annotation/${prefix}.ffn") // gene nt sequences
+    tuple val(prefix), file("annotation/${prefix}.txt") // prokka stats
     file('prokka_version.txt') // Save prokka version
 
     script:
@@ -27,7 +28,8 @@ process prokka {
     gcode   = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}"     : ''
     rnammer = (params.prokka_use_rnammer)  ? "--rnammer"                                 : ''
     """
-    source activate PROKKA ;
+    # activate env
+    source activate PERL_env ;
 
     # Save Prokka version
     prokka -v &> prokka_version.txt ;

@@ -22,8 +22,8 @@ process card_rgi {
 
   script:
   """
-  # Activate environment
-  source activate RGI ;
+  # activate env
+  source activate PY36_env ;
 
   # Get tool version
   rgi main --version > rgi_version.txt ;
