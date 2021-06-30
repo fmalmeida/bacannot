@@ -72,7 +72,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 1. If you don't have it already install [Docker](https://docs.docker.com/) in your computer.
     * After installed, you need to download the required Docker images
-
+          
           docker pull fmalmeida/bacannot:v2.3
           docker pull fmalmeida/bacannot:v2.3_renv
           docker pull fmalmeida/bacannot:kofamscan
@@ -80,7 +80,9 @@ These images have been kept separate to not create massive Docker image and to a
           docker pull fmalmeida/bacannot:server (For the shiny parser)
           docker pull fmalmeida/mpgap (Only necessary if using raw reads as input)
 
-> Nextflow can also automatically handle images download on the fly when executed.
+🔥 Nextflow can also automatically handle images download on the fly when executed.
+
+❗ If the download of `fmalmeida/bacannot:v2.3` image keeps hanging due to its size, download `fmalmeida/bacannot:main_tools` first. This is the core of versioned tag and it will on its download afterwards.
 
 2. Install Nextflow (version 20.07 or higher):
 
@@ -90,7 +92,7 @@ These images have been kept separate to not create massive Docker image and to a
 
        nextflow run fmalmeida/bacannot --help
 
-> Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
+🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
 ### Maintaining databases up-to-date
 
