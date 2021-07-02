@@ -82,7 +82,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 🔥 Nextflow can also automatically handle images download on the fly when executed.
 
-❗ If the download of `fmalmeida/bacannot:v2.3` image keeps hanging due to its size, download `fmalmeida/bacannot:main_tools` first. This is the core of versioned tag and it will on its download afterwards.
+❗ If the download of `fmalmeida/bacannot:v2.3` image keeps hanging due to its size, download `fmalmeida/bacannot:main_tools` first. This is the core of the versioned tag and it will help on its download afterwards.
 
 2. Install Nextflow (version 20.07 or higher):
 
