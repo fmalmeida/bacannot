@@ -6,3 +6,4 @@ sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
 sphinx_copybutton
+sphinx-press-theme

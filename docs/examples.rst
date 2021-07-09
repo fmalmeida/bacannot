@@ -19,10 +19,14 @@ Users can trigger a graphical and interactive pipeline configuration and executi
 Single genome annotation
 """"""""""""""""""""""""
 
-::
+.. code-block:: bash
 
-      ./nextflow run fmalmeida/bacannot --outdir TESTE --threads 3 --genome assembly.fasta \
-      --bedtools_merge_distance -20 --skip_kofamscan
+      ./nextflow run fmalmeida/bacannot \
+        --outdir TESTE \
+        --threads 3 \
+        --genome assembly.fasta \
+        --bedtools_merge_distance -20 \
+        --skip_kofamscan
 
 .. note::
 
@@ -32,10 +36,13 @@ Single genome annotation
 Multiple genome annotation
 """"""""""""""""""""""""""
 
-::
+.. code-block:: bash
 
-      ./nextflow run fmalmeida/bacannot --outdir TESTE --threads 3 --in_yaml samplesheet.yaml \
-      --custom_db db1.fasta
+      ./nextflow run fmalmeida/bacannot \
+        --outdir TESTE \
+        --threads 3 \
+        --in_yaml samplesheet.yaml \
+        --custom_db db1.fasta
 
 .. warning::
 
@@ -48,10 +55,16 @@ Multiple genome annotation
 A little more complex example
 """""""""""""""""""""""""""""
 
-::
+.. code-block:: bash
 
-      ./nextflow run fmalmeida/bacannot --outdir TESTE --threads 3 --genome assembly.fasta --bedtools_merge_distance -20 \
-      --nanopolish_fastq "fastq/input.fastq" --nanopolish_fast5 "fast5_pass_dir" --resfinder_species "Escherichia coli"
+      ./nextflow run fmalmeida/bacannot \
+        --outdir TESTE \
+        --threads 3 \
+        --genome assembly.fasta \
+        --bedtools_merge_distance -20 \
+        --nanopolish_fastq "fastq/input.fastq" \
+        --nanopolish_fast5 "fast5_pass_dir" \
+        --resfinder_species "Escherichia coli"
 
 .. note::
 
@@ -65,10 +78,17 @@ Users are able to annotate genomes directly from raw reads. When raw reads are u
 shortreads-only and hybrid assemblies while Flye is used to create longreads-only assemblies the annotation process.
 
 
-::
+.. code-block:: bash
 
-      nextflow run fmalmeida/bacannot --sreads_paired "sample1_{1,2}.fastq" --lreads "sample1_lreads.fastq" --lreads_type nanopore \
-      --outdir TESTE --skip_kofamscan --threads 5 --nanopolish_fastq "sample1_lreads.fastq" --nanopolish_fast5 "fast5_pass_dir"
+      nextflow run fmalmeida/bacannot \
+        --sreads_paired "sample1_{1,2}.fastq" \
+        --lreads "sample1_lreads.fastq" \
+        --lreads_type nanopore \
+        --outdir TESTE \
+        --skip_kofamscan \
+        --threads 5 \
+        --nanopolish_fastq "sample1_lreads.fastq" \
+        --nanopolish_fast5 "fast5_pass_dir"
 
 .. note::
 
@@ -78,6 +98,6 @@ shortreads-only and hybrid assemblies while Flye is used to create longreads-onl
 Running with a configuration file
 """""""""""""""""""""""""""""""""
 
-::
+.. code-block:: bash
 
       ./nextflow run fmalmeida/bacannot -c bacannot.config

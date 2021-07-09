@@ -23,11 +23,11 @@ For examplification purposes and to get a major overview we will execute the pip
 
   # Run the pipeline using the Escherichia coli resfinder database
   nextflow run fmalmeida/bacannot \
-  --prefix ecoli \
-  --genome ecoli_ref.fna \
-  --outdir _ANNOTATION \
-  --threads 4 \
-  --resfinder_species "Escherichia coli"
+    --prefix ecoli \
+    --genome ecoli_ref.fna \
+    --outdir _ANNOTATION \
+    --threads 4 \
+    --resfinder_species "Escherichia coli"
 
 Outputs
 -------

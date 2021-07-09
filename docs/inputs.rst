@@ -25,11 +25,11 @@ The pipeline accepts as input two other input files types that are used to perfo
 
 * path to a directory of FAST5 and path to ONT fastq
 
-   * This data will be used for the methylation calling process
+  * This data will be used for the methylation calling process
 
 * path to custom **nucleotide** databases as described in :ref:`custom-db`
 
-   * These custom databases will be used to perform additional annatation processes using BLASTn
+  * These custom databases will be used to perform additional annatation processes using BLASTn
 
 .. note::
 

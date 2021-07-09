@@ -11,29 +11,29 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
 1. Installing Docker
 
-  + Read more in their `manual <https://docs.docker.com/>`_
+   * Read more in their `manual <https://docs.docker.com/>`_
 
 2. Installing Nextflow
 
-    .. code-block:: bash
+   .. code-block:: bash
 
-      curl -s https://get.nextflow.io | bash
+     curl -s https://get.nextflow.io | bash
 
 3. Download the pipeline
 
-    .. code-block:: bash
+   .. code-block:: bash
 
       nextflow pull fmalmeida/bacannot
 
 4. Test your installation
 
-    .. code-block:: bash
+   .. code-block:: bash
 
       nextflow run fmalmeida/bacannot --help
 
 5. Download required Docker images
 
-    .. code-block:: bash
+   .. code-block:: bash
 
       docker pull fmalmeida/bacannot:v2.3 ;
       docker pull fmalmeida/bacannot:kofamscan ;
@@ -42,13 +42,13 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
 6. (Optional) Install nf-core utility
 
-    .. code-block:: bash
+   .. code-block:: bash
 
       pip install nf-core>=1.10
 
 7. (Optional) Docker image for using raw reads as input
 
-    .. code-block:: bash
+   .. code-block:: bash
 
       docker pull fmalmeida/mpgap
 
