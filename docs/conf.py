@@ -63,7 +63,7 @@ html_theme = "sphinx_material"
 # Material theme options (see theme.conf for more information)
 html_theme_options = {
     # Visible levels of the global TOC; -1 means unlimited
-    'globaltoc_depth': 2,
+    'globaltoc_depth': -1,
     # If False, expand all TOC entries
     'globaltoc_collapse': True,
     # If True, show hidden TOC entries
