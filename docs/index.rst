@@ -1,7 +1,7 @@
 .. Generic Archaeal and Bacterial Annotation (bacannot)>`_
 
-Bacannot - A generic genome annotation pipeline for prokaryotes
-===============================================================
+Bacannot
+========
 
 Designed to provide an easy-to-use framework for performing a comprehensive annotation on
 prokaryotic genomes, `bacannot <https://github.com/fmalmeida/bacannot>`_ is developed with `Nextflow <https://www.nextflow.io/docs/latest/index.html>`_
