@@ -14,7 +14,7 @@ Its main steps are:
    :header-rows: 1
 
    * - Analysis steps
-     - Used software or databasesa
+     - Used software or databases
 
    * - Genome assembly (if raw reads are given)
      - `Flye <https://github.com/fenderglass/Flye>`_ and `Unicycler <https://github.com/rrwick/Unicycler>`_
