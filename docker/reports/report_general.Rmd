@@ -36,6 +36,13 @@ check_lines <- function(x) {
 prokka_txt <- try(read.delim(params$prokka, header = FALSE, sep = ":"), silent = TRUE)
 mlst_txt <- try(read.delim(params$mlst, header = FALSE), silent = TRUE)
 barrnap_gff <- try(gffRead(params$barrnap), silent = TRUE)
+if (class(barrnap_gff) != 'try-error' &
+    check_lines(barrnap_gff) > 0) {
+      barrnap_gff <- barrnap_gff
+} else {
+  barrnap_gff <- data.frame()
+}
+
 refseq_masher_txt <- try(read.delim(params$refseq_masher, header = TRUE), silent = TRUE)
 if (file.exists(params$kegg)) {
   kegg_not_null <- TRUE

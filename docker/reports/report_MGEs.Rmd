@@ -129,6 +129,15 @@ if (class(ice_prot_blast) != 'try-error' & check_lines(ice_prot_blast) > 0) {
   ice_null <- TRUE
 }
 
+## Check GIs
+if (file.exists(params$gi_image)) {
+  gi_image <- params$gi_image
+  gi_width <- "60%"
+} else {
+  gi_image <- "./no-results-empty-state.jpg"
+  gi_width <- "10%"
+}
+
 # DT options
 # Lists
 dt_opt_lst <- list(pageLength = 5,
@@ -183,8 +192,8 @@ Genomic Islands (GIs) were predicted with [islandPath](https://github.com/brinkm
 
 Additionally, these genomic islands were parsed in a very generic manner in order to provide a simple visualization of the annotation in these regions. The plots were rendered with the python package [gff-toolbox](https://github.com/fmalmeida/gff-toolbox/wiki) and are available at the directory: `genomic_islands/plots` in the main query output directory. An example of these plots is shown in Figure \@ref(fig:gi-plot-example).
 
-```{r gi-plot-example, out.width='60%', fig.align='center', fig.show='hold', fig.cap="Examplification of the visualization of genomic islands regions with the gff-toolbox package."}
-knitr::include_graphics(params$gi_image)
+```{r gi-plot-example, out.width=gi_width, fig.align='center', fig.show='hold', fig.cap="Examplification of the visualization of genomic islands regions with the gff-toolbox package."}
+knitr::include_graphics(gi_image)
 ```
 
 > As discussed, these images were rendered in a very generic manner just to show some visualization possibilities to the user. If desired, users can check the [gff-toolbox](https://github.com/fmalmeida/gff-toolbox/wiki) package to produce more customized plots.
