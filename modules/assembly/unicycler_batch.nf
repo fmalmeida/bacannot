@@ -21,7 +21,7 @@ process unicycler_batch {
 
   script:
   x = (lreads.getName() != "input.4") ? "Performing a hybrid assembly with Unicycler" : "Performing a illumina-only assembly with Unicycler"
-  unpaired_param = (sreads.getName() != "input.3") ? "-s $sreads --no_correct" : ""
+  unpaired_param = (sreads.getName() != "input.3") ? "-s $sreads" : ""
   paired_param = (sread1.getName() != "input.1" && sread2.getName() != "input.2") ? "-1 $sread1 -2 $sread2" : ""
   lr_param = (lreads.getName() != "input.4") ? "-l $lreads" : ""
 
