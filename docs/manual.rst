@@ -19,6 +19,18 @@ Input files (single genome analysis)
   These parameters must only be used when annotating a single genome. If running the pipeline with more than 1 input
   genomes users must set them in the samplesheet YAML file as described in :ref:`samplesheet`.
 
+.. note::
+  
+  Remember to always write input paths inside double quotes.
+
+.. note::
+  
+  When using paired end reads it is required that input reads are set with the "{1,2}"" pattern. For example: "SRR6307304_{1,2}.fastq". This will properly load reads "SRR6307304_1.fastq" and "SRR6307304_2.fastq"
+
+.. warning::
+  
+  When running hybrid assemblies or mixing short read types it is advised to **avoid not required REGEX** and write the full file path, using only the required REGEX for paired end reads when applicable. So that the pipeline does not load any different read that also matches the REGEX and avoid confusions with the inputs.
+
 .. list-table::
    :widths: 20 10 20 30
    :header-rows: 1
@@ -41,12 +53,12 @@ Input files (single genome analysis)
    * - ``--sreads_single``
      - N (Y if assembled genome is not used)
      - NA
-     - Path to short unpaired reads.
+     - Path to short unpaired reads. E.g. "SRR*.fastq.gz"
 
    * - ``--sreads_paired``
      - N (Y if assembled genome is not used)
      - NA
-     - Path to short paired reads
+     - Path to short paired reads. E.g. "SRR6307304_{1,2}.fastq"
 
    * - ``--lreads``
      - N (Y if assembled genome is not used)

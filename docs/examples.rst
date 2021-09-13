@@ -95,6 +95,18 @@ shortreads-only and hybrid assemblies while Flye is used to create longreads-onl
   This command will first perform a hybrid assembly with Unicycler and then annotate the assembled genome. Additionnally, since
   nanopolish parameters were given, it will call methylations with nanopolish.
 
+.. note::
+  
+  Remember to always write input paths inside double quotes.
+
+.. note::
+  
+  When using paired end reads it is required that input reads are set with the "{1,2}"" pattern. For example: "SRR6307304_{1,2}.fastq". This will properly load reads "SRR6307304_1.fastq" and "SRR6307304_2.fastq"
+
+.. warning::
+  
+  When running hybrid assemblies or mixing short read types it is advised to **avoid not required REGEX** and write the full file path, using only the required REGEX for paired end reads when applicable. So that the pipeline does not load any different read that also matches the REGEX and avoid confusions with the inputs.
+
 Running with a configuration file
 """""""""""""""""""""""""""""""""
 
