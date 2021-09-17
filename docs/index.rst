@@ -1,5 +1,11 @@
 .. Generic Archaeal and Bacterial Annotation (bacannot)>`_
 
+.. image:: lOGO_3_transparente.png
+  :width: 250
+  :align: left
+
+----
+
 Bacannot
 ========
 
