@@ -37,6 +37,7 @@ process prokka {
 
     # Run prokka
     prokka $kingdom $gcode $rnammer --outdir annotation \
-    --cpus ${params.threads} --mincontiglen 200 --prefix ${prefix} $assembly
+    --cpus ${params.threads} --mincontiglen 200 --prefix ${prefix} \
+    --genus '' --species '' --strain \"${prefix}\" $assembly
     """
 }
