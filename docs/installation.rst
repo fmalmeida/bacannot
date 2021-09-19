@@ -52,8 +52,10 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
       docker pull fmalmeida/mpgap
 
-.. note::
+.. tip::
 
-  Now, everything is set up and ready to run. Remember to always keep your Docker images up to date (Docker pull will always download the latest).
+   If the download of ``fmalmeida/bacannot:v2.3`` image keeps hanging due to its size, download the ``fmalmeida/bacannot:main_tools`` first. This is the core of the versioned tag and it will help on downloading it. Also, remember to always keep your Docker images up to date (Docker pull will always download the latest)
+
+.. note::
 
   The pipeline requires a UNIX system, therefore, Windows users may successfully use this pipeline via the `Linux subsystem for windows <https://docs.microsoft.com/pt-br/windows/wsl/install-win10>`_.
