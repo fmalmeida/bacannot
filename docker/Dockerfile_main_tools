@@ -4,7 +4,8 @@ SHELL ["/bin/bash", "-c"]
 WORKDIR /work
 
 # update conda
-RUN conda update -n base -c defaults conda
+RUN conda update -n base -c defaults conda && \
+		conda install -y -c anaconda pip
 
 # install procps
 RUN apt-get update && \
