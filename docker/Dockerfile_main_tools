@@ -78,6 +78,10 @@ RUN pip3 install biopython bcbio-gff numpy
 RUN git clone https://github.com/janka2012/digIS.git
 ENV PATH="$PATH:/work/digIS"
 
+# install seqkit
+RUN conda install -y -c bioconda seqkit && \
+		conda clean -afy
+
 #########################
 ### my custom scripts ###
 #########################
