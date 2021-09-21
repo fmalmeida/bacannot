@@ -21,12 +21,11 @@ process find_GIs {
   splitgenbank.py annotation.gbk && rm annotation.gbk ;
 
   # Run islandpath in each
-  for file in \$(ls *.gbk); do grep -q "CDS" \$file && Dimob.pl \$file \${file%%.gbk}_GIs.txt 2> dimob.err ; done
-
-  # Aggregate them
-  for GI in \$(ls *.txt); do \
-    name="\${GI%%_GIs.txt}" ;
-    awk -v contig=\$name 'BEGIN { FS = "\t"; OFS="\\t" } { print contig,\$2,\$3 }' \$GI >> ${prefix}_predicted_GIs.bed ; \
+  touch ${prefix}_predicted_GIs.bed ;
+  for file in \$(ls *.gbk); do \
+    touch \${file%%.gbk}_GIs.txt ;
+    grep -q "CDS" \$file && Dimob.pl \$file \${file%%.gbk}_GIs.txt 2> dimob.err ;
+    awk -v contig=\$name 'BEGIN { FS = "\\t"; OFS="\\t" } { print contig,\$2,\$3 }' \${file%%.gbk}_GIs.txt >> ${prefix}_predicted_GIs.bed ;
   done
   """
 }
