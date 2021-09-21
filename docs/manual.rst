@@ -164,7 +164,7 @@ Resfinder annotation
 
 .. warning::
 
-   Users can check for available Resfinder Species panels at`their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
+   Users can check for available Resfinder Species panels at `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
 .. list-table::
    :widths: 20 10 20 30
@@ -178,7 +178,7 @@ Resfinder annotation
    * - ``--resfinder_species``
      - N
      - NA
-     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. Check the available species at`their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
+     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. Check the available species at `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
 On/Off processes
 """"""""""""""""
