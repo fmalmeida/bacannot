@@ -159,8 +159,12 @@ Resfinder annotation
 
 .. note::
 
-  This parameter must only be used when annotating a single genome. If running the pipeline with more than 1 input
-  genomes users must set it in the samplesheet YAML file as described in :ref:`samplesheet`.
+  This parameter must only be used when annotating a single genome. If running the pipeline in multi-sample mode,
+  users must set it inside the samplesheet YAML file as described in :ref:`samplesheet`.
+
+.. warning::
+
+   Users can check for available Resfinder Species panels at`their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
 .. list-table::
    :widths: 20 10 20 30
@@ -174,7 +178,7 @@ Resfinder annotation
    * - ``--resfinder_species``
      - N
      - NA
-     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. Check them out in `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
+     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. Check the available species at`their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
 
 On/Off processes
 """"""""""""""""
