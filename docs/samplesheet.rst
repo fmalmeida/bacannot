@@ -74,7 +74,7 @@ will be analysed. The available file tags are:
      - Used to set path to nanopore raw FAST5 data (used in conjunction with ``nanopore`` for calling methylation with Nanopolish)
 
    * - ``resfinder``
-     - Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in their manual/web tool)
+     - Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in `their web page <https://cge.cbs.dtu.dk/services/ResFinder/>`_). If your species is not available in Resfinder panels, you may use it with the "Other" panel 
 
 
 .. note::
