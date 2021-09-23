@@ -26,7 +26,7 @@ RUN python3 -m pip install phigaro==2.3.0 docopt pandas tabulate numpy bcbio-gff
 		python3 setup.py install && \
 		gff-toolbox -h && \
 		cd .. && \
-		git clone -b 4.0 https://git@bitbucket.org/genomicepidemiology/resfinder.git
+		git clone -b master https://git@bitbucket.org/genomicepidemiology/resfinder.git
 
 ###############################
 ### tools that rely on PERL ###
