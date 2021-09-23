@@ -23,16 +23,17 @@ process resfinder {
   /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${params.resfinder_species}\" \
   --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
   --threshold \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
-  --db_path_res /work/resfinder/db_resfinder --acquired || true ;
+  --db_path_res /work/resfinder/db_resfinder --acquired ;
 
   # Fix name of pheno table
   mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt ;
 
   # Run resfinder pointfinder resistance
+  # this does not run with panel "other", thus we have to create blank files when it fails
   /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${params.resfinder_species}\" \
   --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
   --threshold \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
-  --db_path_point /work/resfinder/db_pointfinder --point || true ;
+  --db_path_point /work/resfinder/db_pointfinder --point || touch resfinder/PointFinder_results.txt resfinder/pheno_table.txt ;
 
   # Fix name of pheno table
   mv resfinder/pheno_table.txt resfinder/mutation_pheno_table.txt &> /dev/null || true ;
