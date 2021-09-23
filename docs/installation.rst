@@ -35,10 +35,15 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
    .. code-block:: bash
 
+      docker pull fmalmeida/bacannot:main_tools   # this is the core of the main image
       docker pull fmalmeida/bacannot:v2.3 ;
       docker pull fmalmeida/bacannot:kofamscan ;
       docker pull fmalmeida/bacannot:jbrowse ;
       docker pull fmalmeida/bacannot:v2.3_renv
+
+.. tip::
+
+   If the download of ``fmalmeida/bacannot:v2.3`` image keeps hanging due to its size, download the ``fmalmeida/bacannot:main_tools`` first. It is the core of the versioned tag and it will help on the download by creating some cache. Also, remember to always keep your Docker images up to date (Docker pull will always download the latest)
 
 6. (Optional) Install nf-core utility
 
@@ -51,10 +56,6 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
    .. code-block:: bash
 
       docker pull fmalmeida/mpgap
-
-.. tip::
-
-   If the download of ``fmalmeida/bacannot:v2.3`` image keeps hanging due to its size, download the ``fmalmeida/bacannot:main_tools`` first. This is the core of the versioned tag and it will help on downloading it. Also, remember to always keep your Docker images up to date (Docker pull will always download the latest)
 
 .. note::
 
