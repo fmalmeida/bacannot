@@ -15,10 +15,7 @@ process unicycler_batch {
   // Keep tuple structure to mixing channels
   tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("unicycler_${id}.fasta"), val("${resfinder_species}")
   file('unicycler_version.txt')
-
-  when:
-  if ((sread1.getName() != 'input.1' && sread2.getName() != 'input.2') || (sreads.getName() != 'input.3')) // Check if either paired or unpaired reads exists
-
+  
   script:
   x = (lreads.getName() != "input.4") ? "Performing a hybrid assembly with Unicycler" : "Performing a illumina-only assembly with Unicycler"
   unpaired_param = (sreads.getName() != "input.3") ? "-s $sreads" : ""
