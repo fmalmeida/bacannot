@@ -2,6 +2,12 @@
 
 The tracking for changes started in v2.1
 
+## v2.3.1
+
+### Fix in main.nf
+
+Fixed a very small problem that was holding up the execution of flye and unicycler when using the multi-samples workflow with the "samplesheet.yml". The scripts for unicycler and flye under multi-samples workflow was with an "if" statement in the wrong position.
+
 ## v2.3
 
 * Dockerfile
