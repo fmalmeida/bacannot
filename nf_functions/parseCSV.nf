@@ -15,19 +15,6 @@ def parse_csv(in_ch) {
       """.stripIndent()
 
       exit 1
-    } else if (row.resfinder == "other" || row.resfinder == "Other" || row.resfinder == "OTHER") {
-      println """
-      ERROR!
-
-      A minor error has occurred
-        ==> User has set the resfinder panel to "Other" (Genome: ${row.name})
-
-      This is impossible, since the pipeline tries to annotation point finder mutation and these are incompatible with the "Other" panel
-
-      Cheers.
-      """.stripIndent()
-
-      exit 1
     } else {
       tuple(row.name, row.entrypoint, (row.fwd == "missing_pairFWD") ? row.fwd : file(row.fwd), (row.rev == "missing_pairREV") ? row.rev : file(row.rev),
       (row.single == "missing_single") ? row.single : file(row.single), (row.lreads == "missing_lreads") ? row.lreads : file(row.lreads), row.lr_type,
