@@ -9,7 +9,7 @@ WORKDIR /work
 RUN conda install -y -c anaconda -c bioconda -c conda-forge -c defaults \
 		pip samtools "platon>=1.6.0" emboss nomkl seqkit \
 		plasmidfinder phispy "blast>=2.11.0" "diamond>=2" "biopython>=1.71" prodigal hmmer \
-		minimap2 bedtools bc ncbi-amrfinderplus kma && \
+		minimap2 bedtools bc ncbi-amrfinderplus antismash kma && \
 		conda clean -afy
 RUN apt-get update && \
 		apt-get install -y procps build-essential libhdf5-dev && \
