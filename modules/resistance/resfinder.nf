@@ -8,10 +8,10 @@ process resfinder {
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("resfinder/results_tab.txt")
+  tuple val(prefix), file("resfinder/ResFinder_results_tab.txt")
   tuple val(prefix), file("resfinder/PointFinder_results.txt")
   tuple val(prefix), file("resfinder/args_pheno_table.txt")
-  tuple val(prefix), file("resfinder/results_tab.gff")
+  tuple val(prefix), file("resfinder/ResFinder_results_tab.gff")
   file("resfinder/*") // Grab everything
 
   when:
@@ -39,6 +39,6 @@ process resfinder {
   mv resfinder/pheno_table.txt resfinder/mutation_pheno_table.txt &> /dev/null || true ;
 
   # Convert to GFF
-  resfinder2gff.py -i resfinder/results_tab.txt > resfinder/results_tab.gff ;
+  resfinder2gff.py -i resfinder/ResFinder_results_tab.txt > resfinder/ResFinder_results_tab.gff ;
   """
 }
