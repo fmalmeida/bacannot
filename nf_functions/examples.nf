@@ -16,7 +16,7 @@ def exampleMessage() {
 
      ## Annotating from raw reads
 \$ nextflow run fmalmeida/bacannot --sreads_paired "sample1_{1,2}.fastq" --lreads "sample1_lreads.fastq" --lreads_type nanopore \
---outdir TESTE --skip_kofamscan --threads 5 --nanopolish_fastq_reads "sample1_lreads.fastq" --nanopolish_fast5_dir "fast5_pass_dir"
+--outdir TESTE --skip_kofamscan --threads 5 --nanopolish_fastq "sample1_lreads.fastq" --nanopolish_fast5 "fast5_pass_dir"
 
     ## Running with a configuration file
 \$ nextflow run fmalmeida/bacannot -c bacannot.config
