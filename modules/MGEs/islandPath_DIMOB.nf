@@ -25,6 +25,7 @@ process find_GIs {
   for file in \$(ls *.gbk); do \
     touch \${file%%.gbk}_GIs.txt ;
     grep -q "CDS" \$file && Dimob.pl \$file \${file%%.gbk}_GIs.txt 2> dimob.err ;
+    name="\${file%%.gbk}" ;
     awk -v contig=\$name 'BEGIN { FS = "\\t"; OFS="\\t" } { print contig,\$2,\$3 }' \${file%%.gbk}_GIs.txt >> ${prefix}_predicted_GIs.bed ;
   done
   """
