@@ -35,7 +35,8 @@ RUN mkdir -p /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
 		python INSTALL.py
 
 # Phigaro database
-RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
+RUN source activate PY36_env && \
+		(echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
 		chmod a+rw -R /work/phigaro_pvog
 
 # AMRFinderPlus database
@@ -129,6 +130,7 @@ RUN ln -s /opt/conda /opt/conda/envs/PLATON
 RUN ln -s /opt/conda /opt/conda/envs/PLASMIDFINDER
 RUN ln -s /opt/conda /opt/conda/envs/AMRFINDERPLUS
 RUN ln -s /opt/conda/envs/PY36_env /opt/conda/envs/RGI
+RUN ln -s /opt/conda/envs/PY36_env/bin/phigaro /opt/conda/bin/
 
 ###########################
 ### Fix RGI permissions ###
