@@ -75,6 +75,8 @@ ggplot(amr, aes(x=Phenotype, y=freq, fill=Phenotype)) +
 <caption>(#tab:resfinder-pointfinder) Point mutations annotated with Resfinder</caption>
 ```{r resfinder-pointfinder}
 # Produce Table
+if(check_lines(resfinder_point) > 0 ) {
+point_finder = TRUE
 resfinder_point %>%
   datatable(escape = FALSE,
             colnames = c("Mutation", "Nucl. change", "Amino ac. change", "Resistance", "PMID"),
@@ -82,9 +84,13 @@ resfinder_point %>%
             options = dt_opt_lst,
             extensions = 'Buttons',
             rownames = F)
+} else {
+  point_finder = FALSE
+  print("PointFinder results empty!")
+}
 ```
 
-```{r resfinder-pointfinder-png, fig.align='center', fig.show='hold', fig.cap="Resistome Predicted using Resfinder point mutations", out.width="35%"}
+```{r resfinder-pointfinder-png, fig.align='center', fig.show='hold', fig.cap="Resistome Predicted using Resfinder point mutations", out.width="35%", eval=point_finder}
 ## Grab AMR
 amr <- resfinder_point %>%
   select(Mutation, Resistance)

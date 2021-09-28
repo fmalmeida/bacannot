@@ -2,6 +2,12 @@
 
 The tracking for changes started in v2.1
 
+## v2.3.2
+
+1. There is a smal fix in the `update_database_image.sh` so it takes only the first two numbers of release tags.
+2. Changed the pipeline to now accept the resfinder species panel "Other"
+3. Fixed the Resfinder report to understand when only the pointfinder mutations are empty.
+
 ## v2.3.1
 
 ### Fix in main.nf

@@ -18,6 +18,7 @@ process resfinder {
   (params.resfinder_species)
 
   script:
+  (params.resfinder_species.toLowerCase() != "other")
   """
   # Run resfinder acquired resistance
   /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${params.resfinder_species}\" \
@@ -40,5 +41,23 @@ process resfinder {
 
   # Convert to GFF
   resfinder2gff.py -i resfinder/ResFinder_results_tab.txt > resfinder/ResFinder_results_tab.gff ;
+  """
+
+  (params.resfinder_species.toLowerCase() == "other")
+  """
+  # Run resfinder acquired resistance
+  /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder \
+  --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
+  --threshold \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
+  --db_path_res /work/resfinder/db_resfinder --acquired || true ;
+
+  # Fix name of pheno table
+  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt ;
+
+  # touch pointfinder
+  touch resfinder/PointFinder_results.txt ;
+
+  # Convert to GFF
+  resfinder2gff.py -i resfinder/results_tab.txt > resfinder/results_tab.gff ;
   """
 }
