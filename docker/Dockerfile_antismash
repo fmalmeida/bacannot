@@ -1,0 +1,10 @@
+FROM continuumio/miniconda3
+LABEL MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
+SHELL ["/bin/bash", "-c"]
+WORKDIR /work
+
+# Install antismash
+RUN conda install -y -c bioconda -c anaconda -c defaults -c conda-forge antismash
+
+# Download databases
+RUN download-antismash-databases

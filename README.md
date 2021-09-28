@@ -74,14 +74,19 @@ These images have been kept separate to not create massive Docker image and to a
 
 1. If you don't have it already install [Docker](https://docs.docker.com/) in your computer.
     * After installed, you need to download the required Docker images
+
+    * Required
           
-          docker pull fmalmeida/bacannot:main_tools   # this is the core of the main image
-          docker pull fmalmeida/bacannot:v2.3
-          docker pull fmalmeida/bacannot:v2.3_renv
-          docker pull fmalmeida/bacannot:kofamscan
-          docker pull fmalmeida/bacannot:jbrowse
-          docker pull fmalmeida/bacannot:server       # For the shiny parser
-          docker pull fmalmeida/mpgap:v2.3            # Only necessary if using raw reads as input
+          docker pull fmalmeida/bacannot:v2.3         # Main image for core annotations
+          docker pull fmalmeida/bacannot:v2.3_renv    # R packages for reports
+          docker pull fmalmeida/bacannot:jbrowse      # JBrowse software
+    
+    * Optional
+          
+          docker pull fmalmeida/bacannot:kofamscan    # If user wants KO annotation
+          docker pull fmalmeida/bacannot:antismash    # If user wants antismash annotation
+          docker pull fmalmeida/bacannot:server       # If user wants to open the shiny parser
+          docker pull fmalmeida/mpgap:v2.3            # If using raw reads as input
 
 🔥 Nextflow can also automatically handle images download on the fly when executed. However, some servers may hang the download due to the image size (view below).
 
