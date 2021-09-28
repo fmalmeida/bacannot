@@ -116,24 +116,4 @@ def paramsCheck() {
     exit 1
   }
 
-  /*
-
-      Checking resfinder parameters
-
-  */
-  if (params.resfinder_species == "other" || params.resfinder_species == "Other" || params.resfinder_species == "OTHER") {
-    println """
-    ERROR!
-
-    A minor error has occurred
-      ==> User has set the resfinder panel to "Other"
-
-    This is impossible, since the pipeline tries to annotation point finder mutation and these are incompatible with the "Other" panel
-
-    Cheers.
-    """.stripIndent()
-
-    exit 1
-  }
-
 }
