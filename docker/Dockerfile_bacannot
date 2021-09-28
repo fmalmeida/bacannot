@@ -42,9 +42,6 @@ RUN source activate PY36_env && \
 # AMRFinderPlus database
 RUN mkdir -p /opt/conda/share/amrfinderplus/data && amrfinder_update --force_update --database /opt/conda/share/amrfinderplus/data
 
-# AntiSMASH database
-RUN download-antismash-databases
-
 WORKDIR /work/dbs
 
 #######################
