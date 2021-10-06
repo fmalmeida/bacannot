@@ -14,7 +14,7 @@ Help()
 	echo "Simple help message for the utilization of this script"
 	echo "It takes the jbrowse data path and all the files that shall be plotted from bacannot"
 	echo
-	echo "Syntax: run_jbrowse.sh [-h|p|g|b|s|f|r|B|P|G|m|S|R]"
+	echo "Syntax: run_jbrowse.sh [-h|p|g|b|s|f|r|B|P|G|m|S|R|d]"
 	echo "options:"
 	echo
 	echo "h		Print this help"
@@ -36,7 +36,7 @@ Help()
 }
 
 # Get the options
-while getopts "hp:g:b:s:f:r:B:P:G:m:S:R:" option; do
+while getopts "hp:g:b:s:f:r:B:P:G:m:S:R:d:" option; do
    case $option in
       h) # display Help
          Help
@@ -422,18 +422,19 @@ remove-track.pl --trackLabel "${PREFIX} Insertion Sequences predicted with digIS
 	\"urlTemplate\" : \"tracks/${PREFIX} Insertion Sequences predicted with digIS/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 
 ## antiSMASH secondary metabolites
-[ $(ls antiSMASH/*gff | wc -l) -eq 0 ] || ( for antismash_region in antiSMASH/*gff ; do flatfile-to-json.pl --gff $antismash_region --key "${PREFIX} antismash ${antismash_region%%.gff}" --trackType CanvasFeatures --trackLabel "${PREFIX} antismash ${antismash_region%%.gff}" --out "data" ;
-remove-track.pl --trackLabel "${PREFIX} antismash ${antismash_region%%.gff}" --dir data &> /tmp/error ;
+[ $(ls antiSMASH/*gff | wc -l) -eq 0 ] || ( for antismash_region in antiSMASH/*gff ; do name=$(basename $antismash_region); grep -E "region|CDS" $antismash_region > tmp.gff ; flatfile-to-json.pl --gff tmp.gff --key "${PREFIX} antismash ${name%%.gff}" --trackType CanvasFeatures --trackLabel "${PREFIX} antismash ${name%%.gff}" --out "data" ;
+rm tmp.gff ;
+remove-track.pl --trackLabel "${PREFIX} antismash ${name%%.gff}" --dir data &> /tmp/error ;
 echo -E " {  \"compress\" : 0, \
 	\"displayMode\" : \"compact\", \
-	\"key\" : \"${PREFIX} antismash ${antismash_region%%.gff}\", \
-	\"category\" : \"MGEs annotation\", \
-	\"label\" : \"${PREFIX} antismash ${antismash_region%%.gff}\", \
+	\"key\" : \"${PREFIX} antismash ${name%%.gff}\", \
+	\"category\" : \"antiSMASH secondary metabolites\", \
+	\"label\" : \"${PREFIX} antismash ${name%%.gff}\", \
 	\"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
-	\"style\" : { \"className\" : \"feature\", \"color\": \"#9d97a9\" }, \
+	\"style\" : { \"className\" : \"feature\", \"color\": \"#f6b26b\" }, \
 	\"trackType\" : \"CanvasFeatures\", \
 	\"type\" : \"CanvasFeatures\", \
-	\"urlTemplate\" : \"tracks/${PREFIX} antismash ${antismash_region%%.gff}/{refseq}/trackData.json\" } " | add-track-json.pl data/trackList.json ;
+	\"urlTemplate\" : \"tracks/${PREFIX} antismash ${name%%.gff}/{refseq}/trackData.json\" } " | add-track-json.pl data/trackList.json ;
 done )
 
 # Form -fat bedGraphs
