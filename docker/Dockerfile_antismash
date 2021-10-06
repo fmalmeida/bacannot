@@ -4,7 +4,19 @@ SHELL ["/bin/bash", "-c"]
 WORKDIR /work
 
 # Install antismash
-RUN conda install -y -c bioconda -c anaconda -c defaults -c conda-forge antismash
+RUN conda config --add channels defaults && \
+    conda config --add channels bioconda && \
+    conda config --add channels conda-forge
+RUN conda create -y -n antismash antismash
 
 # Download databases
-RUN download-antismash-databases
+RUN source activate antismash && \
+    download-antismash-databases
+
+# install seqret
+RUN conda install -y -n antismash -c bioconda -c conda-forge -c anaconda -c defaults emboss
+
+# fix matplotlib
+RUN mkdir /matplotlib && \
+    chmod -R 777 /matplotlib
+ENV MPLCONFIGDIR=/matplotlib
