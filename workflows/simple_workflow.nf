@@ -8,6 +8,9 @@ include { refseq_masher } from '../modules/generic/mash.nf'
 // Prokka annotation
 include { prokka } from '../modules/generic/prokka.nf'
 
+// sequenceserver generation
+include { sequenceserver } from '../modules/generic/sequenceserver.nf'
+
 // MLST annotation
 include { mlst } from '../modules/generic/mlst.nf'
 
@@ -275,6 +278,9 @@ workflow bacannot_nf {
       } else {
         antismash_output = Channel.empty()
       }
+
+      // sequenceserver
+      sequenceserver(prokka.out[3].join(prokka.out[5]).join(prokka.out[4]))
 
 
       /*
