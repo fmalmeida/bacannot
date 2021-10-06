@@ -97,6 +97,7 @@ params.skip_resistance_search = false
 params.skip_iceberg_search = false
 params.skip_prophage_search = false
 params.skip_kofamscan = false
+params.skip_antismash = false
 
 /*
  * Define log message
