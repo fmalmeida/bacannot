@@ -42,7 +42,20 @@ try(
   addResourcePath(prefix = "jbrowse/data/methylation.bw", directoryPath = "/work/jbrowse/data/methylation.bw"),
   silent = TRUE
 )
-addResourcePath(prefix = "reports", directoryPath = "/work/report_files/")
+try(
+  addResourcePath(prefix = "reports", directoryPath = "/work/report_files/"),
+  silent = TRUE
+)
+try(
+  addResourcePath(prefix = "antiSMASH", directoryPath = "/work/antiSMASH"),
+  silent = TRUE
+)
+
+## start sequenceserver
+eval_sequence_server <- FALSE
+if (dir.exists("/work/SequenceServerDBs/")) {
+  eval_sequence_server <- TRUE
+}
 ```
 
 ```{css, echo=FALSE}
@@ -129,6 +142,10 @@ if (length(files_list) > 0) {
              "](", trimws(report_file, which = 'both'), ")"), sep = '\n')
   }
 }
+
+if (file.exists("antiSMASH/index.html")) {
+  cat("* [antiSMASH (secondary metabolites) report](antiSMASH/index.html)")
+}
 ```
 
 ### JBrowse {#jbrowse}
@@ -141,11 +158,27 @@ if (length(files_list) > 0) {
 parse_sql(DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
 ```
 
-## Blast the genome
+## Blast the genome (for annotation intersection)
+
+```{r results='asis', eval=eval_sequence_server}
+cat("
+This tab is a custom implementation of BLAST using its tabular output in order to provide a easy way for users to query the genome and automatically search for intersections (with [bedtools intersect](https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html)) between the blast results and the genome annotation. This results does not enable the visualization of the alignment. For that, users must use the blast implemented with SequenceServer in the next tab.
+")
+```
 
 ```{r, echo=FALSE}
 genome_blast(genome = Sys.glob(file.path("/work/annotation/*.fna")),
              nucl = Sys.glob(file.path("/work/annotation/*.ffn")),
              prot = Sys.glob(file.path("/work/annotation/*.faa")),
              sqldb = DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
+```
+
+```{r results='asis', eval=eval_sequence_server}
+cat("
+## SequenceServer Blast (for visualization of alignments)
+
+This tab is an implementation of BLAST alignments against the genome, the genes or the proteome using the [SequenceServer](https://sequenceserver.com/) tool. It is meant to provide a way for users to rapidly visualize the alignments against the query genome. This tool does not provide a way to quickly scan the annotation for intersections with the BLAST results. For that, we have implemented a custom blast in the previous tab.
+
+<iframe src=\"http://localhost:4567/\" style=\"width:100%; height:100vh;\"></iframe>
+")
 ```

@@ -42,7 +42,7 @@ Start()
 	# Start server in current directory
 	echo "When finished, run the command:"
 	echo -n "	docker rm -f "
-	docker run -v $(pwd):/work -d --rm --platform linux/amd64 -p 3838:"$PORT" fmalmeida/bacannot:server
+	docker run -v $(pwd):/work -d --rm --platform linux/amd64 -p 4567:4567 -p 3838:"$PORT" fmalmeida/bacannot:server
 
 }
 
