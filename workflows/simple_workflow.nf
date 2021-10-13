@@ -101,7 +101,7 @@ include { report } from '../modules/generic/reports.nf'
     DEF WORKFLOW
 */
 
-workflow bacannot_nf {
+workflow SINGLE_SAMPLE {
 
   take:
       input_genome

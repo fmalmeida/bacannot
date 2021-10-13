@@ -132,7 +132,7 @@ include { flye } from './modules/assembly/flye.nf' params(outdir: params.outdir,
 include { parse_samplesheet } from './workflows/parse_samples.nf'
 
 // Bacannot pipeline for multiple genomes
-include { bacannot_nf } from './workflows/simple_workflow.nf'
+include { SINGLE_SAMPLE } from './workflows/simple_workflow.nf'
 
 // Bacannot pipeline for multiple genomes
 include { bacannot_batch_nf } from './workflows/batch_workflow.nf'
@@ -170,7 +170,7 @@ workflow {
     if (params.genome) {
 
       // User have an assembled genome
-      bacannot_nf(Channel.fromPath(params.genome),
+      SINGLE_SAMPLE(Channel.fromPath(params.genome),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
                  (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
@@ -181,7 +181,7 @@ workflow {
       unicycler((params.sreads_paired) ? Channel.fromFilePairs( params.sreads_paired, flat: true, size: 2 ) : Channel.value(['', '', '']),
                 (params.sreads_single) ? Channel.fromPath( params.sreads_single )                           : Channel.value(''),
                 (params.lreads)        ? Channel.fromPath( params.lreads )                                  : Channel.value(''))
-      bacannot_nf(unicycler.out[1],
+      SINGLE_SAMPLE(unicycler.out[1],
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
                  (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
@@ -190,7 +190,7 @@ workflow {
 
       // User does not have illumina reads (so it goes to flye)
       flye(Channel.fromPath( params.lreads ))
-      bacannot_nf(flye.out[1],
+      SINGLE_SAMPLE(flye.out[1],
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
                  (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
