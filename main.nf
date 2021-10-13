@@ -15,7 +15,6 @@ include { logMessage } from './nf_functions/log.nf'
 include { write_csv } from './nf_functions/writeCSV.nf'
 include { parse_csv } from './nf_functions/parseCSV.nf'
 include { paramsCheck } from './nf_functions/paramsCheck.nf'
-include { filter_ch } from './nf_functions/parseCSV.nf'
 
 
 /*
@@ -109,14 +108,6 @@ logMessage()
  */
 
 // Unicycler assembly
-include { unicycler_batch } from './modules/assembly/unicycler_batch.nf' params(outdir: params.outdir,
-  threads: params.threads)
-
-// Flye assembly
-include { flye_batch } from './modules/assembly/flye_batch.nf' params(outdir: params.outdir,
-  threads: params.threads)
-
-// Unicycler assembly
 include { unicycler } from './modules/assembly/unicycler.nf' params(outdir: params.outdir,
   threads: params.threads, prefix: params.prefix)
 
@@ -135,7 +126,7 @@ include { parse_samplesheet } from './workflows/parse_samples.nf'
 include { SINGLE_SAMPLE } from './workflows/simple_workflow.nf'
 
 // Bacannot pipeline for multiple genomes
-include { bacannot_batch_nf } from './workflows/batch_workflow.nf'
+include { MULTIPLE_SAMPLE } from './workflows/batch_workflow.nf'
 
 
 /*
@@ -155,15 +146,8 @@ workflow {
     // Convert it to CSV for usability
     samples_ch = write_csv(parse_samplesheet.out)
 
-    // Run unicycler when necessary
-    unicycler_batch(filter_ch(samples_ch, "unicycler"))
-
-    // Run flye when necessary
-    flye_batch(filter_ch(samples_ch, "flye"))
-
     // Run annotation
-    bacannot_batch_nf(filter_ch(samples_ch, "annotation").mix(flye_batch.out[1], unicycler_batch.out[1]),
-                      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
+    MULTIPLE_SAMPLE(samples_ch, (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
 
   } else {
 
