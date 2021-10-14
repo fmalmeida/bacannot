@@ -23,7 +23,7 @@ process antismash {
   antismash --version > antismash_version.txt ;
 
   # Run tool
-  antismash --output-dir antiSMASH -c ${params.threads} $genbank
+  antismash --output-dir antiSMASH --genefinding-tool none -c ${params.threads} $genbank
 
   # convert results to gff
   for gbk in antiSMASH/*.region*.gbk ; do
