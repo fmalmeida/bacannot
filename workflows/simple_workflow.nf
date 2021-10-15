@@ -223,7 +223,7 @@ workflow SINGLE_SAMPLE {
 
         if (params.resfinder_species) {
           // Resfinder
-          resfinder(prokka.out[3])
+          resfinder(prokka.out[3].concat(Channel.value(params.resfinder_species)).collect())
           resfinder_output_1 = resfinder.out[0]
           resfinder_output_2 = resfinder.out[1]
           resfinder_phenotable = resfinder.out[2]

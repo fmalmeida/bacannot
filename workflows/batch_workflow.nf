@@ -67,7 +67,7 @@ include { digis } from '../modules/MGEs/digIS.nf'
 include { argminer } from '../modules/resistance/argminer.nf'
 
 // AMR annotation with Resfinder
-include { resfinder } from '../modules/resistance/resfinder_batch.nf'
+include { resfinder } from '../modules/resistance/resfinder.nf'
 
 // AMR annotation with AMRFinderPlus
 include { amrfinder } from '../modules/resistance/amrfinder.nf'
