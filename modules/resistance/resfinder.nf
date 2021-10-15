@@ -18,7 +18,7 @@ process resfinder {
   (params.resfinder_species)
 
   script:
-  (params.resfinder_species.toLowerCase() != "other")
+  if (params.resfinder_species.toLowerCase() != "other")
   """
   # Run resfinder acquired resistance
   /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${params.resfinder_species}\" \
@@ -42,7 +42,7 @@ process resfinder {
   resfinder2gff.py -i resfinder/results_tab.txt > resfinder/results_tab.gff ;
   """
 
-  (params.resfinder_species.toLowerCase() == "other")
+  else if (params.resfinder_species.toLowerCase() == "other")
   """
   # Run resfinder acquired resistance
   /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder \
