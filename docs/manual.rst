@@ -222,6 +222,12 @@ On/Off processes
      - False
      - Tells whether not to run KEGG orthology (KO) annotation with KofamScan
 
+   * - ``--skip_antismash``
+     -  N
+     - False
+     - | Tells whether or not to run antiSMASH (secondary metabolite) annotation.
+       | AntiSMASH is executed using only its core annotation modules in order to keep it fast
+
 Custom nucl databases
 """""""""""""""""""""
 

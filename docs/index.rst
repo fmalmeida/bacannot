@@ -39,6 +39,9 @@ Its main steps are:
 
    * - KEGG KO annotation and visualization
      - `KofamScan <https://github.com/takaram/kofam_scan>`_ and `KEGGDecoder <https://github.com/bjtully/BioData/tree/master/KEGGDecoder>`_
+  
+   * - Annotation of secondary metabolites
+     - `AntiSMASH <https://docs.antismash.secondarymetabolites.org/>`_
 
    * - Methylation annotation
      - `Nanopolish <https://github.com/jts/nanopolish>`_
@@ -71,7 +74,7 @@ Its main steps are:
      - `JBrowse <http://jbrowse.org/>`_
 
    * - Renderization of automatic reports and shiny app for results interrogation
-     - `R Markdown <https://rmarkdown.rstudio.com/>`_ and `Shiny <https://shiny.rstudio.com/>`_
+     - `R Markdown <https://rmarkdown.rstudio.com/>`_, `Shiny <https://shiny.rstudio.com/>`_ and `SequenceServer <https://sequenceserver.com/>`_
 
 .. toctree::
    :hidden:

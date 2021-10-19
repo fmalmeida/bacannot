@@ -25,6 +25,7 @@ After a successful execution, you will have something like this:
     │   └── ecoli
     │       ├── assembly                                        # Assembly files (when raw reads are given)
     │       ├── annotation                                      # Prokka annotation files
+    │       ├── antiSMASH                                       # antiSMASH secondary annotation files
     │       ├── digIS                                           # Insertion sequences predicted with digIS
     │       ├── gbk                                             # Gbk file produced from the resulting GFF
     │       ├── gffs                                            # A copy of the main GFF files produced during the annotation
@@ -40,6 +41,7 @@ After a successful execution, you will have something like this:
     │       ├── report_files                                    # Annotation reports in HTML format
     │       ├── resistance                                      # AMR annotation results from ARGminer, AMRFinderPlus, RGI and Resfinder
     │       ├── rRNA                                            # barrnap annotation results
+    │       ├── SequenceServerDBs                               # SequenceServer pre-formatted databases to be used inside the web app
     │       ├── sqldb                                           # The sqlDB of the annotation used by the shiny server for rapid parsing
     │       ├── tools_versioning                                # Versions of tools and databases used (whenever available)
     │       ├── virulence                                       # Virulence genes annotation results from Victors and VFDB databases
@@ -85,6 +87,11 @@ Bacannot will use `R Markdown <https://rmarkdown.rstudio.com/>`_ to produce auto
 
   - The quickstart does not produce an example, however, the report is similar to the ICEberg section in the MGE example report.
   - See :ref:`custom-db`.
+
+* Report of antiSMASH annotation
+
+  - The annotation report is provided by the antiSMASH tool
+  - See `the example <https://docs.antismash.secondarymetabolites.org/understanding_output/>`_
 
 Genome Browser
 --------------

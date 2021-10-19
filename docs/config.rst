@@ -140,6 +140,9 @@ Default configuration:
 
   // (NOT RUN?) KO (KEGG Orthology) annotation
     skip_kofamscan = false
+  
+  // (NOT RUN?) antiSMASH (secondary metabolite) annotation
+    skip_antismash = false
 
             /*
              * Custom databases can be used to annotate additional genes in the genome.
