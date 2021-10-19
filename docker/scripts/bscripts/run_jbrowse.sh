@@ -422,20 +422,19 @@ remove-track.pl --trackLabel "${PREFIX} Insertion Sequences predicted with digIS
 	\"urlTemplate\" : \"tracks/${PREFIX} Insertion Sequences predicted with digIS/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 
 ## antiSMASH secondary metabolites
-[ $(ls antiSMASH/*gff | wc -l) -eq 0 ] || ( for antismash_region in antiSMASH/*gff ; do name=$(basename $antismash_region); grep -E "region|CDS" $antismash_region > tmp.gff ; flatfile-to-json.pl --gff tmp.gff --key "${PREFIX} antismash ${name%%.gff}" --trackType CanvasFeatures --trackLabel "${PREFIX} antismash ${name%%.gff}" --out "data" ;
+[ $(ls antiSMASH/regions.gff | wc -l) -eq 0 ] || flatfile-to-json.pl --gff antiSMASH/regions.gff --key "${PREFIX} antismash regions" --trackType CanvasFeatures --trackLabel "${PREFIX} antismash regions" --out "data" ;
 rm tmp.gff ;
-remove-track.pl --trackLabel "${PREFIX} antismash ${name%%.gff}" --dir data &> /tmp/error ;
+remove-track.pl --trackLabel "${PREFIX} antismash regions" --dir data &> /tmp/error ;
 echo -E " {  \"compress\" : 0, \
 	\"displayMode\" : \"compact\", \
-	\"key\" : \"${PREFIX} antismash ${name%%.gff}\", \
+	\"key\" : \"${PREFIX} antismash regions\", \
 	\"category\" : \"antiSMASH secondary metabolites\", \
-	\"label\" : \"${PREFIX} antismash ${name%%.gff}\", \
+	\"label\" : \"${PREFIX} antismash regions\", \
 	\"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
 	\"style\" : { \"className\" : \"feature\", \"color\": \"#f6b26b\" }, \
 	\"trackType\" : \"CanvasFeatures\", \
 	\"type\" : \"CanvasFeatures\", \
-	\"urlTemplate\" : \"tracks/${PREFIX} antismash ${name%%.gff}/{refseq}/trackData.json\" } " | add-track-json.pl data/trackList.json ;
-done )
+	\"urlTemplate\" : \"tracks/${PREFIX} antismash regions/{refseq}/trackData.json\" } " | add-track-json.pl data/trackList.json ;
 
 # Form -fat bedGraphs
 ## cpg

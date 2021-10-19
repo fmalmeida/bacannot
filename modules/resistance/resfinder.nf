@@ -15,7 +15,7 @@ process resfinder {
   file("resfinder/*") // Grab everything
 
   when:
-  (resfinder_species)
+  (resfinder_species && resfinder_species != "missing_resfinder")
 
   script:
   if (resfinder_species.toLowerCase() != "other")

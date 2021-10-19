@@ -23,11 +23,19 @@ process antismash {
   antismash --version > antismash_version.txt ;
 
   # Run tool
-  antismash --output-dir antiSMASH --genefinding-tool none -c ${params.threads} $genbank
+  antismash --output-dir antiSMASH --genefinding-tool none -c ${params.threads} $genbank ;
 
-  # convert results to gff
-  for gbk in antiSMASH/*.region*.gbk ; do
-    seqret -sequence \${gbk} -feature -fformat genbank -fopenfile \${gbk} -osformat gff -osname_outseq \${gbk%%.gbk} -auto ;
-  done
+  # enter results dir
+  cd antiSMASH ;
+
+  # produce gff from main results
+  genbank="${genbank}"
+  seqret -sequence \${genbank} -feature -fformat genbank -fopenfile \${genbank} -osformat gff -osname_outseq \${genbank%%.gbk} -auto ;
+
+  # get the locus tags annotated as list
+  grep "locus_tag" *region*gbk | cut -f 2 -d "=" | tr -d '"' | sort -u > gene_ids.lst ;
+
+  # subset regions GFF from main GFF for JBrowse
+  grep -w -f gene_ids.lst \${genbank%%.gbk}.gff > regions.gff ;
   """
 }
