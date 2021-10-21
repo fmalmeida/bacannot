@@ -41,7 +41,7 @@ Its main steps are:
      - `KofamScan <https://github.com/takaram/kofam_scan>`_ and `KEGGDecoder <https://github.com/bjtully/BioData/tree/master/KEGGDecoder>`_
   
    * - Annotation of secondary metabolites
-     - `AntiSMASH <https://docs.antismash.secondarymetabolites.org/>`_
+     - `antiSMASH <https://docs.antismash.secondarymetabolites.org/>`_
 
    * - Methylation annotation
      - `Nanopolish <https://github.com/jts/nanopolish>`_

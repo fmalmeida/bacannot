@@ -37,6 +37,9 @@ RUN Rscript -e 'install.packages(c("bookdown", "rmarkdown", "shiny", "shinyFiles
 # Install bedtools
 RUN apt-get install -y bedtools
 
+# Install curl
+RUN apt-get install -y curl
+
 # Install sequenceserver
 RUN apt-get install -y ruby-full
 RUN gem install sequenceserver
@@ -52,6 +55,12 @@ COPY scripts/bscripts/server_entry.sh /app/server_entry.sh
 # expose port
 EXPOSE 3838
 EXPOSE 4567
+
+# start sequence server
+RUN mkdir -p /work/SequenceServerDBs && echo 'n' | script -qfec "sequenceserver -s -d /work/SequenceServerDBs" /dev/null 
+
+# Prevent SequenceServer from prompting user to join announcements list.
+RUN mkdir -p ~/.sequenceserver && touch ~/.sequenceserver/asked_to_join
 
 # run app on container start
 CMD bash /app/server_entry.sh
