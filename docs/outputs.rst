@@ -117,7 +117,7 @@ Bacannot shiny parser
 ---------------------
 
 .. image:: images/bacannot_shiny.gif
-  :width: 50%
+  :width: 70%
   :align: center
 
 The bacannot shiny server is basically a wrapper of the main outputs of the pipeline that is packed up in a docker image called ``fmalmeida/bacannot:server``.
@@ -165,12 +165,21 @@ In the second page, the sqlDB is used to provide a rapid and simple way to query
   :width: 800
   :align: center
 
-Server BLAST app
-^^^^^^^^^^^^^^^^
+Server BLAST (for intersection) app
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the last page, the server provides a simple way to BLAST the genome with new gene queries and to automatically identify intersections
+In the third page, the server provides a simple way to BLAST the genome with new gene queries and to automatically identify intersections
 between the blast results and the the main annotation.
 
 .. image:: images/bacannot_server_blast.png
+  :width: 800
+  :align: center
+
+Server BLAST (SequenceServer) app
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In the last page, the server provides an implementation of SequenceServer which allows users to BLAST their samples and visualise the alignments produced.
+
+.. image:: images/bacannot_server_blast_sequenceserver.png
   :width: 800
   :align: center
