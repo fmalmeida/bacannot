@@ -20,6 +20,7 @@ Help()
 	echo "h					Print this help"
 	echo "p					Set out a custom PORT for server listening. [ Default: 3838 ]"
 	echo "s					Start bacannot server"
+	echo "k                 Kill bacannot server"
 	echo "d					Only download the required docker image"
 	echo ""
 	echo
@@ -41,32 +42,49 @@ Start()
 
 	# Start server in current directory
 	echo "When finished, run the command:"
-	echo -n "	docker rm -f "
-	docker run -v $(pwd):/work -d --rm --platform linux/amd64 -p 4567:4567 -p 3838:"$PORT" fmalmeida/bacannot:server
+	echo -n "	docker rm -f ServerBacannot"
+	docker run -v $(pwd):/work -d --rm --platform linux/amd64 -p "$PORT":3838 -p 4567:4567 --name ServerBacannot fmalmeida/bacannot:server &> /dev/null
+	echo
 
+}
+
+# Kill server
+KillServer()
+{
+	docker rm -f ServerBacannot
 }
 
 # Default
 PORT="3838"
+EXEC='false'
 
 # Get the options
 if [ "${1}" == "" ] ; then
 	Help
 	exit
 fi
-while getopts "hsd:p" option; do
+while getopts "hskdp:" option; do
    case $option in
       h) # display Help
          Help
-         exit;;
-			p) # get custom PORT
-				 PORT="$OPTARG"
-				 ;;
-			s) # Start server
-				 Start
-				 exit;;
-			d) # Only download image
-				 Download
-				 ;;
+         exit
+		 ;;
+	  k) # kill server
+	  	 KillServer
+		 exit
+		 ;;
+	  p) # get custom PORT
+		 PORT="$OPTARG"
+		 ;;
+	  s) # Start server
+		 EXEC='true'
+		 ;;
+	  d) # Only download image
+		 Download
+		 ;;
    esac
 done
+
+if [ "$EXEC" == 'true' ]; then
+	Start
+fi

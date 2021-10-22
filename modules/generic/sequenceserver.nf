@@ -8,16 +8,19 @@ process sequenceserver {
 
     output:
     file("*")
+    file("${genome}")
+    file("${genes}")
+    file("${proteins}")
 
     script:
     """
     # genome
-    makeblastdb -in $genome -dbtype nucl -title "${prefix} genome" -out ${prefix}_genome
+    makeblastdb -in $genome -dbtype nucl -title "${prefix} genome" -parse_seqids
 
     # genes
-    makeblastdb -in $genes -dbtype nucl -title "${prefix} genes" -out ${prefix}_genes
+    makeblastdb -in $genes -dbtype nucl -title "${prefix} genes" -parse_seqids
 
     # proteins
-    makeblastdb -in $proteins -dbtype prot -title "${prefix} proteins" -out ${prefix}_proteins
+    makeblastdb -in $proteins -dbtype prot -title "${prefix} proteins" -parse_seqids
     """
 }

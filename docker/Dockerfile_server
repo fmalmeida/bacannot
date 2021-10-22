@@ -56,9 +56,6 @@ COPY scripts/bscripts/server_entry.sh /app/server_entry.sh
 EXPOSE 3838
 EXPOSE 4567
 
-# start sequence server
-RUN mkdir -p /work/SequenceServerDBs && echo 'n' | script -qfec "sequenceserver -s -d /work/SequenceServerDBs" /dev/null 
-
 # Prevent SequenceServer from prompting user to join announcements list.
 RUN mkdir -p ~/.sequenceserver && touch ~/.sequenceserver/asked_to_join
 
