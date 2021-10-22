@@ -232,5 +232,7 @@ Default configuration:
             name = 'local'
             queueSize = qs
       }
+      // cpu allocation
+      process.cpus = params.threads
     }
   }

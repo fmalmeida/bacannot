@@ -8,7 +8,9 @@ Here, using the results produced in the :ref:`quickstart` section, we give users
 .. note::
 
   Please take note that the pipeline uses the directory set with the ``--outdir`` parameter as a storage place in which it will create a folder named as the
-  ``--prefix`` parameter. This ``{prefix}`` folder will contain all the results. Therefore the the same ``--outdir`` can be used for different runs|genomes
+  ``--prefix`` parameter. This ``{prefix}`` folder will contain all the results. 
+  
+  Therefore the the same ``--outdir`` can be used for different annotations
   as each one of them will have a different sub-folder. This is useful and required for the genomic comparative pipeline (that is under construction) that will
   use this folder as input, and enable the user to rapidly compare the results between the samples under the same ``--outdir`` folder.
 
@@ -33,7 +35,7 @@ After a successful execution, you will have something like this:
     │       ├── ICEs                                            # Results from ICEberg database annotation
     │       ├── jbrowse                                         # The files that set up the JBrowse genome browser
     │       ├── KOfamscan                                       # Results from annotation with KEGG database
-    │       ├── methylations                                    # Methylated sites predicted with Nanopolish
+    │       ├── methylations                                    # Methylated sites predicted with Nanopolish (if fast5 is given)
     │       ├── MLST                                            # MLST results with mlst pipeline
     │       ├── plasmids                                        # Plasmid annotation results from Platon and Plasmidfinder
     │       ├── prophages                                       # Prophage annotation results from PhiSpy, Phigaro and PHAST
@@ -41,7 +43,7 @@ After a successful execution, you will have something like this:
     │       ├── report_files                                    # Annotation reports in HTML format
     │       ├── resistance                                      # AMR annotation results from ARGminer, AMRFinderPlus, RGI and Resfinder
     │       ├── rRNA                                            # barrnap annotation results
-    │       ├── SequenceServerDBs                               # SequenceServer pre-formatted databases to be used inside the web app
+    │       ├── SequenceServerDBs                               # SequenceServer pre-formatted databases to be used with SequenceServer blast application
     │       ├── sqldb                                           # The sqlDB of the annotation used by the shiny server for rapid parsing
     │       ├── tools_versioning                                # Versions of tools and databases used (whenever available)
     │       ├── virulence                                       # Virulence genes annotation results from Victors and VFDB databases

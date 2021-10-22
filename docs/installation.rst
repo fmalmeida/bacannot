@@ -35,12 +35,12 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
    .. code-block:: bash
 
-      docker pull fmalmeida/bacannot:main_tools   # this is the core of the main image
-      docker pull fmalmeida/bacannot:v.2.4 ;
-      docker pull fmalmeida/bacannot:kofamscan ;
-      docker pull fmalmeida/bacannot:antismash
-      docker pull fmalmeida/bacannot:jbrowse ;
-      docker pull fmalmeida/bacannot:v.2.4_renv
+      docker pull fmalmeida/bacannot:main_tools ;  # this is the core of the main image
+      docker pull fmalmeida/bacannot:v.2.4      ;
+      docker pull fmalmeida/bacannot:kofamscan  ;
+      docker pull fmalmeida/bacannot:antismash  ;
+      docker pull fmalmeida/bacannot:jbrowse    ;
+      docker pull fmalmeida/bacannot:v.2.4_renv ;
 
 .. tip::
 
