@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-MAINTAINER Felipe Marques de Almeida <felipemarques89@gmail.com>
+LABEL MAINTAINER Felipe Marques de Almeida <felipemarques89@gmail.com>
 
 WORKDIR /work
 
