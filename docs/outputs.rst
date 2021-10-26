@@ -132,10 +132,10 @@ This server is triggered by going under the results folder, in our quickstart ca
   # log message:
   The server has started in: http://localhost:3838/
   When finished, run the command:
-	       docker rm -f {docker container id}
+	       docker rm -f ServerBacannot
 
   # To stop the server you just need to execute
-  docker rm -f {docker container id}
+  docker rm -f ServerBacannot
 
 Server homepage
 ^^^^^^^^^^^^^^^
