@@ -11,6 +11,8 @@ This release marks the incrementation of the pipeline with two more modules:
     + This step can be skipped with `--skip_antismash`
 2. A new plugin has been added to the Web (Shiny) App. [SequenceServer](https://sequenceserver.com/) has been implemented inside the app so that users can quickly execute and visualise blast alignments against the samples' genome, genes and proteins.
 
+Also, a small fix was performed in the `run_jbrowse.sh` script. To add the antismash results and to properly check whether digIS results are available or not.
+
 Because of that:
 
 + The `fmalmeida/bacannot:server` has been updated
