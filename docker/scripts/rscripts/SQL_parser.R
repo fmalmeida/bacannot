@@ -87,6 +87,19 @@ parse_sql <- function(sqldb) {
         as.data.frame(tbl(sqldb, sql(paste0("SELECT * FROM ProteinFasta"))))
       })
 
+      ################################
+      ### Get sources and features ###
+      ################################
+      sources  <- reactive({
+        as.list(unique(sort(unlist(strsplit(as.character(openTable()[,2]), ",")))))
+      })
+      features <- reactive({
+        as.list(unique(sort(unlist(strsplit(as.character(openTable()[,4]), ",")))))
+      })
+      atts <- reactive({
+        as.list(unique(sort(unlist(strsplit(as.character(openTable()[,10]), ";")))))
+      })
+
       ##############################
       ### Create filter handlers ###
       ##############################
@@ -100,19 +113,12 @@ parse_sql <- function(sqldb) {
 
       # Create selection for sources
       output$sources <- renderUI({
-        selectInput("sources", "Sources:",
-                    sort(c("CARD", "AMRFinderPlus", "barrnap", "PHAST",
-                           "ICEberg", "VFDB", "Victors", "Prodigal",
-                           "Aragorn", "digIS")),
-                    multiple = TRUE)
+        selectInput("sources", "Sources:", sources(), multiple = TRUE)
       })
 
       # Create selection for features
       output$features <- renderUI({
-        selectInput("features", "Features:",
-                    sort(c("CDS", "tRNA", "rRNA", "ICE",
-                           "Resistance", "Virulence", "Prophage", "transposable_element")),
-                    multiple = TRUE)
+        selectInput("features", "Features:", features(), multiple = TRUE)
       })
 
       #####################################################
@@ -147,7 +153,7 @@ parse_sql <- function(sqldb) {
         if (length(as.list(input$sources)) > 0) {
           as.list(input$sources)
         } else {
-          sort(c("CARD", "AMRFinderPlus", "barrnap", "PHAST", "ICEberg", "VFDB", "Victors", "Prodigal", "Aragorn", "digIS"))
+          sources()
         }
       })
 
@@ -156,7 +162,7 @@ parse_sql <- function(sqldb) {
         if (length(as.list(input$features)) > 0) {
           as.list(input$features)
         } else {
-          sort(c("CDS", "tRNA", "rRNA", "ICE", "Resistance", "Virulence", "Prophage", "transposable_element"))
+          features()
         }
       })
 
@@ -292,12 +298,7 @@ parse_sql <- function(sqldb) {
       attributes <- reactive({
 
         # attribute fields
-        fields <- c("ID", "gene", "product", "inference", "db_xref", "eC_number", "KO",
-                    "NDARO:Gene_Name", "NDARO:Gene:Product", "NDARO:Closest_Sequence",
-                    "NDARO:Method", "NDARO:Resistance_Category", "NDARO:Resistance:Target",
-                    "CARD:Name", "CARD:Product", "CARD:Inference", "CARD:Targeted_drug_class",
-                    "VFDB:Product", "VFDB:Target", "victors:Product", "victors:Target",
-                    "ICEberg:Product", "ICEberg:Target", "phast:Product", "phast:Target", "note")
+        fields <- atts()
 
         # Create empty data.frame for the parsed table
         parsed_attributes <- setNames(data.frame(
@@ -342,9 +343,6 @@ parse_sql <- function(sqldb) {
           } else if(input$format == 'spreadsheet') {
             write.xlsx(attributes(), file, sheetName="Parsed_Attributes",
                        col.names=T, row.names=F, append=F)
-            # write.xlsx(selectedData() %>%
-            #              select(-ID), file, sheetName="Original_GFF",
-            #            col.names=T, row.names=F, append=T)
           }
         }
       )
