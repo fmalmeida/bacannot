@@ -294,6 +294,7 @@ workflow SINGLE_SAMPLE {
                                        .join(vfdb_output,      remainder: true)
                                        .join(victors_output,   remainder: true)
                                        .join(amrfinder_output, remainder: true)
+                                       .join(resfinder_gff,    remainder: true)
                                        .join(rgi_output,       remainder: true)
                                        .join(iceberg_output,   remainder: true)
                                        .join(phast_output,     remainder: true)
@@ -339,7 +340,6 @@ workflow SINGLE_SAMPLE {
                                               .join(methylation_out_1, remainder: true)
                                               .join(methylation_out_2, remainder: true)
                                               .join(phispy_output,     remainder: true)
-                                              .join(resfinder_gff,     remainder: true)
                                               .join(merge_annotations.out[8], remainder: true) // parsed and changed digIS
                                               .join(antismash_output,  remainder: true)
       // Jbrowse Creation
