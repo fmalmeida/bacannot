@@ -1,13 +1,9 @@
 FROM ubuntu:20.04
 
-MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
+LABEL MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 
 # Workdir
 WORKDIR /work
-
-# Get scripts
-ADD scripts/rscripts /work/rscripts
-ADD scripts/bscripts /work/bscripts
 
 # Set main R dependencies
 ## Add R repo key
@@ -23,6 +19,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 			DEBIAN_FRONTEND=noninteractive apt-get --option Acquire::Retries=100 --option Acquire::http::Timeout="300" install -yq r-cran-optparse r-cran-rmysql r-bioc-gviz r-cran-xml pandoc
 RUN DEBIAN_FRONTEND=noninteractive apt-get --option Acquire::Retries=100 --option Acquire::http::Timeout="300" install -yq r-cran-plyr libssl-dev libcurl4-openssl-dev libxml2-dev libudunits2-dev libcairo2-dev libpq-dev r-cran-rmarkdown
+ADD scripts/rscripts/installPack.R /work/rscripts/installPack.R
 RUN DEBIAN_FRONTEND=noninteractive Rscript /work/rscripts/installPack.R && \
 			apt-get clean
 
@@ -41,6 +38,10 @@ RUN cd /work/reports && \
 			wget -O card-data.tar.bz2 https://card.mcmaster.ca/download/0/broadstreet-v3.1.0.tar.bz2 && \
 			tar jxvf card-data.tar.bz2 && \
 			rm card-data.tar.bz2
+
+# Get scripts
+ADD scripts/rscripts /work/rscripts
+ADD scripts/bscripts /work/bscripts
 
 # Make Rmds executable
 RUN chmod a+rx /work/reports/*.Rmd
