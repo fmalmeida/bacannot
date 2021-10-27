@@ -167,16 +167,6 @@ if (class(rgi_tsv) != 'try-error' &
   rgi_not_null <- FALSE
   rgi_null <- TRUE
 }
-
-# DT options
-# Lists
-dt_opt_lst <- list(pageLength = 5,
-                         lengthMenu = c(5, 10, 15, 20, 50),
-                         dom='flrtBip',
-                         buttons = c('copy', 'csv', 'excel', 'colvis'),
-                         scrollX = TRUE,
-                         fixedColumns = FALSE,
-                         autoWidth = TRUE)
 ```
 
 # `r params$query` ARGs report {.tabset .tabset-pills}
@@ -253,7 +243,14 @@ gff %>%
   datatable(escape = FALSE,
           filter = 'top',
           colnames = c("Contig", "Start", "End", "Description"),
-          options = dt_opt_lst,
+          options = list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(className = 'dt-body-left', targets = c(0,3)))),
           extensions = 'Buttons',
           rownames = F)
 ```

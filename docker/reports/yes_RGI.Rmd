@@ -44,7 +44,9 @@ rgi_tsv %>%
                          scrollX = TRUE,
                          fixedColumns = FALSE,
                          autoWidth = TRUE,
-                         columnDefs = list(list(visible=FALSE, targets=c(7)))),
+                         columnDefs = list(
+                         list(visible=FALSE, targets=c(7)),
+                         list(className = 'dt-body-left', targets = c(1,2,3,4)))),
           extensions = 'Buttons',
           rownames = F) %>%
   formatStyle("Cut_Off", target = 'row', backgroundColor = styleEqual("Perfect", "lightyellow")) %>%
