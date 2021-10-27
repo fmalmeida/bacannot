@@ -22,6 +22,7 @@ process amrfinder {
   amrfinder --version > amrfinder_version.txt ;
 
   # Run amrfinder
+  CONDA_PREFIX=/opt/conda
   amrfinder -p $proteins --plus -o AMRFinder_complete.tsv --threads ${params.threads} \
   --ident_min \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
   --coverage_min \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
