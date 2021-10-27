@@ -177,6 +177,11 @@
             "default": "",
             "help_text": "When true, the specific task will be skipped (not executed)",
             "properties": {
+                "skip_antismash": {
+                    "type": "boolean",
+                    "description": "Skip (do not run) antismash?",
+                    "help_text": "If true, the process will be skipped!"
+                },
                 "skip_plasmid_search": {
                     "type": "boolean",
                     "description": "Skip (do not run) plasmidfinder?",
@@ -359,6 +364,5 @@
         {
             "$ref": "#/definitions/user_custom_database"
         }
-    ],
-    "properties": {}
+    ]
 }

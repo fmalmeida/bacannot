@@ -1,4 +1,4 @@
-process unicycler_batch {
+process unicycler {
   publishDir "${params.outdir}/${id}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else if (filename == "unicycler_${id}") "assembly"

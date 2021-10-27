@@ -35,7 +35,8 @@ RUN mkdir -p /opt/conda/share/plasmidfinder-2.1.1-1/database/ && \
 		python INSTALL.py
 
 # Phigaro database
-RUN (echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
+RUN source activate PY36_env && \
+		(echo -e "\n" ; echo -e "\n" ; echo "N" ; echo "N") | phigaro-setup --pvog /work/phigaro_pvog -c /work/phigaro_config.yml --no-updatedb && \
 		chmod a+rw -R /work/phigaro_pvog
 
 # AMRFinderPlus database
@@ -99,13 +100,18 @@ RUN mkdir phast && \
 		makeblastdb -in phast/sequences -title 'phast' -dbtype prot -logfile /dev/null
 
 ## ARGMiner prot
+## argminer server has a lot of problems
+COPY argminer_bkp/argminer.fasta /work/dbs/argminer.fasta
 RUN mkdir ARGMiner && \
-		wget http://bench.cs.vt.edu/ftp/argminer/release/ARGminer-v1.1.1.A.fasta && \
+		( wget -t 1 http://bench.cs.vt.edu/ftp/argminer/release/ARGminer-v1.1.1.A.fasta && \
 		awk -v db=ARGMiner '/>/{ split($0,a,"|"); $0=">" db "~~~" a[3] "~~~" a[1] "~~~" a[2] " " a[4] }1' ARGminer-v1.1.1.A.fasta | \
 		sed -e 's/~>/~/g' -e 's/gi:.*:ref://g' -e 's/gi:.*:gb://g' -e 's/gi:.*:emb://g' -e 's/:~/~/g' > ARGMiner/sequences && \
 		rm ARGminer-v1.1.1.A.fasta && \
 		makeblastdb -in ARGMiner/sequences -title 'argminer' -dbtype prot -logfile /dev/null && \
-		diamond makedb --in ARGMiner/sequences -d ARGMiner/diamond
+		diamond makedb --in ARGMiner/sequences -d ARGMiner/diamond && \
+		rm -rf /work/dbs/argminer.fasta ) || ( cat argminer.fasta > ARGMiner/sequences && \
+		makeblastdb -in ARGMiner/sequences -title 'argminer' -dbtype prot -logfile /dev/null && \
+		diamond makedb --in ARGMiner/sequences -d ARGMiner/diamond )
 
 # Return to main workdir
 WORKDIR /work
@@ -124,6 +130,7 @@ RUN ln -s /opt/conda /opt/conda/envs/PLATON
 RUN ln -s /opt/conda /opt/conda/envs/PLASMIDFINDER
 RUN ln -s /opt/conda /opt/conda/envs/AMRFINDERPLUS
 RUN ln -s /opt/conda/envs/PY36_env /opt/conda/envs/RGI
+RUN ln -s /opt/conda/envs/PY36_env/bin/phigaro /opt/conda/bin/
 
 ###########################
 ### Fix RGI permissions ###

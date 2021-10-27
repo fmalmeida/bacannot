@@ -2,6 +2,22 @@
 
 The tracking for changes started in v2.1
 
+## v2.4
+
+This release marks the incrementation of the pipeline with two more modules:
+
+1. A new module for the annotation of secondary metabolites with [antiSMASH](https://docs.antismash.secondarymetabolites.org/) has been added.
+    + The modules runs only with antiSMASH core modules in order to keep it fast
+    + This step can be skipped with `--skip_antismash`
+2. A new plugin has been added to the Web (Shiny) App. [SequenceServer](https://sequenceserver.com/) has been implemented inside the app so that users can quickly execute and visualise blast alignments against the samples' genome, genes and proteins.
+
+Also, a small fix was performed in the `run_jbrowse.sh` script. To add the antismash results and to properly check whether digIS results are available or not.
+
+Because of that:
+
++ The `fmalmeida/bacannot:server` has been updated
++ A new image `fmalmeida/bacannot:antismash` is now available for antiSMASH module
+
 ## v2.3.2
 
 1. There is a smal fix in the `update_database_image.sh` so it takes only the first two numbers of release tags.

@@ -2,7 +2,7 @@
 FROM rocker/shiny:latest
 
 # Owner
-MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
+LABEL MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 
 # system libraries of general use
 ## install debian packages
@@ -37,15 +37,27 @@ RUN Rscript -e 'install.packages(c("bookdown", "rmarkdown", "shiny", "shinyFiles
 # Install bedtools
 RUN apt-get install -y bedtools
 
+# Install curl
+RUN apt-get install -y curl
+
+# Install sequenceserver
+RUN apt-get install -y ruby-full
+RUN gem install sequenceserver
+
 ## Get scripts
 COPY scripts/rscripts/shiny_parser.Rmd /app/shiny_parser.Rmd
 COPY scripts/rscripts/shiny_parser_func.R /app/shiny_parser_func.R
 COPY scripts/rscripts/get_attributes_field.R /app/get_attributes_field.R
 COPY scripts/rscripts/blast_app.R /app/blast_app.R
 COPY scripts/rscripts/SQL_parser.R /app/SQL_parser.R
+COPY scripts/bscripts/server_entry.sh /app/server_entry.sh
 
 # expose port
 EXPOSE 3838
+EXPOSE 4567
+
+# Prevent SequenceServer from prompting user to join announcements list.
+RUN mkdir -p ~/.sequenceserver && touch ~/.sequenceserver/asked_to_join
 
 # run app on container start
-CMD Rscript -e 'rmarkdown::run("shiny_parser.Rmd", shiny_args = list(launch.browser = T, host = "0.0.0.0", port = 3838))'
+CMD bash /app/server_entry.sh

@@ -4,7 +4,7 @@ process resfinder {
   label 'main'
 
   input:
-  tuple val(prefix), file(genome)
+  tuple val(prefix), file(genome), val(resfinder_species)
 
   output:
   // Outputs must be linked to each prefix (tag)
@@ -15,13 +15,13 @@ process resfinder {
   file("resfinder/*") // Grab everything
 
   when:
-  (params.resfinder_species)
+  (resfinder_species && resfinder_species != "missing_resfinder")
 
   script:
-  if (params.resfinder_species.toLowerCase() != "other")
+  if (resfinder_species.toLowerCase() != "other")
   """
   # Run resfinder acquired resistance
-  /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${params.resfinder_species}\" \
+  /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${resfinder_species}\" \
   --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
   --threshold \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
   --db_path_res /work/resfinder/db_resfinder --acquired || true ;
@@ -30,7 +30,7 @@ process resfinder {
   mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt ;
 
   # Run resfinder pointfinder resistance
-  /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${params.resfinder_species}\" \
+  /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${resfinder_species}\" \
   --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
   --threshold \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
   --db_path_point /work/resfinder/db_pointfinder --point || true ;
@@ -42,7 +42,7 @@ process resfinder {
   resfinder2gff.py -i resfinder/results_tab.txt > resfinder/results_tab.gff ;
   """
 
-  else if (params.resfinder_species.toLowerCase() == "other")
+  else if (resfinder_species.toLowerCase() == "other")
   """
   # Run resfinder acquired resistance
   /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder \

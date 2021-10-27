@@ -164,7 +164,7 @@ Resfinder annotation
 
 .. warning::
 
-   Users can check for available Resfinder Species panels at `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
+   Users must select one of the available Resfinder Species panels. They are listed at `their main page <https://cge.cbs.dtu.dk/services/ResFinder/>`_ and in `their repository page <https://bitbucket.org/genomicepidemiology/resfinder/src/master/#usage>`_. If your species is not available in Resfinder panels, you may use it with the "Other" panel (``--resfinder_species "Other"``).
 
 .. list-table::
    :widths: 20 10 20 30
@@ -178,7 +178,7 @@ Resfinder annotation
    * - ``--resfinder_species``
      - N
      - NA
-     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. Check the available species at `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_.
+     - Resfinder species panel. It activates the resfinder annotation process using the given species panel. Check the available species at `their page <https://cge.cbs.dtu.dk/services/ResFinder/>`_. If your species is not available in Resfinder panels, you may use it with the "Other" panel (``--resfinder_species "Other"``).
 
 On/Off processes
 """"""""""""""""
@@ -221,6 +221,12 @@ On/Off processes
      - N
      - False
      - Tells whether not to run KEGG orthology (KO) annotation with KofamScan
+
+   * - ``--skip_antismash``
+     -  N
+     - False
+     - | Tells whether or not to run antiSMASH (secondary metabolite) annotation.
+       | AntiSMASH is executed using only its core annotation modules in order to keep it fast
 
 Custom nucl databases
 """""""""""""""""""""

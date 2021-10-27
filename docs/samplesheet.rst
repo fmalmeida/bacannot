@@ -32,7 +32,7 @@ The first line of the file must be the header followed by an indentation:
 Sample identification
 """""""""""""""""""""
 
-Each sample must be identified by the tag *id* in the YAML file, followed by the input file tags that shall
+Each sample must be identified by the tag *id* in the YAML file, followed by the input input tags that shall
 be used by the pipeline:
 
 .. code-block:: yaml
@@ -45,17 +45,17 @@ be used by the pipeline:
       ...:
       ...:
 
-File tags
-"""""""""
+Input tags
+""""""""""
 
-File tags are the tags that are used to represent/set the input files that shall be used for each sample that
-will be analysed. The available file tags are:
+Input tags are the tags that are used to represent/set the inputs that shall be used for each sample that
+will be analysed. The available tags are:
 
 .. list-table::
    :widths: 20 50
    :header-rows: 1
 
-   * - File tags
+   * - Input tags
      - Description
 
    * - ``assembly``
@@ -74,7 +74,7 @@ will be analysed. The available file tags are:
      - Used to set path to nanopore raw FAST5 data (used in conjunction with ``nanopore`` for calling methylation with Nanopolish)
 
    * - ``resfinder``
-     - Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in their manual/web tool)
+     - Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in `their web page <https://cge.cbs.dtu.dk/services/ResFinder/>`_). If your species is not available in Resfinder panels, you may use it with the "Other" panel 
 
 
 .. note::
@@ -82,7 +82,7 @@ will be analysed. The available file tags are:
   The illumina tag is the only one that **must** be set in indented newlines (one line per read) as shown in the complete samplesheet example. The order
   of the reads in these newlines must be Pair1; Pair2; Unpaired (Whenever they are used) -- Check samples 1, 4 and 5 to understand.
 
-  All the other file tags **must** be set in the same line, right after the separator (":"), without quotations.
+  All the other input tags **must** be set in the same line, right after the separator (":"), without quotations.
 
 Complete samplesheet example
 """"""""""""""""""""""""""""

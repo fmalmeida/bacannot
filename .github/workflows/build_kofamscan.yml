@@ -1,0 +1,45 @@
+name: build-kofamscan
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 */6 *'
+    
+jobs:
+  
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+    steps:
+    - id: keydb
+      uses: pozetroninc/github-action-get-latest-release@master
+      with:
+        owner: fmalmeida
+        repo: bacannot
+        excludes: prerelease, draft
+      
+    - name: Check out pipeline code
+      uses: actions/checkout@v2
+
+    - name: download github repo
+      run: |
+        git clone https://github.com/fmalmeida/bacannot.git
+      
+    - name: Build and push docker image
+      id: buildx
+      run: |
+        # get more space
+        sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
+        sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
+
+        # enter docker dir
+        cd bacannot/docker
+
+        # login to docker
+        docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS"
+
+        # create image
+        docker build -t fmalmeida/bacannot:kofamscan_teste -f Dockerfile_kofamscan .
+        docker push fmalmeida/bacannot:kofamscan_teste

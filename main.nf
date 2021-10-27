@@ -15,7 +15,6 @@ include { logMessage } from './nf_functions/log.nf'
 include { write_csv } from './nf_functions/writeCSV.nf'
 include { parse_csv } from './nf_functions/parseCSV.nf'
 include { paramsCheck } from './nf_functions/paramsCheck.nf'
-include { filter_ch } from './nf_functions/parseCSV.nf'
 
 
 /*
@@ -97,6 +96,7 @@ params.skip_resistance_search = false
 params.skip_iceberg_search = false
 params.skip_prophage_search = false
 params.skip_kofamscan = false
+params.skip_antismash = false
 
 /*
  * Define log message
@@ -106,14 +106,6 @@ logMessage()
 /*
  * Include modules (Execution setup)
  */
-
-// Unicycler assembly
-include { unicycler_batch } from './modules/assembly/unicycler_batch.nf' params(outdir: params.outdir,
-  threads: params.threads)
-
-// Flye assembly
-include { flye_batch } from './modules/assembly/flye_batch.nf' params(outdir: params.outdir,
-  threads: params.threads)
 
 // Unicycler assembly
 include { unicycler } from './modules/assembly/unicycler.nf' params(outdir: params.outdir,
@@ -131,10 +123,10 @@ include { flye } from './modules/assembly/flye.nf' params(outdir: params.outdir,
 include { parse_samplesheet } from './workflows/parse_samples.nf'
 
 // Bacannot pipeline for multiple genomes
-include { bacannot_nf } from './workflows/simple_workflow.nf'
+include { SINGLE_SAMPLE } from './workflows/simple_workflow.nf'
 
 // Bacannot pipeline for multiple genomes
-include { bacannot_batch_nf } from './workflows/batch_workflow.nf'
+include { MULTIPLE_SAMPLE } from './workflows/batch_workflow.nf'
 
 
 /*
@@ -154,22 +146,15 @@ workflow {
     // Convert it to CSV for usability
     samples_ch = write_csv(parse_samplesheet.out)
 
-    // Run unicycler when necessary
-    unicycler_batch(filter_ch(samples_ch, "unicycler"))
-
-    // Run flye when necessary
-    flye_batch(filter_ch(samples_ch, "flye"))
-
     // Run annotation
-    bacannot_batch_nf(filter_ch(samples_ch, "annotation").mix(flye_batch.out[1], unicycler_batch.out[1]),
-                      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
+    MULTIPLE_SAMPLE(samples_ch, (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
 
   } else {
 
     if (params.genome) {
 
       // User have an assembled genome
-      bacannot_nf(Channel.fromPath(params.genome),
+      SINGLE_SAMPLE(Channel.fromPath(params.genome),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
                  (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
@@ -180,7 +165,7 @@ workflow {
       unicycler((params.sreads_paired) ? Channel.fromFilePairs( params.sreads_paired, flat: true, size: 2 ) : Channel.value(['', '', '']),
                 (params.sreads_single) ? Channel.fromPath( params.sreads_single )                           : Channel.value(''),
                 (params.lreads)        ? Channel.fromPath( params.lreads )                                  : Channel.value(''))
-      bacannot_nf(unicycler.out[1],
+      SINGLE_SAMPLE(unicycler.out[1],
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
                  (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
@@ -189,7 +174,7 @@ workflow {
 
       // User does not have illumina reads (so it goes to flye)
       flye(Channel.fromPath( params.lreads ))
-      bacannot_nf(flye.out[1],
+      SINGLE_SAMPLE(flye.out[1],
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
                  (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
                  (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())

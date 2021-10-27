@@ -8,7 +8,9 @@ Here, using the results produced in the :ref:`quickstart` section, we give users
 .. note::
 
   Please take note that the pipeline uses the directory set with the ``--outdir`` parameter as a storage place in which it will create a folder named as the
-  ``--prefix`` parameter. This ``{prefix}`` folder will contain all the results. Therefore the the same ``--outdir`` can be used for different runs|genomes
+  ``--prefix`` parameter. This ``{prefix}`` folder will contain all the results. 
+  
+  Therefore the the same ``--outdir`` can be used for different annotations
   as each one of them will have a different sub-folder. This is useful and required for the genomic comparative pipeline (that is under construction) that will
   use this folder as input, and enable the user to rapidly compare the results between the samples under the same ``--outdir`` folder.
 
@@ -25,6 +27,7 @@ After a successful execution, you will have something like this:
     │   └── ecoli
     │       ├── assembly                                        # Assembly files (when raw reads are given)
     │       ├── annotation                                      # Prokka annotation files
+    │       ├── antiSMASH                                       # antiSMASH secondary annotation files
     │       ├── digIS                                           # Insertion sequences predicted with digIS
     │       ├── gbk                                             # Gbk file produced from the resulting GFF
     │       ├── gffs                                            # A copy of the main GFF files produced during the annotation
@@ -32,7 +35,7 @@ After a successful execution, you will have something like this:
     │       ├── ICEs                                            # Results from ICEberg database annotation
     │       ├── jbrowse                                         # The files that set up the JBrowse genome browser
     │       ├── KOfamscan                                       # Results from annotation with KEGG database
-    │       ├── methylations                                    # Methylated sites predicted with Nanopolish
+    │       ├── methylations                                    # Methylated sites predicted with Nanopolish (if fast5 is given)
     │       ├── MLST                                            # MLST results with mlst pipeline
     │       ├── plasmids                                        # Plasmid annotation results from Platon and Plasmidfinder
     │       ├── prophages                                       # Prophage annotation results from PhiSpy, Phigaro and PHAST
@@ -40,6 +43,7 @@ After a successful execution, you will have something like this:
     │       ├── report_files                                    # Annotation reports in HTML format
     │       ├── resistance                                      # AMR annotation results from ARGminer, AMRFinderPlus, RGI and Resfinder
     │       ├── rRNA                                            # barrnap annotation results
+    │       ├── SequenceServerDBs                               # SequenceServer pre-formatted databases to be used with SequenceServer blast application
     │       ├── sqldb                                           # The sqlDB of the annotation used by the shiny server for rapid parsing
     │       ├── tools_versioning                                # Versions of tools and databases used (whenever available)
     │       ├── virulence                                       # Virulence genes annotation results from Victors and VFDB databases
@@ -86,6 +90,11 @@ Bacannot will use `R Markdown <https://rmarkdown.rstudio.com/>`_ to produce auto
   - The quickstart does not produce an example, however, the report is similar to the ICEberg section in the MGE example report.
   - See :ref:`custom-db`.
 
+* Report of antiSMASH annotation
+
+  - The annotation report is provided by the antiSMASH tool
+  - See `the example <https://docs.antismash.secondarymetabolites.org/understanding_output/>`_
+
 Genome Browser
 --------------
 
@@ -108,7 +117,7 @@ Bacannot shiny parser
 ---------------------
 
 .. image:: images/bacannot_shiny.gif
-  :width: 50%
+  :width: 70%
   :align: center
 
 The bacannot shiny server is basically a wrapper of the main outputs of the pipeline that is packed up in a docker image called ``fmalmeida/bacannot:server``.
@@ -123,10 +132,10 @@ This server is triggered by going under the results folder, in our quickstart ca
   # log message:
   The server has started in: http://localhost:3838/
   When finished, run the command:
-	       docker rm -f {docker container id}
+	       docker rm -f ServerBacannot
 
   # To stop the server you just need to execute
-  docker rm -f {docker container id}
+  docker rm -f ServerBacannot
 
 Server homepage
 ^^^^^^^^^^^^^^^
@@ -156,12 +165,21 @@ In the second page, the sqlDB is used to provide a rapid and simple way to query
   :width: 800
   :align: center
 
-Server BLAST app
-^^^^^^^^^^^^^^^^
+Server BLAST (for intersection) app
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the last page, the server provides a simple way to BLAST the genome with new gene queries and to automatically identify intersections
+In the third page, the server provides a simple way to BLAST the genome with new gene queries and to automatically identify intersections
 between the blast results and the the main annotation.
 
 .. image:: images/bacannot_server_blast.png
+  :width: 800
+  :align: center
+
+Server BLAST (SequenceServer) app
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In the last page, the server provides an implementation of SequenceServer which allows users to BLAST their samples and visualise the alignments produced.
+
+.. image:: images/bacannot_server_blast_sequenceserver.png
   :width: 800
   :align: center

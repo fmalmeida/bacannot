@@ -126,6 +126,8 @@ def helpMessage() {
     --resfinder_species <string>                   It sets the species to be used for Resfinder annotation. If blank,
                                                    it will not be executed. Must be identical (without the *) as written
                                                    in their webservice https://cge.cbs.dtu.dk/services/ResFinder/.
+                                                   If your species is not available in Resfinder panels, you may use it 
+                                                   with the "Other" panel (--resfinder_species "Other").
                                                    E.g. 'Escherichia coli'; 'Klebsiella' ...
 
       # Configure (on/off) optional processes
