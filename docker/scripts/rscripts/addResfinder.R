@@ -34,7 +34,7 @@ reduce_row = function(i) {
 
 # Function to get Attribute Fields
 getAttributeField <- function (x, field, attrsep = ";") {
-  s = strsplit(x, split = attrsep, fixed = TRUE)
+  s = strsplit(as.character(x), split = attrsep, fixed = TRUE)
   sapply(s, function(atts) {
     a = strsplit(atts, split = "=", fixed = TRUE)
     m = match(field, sapply(a, "[", 1))
@@ -69,7 +69,6 @@ if (file.info(opt$txt)$size > 0) {
   
   # save ids
   ids <- resfinder$ID
-
 
   # Subset based on gene IDs
   ## Lines with our IDs
@@ -115,6 +114,5 @@ if (file.info(opt$txt)$size > 0) {
   # Load GFF file
   gff <- gffRead(opt$gff)
   # Write output
-  write.table(gff, file = opt$out, quote = FALSE, sep = "\t",
-              col.names = FALSE, row.names = FALSE)
+  write.table(gff, file = opt$out, quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
 }
