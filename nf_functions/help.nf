@@ -64,7 +64,8 @@ def helpMessage() {
     --threads <int>                                Number of threads to use
 
     --parallel_jobs <int>                          Number of jobs to run in parallel. Each job can consume up
-                                                   to N threads (--threads). Default: 1.
+                                                   to N threads (--threads). If not given, let's nextflow automatically
+                                                   handle it. Default: NA.
 
     --bedtools_merge_distance <int>                By default, this process is not executed. For execution
                                                    one needs to provide a minimum number of overlapping

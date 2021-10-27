@@ -116,9 +116,8 @@
                 },
                 "parallel_jobs": {
                     "type": "integer",
-                    "default": 1,
                     "description": "Number of jobs to run in parallel",
-                    "help_text": "Number of jobs to run in parallel. Be aware that each job (in parallel) can consume\nN threads (set above). Be sure to carefully check your resources before augmenting\nthis parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10\nthreads at once."
+                    "help_text": "Number of jobs to run in parallel. Be aware that each job (in parallel) can consume\nN threads (set above). Be sure to carefully check your resources before augmenting\nthis parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10\nthreads at once.\nIf not given, let's nextflow automatically handle it"
                 }
             }
         },
