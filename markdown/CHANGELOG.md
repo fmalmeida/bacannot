@@ -13,6 +13,8 @@ This release marks the incrementation of the pipeline with two more modules:
 
 Also, a small fix was performed in the `run_jbrowse.sh` script. To add the antismash results and to properly check whether digIS results are available or not.
 
+Finally, a small fix in the merge annotation process and SQLparser in the shiny app was also performed to include Resfinder as an option.
+
 Because of that:
 
 + The `fmalmeida/bacannot:server` has been updated
