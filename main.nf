@@ -137,7 +137,7 @@ workflow {
 
   if (params.in_yaml) {
 
-    parameter_yaml = new FileInputStream(new File(params.in_yaml))
+    parameter_yaml = file(params.in_yaml).readLines().join("\n")
     new Yaml().load(parameter_yaml).each { k, v -> params[k] = v }
 
     // Read YAML file
