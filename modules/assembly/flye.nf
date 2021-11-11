@@ -5,7 +5,7 @@ process flye {
     else null
   }
   label 'assembly'
-  tag "Performing a longreads only assembly with Flye"
+  tag "${id}"
 
   input:
   file(lreads)

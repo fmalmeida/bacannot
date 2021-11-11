@@ -1,6 +1,6 @@
 process argminer {
   publishDir "${params.outdir}/${prefix}/resistance/ARGMiner", mode: 'copy'
-  tag "Scanning AMR genes with ARGMiner db"
+  tag "${prefix}"
   label 'main'
 
   input:

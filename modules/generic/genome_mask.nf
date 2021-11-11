@@ -6,7 +6,7 @@ process masking_genome {
   else if (filename.indexOf(".fasta") > 0 ) "masked_genome/$filename"
   else if (filename.indexOf(".txt") > 0 ) "gffs/$filename"
 }
-  tag "Masking genome with bedtools"
+  tag "${prefix}"
   label 'main'
 
   input:

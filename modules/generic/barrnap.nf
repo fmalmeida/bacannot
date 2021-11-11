@@ -3,7 +3,7 @@ process barrnap {
      if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
      else "rRNA/$filename"
    }
-   tag "Predicting rRNA sequences with barrnap pipeline from T. Seeman"
+   tag "${prefix}"
    label 'main'
 
    input:

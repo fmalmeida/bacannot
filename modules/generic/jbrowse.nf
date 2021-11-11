@@ -1,7 +1,7 @@
 process jbrowse {
   publishDir "${params.outdir}/${prefix}/jbrowse", mode: 'copy'
   label 'jbrowse'
-  tag "Creating the genome browser with JBrowse"
+  tag "${prefix}"
 
   input:
   tuple val(prefix), file(gff), file(draft), file("prokka_gff"), file(mlst), file(barrnap),

@@ -1,7 +1,7 @@
 process report {
   publishDir "${params.outdir}/${prefix}/report_files", mode: 'copy'
   label 'renv'
-  tag "Rendering HTML reports for Virulence, MGEs and AMR genes"
+  tag "${prefix}"
 
   input:
   tuple val(prefix), file(gff), file(draft), file("prokka_gff"), file(mlst), file(barrnap),

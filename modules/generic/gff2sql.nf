@@ -3,7 +3,7 @@ process create_sql {
     if (filename.indexOf(".sqlite") > 0) "sqldb/$filename"
     else "$filename"
   }
-  tag "Creating SQL database for the annotation"
+  tag "${prefix}"
   label 'renv'
 
   input:

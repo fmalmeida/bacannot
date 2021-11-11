@@ -5,7 +5,7 @@ process kofamscan {
   }
   errorStrategy 'retry'
   maxRetries 2
-  tag "Executing KOfamscan - Its outputs can be viewed in KEGG-mapper"
+  tag "${prefix}"
   label 'kofam'
 
   input:

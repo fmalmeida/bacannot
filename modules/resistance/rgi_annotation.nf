@@ -4,7 +4,7 @@ process card_rgi {
     else if (filename == "Parsed_RGI_${prefix}_hits.txt") null
     else "resistance/RGI/$filename"
   }
-  tag "Scanning AMR genes with RGI"
+  tag "${prefix}"
   label 'main'
 
   input:

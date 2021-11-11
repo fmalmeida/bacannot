@@ -5,7 +5,7 @@ process flye {
     else null
   }
   label 'assembly'
-  tag "Performing a longreads only assembly with Flye"
+  tag "${id}"
 
   input:
   tuple val(id), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)

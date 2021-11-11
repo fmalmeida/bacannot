@@ -1,6 +1,6 @@
 process resfinder {
   publishDir "${params.outdir}/${prefix}/resistance", mode: 'copy'
-  tag "Scanning AMR genes with resfinder"
+  tag "${prefix}"
   label 'main'
 
   input:

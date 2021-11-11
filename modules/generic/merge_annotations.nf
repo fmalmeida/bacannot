@@ -1,7 +1,7 @@
 process merge_annotations {
   publishDir "${params.outdir}/${prefix}/gffs", mode: 'copy'
   label 'renv'
-  tag "Merging all the different annotations"
+  tag "${prefix}"
 
   input:
   tuple val(prefix), file(draft), file("prokka_gff"), file(mlst), file(barrnap),

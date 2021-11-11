@@ -3,7 +3,7 @@ process draw_GIs {
     if (filename == "plots") "$filename"
     else null
   }
-  tag "Drawing predicted genomic islands"
+  tag "${prefix}"
   label 'main'
 
   input:

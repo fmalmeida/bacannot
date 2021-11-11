@@ -3,7 +3,7 @@ process amrfinder {
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "resistance/AMRFinderPlus/$filename"
   }
-  tag "Scanning AMR genes with AMRFinderPlus"
+  tag "${prefix}"
   label 'main'
 
   input:
