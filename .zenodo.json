@@ -1,0 +1,15 @@
+{
+    "description": "<p>The pipeline</p>\n\n<p>bacannot, is a customisable, easy to use, pipeline that uses state-of-the-art software for comprehensively annotating prokaryotic genomes having only Docker and Nextflow as dependencies. It is able to annotate and detect virulence and resistance genes, plasmids, genomic islands, prophages, ICEs, KO, and more.</p>\n\n<p>Release notes</p>\n\n<p>This is a super small fix:</p>", 
+    "license": "other-open", 
+    "title": "fmalmeida/bacannot: fmalmeida/bacannot v2.4.2", 
+    "version": "v2.4.2", 
+    "upload_type": "software",
+    "creators": [
+        {
+            "orcid": "0000-0002-6855-3379", 
+            "affiliation": "University of Brasilia @compgenunb", 
+            "name": "Felipe Marques de Almeida"
+        }
+    ], 
+    "access_right": "open"
+}
