@@ -1,5 +1,6 @@
 process gff2gbk {
   publishDir "${params.outdir}/${prefix}/gbk", mode: 'copy'
+  label 'main'
   tag "${prefix}"
 
   input:
