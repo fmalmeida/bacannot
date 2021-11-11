@@ -4,7 +4,7 @@ process custom_blast_report {
     else "$filename"
   }
   label 'renv'
-  tag "Rendering HTML reports for the custom db annotations"
+  tag "${prefix}"
 
   input:
   tuple val(prefix), val(customDB), file(custom_blast), file(custom_gff)

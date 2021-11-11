@@ -1,6 +1,6 @@
 process custom_blast {
   publishDir "${params.outdir}/${prefix}/custom_annotations/${customDB.baseName}", mode: 'copy'
-  tag "Performing annotation with User's custom db"
+  tag "${prefix}"
   label 'main'
 
   input:

@@ -1,5 +1,5 @@
 process compute_gc {
-  tag "Calculating genome GC with bedtools"
+  tag "${prefix}"
   label 'main'
 
   input:

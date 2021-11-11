@@ -3,7 +3,7 @@ process refseq_masher {
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "refseq_masher/$filename"
   }
-  tag "Scanning Refseq with mash"
+  tag "${prefix}"
   label 'main'
 
   input:

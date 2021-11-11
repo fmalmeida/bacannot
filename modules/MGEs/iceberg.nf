@@ -1,6 +1,6 @@
 process iceberg {
   publishDir "${params.outdir}/${prefix}/ICEs", mode: 'copy'
-  tag "Scanning for ICE genes with ICEberg database"
+  tag "${prefix}"
   label 'main'
 
   input:

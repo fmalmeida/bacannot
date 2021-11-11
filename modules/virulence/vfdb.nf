@@ -1,6 +1,6 @@
 process vfdb {
   publishDir "${params.outdir}/${prefix}/virulence/vfdb", mode: 'copy'
-  tag "Scanning virulence genes with VFDB"
+  tag "${prefix}"
   label 'main'
 
   input:

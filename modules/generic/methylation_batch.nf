@@ -3,7 +3,7 @@ process call_methylation {
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "methylations/$filename"
   }
-  tag "5mC (CpG) Methylated sites are being calculated with Nanopolish"
+  tag "${prefix}"
   label 'main'
 
   input:
