@@ -2,6 +2,12 @@
 
 The tracking for changes started in v2.1
 
+## v2.4.2
+
+Changed how `tag` directives are used inside the pipeline. Now, instead of showing information about the process, it shows which sample is being processed, which is more useful to users.
+
+> Nothing has changed in terms of how tools are called and used, thus the docker image still the same. In fact, patch/fix releases (x.x.x) will always use the docker from breaking/features release (x.x)
+
 ## v2.4.1
 
 ### hotfix
@@ -16,6 +22,8 @@ parameter_yaml = new FileInputStream(new File(params.in_yaml))
 # to
 parameter_yaml = file(params.in_yaml).readLines().join("\n")
 ```
+
+> Nothing has changed in terms of how tools are called and used, thus the docker image still the same. In fact, patch/fix releases (x.x.x) will always use the docker from breaking/features release (x.x)
 
 ## v2.4
 
