@@ -5,7 +5,7 @@ process flye {
     else null
   }
   label 'assembly'
-  tag "${id}"
+  tag "${prefix}"
 
   input:
   file(lreads)
