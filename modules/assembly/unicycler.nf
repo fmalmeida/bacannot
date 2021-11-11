@@ -5,7 +5,7 @@ process unicycler {
     else null
   }
   label 'assembly'
-  tag "${id}"
+  tag "${prefix}"
 
   input:
   tuple val(id), file(sread1), file(sread2)
