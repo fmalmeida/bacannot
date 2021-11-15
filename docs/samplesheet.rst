@@ -7,7 +7,7 @@ The samplesheet is a required YAML document that is used to describe the input s
 
 .. tip::
 
-  A samplesheet template can be downloaded with: nextflow run fmalmeida/bacannot --get_samplesheet
+  A samplesheet template can be downloaded with: ``nextflow run fmalmeida/bacannot --get_samplesheet``
 
 Samplesheet header
 """"""""""""""""""
