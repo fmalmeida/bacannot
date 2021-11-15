@@ -51,3 +51,17 @@ Outputs
 -------
 
 A glimpse over the main outputs produced by bacannot is given at :ref:`outputs` section.
+
+Testing more workflows
+----------------------
+
+Moreover, we have also made available a few example datasets in the pipeline so users can test all capabilities at once, from assembling raw reads to annotating genomes. To test it users must run:
+
+.. code-block:: bash
+
+  # Run the pipeline using the provided test datasets
+  nextflow run fmalmeida/bacannot --profile test --threads 10
+
+.. note::
+
+  Unfortunately, due to file sizes, we could not provide fast5 files for users to check on the methylation step.

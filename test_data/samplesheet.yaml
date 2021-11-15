@@ -1,0 +1,18 @@
+# test profile samplesheet configuration
+
+samplesheet:
+  - id: ecoli_1
+    illumina:
+      - ecoli_illumina_15X_1.fastq.gz
+      - ecoli_illumina_15X_2.fastq.gz
+  - id: ecoli_2
+    nanopore: ecoli_ont_15X.fastq.gz
+  - id: ecoli_3
+    pacbio: ecoli_pacbio_15X.fastq.gz
+  - id: ecoli_4
+    illumina:
+      - ecoli_illumina_15X_1.fastq.gz
+      - ecoli_illumina_15X_2.fastq.gz
+    nanopore: ecoli_ont_15X.fastq.gz
+  - id: klebsiella_1
+    assembly: klebsiella_ref.fna
