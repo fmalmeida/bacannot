@@ -5,88 +5,22 @@
     "description": "",
     "type": "object",
     "definitions": {
-        "input_parameters_single_genome_analysis": {
-            "title": "Input parameters (single genome analysis)",
+        "input_output_options": {
+            "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
-            "description": "Input files for single genome analysis",
+            "description": "Set input and output parameters",
             "properties": {
-                "genome": {
+                "input": {
                     "type": "string",
-                    "description": "Input genome for annotation (can't be used with raw reads)",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "Path to the input query genome to be annotated. Cannot be used with raw reads at the same time."
+                    "description": "Path to input samplesheet"
                 },
-                "prefix": {
+                "output": {
                     "type": "string",
-                    "description": "Output prefix for results",
-                    "help_text": "This sets the prefix to be used when writing results",
-                    "fa_icon": "fas fa-align-left",
-                    "default": "out"
-                },
-                "sreads_single": {
-                    "type": "string",
-                    "fa_icon": "fas fa-book",
-                    "description": "Path to input short unpaired reads (can't be used with assembled genomes)",
-                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
-                },
-                "sreads_paired": {
-                    "type": "string",
-                    "fa_icon": "fas fa-book",
-                    "description": "Path to input short paired end reads (can't be used with assembled genomes)",
-                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
-                },
-                "lreads": {
-                    "type": "string",
-                    "fa_icon": "fas fa-book",
-                    "description": "Path to input longreads (ONT or Pacbio) (can't be used with assembled genomes)",
-                    "help_text": "When combining different sequencing library types, users must never set path to reads from more than one sample."
-                },
-                "lreads_type": {
-                    "type": "string",
-                    "fa_icon": "fas fa-quote-left",
-                    "description": "Using longreads? From which tech it is? Nanopore or Pacbio?",
-                    "help_text": "Must be used if giving longreads as input.",
-                    "enum": [
-                        "nanopore",
-                        "pacbio"
-                    ]
+                    "description": "Path for output directory",
+                    "default": "outdir"
                 }
             }
-        },
-        "input_parameters_multiple_genome_analysis": {
-            "title": "Input parameters (multiple genome analysis)",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "in_yaml": {
-                    "type": "string",
-                    "description": "Input samplesheet in YAML format",
-                    "help_text": "Used when analysis is to be performed with multiple genomes at once. It Is incompatible with the parameters for single genome analysis. More information can be found at: https://bacannot.readthedocs.io/en/latest/samplesheet.html",
-                    "fa_icon": "fas fa-align-justify"
-                }
-            },
-            "fa_icon": "fas fa-terminal"
-        },
-        "output_directory": {
-            "title": "Output directory",
-            "type": "object",
-            "description": "Define where to store results",
-            "default": "",
-            "properties": {
-                "outdir": {
-                    "type": "string",
-                    "description": "The output directory where the results will be saved.",
-                    "default": "./results",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "All the results will be stored here."
-                }
-            },
-            "required": [
-                "outdir"
-            ],
-            "fa_icon": "far fa-folder"
         },
         "generic_options": {
             "title": "Generic options",
@@ -111,13 +45,13 @@
             "properties": {
                 "threads": {
                     "type": "integer",
-                    "default": "2",
+                    "default": 2,
                     "description": "Number of threads to be used by each software"
                 },
                 "parallel_jobs": {
                     "type": "integer",
                     "description": "Number of jobs to run in parallel",
-                    "help_text": "Number of jobs to run in parallel. Be aware that each job (in parallel) can consume\nN threads (set above). Be sure to carefully check your resources before augmenting\nthis parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10\nthreads at once.\nIf not given, let's nextflow automatically handle it"
+                    "help_text": "Number of jobs to run in parallel. If not given, let's nextflow automatically handle it.\n\nBe aware that each job (in parallel) can consume\nN threads (set above). Be sure to carefully check your resources before augmenting\nthis parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10\nthreads at once."
                 }
             }
         },
@@ -152,19 +86,19 @@
             "fa_icon": "fas fa-cog",
             "required": [
                 "prokka_kingdom",
-                "prokka_use_rnammer"
+                "prokka_genetic_code"
             ]
         },
         "resfinder_optional_process": {
             "title": "Resfinder optional process",
             "type": "object",
-            "description": "Select the resfinder species panel to use",
+            "description": "Set default resfinder species panel to use",
             "default": "",
             "properties": {
                 "resfinder_species": {
                     "type": "string",
                     "description": "Select the resfinder species panel to use",
-                    "help_text": "If blank, resfinder will not be executed. Users must check Resfinder website to know the panels. This parameter is to be used with single genome annotation workflows, otherwise it must be set inside the samplesheet YAML file, please check out more at: https://bacannot.readthedocs.io/en/latest/samplesheet.html"
+                    "help_text": "If blank, resfinder will not be executed. Sets a default value for all samples in the samplesheet. If a sample has another value set inside the samplesheet, the pipeline will use for that specific sample the value inside the samplesheet. Users must check Resfinder website to know the panels. If your species is not available in resfinder species panels you may set it to \"Other\"."
                 }
             },
             "fa_icon": "fas fa-cog"
@@ -287,25 +221,6 @@
             },
             "fa_icon": "fas fa-cogs"
         },
-        "configure_optional_methylation": {
-            "title": "Configure optional Methylation",
-            "type": "object",
-            "description": "Configure nanopolish methylation annotation process",
-            "default": "",
-            "fa_icon": "fas fa-cog",
-            "properties": {
-                "nanopolish_fastq": {
-                    "type": "string",
-                    "description": "Path to fastq files (file related to FAST5 files above)",
-                    "help_text": "If blank, the process will not be executed!"
-                },
-                "nanopolish_fast5": {
-                    "type": "string",
-                    "description": "Path to directory containing FAST5 files",
-                    "help_text": "Set full path to the directory containing the ONT sequencing FAST5 files"
-                }
-            }
-        },
         "user_custom_database": {
             "title": "User custom database",
             "type": "object",
@@ -331,13 +246,7 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_parameters_single_genome_analysis"
-        },
-        {
-            "$ref": "#/definitions/input_parameters_multiple_genome_analysis"
-        },
-        {
-            "$ref": "#/definitions/output_directory"
+            "$ref": "#/definitions/input_output_options"
         },
         {
             "$ref": "#/definitions/generic_options"
@@ -356,9 +265,6 @@
         },
         {
             "$ref": "#/definitions/configure_thresholds_of_annotation_tasks"
-        },
-        {
-            "$ref": "#/definitions/configure_optional_methylation"
         },
         {
             "$ref": "#/definitions/user_custom_database"
