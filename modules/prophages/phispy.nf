@@ -4,7 +4,7 @@ process phispy {
     else if (filename == "PhiSpy") "prophages/$filename"
     else null
   }
-  tag "Detecting prophages with PhiSpy"
+  tag "${prefix}"
   label 'main'
 
   input:

@@ -12,7 +12,14 @@ argminer_blastp %>%
   datatable(escape = FALSE,
             filter = 'top',
             colnames = c("Protein ID", "Start", "End", "Strand", "Gene Name", "Coverage Map", "Gaps", "Coverage %", "Identity %", "Reference", "Drug target"),
-            options = dt_opt_lst,
+            options = list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(className = 'dt-body-left', targets = c(0,4,9,10)))),
             extensions = 'Buttons',
             rownames = F)
 ```

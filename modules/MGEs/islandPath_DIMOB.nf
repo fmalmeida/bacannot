@@ -2,7 +2,7 @@ process find_GIs {
   publishDir "${params.output}/${prefix}/genomic_islands", mode: 'copy'
   errorStrategy 'retry'
   maxRetries 5
-  tag "Predicting Genomic Islands with IslandPath-DIMOB"
+  tag "${prefix}"
   label 'main'
 
   input:

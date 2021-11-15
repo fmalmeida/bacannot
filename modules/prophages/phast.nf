@@ -1,6 +1,6 @@
 process phast {
-  publishDir "${params.output}/${prefix}/prophages/phast_db", mode: 'copy'
-  tag "Annotating prophage genes with PHAST database"
+  publishDir "${params.outdir}/${prefix}/prophages/phast_db", mode: 'copy'
+  tag "${prefix}"
   label 'main'
 
   input:

@@ -1,6 +1,6 @@
 process victors {
-  publishDir "${params.output}/${prefix}/virulence/victors", mode: 'copy'
-  tag "Scanning virulence genes with Victors"
+  publishDir "${params.outdir}/${prefix}/virulence/victors", mode: 'copy'
+  tag "${prefix}"
   label 'main'
 
   input:

@@ -3,7 +3,7 @@ process amrfinder {
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "resistance/AMRFinderPlus/$filename"
   }
-  tag "Scanning AMR genes with AMRFinderPlus"
+  tag "${prefix}"
   label 'main'
 
   input:
@@ -22,10 +22,11 @@ process amrfinder {
   amrfinder --version > amrfinder_version.txt ;
 
   # Run amrfinder
+  CONDA_PREFIX=/opt/conda
   amrfinder -p $proteins --plus -o AMRFinder_complete.tsv --threads ${params.threads} \
   --ident_min \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
   --coverage_min \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
-  --name ${prefix} --protein_output ${prefix}_args.faa ;
+  --name ${prefix} --protein_output ${prefix}_args.faa --database /opt/conda/share/amrfinderplus/data/latest ;
   awk -F '\t' '{ if (\$3 != "") { print } }' AMRFinder_complete.tsv | grep -v "VIRULENCE" > AMRFinder_resistance-only.tsv ;
   """
 }

@@ -4,7 +4,7 @@ process digis {
     else if (filename == "${prefix}.gff") null
     else "$filename"
   }
-  tag "Scanning for Insertion Sequences with digIS"
+  tag "${prefix}"
   label 'main'
 
   input:

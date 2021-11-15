@@ -124,8 +124,8 @@ Max job request
 
    * - ``--parallel_jobs``
      - N
-     - 1
-     - Number of jobs to run in parallel. Each job can consume up to N threads (``--threads``)
+     - NA
+     - Number of jobs to run in parallel. Each job can consume up to N threads (``--threads``). If not given, let's nextflow automatically handle it.
 
 Prokka annotation
 """""""""""""""""

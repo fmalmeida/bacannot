@@ -1,6 +1,6 @@
 process resfinder {
-  publishDir "${params.output}/${prefix}/resistance", mode: 'copy'
-  tag "Scanning AMR genes with resfinder"
+  publishDir "${params.outdir}/${prefix}/resistance", mode: 'copy'
+  tag "${prefix}"
   label 'main'
 
   input:
@@ -8,7 +8,7 @@ process resfinder {
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("resfinder/results_tab.txt")
+  tuple val(prefix), file("resfinder/ResFinder_results_tab.txt")
   tuple val(prefix), file("resfinder/PointFinder_results.txt")
   tuple val(prefix), file("resfinder/args_pheno_table.txt")
   tuple val(prefix), file("resfinder/results_tab.gff")
@@ -39,7 +39,7 @@ process resfinder {
   mv resfinder/pheno_table.txt resfinder/mutation_pheno_table.txt &> /dev/null || true ;
 
   # Convert to GFF
-  resfinder2gff.py -i resfinder/results_tab.txt > resfinder/results_tab.gff ;
+  resfinder2gff.py -i resfinder/ResFinder_results_tab.txt > resfinder/results_tab.gff ;
   """
 
   else if (resfinder_species.toLowerCase() == "other")
@@ -57,6 +57,6 @@ process resfinder {
   touch resfinder/PointFinder_results.txt ;
 
   # Convert to GFF
-  resfinder2gff.py -i resfinder/results_tab.txt > resfinder/results_tab.gff ;
+  resfinder2gff.py -i resfinder/ResFinder_results_tab.txt > resfinder/results_tab.gff ;
   """
 }

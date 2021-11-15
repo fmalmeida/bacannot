@@ -51,7 +51,7 @@ RUN conda create -y -c bioconda -c conda-forge -c defaults -n PY36_env "python>=
 ###############################################################
 ### tool that require specific version of a specific module ###
 ###############################################################
-RUN conda create -y -n digIS -c bioconda 'hmmer==3.1b2' nomkl && \
+RUN conda create -y -n digIS -c bioconda 'hmmer==3.1b2' 'biopython==1.77' nomkl && \
 		conda clean -afy && \
 		git clone https://github.com/janka2012/digIS.git
 

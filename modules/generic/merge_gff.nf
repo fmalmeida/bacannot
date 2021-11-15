@@ -1,7 +1,7 @@
 process gff_merge {
   publishDir "${params.output}/${prefix}/gffs", mode: 'copy'
   label 'main'
-  tag "Merging features in GFF with bedtools"
+  tag "${prefix}"
 
   input:
   tuple val(prefix), file(gff)

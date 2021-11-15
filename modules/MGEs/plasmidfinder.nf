@@ -3,7 +3,7 @@ process plasmidfinder {
     if (filename == "plasmidfinder") "plasmids/$filename"
     else null
   }
-  tag "Detecting plasmids with plasmidfinder"
+  tag "${prefix}"
   label 'main'
 
   input:

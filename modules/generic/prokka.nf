@@ -4,7 +4,7 @@ process prokka {
       else if (filename == "annotation") "$filename"
       else null
     }
-    tag "Executing generic annotation with Prokka"
+    tag "${prefix}"
     label 'main'
 
     input:

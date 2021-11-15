@@ -10,6 +10,7 @@ These are the tools that wrapped inside bacannot. **Cite** the tools whenever yo
 | rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
 | Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |
 | KEGG KO annotation and visualization | [KofamScan](https://github.com/takaram/kofam_scan) and [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) |
+| Annotation of secondary metabolites | [antiSMASH](https://docs.antismash.secondarymetabolites.org/) |
 | Methylation annotation | [Nanopolish](https://github.com/jts/nanopolish) |
 | Annotation of antimicrobial (AMR) genes | [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) |
 | Annotation of virulence genes |  [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
@@ -20,4 +21,4 @@ These are the tools that wrapped inside bacannot. **Cite** the tools whenever yo
 | Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
 | Renderization of results in a Genome Browser | [JBrowse](http://jbrowse.org/) |
-| Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/) and [Shiny](https://shiny.rstudio.com/) |
+| Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/), [Shiny](https://shiny.rstudio.com/) and [SequenceServer](https://sequenceserver.com/) |

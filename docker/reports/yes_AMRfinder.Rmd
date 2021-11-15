@@ -33,7 +33,14 @@ tab2 %>%
   datatable(escape = FALSE,
             filter = 'top',
             colnames = c("Resistance type", "Resistance subtype", "Query protein", "Gene", "Product", "Resistance Class", "Resistance subclass", "Detection method", "Ref. Accession", "Genomic coordinates"),
-            options = dt_opt_lst,
+            options = list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(className = 'dt-body-left', targets = c(0,1,2,3,4,5,6,7,8,9)))),
             extensions = 'Buttons',
             rownames = F)
 ```

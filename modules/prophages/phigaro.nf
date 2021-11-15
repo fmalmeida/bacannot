@@ -4,7 +4,7 @@ process phigaro {
     else if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "prophages/phigaro/$filename"
   }
-  tag "Scanning putative prophage sequences with phigaro"
+  tag "${prefix}"
   label 'main'
 
   input:

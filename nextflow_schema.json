@@ -116,9 +116,8 @@
                 },
                 "parallel_jobs": {
                     "type": "integer",
-                    "default": 1,
                     "description": "Number of jobs to run in parallel",
-                    "help_text": "Number of jobs to run in parallel. Be aware that each job (in parallel) can consume\nN threads (set above). Be sure to carefully check your resources before augmenting\nthis parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10\nthreads at once."
+                    "help_text": "Number of jobs to run in parallel. Be aware that each job (in parallel) can consume\nN threads (set above). Be sure to carefully check your resources before augmenting\nthis parameter. For example: parallel_jobs = 2 + threads = 5 can consume until 10\nthreads at once.\nIf not given, let's nextflow automatically handle it"
                 }
             }
         },
@@ -177,6 +176,11 @@
             "default": "",
             "help_text": "When true, the specific task will be skipped (not executed)",
             "properties": {
+                "skip_antismash": {
+                    "type": "boolean",
+                    "description": "Skip (do not run) antismash?",
+                    "help_text": "If true, the process will be skipped!"
+                },
                 "skip_plasmid_search": {
                     "type": "boolean",
                     "description": "Skip (do not run) plasmidfinder?",
@@ -359,6 +363,5 @@
         {
             "$ref": "#/definitions/user_custom_database"
         }
-    ],
-    "properties": {}
+    ]
 }

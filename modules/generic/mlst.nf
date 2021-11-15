@@ -3,7 +3,7 @@ process mlst {
      if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
      else "MLST/$filename"
    }
-   tag "Performing MLST analysis with mlst pipeline from T. Seeman"
+   tag "${prefix}"
    label 'main'
 
    input:

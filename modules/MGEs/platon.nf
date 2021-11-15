@@ -4,7 +4,7 @@ process platon {
     else if (filename == "platon") "plasmids/$filename"
     else null
   }
-  tag "Detecting plasmid contigs with platon"
+  tag "${prefix}"
   label 'main'
 
   input:

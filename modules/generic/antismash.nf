@@ -3,7 +3,7 @@ process antismash {
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "$filename"
   }
-  tag "Scanning genome with antiSMASH"
+  tag "${prefix}"
   label 'smash'
 
   input:

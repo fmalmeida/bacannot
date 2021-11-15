@@ -69,7 +69,8 @@ dt_opt_lst <- list(pageLength = 5,
                          buttons = c('copy', 'csv', 'excel', 'colvis'),
                          scrollX = TRUE,
                          fixedColumns = FALSE,
-                         autoWidth = TRUE)
+                         autoWidth = TRUE,
+                         columnDefs = list(list(className = 'dt-body-left', targets = -1)))
 ```
 
 # `r params$query` report of user's custom database annotation: `r params$blast_db`
