@@ -1,5 +1,5 @@
 process gff2gbk {
-  publishDir "${params.outdir}/${prefix}/gbk", mode: 'copy'
+  publishDir "${params.output}/${prefix}/gbk", mode: 'copy'
   label 'main'
 
   input:

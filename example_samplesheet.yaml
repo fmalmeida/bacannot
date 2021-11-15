@@ -48,12 +48,11 @@ samplesheet:
       - sample_1/1.fastq
       - sample_1/2.fastq
     nanopore: sample_1/ont.fastq
-    resfinder: Escherichia coli
+    resfinder: Escherichia coli   # this tells the pipeline that this specific sample should be treated as E. coli despite any other default set
   - id: sample_2
     assembly: sample_2/assembly.fasta
     nanopore: sample_2/ont.fastq
     fast5: sample_2/fast5_pass
-    resfinder: Klebsiella
   - id: sample_3
     nanopore: sample_3/ont.fastq
     fast5: sample_3/fast5_pass

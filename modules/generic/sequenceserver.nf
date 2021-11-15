@@ -1,5 +1,5 @@
 process sequenceserver {
-    publishDir "${params.outdir}/${prefix}/SequenceServerDBs", mode: 'copy'
+    publishDir "${params.output}/${prefix}/SequenceServerDBs", mode: 'copy'
     tag "Generate SequenceServer DBs"
     label 'main'
 

@@ -1,5 +1,5 @@
 process draw_GIs {
-  publishDir "${params.outdir}/${prefix}/genomic_islands", mode: 'copy', saveAs: { filename ->
+  publishDir "${params.output}/${prefix}/genomic_islands", mode: 'copy', saveAs: { filename ->
     if (filename == "plots") "$filename"
     else null
   }

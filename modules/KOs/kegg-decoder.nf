@@ -1,5 +1,5 @@
 process kegg_decoder {
-  publishDir "${params.outdir}/${prefix}/KOfamscan", mode: 'copy'
+  publishDir "${params.output}/${prefix}/KOfamscan", mode: 'copy'
   tag "Executing KEGG decoder"
   label 'kofam'
 

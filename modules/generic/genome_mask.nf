@@ -1,5 +1,5 @@
 process masking_genome {
-  publishDir "${params.outdir}/${prefix}", mode: 'copy',
+  publishDir "${params.output}/${prefix}", mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
   if (filename.indexOf(".gff") > 0 ) "gffs/$filename"

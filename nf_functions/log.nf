@@ -3,8 +3,8 @@ def logMessage() {
   log.info " Container-based, fmalmeida/bacannot, Genome Annotation Pipeline "
   log.info "================================================================="
   def summary = [:]
-  if (params.genome) { summary['Input genomes'] = params.genome }
-  summary['Output dir']   = "${params.outdir}"
+  summary['Input genomes'] = params.input
+  summary['Output dir']   = "${params.output}"
   summary['Threads'] = params.threads
   if (params.skip_virulence_search == false) {
   summary['Blast % ID - Virulence Genes'] = params.blast_virulence_minid

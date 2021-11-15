@@ -1,5 +1,5 @@
 process custom_blast {
-  publishDir "${params.outdir}/${prefix}/custom_annotations/${customDB.baseName}", mode: 'copy'
+  publishDir "${params.output}/${prefix}/custom_annotations/${customDB.baseName}", mode: 'copy'
   tag "Performing annotation with User's custom db"
   label 'main'
 
@@ -9,7 +9,7 @@ process custom_blast {
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), val("${customDB.baseName}"), file("${prefix}_${customDB.baseName}_blastn.txt"), file("${prefix}_${customDB.baseName}_blastn.gff")
+  tuple val(prefix), val("${customDB.baseName}"), file("${prefix}_${customDB.baseName}_blastn.summary.txt"), file("${prefix}_${customDB.baseName}_blastn.gff")
   file('*.txt') // Grab all
 
   script:

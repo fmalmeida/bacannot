@@ -3,10 +3,10 @@
  */
 
 // Unicycler assembly
-include { unicycler } from '../modules/assembly/unicycler_batch.nf'
+include { unicycler } from '../modules/assembly/unicycler.nf'
 
 // Flye assembly
-include { flye } from '../modules/assembly/flye_batch.nf'
+include { flye } from '../modules/assembly/flye.nf'
 
 // filter function
 include { filter_ch } from '../nf_functions/parseCSV.nf'
@@ -15,7 +15,7 @@ include { filter_ch } from '../nf_functions/parseCSV.nf'
 include { refseq_masher } from '../modules/generic/mash.nf'
 
 // Prokka annotation
-include { prokka } from '../modules/generic/prokka_batch.nf'
+include { prokka } from '../modules/generic/prokka.nf'
 
 // MLST annotation
 include { mlst } from '../modules/generic/mlst.nf'
@@ -76,10 +76,10 @@ include { amrfinder } from '../modules/resistance/amrfinder.nf'
 include { card_rgi } from '../modules/resistance/rgi_annotation.nf'
 
 // Methylation calling (Nanopolish)
-include { call_methylation } from '../modules/generic/methylation_batch.nf'
+include { call_methylation } from '../modules/generic/methylation.nf'
 
 // User's custom db annotation
-include { custom_blast } from '../modules/generic/custom_blast_batch.nf'
+include { custom_blast } from '../modules/generic/custom_blast.nf'
 include { custom_blast_report } from '../modules/generic/custom_blast_report.nf'
 
 // Merging annotation in GFF
@@ -110,10 +110,11 @@ include { antismash } from '../modules/generic/antismash.nf'
     DEF WORKFLOW
 */
 
-workflow MULTIPLE_SAMPLE {
+workflow BACANNOT {
   take:
     input_ch
     custom_db
+  
   main:
 
       // Step 0 -- Run unicycler when necessary

@@ -31,13 +31,13 @@ workflow parse_samplesheet {
       // Check long reads
       if (it.nanopore) {
         it['lr_type'] = "nanopore"
-        it['lreads'] = it.nanopore
+        it['lreads']  = it.nanopore
       } else if (it.pacbio) {
         it['lr_type'] = "pacbio"
-        it['lreads'] = it.pacbio
+        it['lreads']  = it.pacbio
       } else {
         it['lr_type'] = "missing_lr_type"
-        it['lreads'] = "missing_lreads"
+        it['lreads']  = "missing_lreads"
       }
 
       // Check fast5
@@ -47,10 +47,14 @@ workflow parse_samplesheet {
       it['assembly'] = (it.assembly) ? it.assembly : "missing_assembly"
 
       // Check resfinder
-      it['resfinder'] = (it.resfinder) ? it.resfinder : "missing_resfinder"
+      // it uses the command line param as default and overwrites with
+      // sample specific value if found inside samplesheet
+      it['resfinder'] = (params.resfinder_species) ? params.resfinder_species : "missing_resfinder"
+      if (it.resfinder) { it['resfinder'] = it.resfinder }
 
       // Save
       parsed.add(it)
+
     }
 
     emit:

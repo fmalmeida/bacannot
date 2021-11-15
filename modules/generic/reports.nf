@@ -1,5 +1,5 @@
 process report {
-  publishDir "${params.outdir}/${prefix}/report_files", mode: 'copy'
+  publishDir "${params.output}/${prefix}/report_files", mode: 'copy'
   label 'renv'
   tag "Rendering HTML reports for Virulence, MGEs and AMR genes"
 
@@ -64,7 +64,7 @@ process report {
   rmarkdown::render("report_MGEs.Rmd", \
   params = list( blast_id = ${params.blast_MGEs_minid}, \
                  blast_cov = ${params.blast_MGEs_mincov}, \
-                 phigaro_dir = "${params.outdir}/prophages/phigaro", \
+                 phigaro_dir = "${params.output}/prophages/phigaro", \
                  phigaro_txt = "$phigaro_txt", \
                  phispy_tsv = "$phispy_tsv", \
                  ice_prot_blast = "$iceberg_blastp", \

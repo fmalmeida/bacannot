@@ -10,7 +10,6 @@ import org.yaml.snakeyaml.Yaml
  * Include functions
  */
 include { helpMessage } from './nf_functions/help.nf'
-include { exampleMessage } from './nf_functions/examples.nf'
 include { logMessage } from './nf_functions/log.nf'
 include { write_csv } from './nf_functions/writeCSV.nf'
 include { parse_csv } from './nf_functions/parseCSV.nf'
@@ -28,21 +27,13 @@ params.help = false
    exit 0
 }
 
-// CLI examples
-params.examples = false
- // Show help emssage
- if (params.examples){
-   exampleMessage()
-   exit 0
-}
-
 /*
  * Does the user wants to download the configuration file?
  */
 
 params.get_config = false
 if (params.get_config) {
-  new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/configuration_template/bacannot.config").getText())
+  new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
   println ""
   println "bacannot.config file saved in working directory"
   println "After configuration, run:"
@@ -56,64 +47,43 @@ if (params.get_config) {
  */
 
 // General parameters
-params.outdir = 'outdir'
-params.threads = 2
+params.output                  = 'outdir'
+params.threads                 = 2
 params.bedtools_merge_distance = ''
 // Input parameters
-params.in_yaml = ''
-params.prefix = ''
-params.genome = ''
-params.sreads_single = ''
-params.sreads_paired = ''
-params.lreads = ''
-params.lreads_type = ''
+params.input  = ''
 // Prokka parameters
-params.prokka_kingdom = ''
+params.prokka_kingdom      = ''
 params.prokka_genetic_code = false
-params.prokka_use_rnammer = false
+params.prokka_use_rnammer  = false
 // User custom db
-params.custom_db = ''
-params.blast_custom_minid = 0
+params.custom_db           = ''
+params.blast_custom_minid  = 0
 params.blast_custom_mincov = 0
 // Resfinder parameters
 params.resfinder_species = ''
 // Blast parameters
-params.plasmids_minid = 90
-params.plasmids_mincov = 60
-params.blast_virulence_minid = 90
-params.blast_virulence_mincov = 80
-params.blast_resistance_minid = 90
+params.plasmids_minid          = 90
+params.plasmids_mincov         = 60
+params.blast_virulence_minid   = 90
+params.blast_virulence_mincov  = 80
+params.blast_resistance_minid  = 90
 params.blast_resistance_mincov = 80
-params.blast_MGEs_minid = 65
-params.blast_MGEs_mincov = 65
-// Nanopolish
-params.nanopolish_fast5 = ''
-params.nanopolish_fastq = ''
+params.blast_MGEs_minid        = 65
+params.blast_MGEs_mincov       = 65
 // Workflow parameters
-params.skip_plasmid_search = false
-params.skip_virulence_search = false
+params.skip_plasmid_search    = false
+params.skip_virulence_search  = false
 params.skip_resistance_search = false
-params.skip_iceberg_search = false
-params.skip_prophage_search = false
-params.skip_kofamscan = false
-params.skip_antismash = false
+params.skip_iceberg_search    = false
+params.skip_prophage_search   = false
+params.skip_kofamscan         = false
+params.skip_antismash         = false
 
 /*
  * Define log message
  */
 logMessage()
-
-/*
- * Include modules (Execution setup)
- */
-
-// Unicycler assembly
-include { unicycler } from './modules/assembly/unicycler.nf' params(outdir: params.outdir,
-  threads: params.threads, prefix: params.prefix)
-
-// Flye assembly
-include { flye } from './modules/assembly/flye.nf' params(outdir: params.outdir,
-  threads: params.threads, prefix: params.prefix, lreads_type: params.lreads_type)
 
 /*
  * Define custom workflows
@@ -123,10 +93,7 @@ include { flye } from './modules/assembly/flye.nf' params(outdir: params.outdir,
 include { parse_samplesheet } from './workflows/parse_samples.nf'
 
 // Bacannot pipeline for multiple genomes
-include { SINGLE_SAMPLE } from './workflows/simple_workflow.nf'
-
-// Bacannot pipeline for multiple genomes
-include { MULTIPLE_SAMPLE } from './workflows/batch_workflow.nf'
+include { BACANNOT } from './workflows/bacannot.nf'
 
 
 /*
@@ -135,50 +102,39 @@ include { MULTIPLE_SAMPLE } from './workflows/batch_workflow.nf'
 
 workflow {
 
-  if (params.in_yaml) {
+  if (params.input) {
 
-    parameter_yaml = new FileInputStream(new File(params.in_yaml))
+    // Load yaml
+    parameter_yaml = file(params.input).readLines().join("\n")
     new Yaml().load(parameter_yaml).each { k, v -> params[k] = v }
 
-    // Read YAML file
+    // Copy YAML samplesheet to output directory so user has a copy of it
+    file(params.output).mkdir()
+    file(params.input).copyTo(params.output + "/" + params.input)
+
+    // Parse YAML file
     parse_samplesheet(params.samplesheet)
 
     // Convert it to CSV for usability
     samples_ch = write_csv(parse_samplesheet.out)
 
     // Run annotation
-    MULTIPLE_SAMPLE(samples_ch, (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
+    BACANNOT(
+      samples_ch,
+      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty()
+    )
 
   } else {
 
-    if (params.genome) {
-
-      // User have an assembled genome
-      SINGLE_SAMPLE(Channel.fromPath(params.genome),
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
-                 (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
-
-    } else if (params.sreads_single || params.sreads_paired) {
-
-      // User have illumina reads (so it goes to unicycler)
-      unicycler((params.sreads_paired) ? Channel.fromFilePairs( params.sreads_paired, flat: true, size: 2 ) : Channel.value(['', '', '']),
-                (params.sreads_single) ? Channel.fromPath( params.sreads_single )                           : Channel.value(''),
-                (params.lreads)        ? Channel.fromPath( params.lreads )                                  : Channel.value(''))
-      SINGLE_SAMPLE(unicycler.out[1],
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
-                 (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
-
-    } else if ((params.lreads && params.lreads_type) && (!params.sreads_paired && !params.sreads_single)) {
-
-      // User does not have illumina reads (so it goes to flye)
-      flye(Channel.fromPath( params.lreads ))
-      SINGLE_SAMPLE(flye.out[1],
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fast5 )   : Channel.empty(),
-                 (params.nanopolish_fast5 && params.nanopolish_fastq) ? Channel.fromPath( params.nanopolish_fastq )   : Channel.empty(),
-                 (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty())
-    }
+    // Message to user
+    println("""
+    ERROR!
+    A major error has occurred!
+      ==> A samplesheet has not been provided. Please, provide a samplesheet to run the analysis. Online documentation is available at: https://bacannot.readthedocs.io/en/latest/
+    Please, read the docs.
+    Cheers.
+    """)
+  
   }
 }
 
