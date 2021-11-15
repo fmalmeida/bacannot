@@ -1,5 +1,4 @@
-# This is an exemplification of the accepted YAML syntax accepted by the
-# bacannot pipeline in order to analyse multiple genomes at once.
+# This is an exemplification of the accepted YAML syntax accepted by the bacannot pipeline
 #
 # The file must contain a header-line with the key "samplesheet:". All the
 # input samples must be given nested to this key. Obs: The header-line and
@@ -22,6 +21,7 @@
 #
 # nanopore: ont_nanopore.fastq (Oxford nanopore long reads)
 # fast5: path/to/fast5_pass (Path to dir containing ONT FAST5s for methylation calling)
+# If using an already assembled genome, users may give the nanopore and fast5 data to call methylation
 #
 # pacbio: pacbio.fastq (Pacbio long reads)
 #
@@ -52,10 +52,10 @@ samplesheet:
   - id: sample_2
     assembly: sample_2/assembly.fasta
     nanopore: sample_2/ont.fastq
-    fast5: sample_2/fast5_pass
+    fast5: sample_2/fast5_pass     # will call methylation on assembled genome
   - id: sample_3
     nanopore: sample_3/ont.fastq
-    fast5: sample_3/fast5_pass
+    fast5: sample_3/fast5_pass     # will also call methylation flye genome assembly
   - id: sample_4
     pacbio: sample_4/pacbio.fastq
     illumina:
