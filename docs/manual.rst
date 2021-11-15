@@ -11,67 +11,36 @@ Manual
 Parameters description
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Input files (single genome analysis)
-""""""""""""""""""""""""""""""""""""
+Input files
+"""""""""""
+
+Required
+^^^^^^^^
+
+To execute the annotation pipeline users **must** provide genomic data as either raw reads or assembled genomes as input. When raw reads are used, Unicycler and Flye assemblers are used to create, respectively, shortreads-only and hybrid assemblies, or longreads-only assemblies for the annotation process. Which means, the minimum required input files are:
+
+* An assembled genome in FASTA format, **or**;
+* Raw sequencing reads.
+
+Optional
+^^^^^^^^
+
+The pipeline accepts as input two other input files types that are used to perform additional annotation processes, they are:
+
+* path to a directory of FAST5
+
+  * Then used together with nanopore reads it will call DNA methylation with Nanopolish.
+
+* path to custom **nucleotide** databases as described in :ref:`custom-db`
+
+  * These custom databases (``--custom_db``) will be used to perform additional annotation processes using BLASTn
 
 .. note::
 
-  These parameters must only be used when annotating a single genome. If running the pipeline with more than 1 input
-  genomes users must set them in the samplesheet YAML file as described in :ref:`samplesheet`.
+   Users must must carefully read the documentation in order to better understand the details of the pipeline workflow customization. Please read the :ref:`samplesheet manual page<samplesheet>` to better understand it.
 
-.. note::
-  
-  Remember to always write input paths inside double quotes.
-
-.. note::
-  
-  When using paired end reads it is required that input reads are set with the "{1,2}"" pattern. For example: "SRR6307304_{1,2}.fastq". This will properly load reads "SRR6307304_1.fastq" and "SRR6307304_2.fastq"
-
-.. warning::
-  
-  When running hybrid assemblies or mixing short read types it is advised to **avoid not required REGEX** and write the full file path, using only the required REGEX for paired end reads when applicable. So that the pipeline does not load any different read that also matches the REGEX and avoid confusions with the inputs.
-
-.. list-table::
-   :widths: 20 10 20 30
-   :header-rows: 1
-
-   * - Arguments
-     - Required
-     - Default value
-     - Description
-
-   * - ``--genome``
-     - Y (if raw reads are not used)
-     - NA
-     - Genome(s) to be annotated in FASTA file. Mutually exclusively with the use of raw reads.
-
-   * - ``--prefix``
-     - Y
-     - out
-     - This sets the prefix to be used when writing results
-
-   * - ``--sreads_single``
-     - N (Y if assembled genome is not used)
-     - NA
-     - Path to short unpaired reads. E.g. "SRR*.fastq.gz"
-
-   * - ``--sreads_paired``
-     - N (Y if assembled genome is not used)
-     - NA
-     - Path to short paired reads. E.g. "SRR6307304_{1,2}.fastq"
-
-   * - ``--lreads``
-     - N (Y if assembled genome is not used)
-     - NA
-     - Path to longreads (ONT or Pacbio)
-
-   * - ``--lreads_type``
-     - N (Y if longreads are used)
-     - NA
-     - Longreads are used? If so, from which technology it is? Options: [ 'nanopore' or 'pacbio' ]
-
-Input files (multiple genome analysis)
-""""""""""""""""""""""""""""""""""""""
+Input samplesheet
+"""""""""""""""""
 
 .. list-table::
    :widths: 20 10 20 25
@@ -82,10 +51,10 @@ Input files (multiple genome analysis)
      - Default value
      - Description
 
-   * - ``--in_yaml``
+   * - ``--input``
      - Y
      - NA
-     - Input samplesheet in YAML format. Used when analysis is to be performed with multiple genomes at once. It is incompatible with the parameters for single genome analysis.
+     - Input samplesheet describing all the samples to be analysed.
 
 Output directory
 """"""""""""""""
@@ -99,11 +68,10 @@ Output directory
      - Default value
      - Description
 
-   * - ``--outdir``
+   * - ``--output``
      - Y
-     - output
-     - Name of directory to store output values. A sub-directory for each
-       genome will be created inside this main directory.
+     - outdir
+     - Name of directory to store output values. A sub-directory for each genome will be created inside this main directory.
 
 Max job request
 """""""""""""""
@@ -159,8 +127,7 @@ Resfinder annotation
 
 .. note::
 
-  This parameter must only be used when annotating a single genome. If running the pipeline in multi-sample mode,
-  users must set it inside the samplesheet YAML file as described in :ref:`samplesheet`.
+  Sets a default value for input samples. If a sample has a different value given inside the samplesheet, the pipeline will use, for that sample, the value found inside the :ref:`samplesheet<samplesheet>`.
 
 .. warning::
 
@@ -306,33 +273,6 @@ Annotation thresholds
      - N
      - 0
      - Coverage (%) threshold to be used when annotating with user's custom databases
-
-Methylation call
-""""""""""""""""
-
-.. note::
-
-  This parameter must only be used when annotating a single genome. If running the pipeline with more than 1 input
-  genomes users must set it in the samplesheet YAML file as described in :ref:`samplesheet`.
-
-.. list-table::
-   :widths: 20 10 20 30
-   :header-rows: 1
-
-   * - Arguments
-     - Required
-     - Default value
-     - Description
-
-   * - ``--nanopolish_fast5``
-     - N
-     - NA
-     - Path to directory containing fast5 files to be used to call methylation. If null, the analysis will be skipped
-
-   * - ``--nanopolish_fastq``
-     - N
-     - NA
-     - Path to fastq reads (related to fast5 files) that will be used to call methylation. If null, the analysis will be skipped
 
 Merge distance
 """"""""""""""

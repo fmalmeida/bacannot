@@ -43,6 +43,21 @@ if (params.get_config) {
 }
 
 /*
+ * Does the user wants to download the YAML samplesheet file?
+ */
+
+params.get_samplesheet = false
+if (params.get_samplesheet) {
+  new File("bacannot_samplesheet.yaml").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/example_samplesheet.yaml").getText())
+  println ""
+  println "bacannot_samplesheet.yaml file saved in working directory"
+  println "After configuration, run:"
+  println "nextflow run fmalmeida/bacannot --input bacannot_samplesheet.yaml"
+  println "Nice code!\n"
+  exit 0
+}
+
+/*
  * Load general parameters and establish defaults
  */
 

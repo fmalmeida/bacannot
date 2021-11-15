@@ -1,23 +1,13 @@
 .. _samplesheet:
 
-Samplesheet configuration (for multi-genome analysis)
-=====================================================
+Samplesheet (input files)
+=========================
 
-The samplesheet is a YAML document that is used to describe the input samples. It is required when the user
-wants to annotate more than one genome at once saving them at the same output directory. This execution is
-triggered by the ``--in_yaml`` parameter and it is incompatible with all the parameters used for single
-genome analysis (shown below):
+The samplesheet is a required YAML document that is used to describe the input samples and, if desired, its "sample-specific" configuration. The input samplesheet is given using the ``--input`` parameter.
 
-The use of a samplesheet is **incompatible** with:
+.. tip::
 
-+ ``--genome``
-+ ``--sreads_paired``
-+ ``--sreads_single``
-+ ``--lreads``
-+ ``--lreads_type``
-+ ``--resfinder_species``
-+ ``--nanopolish_fast5``
-+ ``--nanopolish_fastq``
+  A samplesheet template can be downloaded with: nextflow run fmalmeida/bacannot --get_samplesheet
 
 Samplesheet header
 """"""""""""""""""
@@ -45,11 +35,14 @@ be used by the pipeline:
       ...:
       ...:
 
-Input tags
-""""""""""
+Input tags (keys)
+"""""""""""""""""
 
-Input tags are the tags that are used to represent/set the inputs that shall be used for each sample that
-will be analysed. The available tags are:
+Input tags are are used to represent/set the inputs that shall be used for each input sample. By default, for resfinder species panel, if it is not set inside the samplesheet, the pipeline will use the configurations set via the "nextflow config file" or via the command line. Otherwise, if set inside the samplesheet, it will overwrite the pipeline’s configuration for that specific sample.
+
+Please, the :ref:`manual reference page<manual>` the global/defaults configurations.
+
+The available tags are:
 
 .. list-table::
    :widths: 20 50
@@ -74,15 +67,23 @@ will be analysed. The available tags are:
      - Used to set path to nanopore raw FAST5 data (used in conjunction with ``nanopore`` for calling methylation with Nanopolish)
 
    * - ``resfinder``
-     - Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in `their web page <https://cge.cbs.dtu.dk/services/ResFinder/>`_). If your species is not available in Resfinder panels, you may use it with the "Other" panel 
+     - Used to set resfinder species database for resistance annotation with resfinder (must be exactly as shown in `their web page <https://cge.cbs.dtu.dk/services/ResFinder/>`_). If your species is not available in Resfinder panels, you may use it with the "Other" panel.
 
 
 .. note::
 
-  The illumina tag is the only one that **must** be set in indented newlines (one line per read) as shown in the complete samplesheet example. The order
-  of the reads in these newlines must be Pair1; Pair2; Unpaired (Whenever they are used) -- Check samples 1, 4 and 5 to understand.
+  Note for the illumina tag/key.
 
-  All the other input tags **must** be set in the same line, right after the separator (":"), without quotations.
+  * When using both paired and unpaired reads, the paired reads must be given first, in the order\: pair 1, pair 2, unpaired.
+  * Otherwise, if using only paired reads, they must be given in the order\: pair 1, pair 2.
+  * If using only unpaired reads, only one entry is expected. Check samples in the template to 1, 4 and 5 to understand it.
+  * The illumina tag is the only one that **must** be set in indented newlines
+      * two white spaces relative to the
+      * one line per read as shown in the complete samplesheet example.
+
+.. warning::
+
+  All the other input tags **must** be set in the same line, right after the separator (":"), without quotations, white spaces or signs.
 
 Complete samplesheet example
 """"""""""""""""""""""""""""
@@ -95,12 +96,11 @@ Complete samplesheet example
         - sample_1/1.fastq
         - sample_1/2.fastq
       nanopore: sample_1/ont.fastq
-      resfinder: Escherichia coli
     - id: sample_2
       assembly: sample_2/assembly.fasta
       nanopore: sample_2/ont.fastq
       fast5: sample_2/fast5_pass
-      resfinder: Klebsiella
+      resfinder: Klebsiella              # this tells the pipeline a differente value for only this sample
     - id: sample_3
       nanopore: sample_3/ont.fastq
       fast5: sample_3/fast5_pass
