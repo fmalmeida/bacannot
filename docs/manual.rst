@@ -9,7 +9,7 @@ Manual
   nextflow run fmalmeida/bacannot --help
 
 Parameters description
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 Input files
 """""""""""
@@ -40,7 +40,7 @@ The pipeline accepts as input two other input files types that are used to perfo
    Users must must carefully read the documentation in order to better understand the details of the pipeline workflow customization. Please read the :ref:`samplesheet manual page<samplesheet>` to better understand it.
 
 Input samplesheet
-"""""""""""""""""
+^^^^^^^^^^^^^^^^^
 
 .. list-table::
    :widths: 20 10 20 25

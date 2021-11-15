@@ -10,7 +10,7 @@ The samplesheet is a required YAML document that is used to describe the input s
   A samplesheet template can be downloaded with: ``nextflow run fmalmeida/bacannot --get_samplesheet``
 
 Samplesheet header
-""""""""""""""""""
+------------------
 
 The first line of the file must be the header followed by an indentation:
 
@@ -20,7 +20,7 @@ The first line of the file must be the header followed by an indentation:
     - ...:
 
 Sample identification
-"""""""""""""""""""""
+---------------------
 
 Each sample must be identified by the tag *id* in the YAML file, followed by the input input tags that shall
 be used by the pipeline:
@@ -36,7 +36,7 @@ be used by the pipeline:
       ...:
 
 Input tags (keys)
-"""""""""""""""""
+-----------------
 
 Input tags are are used to represent/set the inputs that shall be used for each input sample. By default, for resfinder species panel, if it is not set inside the samplesheet, the pipeline will use the configurations set via the "nextflow config file" or via the command line. Otherwise, if set inside the samplesheet, it will overwrite the pipeline’s configuration for that specific sample.
 
@@ -86,7 +86,7 @@ The available tags are:
   All the other input tags **must** be set in the same line, right after the separator (":"), without quotations, white spaces or signs.
 
 Complete samplesheet example
-""""""""""""""""""""""""""""
+----------------------------
 
 .. code-block:: yaml
 
