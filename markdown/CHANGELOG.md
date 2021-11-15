@@ -2,6 +2,36 @@
 
 The tracking for changes started in v2.1
 
+## v3.0
+
+### input configuration
+
+* In order to keeps things the least complex possible and to make the pipeline less confusing, the pipeline has been reconfigured in order to properly use it, in all workflow types (for multiple samples at once or just one) through the samplesheet.
+    + Because of that, we removed the possibility to pass the input reads via the command line and now, the files input data files, must always be set inside the samplesheet, even if analysing only one sample.
+    + Read more at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
+    + Check the template samplesheet at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
+    + The samplesheet is given with the parameter `--input`
+* Due to the implementation above, the folowing parameters are now deprecated, since they are now set inside the YAML file:
+    + `--genome`
+    + `--sreads_paired`
+    + `--sreads_single`
+    + `--lreads`
+    + `--lreads_type`
+    + `--nanopolish_fast5`
+    + `--nanopolish_fastq`
+* The `--resfinder_species` parameter keeps existing. It now sets a default for all samples in the samplesheet. However, when a sample has another value for that set with the key `resfinder`, the pipeline will use, for that specific sample, the value found inside the samplesheet.
+
+### nomenclature change
+
+* In order to make it simple and natural, two changes ocurred in input/output parameters
+    + The `--outdir` parameter is now `--output`
+    + The `--in_yaml` parameter is now `--input`
+  
+### comments
+
+* Since this changes are somewhat major changes, the pipeline main version has changed and it is now in v3.0
+    + The docker image is now `fmalmeida/bacannot:v3.0` and `fmalmeida/bacannot:v3.0_renv`
+
 ## v2.4.2
 
 Changed how `tag` directives are used inside the pipeline. Now, instead of showing information about the process, it shows which sample is being processed, which is more useful to users.
