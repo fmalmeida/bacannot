@@ -40,6 +40,12 @@ Input tags (keys)
 
 Input tags are are used to represent/set the inputs that shall be used for each input sample. By default, for resfinder species panel, if it is not set inside the samplesheet, the pipeline will use the configurations set via the "nextflow config file" or via the command line. Otherwise, if set inside the samplesheet, it will overwrite the pipeline’s configuration for that specific sample.
 
+.. note::
+
+  Whenever an assembled genome is given with ``assembly:`` the pipeline **will not** perform genome assembly even if reads are given.
+
+  Users may use the ``assembly:`` tag together with ``nanopore:`` and ``fast5:`` tags, which will trigger methylation calling with Nanopolish
+
 Please, the :ref:`manual reference page<manual>` the global/defaults configurations.
 
 The available tags are:
