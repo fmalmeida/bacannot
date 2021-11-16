@@ -123,7 +123,7 @@ workflow {
 
     // Copy YAML samplesheet to output directory so user has a copy of it
     file(params.output).mkdir()
-    file(params.input).copyTo(params.output + "/" + params.input)
+    file(params.input).copyTo(params.output + "/" + "${params.input.getName}")
 
     // Parse YAML file
     parse_samplesheet(params.samplesheet)
