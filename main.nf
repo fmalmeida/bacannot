@@ -118,12 +118,13 @@ workflow {
   if (params.input) {
 
     // Load yaml
-    parameter_yaml = file(params.input).readLines().join("\n")
+    samplesheet_yaml = file(params.input)
+    parameter_yaml = samplesheet_yaml.readLines().join("\n")
     new Yaml().load(parameter_yaml).each { k, v -> params[k] = v }
 
     // Copy YAML samplesheet to output directory so user has a copy of it
     file(params.output).mkdir()
-    file(params.input).copyTo(params.output + "/" + "${params.input.getName}")
+    samplesheet_yaml.copyTo(params.output + "/" + "${samplesheet_yaml.getName()}")
 
     // Parse YAML file
     parse_samplesheet(params.samplesheet)
