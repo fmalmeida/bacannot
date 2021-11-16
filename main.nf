@@ -11,8 +11,6 @@ import org.yaml.snakeyaml.Yaml
  */
 include { helpMessage } from './nf_functions/help.nf'
 include { logMessage } from './nf_functions/log.nf'
-include { write_csv } from './nf_functions/writeCSV.nf'
-include { parse_csv } from './nf_functions/parseCSV.nf'
 include { paramsCheck } from './nf_functions/paramsCheck.nf'
 
 
@@ -130,12 +128,9 @@ workflow {
     // Parse YAML file
     parse_samplesheet(params.samplesheet)
 
-    // Convert it to CSV for usability
-    samples_ch = write_csv(parse_samplesheet.out)
-
     // Run annotation
     BACANNOT(
-      samples_ch,
+      parse_samplesheet.out,
       (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty()
     )
 

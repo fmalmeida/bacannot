@@ -8,9 +8,6 @@ include { unicycler } from '../modules/assembly/unicycler.nf'
 // Flye assembly
 include { flye } from '../modules/assembly/flye.nf'
 
-// filter function
-include { filter_ch } from '../nf_functions/parseCSV.nf'
-
 // Species identification
 include { refseq_masher } from '../modules/generic/mash.nf'
 
@@ -117,14 +114,22 @@ workflow BACANNOT {
   
   main:
 
+      // generate channel branches
+      // now we create the filtered channels
+      input_ch.branch{
+        unicycler:  it[1] == 'unicycler'
+        flye:       it[1] == 'flye'
+        annotation: it[1] == "annotation"
+      }.set { parsed_inputs }
+
       // Step 0 -- Run unicycler when necessary
-      unicycler(filter_ch(input_ch, "unicycler"))
+      unicycler(parsed_inputs.unicycler)
 
       // Step 0 --  Run flye when necessary
-      flye(filter_ch(input_ch, "flye"))
+      flye(parsed_inputs.flye)
 
       // First step -- Prokka annotation
-      prokka(filter_ch(input_ch, "annotation").mix(flye.out[1], unicycler.out[1]))
+      prokka(parsed_inputs.annotation.mix(flye.out[1], unicycler.out[1]))
 
       // Second step -- MLST analysis
       mlst(prokka.out[3])
