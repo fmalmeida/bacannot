@@ -1,5 +1,4 @@
 # test profile samplesheet configuration
-
 samplesheet:
   - id: ecoli_1
     illumina:
