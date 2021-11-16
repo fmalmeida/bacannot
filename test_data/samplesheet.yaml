@@ -13,6 +13,6 @@ samplesheet:
     illumina:
       - https://github.com/fmalmeida/test_datasets/raw/main/ecoli_illumina_15X_1.fastq.gz
       - https://github.com/fmalmeida/test_datasets/raw/main/ecoli_illumina_15X_2.fastq.gz
-    nanopore: ecoli_ont_15X.fastq.gz
+    nanopore: https://github.com/fmalmeida/test_datasets/raw/main/ecoli_ont_15X.fastq.gz
   - id: klebsiella_1
     assembly: https://github.com/fmalmeida/test_datasets/raw/main/klebsiella_ref.fna
