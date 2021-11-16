@@ -15,3 +15,4 @@ samplesheet:
     nanopore: https://github.com/fmalmeida/test_datasets/raw/main/ecoli_ont_15X.fastq.gz
   - id: klebsiella_1
     assembly: https://github.com/fmalmeida/test_datasets/raw/main/klebsiella_ref.fna
+    resfinder: Klebsiella
