@@ -4,7 +4,7 @@ process unicycler {
     else if (filename == "unicycler_${prefix}") "assembly"
     else null
   }
-  label 'assembly'
+  label 'unicycler'
   tag "${prefix}"
 
   input:

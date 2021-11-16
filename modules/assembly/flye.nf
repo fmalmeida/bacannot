@@ -4,7 +4,7 @@ process flye {
     else if (filename == "flye_${prefix}") "assembly"
     else null
   }
-  label 'assembly'
+  label 'flye'
   tag "${prefix}"
 
   input:
@@ -19,8 +19,6 @@ process flye {
   script:
   lr = (lr_type == 'nanopore') ? '--nano-raw' : '--pacbio-raw'
   """
-  source activate flye ;
-
   # Save flye version
   flye -v > flye_version.txt ;
 
