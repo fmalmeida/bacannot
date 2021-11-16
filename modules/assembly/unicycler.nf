@@ -1,19 +1,19 @@
 process unicycler {
-  publishDir "${params.output}/${id}", mode: 'copy', saveAs: { filename ->
+  publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
-    else if (filename == "unicycler_${id}") "assembly"
+    else if (filename == "unicycler_${prefix}") "assembly"
     else null
   }
   label 'assembly'
   tag "${prefix}"
 
   input:
-  tuple val(id), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)
+  tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)
 
   output:
-  file "unicycler_${id}" // Save everything
+  file "unicycler_${prefix}" // Save everything
   // Keep tuple structure to mixing channels
-  tuple val("${id}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("unicycler_${id}.fasta"), val("${resfinder_species}")
+  tuple val("${prefix}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("unicycler_${prefix}.fasta"), val("${resfinder_species}")
   file('unicycler_version.txt')
   
   script:
@@ -26,9 +26,9 @@ process unicycler {
   unicycler --version > unicycler_version.txt
 
   # Run unicycler
-  unicycler $paired_param $unpaired_param $lr_param -o unicycler_${id} -t ${params.threads} &> unicycler.log
+  unicycler $paired_param $unpaired_param $lr_param -o unicycler_${prefix} -t ${params.threads} &> unicycler.log
 
   # Save copy for annotation
-  cp unicycler_${id}/assembly.fasta unicycler_${id}.fasta
+  cp unicycler_${prefix}/assembly.fasta unicycler_${prefix}.fasta
   """
 }

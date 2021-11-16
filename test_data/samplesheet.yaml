@@ -3,16 +3,16 @@
 samplesheet:
   - id: ecoli_1
     illumina:
-      - ecoli_illumina_15X_1.fastq.gz
-      - ecoli_illumina_15X_2.fastq.gz
+      - https://github.com/fmalmeida/test_datasets/raw/main/ecoli_illumina_15X_1.fastq.gz
+      - https://github.com/fmalmeida/test_datasets/raw/main/ecoli_illumina_15X_2.fastq.gz
   - id: ecoli_2
-    nanopore: ecoli_ont_15X.fastq.gz
+    nanopore: https://github.com/fmalmeida/test_datasets/raw/main/ecoli_ont_15X.fastq.gz
   - id: ecoli_3
-    pacbio: ecoli_pacbio_15X.fastq.gz
+    pacbio: https://github.com/fmalmeida/test_datasets/raw/main/ecoli_pacbio_15X.fastq.gz
   - id: ecoli_4
     illumina:
-      - ecoli_illumina_15X_1.fastq.gz
-      - ecoli_illumina_15X_2.fastq.gz
+      - https://github.com/fmalmeida/test_datasets/raw/main/ecoli_illumina_15X_1.fastq.gz
+      - https://github.com/fmalmeida/test_datasets/raw/main/ecoli_illumina_15X_2.fastq.gz
     nanopore: ecoli_ont_15X.fastq.gz
   - id: klebsiella_1
-    assembly: klebsiella_ref.fna
+    assembly: https://github.com/fmalmeida/test_datasets/raw/main/klebsiella_ref.fna
