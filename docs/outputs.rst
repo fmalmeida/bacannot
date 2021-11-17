@@ -7,7 +7,7 @@ Here, using the results produced in the :ref:`quickstart` section, we give users
 
 .. note::
 
-  Please take note that the pipeline uses the directory set with the ``--outdir`` parameter as a storage place in which it will create a folder for each sample using its ``id``. Therefore the the same ``--outdir`` can be used for different annotations.
+  Please take note that the pipeline uses the directory set with the ``--output`` parameter as a storage place in which it will create a folder for each sample using its ``id``. Therefore the the same ``--output`` can be used for different annotations.
 
 Directory tree
 --------------
