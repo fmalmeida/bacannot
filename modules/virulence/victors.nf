@@ -1,5 +1,5 @@
 process victors {
-  publishDir "${params.outdir}/${prefix}/virulence/victors", mode: 'copy'
+  publishDir "${params.output}/${prefix}/virulence/victors", mode: 'copy'
   tag "${prefix}"
   label 'main'
 

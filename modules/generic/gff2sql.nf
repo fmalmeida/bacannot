@@ -1,5 +1,5 @@
 process create_sql {
-  publishDir "${params.outdir}/${prefix}", mode: 'copy', saveAs: { filename ->
+  publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf(".sqlite") > 0) "sqldb/$filename"
     else "$filename"
   }

@@ -13,7 +13,7 @@ Although simple, the custom database must follow some rules about sequence heade
 of custom reports in HTML format, that shall be available under the ``report_files`` directory.
 
 Sequence header format
-""""""""""""""""""""""
+----------------------
 
 Sequence headers must follow a 5-field rule separated by "~~~" and spaces. The first 4 fields must be separated by "~~~" and the last one by one space, following the
 example shown below:
@@ -35,7 +35,7 @@ example shown below:
   It is very important to follow this header format in order to make it possible and easier to render summaries and reports of the BLASTn result, such as below:
 
 BLASTn summary example
-""""""""""""""""""""""
+----------------------
 
 When the header is followed, the summaries and reports are very well rendered such as in this example:
 

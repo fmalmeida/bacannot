@@ -1,5 +1,5 @@
 process jbrowse {
-  publishDir "${params.outdir}/${prefix}/jbrowse", mode: 'copy'
+  publishDir "${params.output}/${prefix}/jbrowse", mode: 'copy'
   label 'jbrowse'
   tag "${prefix}"
 

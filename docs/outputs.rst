@@ -7,12 +7,7 @@ Here, using the results produced in the :ref:`quickstart` section, we give users
 
 .. note::
 
-  Please take note that the pipeline uses the directory set with the ``--outdir`` parameter as a storage place in which it will create a folder named as the
-  ``--prefix`` parameter. This ``{prefix}`` folder will contain all the results. 
-  
-  Therefore the the same ``--outdir`` can be used for different annotations
-  as each one of them will have a different sub-folder. This is useful and required for the genomic comparative pipeline (that is under construction) that will
-  use this folder as input, and enable the user to rapidly compare the results between the samples under the same ``--outdir`` folder.
+  Please take note that the pipeline uses the directory set with the ``--outdir`` parameter as a storage place in which it will create a folder for each sample using its ``id``. Therefore the the same ``--outdir`` can be used for different annotations.
 
 Directory tree
 --------------

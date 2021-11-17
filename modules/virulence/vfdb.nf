@@ -1,5 +1,5 @@
 process vfdb {
-  publishDir "${params.outdir}/${prefix}/virulence/vfdb", mode: 'copy'
+  publishDir "${params.output}/${prefix}/virulence/vfdb", mode: 'copy'
   tag "${prefix}"
   label 'main'
 
@@ -20,5 +20,4 @@ process vfdb {
   --mincov ${params.blast_virulence_mincov} --threads ${params.threads} --out ${prefix}_vfdb_blastn_onGenes.txt --2way | \
   sed -e 's/ACCESSION/VFDB_ID/g' > ${prefix}_vfdb_blastn_onGenes.summary.txt ;
   """
-
 }

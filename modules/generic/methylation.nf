@@ -1,5 +1,5 @@
 process call_methylation {
-  publishDir "${params.outdir}/${prefix}", mode: 'copy', saveAs: { filename ->
+  publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "methylations/$filename"
   }
@@ -7,9 +7,7 @@ process call_methylation {
   label 'main'
 
   input:
-  tuple val(prefix), file(draft)
-  file(fast5)
-  file(reads)
+  tuple val(prefix), file(draft), file(reads), file(fast5)
 
   output:
   // Grab all outputs
@@ -18,6 +16,10 @@ process call_methylation {
   tuple val(prefix), file("methylation_frequency.bedGraph") optional true
   tuple val(prefix), file("chr.sizes") optional true
   file('nanopolish_version.txt')
+
+  when:
+  // When an entry does not exist, it is created as 'input'
+  if (fast5.getName() != 'input.5' && reads.getName() != 'input.4') // Names were set in assembly and prokka process
 
   script:
   fast5_dir = fast5.getName()

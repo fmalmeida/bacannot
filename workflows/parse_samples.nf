@@ -1,59 +1,30 @@
+include { write_csv } from '../nf_functions/writeCSV.nf'
 workflow parse_samplesheet {
 
   take:
     data
   main:
 
-    // Parse input to check for missing entries
-    parsed = []
-
-    data.each {
-
-      // Check for Illumina reads
-      if (it.illumina) {
-
-        // Only one read
-        if (it.illumina.size() == 1) {
-          it['paired'] = "missing_paired"
-          it['single'] = it.illumina[0]
-        } else if (it.illumina.size() == 2) {
-          it['paired'] = [it.illumina[0], it.illumina[1]]
-          it['single'] = "missing_single"
-        } else if (it.illumina.size() == 3) {
-          it['paired'] = [it.illumina[0], it.illumina[1]]
-          it['single'] = it.illumina[2]
-        }
-      } else {
-        it['paired'] = "missing_paired"
-        it['single'] = "missing_single"
-      }
-
-      // Check long reads
-      if (it.nanopore) {
-        it['lr_type'] = "nanopore"
-        it['lreads'] = it.nanopore
-      } else if (it.pacbio) {
-        it['lr_type'] = "pacbio"
-        it['lreads'] = it.pacbio
-      } else {
-        it['lr_type'] = "missing_lr_type"
-        it['lreads'] = "missing_lreads"
-      }
-
-      // Check fast5
-      it['fast5'] = (it.fast5)   ? it.fast5  : "missing_fast5"
-
-      // Check assembly
-      it['assembly'] = (it.assembly) ? it.assembly : "missing_assembly"
-
-      // Check resfinder
-      it['resfinder'] = (it.resfinder) ? it.resfinder : "missing_resfinder"
-
-      // Save
-      parsed.add(it)
+    // iterate over input list
+    custom_csv = write_csv(Channel.fromList(data))
+  
+    // now we parse the csv created
+    parsed_csv = custom_csv.splitCsv(header: ['name', 'entrypoint', 'fwd', 'rev', 'single', 'lreads', 'lr_type', 'fast5', 'assembly', 'resfinder']).map{ row ->
+      tuple(
+        row.name, 
+        row.entrypoint,
+        (row.fwd == "missing_pairFWD") ? row.fwd : file(row.fwd), 
+        (row.rev == "missing_pairREV") ? row.rev : file(row.rev),
+        (row.single == "missing_single") ? row.single : file(row.single), 
+        (row.lreads == "missing_lreads") ? row.lreads : file(row.lreads), 
+        row.lr_type,
+        (row.fast5 == "missing_fast5") ? row.fast5 : file(row.fast5), 
+        (row.assembly == "missing_assembly") ? row.assembly : file(row.assembly), 
+        row.resfinder
+      )
     }
 
     emit:
-      Channel.from(parsed)
+    parsed_csv
 
 }
