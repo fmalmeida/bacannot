@@ -121,21 +121,7 @@ bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/master/b
 
 ## Quickstart
 
-For a rapid and simple quickstart we will use as input the _Escherichia coli_ reference genome.
-
-```bash
-
-  # Download the ecoli ref genome
-  wget -O ecoli_ref.fna.gz https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/865/GCF_000008865.2_ASM886v2/GCF_000008865.2_ASM886v2_genomic.fna.gz
-  gzip -d ecoli_ref.fna.gz
-
-  # Run the pipeline using the Escherichia coli resfinder database
-  nextflow run fmalmeida/bacannot \
-  --prefix ecoli \
-  --genome ecoli_ref.fna \
-  --outdir _ANNOTATION \
-  --threads 4 \
-  --resfinder_species "Escherichia coli"
+<a href="https://bacannot.readthedocs.io/en/latest/quickstart.html"><strong>Please refer to the quickstart page »</strong></a>
 ```
 
 ### Overview of outputs
