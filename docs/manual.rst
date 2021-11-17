@@ -35,10 +35,6 @@ The pipeline accepts as input two other input files types that are used to perfo
 
   * These custom databases (``--custom_db``) will be used to perform additional annotation processes using BLASTn
 
-.. note::
-
-   Users must must carefully read the documentation in order to better understand the details of the pipeline workflow customization. Please read the :ref:`samplesheet manual page<samplesheet>` to better understand it.
-
 Input samplesheet
 ^^^^^^^^^^^^^^^^^
 
@@ -55,6 +51,10 @@ Input samplesheet
      - Y
      - NA
      - Input samplesheet describing all the samples to be analysed.
+
+.. note::
+
+   Please read the :ref:`samplesheet manual page<samplesheet>` to better understand the samplesheet format.
 
 Output directory
 """"""""""""""""
