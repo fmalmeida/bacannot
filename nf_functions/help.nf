@@ -16,56 +16,32 @@ def helpMessage() {
 
    nextflow run fmalmeida/bacannot [--get_config]
 
-   Show command line examples:
-
-   nextflow run fmalmeida/bacannot --examples
-
    Execution Reports:
 
    nextflow run fmalmeida/bacannot [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
 
    OPTIONS:
 
-      # Input configuration -- Analysis of a single genome
+      # Input configuration
       # Users can give either a genome in FASTA file or raw reads in FASTQ
-      # Please do not use glob. patterns ('*') with these parameters
-
-    --prefix <string>                              Prefix for writing genome assembly and annotatin resulting files.
-                                                   Preferentially the sample name. [Default: out]
-
-    --genome <string>                              Set path to the genome in FASTA file.
-
-    --sreads_paired <string>                       Illumina paired end reads in fastq for assembly before annotation.
-
-    --sreads_single <string>                       Illumina unpaired reads in fastq for assembly before annotation.
-
-    --lreads <string>                              Path to longreads in fastq assembly before annotation (ONT or Pacbio).
-
-    --lreads_type <string>                         Tells the technology of the input longreads: [ nanopore or pacbio ].
-
-      # Input configuration -- Analysis of multiple genomes
-      # Users can give either a genome in FASTA file or raw reads in FASTQ
-      # The analysis of multiple genomes at once is configured via a YAML file
-      # Check the example YAML at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
+      # The analysis is configured via a samplesheet
+      # Check the example samplesheet at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
       #
       # Also documented at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
 
-    --in_yaml <string>                             Set path to the samplesheet in YAML format to analyse more than one
-                                                   genome at once.
+    --input <string>                               Set path to the input samplesheet.
 
-      # Annotation configuration -- Used for either for the single
-      # genome analysis workflow and the multiple genome analysis
+      # Annotation configuration
       # Read it and configure it properly
 
       # General Parameters
 
-    --outdir <string>                              Output directory name
+    --output <string>                              Output directory name
 
     --threads <int>                                Number of threads to use
 
     --parallel_jobs <int>                          Number of jobs to run in parallel. Each job can consume up
-                                                   to N threads (--threads). If not given, let's nextflow automatically
-                                                   handle it. Default: NA.
+                                                   to N threads (--threads). If not given, let's nextflow automatically handle it. Default: NA.
 
     --bedtools_merge_distance <int>                By default, this process is not executed. For execution
                                                    one needs to provide a minimum number of overlapping
@@ -117,10 +93,9 @@ def helpMessage() {
                                                    Multiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,...
 
 
-      # Configure resfinder optional parameter
-      # Only used with analysing a single genome
-      # When analysing multiple genomes it must be set in the YAML file.
-      # Check the example YAML at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
+      # Configure a default resfinder species panel for all samples
+      # If a sample has another value inside the samplesheet, the pipeline will use 
+      # the one found inside the samplesheet for that specific sample.
       #
       # Also documented at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
 
@@ -144,19 +119,6 @@ def helpMessage() {
     --skip_plasmid_search                          Tells whether you do not want to execute plasmid detection
 
     --skip_kofamscan                               Tells whether you do not want to execute KO annotation with kofamscan
-
-
-      # Configure optional Methylation annotation with nanopolish
-      # If left blank, it will not be executed. And, with both parameters are set
-      # it will automatically execute nanopolish to call methylation.
-      # Only used with analysing a single genome
-      # When analysing multiple genomes it must be set in the YAML file.
-      # Check the example YAML at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
-
-    --nanopolish_fast5 <string>                    Path to directory containing FAST5 files
-
-    --nanopolish_fastq <string>                    Path to fastq files (file related to FAST5 files above)
-
 
 """.stripIndent()
 }

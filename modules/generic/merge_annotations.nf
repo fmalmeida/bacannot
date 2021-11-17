@@ -1,5 +1,5 @@
 process merge_annotations {
-  publishDir "${params.outdir}/${prefix}/gffs", mode: 'copy'
+  publishDir "${params.output}/${prefix}/gffs", mode: 'copy'
   label 'renv'
   tag "${prefix}"
 

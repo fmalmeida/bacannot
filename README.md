@@ -1,6 +1,11 @@
 <img src="images/lOGO_3.png" width="300px">
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/fmalmeida/bacannot?include_prereleases&label=Latest%20release)](https://github.com/fmalmeida/bacannot/releases) [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest) [![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot) [![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html) [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/fmalmeida/bacannot?include_prereleases&label=Latest%20release)](https://github.com/fmalmeida/bacannot/releases)
+[![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest)
+[![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot)
+[![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html)
+[![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
 
 <p align="center">
 
@@ -78,8 +83,8 @@ These images have been kept separate to not create massive Docker image and to a
 
     * Required
           
-          docker pull fmalmeida/bacannot:v2.4         # Main image for core annotations
-          docker pull fmalmeida/bacannot:v2.4_renv    # R packages for reports
+          docker pull fmalmeida/bacannot:v3.0         # Main image for core annotations
+          docker pull fmalmeida/bacannot:v3.0_renv    # R packages for reports
           docker pull fmalmeida/bacannot:jbrowse      # JBrowse software
     
     * Optional
@@ -87,11 +92,10 @@ These images have been kept separate to not create massive Docker image and to a
           docker pull fmalmeida/bacannot:kofamscan    # If user wants KO annotation
           docker pull fmalmeida/bacannot:antismash    # If user wants antismash annotation
           docker pull fmalmeida/bacannot:server       # If user wants to open the shiny parser
-          docker pull fmalmeida/mpgap:v2.3            # If using raw reads as input
 
 🔥 Nextflow can also automatically handle images download on the fly when executed. However, some servers may hang the download due to the image size (view below).
 
-❗ If the download of `fmalmeida/bacannot:v2.4` image keeps hanging due to its size, download `fmalmeida/bacannot:main_tools` first. It is the core of the versioned tag and it will help on the download by creating some cache.
+❗ If the download of `fmalmeida/bacannot:v3.0` image keeps hanging due to its size, download `fmalmeida/bacannot:main_tools` first. It is the core of the versioned tag and it will help on the download by creating some cache.
 
 2. Install Nextflow (version 20.07 or higher):
 
@@ -105,34 +109,19 @@ These images have been kept separate to not create massive Docker image and to a
 
 ### Maintaining databases up-to-date
 
-By default, github actions have been set to build the docker image containing the databases (`fmalmeida/bacannot:v2.4`) in the first day of every month. Therefore, to use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:v2.4` before running the pipeline.
+To use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:v3.0` before running the pipeline. We try to keep this image updated every three months if they pass execution tests after built.
 
-Additionally, a custom script is provided to allow users to update the database image any time.
+A custom script is provided to allow users to update the database image any time, if desired.
 
 ```bash
 bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/master/bin/update_database_image.sh)
 ```
 
-> This command line will trigger a custom script that downloads the databases and build the fmalmeida/bacannot:v2.4 docker image.
+> This command line will trigger a custom script that downloads the databases and build the main docker image.
 
 ## Quickstart
 
-For a rapid and simple quickstart we will use as input the _Escherichia coli_ reference genome.
-
-```bash
-
-  # Download the ecoli ref genome
-  wget -O ecoli_ref.fna.gz https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/008/865/GCF_000008865.2_ASM886v2/GCF_000008865.2_ASM886v2_genomic.fna.gz
-  gzip -d ecoli_ref.fna.gz
-
-  # Run the pipeline using the Escherichia coli resfinder database
-  nextflow run fmalmeida/bacannot \
-  --prefix ecoli \
-  --genome ecoli_ref.fna \
-  --outdir _ANNOTATION \
-  --threads 4 \
-  --resfinder_species "Escherichia coli"
-```
+<a href="https://bacannot.readthedocs.io/en/latest/quickstart.html"><strong>Please refer to the quickstart page »</strong></a>
 
 ### Overview of outputs
 
