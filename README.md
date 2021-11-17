@@ -95,7 +95,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 🔥 Nextflow can also automatically handle images download on the fly when executed. However, some servers may hang the download due to the image size (view below).
 
-❗ If the download of `fmalmeida/bacannot:v2.4` image keeps hanging due to its size, download `fmalmeida/bacannot:main_tools` first. It is the core of the versioned tag and it will help on the download by creating some cache.
+❗ If the download of `fmalmeida/bacannot:v3.0` image keeps hanging due to its size, download `fmalmeida/bacannot:main_tools` first. It is the core of the versioned tag and it will help on the download by creating some cache.
 
 2. Install Nextflow (version 20.07 or higher):
 
@@ -109,15 +109,15 @@ These images have been kept separate to not create massive Docker image and to a
 
 ### Maintaining databases up-to-date
 
-By default, github actions have been set to build the docker image containing the databases (`fmalmeida/bacannot:v2.4`) in the first day of every month. Therefore, to use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:v2.4` before running the pipeline.
+To use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:v3.0` before running the pipeline. We try to keep this image updated every three months if they pass execution tests after built.
 
-Additionally, a custom script is provided to allow users to update the database image any time.
+A custom script is provided to allow users to update the database image any time, if desired.
 
 ```bash
 bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/master/bin/update_database_image.sh)
 ```
 
-> This command line will trigger a custom script that downloads the databases and build the fmalmeida/bacannot:v2.4 docker image.
+> This command line will trigger a custom script that downloads the databases and build the main docker image.
 
 ## Quickstart
 
