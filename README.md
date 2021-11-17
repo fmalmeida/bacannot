@@ -122,7 +122,6 @@ bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/master/b
 ## Quickstart
 
 <a href="https://bacannot.readthedocs.io/en/latest/quickstart.html"><strong>Please refer to the quickstart page »</strong></a>
-```
 
 ### Overview of outputs
 
