@@ -14,6 +14,6 @@ process ARGMINER_DB {
         sed -e 's/~>/~/g' -e 's/gi:.*:ref://g' -e 's/gi:.*:gb://g' -e 's/gi:.*:emb://g' -e 's/:~/~/g' > sequences && \\
         rm argminer.fasta && \\
         makeblastdb -in sequences -title 'argminer' -dbtype prot -logfile /dev/null && \\
-        diamond makedb --in sequences -d argminer_db/diamond
+        diamond makedb --in sequences -d diamond
     """
 }
