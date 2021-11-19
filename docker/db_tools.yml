@@ -10,10 +10,12 @@ channels:
 
 dependencies:
 
+  ## conda-forge packages
+  - conda-forge::curl
+
   ## anaconda packages
   - anaconda::git
 
   ## bioconda packages
-  - bioconda::mlst=2.19
   - bioconda::blast=2.12.0
   - bioconda::diamond=2.0.13
