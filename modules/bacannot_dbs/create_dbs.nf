@@ -5,32 +5,7 @@ process CREATE_DBS {
     file("*")
 
     script:
-    """   
-    # download plasmidfinder database
-    git clone https://bitbucket.org/genomicepidemiology/plasmidfinder_db.git
-
-    # download phigaro database
-    mkdir phigaro_db && \\
-        wget http://download.ripcm.com/phigaro/allpvoghmms && \\
-        wget http://download.ripcm.com/phigaro/allpvoghmms.h3f && \\
-        wget http://download.ripcm.com/phigaro/allpvoghmms.h3i && \\
-        wget http://download.ripcm.com/phigaro/allpvoghmms.h3m && \\
-        wget http://download.ripcm.com/phigaro/allpvoghmms.h3p && \\
-        mv allpvoghmms* phigaro_db
-   
-    # download amrfinderplus database
-    wget --recursive --no-parent https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/
-
-    # download vfdb database
-    mkdir vfdb_db && \\
-        wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \\
-        gzip -d VFDB_setA_nt.fas.gz && \\
-        awk -v db=VFDB '/>/{ split(\$0,name," "); split(\$0,id," \\["); all=\$0; \$0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setA_nt.fas | \\
-        sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \\
-        awk -F "]" ' { if (\$0 ~ />/) { gsub(" ", "_", \$1); print \$1 "] " \$2 "]"} else { print \$0 }}' > vfdb_db/sequences && \\
-        makeblastdb -in vfdb_db/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \\
-        rm VFDB_setA_nt.fas
-
+    """
     # download iceberg database (nt)
     mkdir iceberg_db && \\
         wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICE_seq_experimental.fas && \\
@@ -81,5 +56,5 @@ process CREATE_DBS {
         rm argminer.fasta && \\
         makeblastdb -in argminer_db/sequences -title 'argminer' -dbtype prot -logfile /dev/null && \\
         diamond makedb --in argminer_db/sequences -d argminer_db/diamond
-   """
+    """
 }

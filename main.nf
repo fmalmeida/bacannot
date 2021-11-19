@@ -105,6 +105,9 @@ params.skip_card_db           = false
 params.skip_platon_db         = false
 params.skip_resfinder_db      = false
 params.skip_plasmidfinder_db  = false
+params.skip_phigaro_db        = false
+params.skip_amrfinder_db      = false
+params.skip_vfdb_db           = false
 
 /*
  * Define log message

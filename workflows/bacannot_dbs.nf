@@ -5,6 +5,9 @@ include { CARD_DB          } from '../modules/bacannot_dbs/card.nf'
 include { PLATON_DB        } from '../modules/bacannot_dbs/platon.nf'
 include { RESFINDER_DB     } from '../modules/bacannot_dbs/resfinder.nf'
 include { PLASMIDFINDER_DB } from '../modules/bacannot_dbs/plasmidfinder.nf'
+include { PHIGARO_DB       } from '../modules/bacannot_dbs/phigaro.nf'
+include { AMRFINDER_DB     } from '../modules/bacannot_dbs/amrfinder.nf'
+include { VFDB_DB          } from '../modules/bacannot_dbs/vfdb.nf'
 
 /*
     DEF WORKFLOW
@@ -23,6 +26,15 @@ workflow CREATE_DBS {
 
     // plasmidfinder database
     if (!params.skip_plasmidfinder_db) { download_db("plasmidfinder", "PLASMIDFINDER_DB") }
+
+    // phigaro database
+    if (!params.skip_phigaro_db) { download_db("phigaro", "PHIGARO_DB") }
+
+    // amrfinder database
+    if (!params.skip_amrfinder_db) { download_db("amrfinder", "AMRFINDER_DB") }
+
+    // vfdb database
+    if (!params.skip_vfdb_db) { download_db("vfdb", "VFDB_DB") }
 
 }
 
