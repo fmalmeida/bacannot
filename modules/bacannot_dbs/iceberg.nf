@@ -20,7 +20,7 @@ process ICEBERG_DB {
         '/>/{ split(\$0,col," "); split(col[1],a,"[|]"); split(col[2],b,"[|]"); split(\$0,c,"[|]"); all=\$0; \$0=">" db "~~~" "ICE_" a[2] "~~~" b[4] "~~~" c[6] " " all }1' \\
         ICE_aa_experimental.fas | sed -e 's/ >/ /g' | awk -F '\\\\]' \\
         '{ if (\$0 ~ />/) { gsub(" ","_",\$1); gsub("_\\\\[","_",\$1); gsub("~_","~",\$1); print \$1,\$2 "]" } else { print \$0 }}' > proteins && \\
-        diamond makedb --in proteins -d iceberg_db/diamond && \\
+        diamond makedb --in proteins -d diamond && \\
         makeblastdb -in proteins -title 'iceberg' -dbtype prot -logfile /dev/null && \\
         rm ICE_aa_experimental.fas
     """
