@@ -128,21 +128,27 @@ workflow BACANNOT {
       // Step 0 --  Run flye when necessary
       flye(parsed_inputs.flye)
 
-      // First step -- Prokka annotation
-      prokka(parsed_inputs.annotation.mix(flye.out[1], unicycler.out[1]))
+      // First step -- Prokka or Bakta annotation
+      if (params.use_bakta && params.bakta_db) {
+        bakta(parsed_inputs.annotation.mix(flye.out[1], unicycler.out[1]))
+        annotation_out_ch = bakta.out
+      } else {
+        prokka(parsed_inputs.annotation.mix(flye.out[1], unicycler.out[1]))
+        annotation_out_ch = prokka.out
+      }
 
       // Second step -- MLST analysis
-      mlst(prokka.out[3])
+      mlst(annotation_out_ch[3])
 
       // Third step -- rRNA annotation
-      barrnap(prokka.out[3])
+      barrnap(annotation_out_ch[3])
 
       // Fouth step -- calculate GC content for JBrowse
-      compute_gc(prokka.out[3])
+      compute_gc(annotation_out_ch[3])
 
       // Fifth step -- run kofamscan
       if (params.skip_kofamscan == false) {
-        kofamscan(prokka.out[4])
+        kofamscan(annotation_out_ch[4])
         kegg_decoder(kofamscan.out[1])
         kofamscan_output = kofamscan.out[1]
         kegg_decoder_svg = kegg_decoder.out[1]
@@ -158,10 +164,10 @@ workflow BACANNOT {
       // Plasmid finder
       if (params.skip_plasmid_search == false) {
         // plasmidfinder
-        plasmidfinder(prokka.out[3])
+        plasmidfinder(annotation_out_ch[3])
         plasmidfinder_output = plasmidfinder.out[1]
         // platon
-        platon(prokka.out[3])
+        platon(annotation_out_ch[3])
         platon_output = platon.out[1]
       } else {
         plasmidfinder_output = Channel.empty()
@@ -169,15 +175,15 @@ workflow BACANNOT {
       }
 
       // IslandPath software
-      find_GIs(prokka.out[2])
+      find_GIs(annotation_out_ch[2])
 
       // Virulence search
       if (params.skip_virulence_search == false) {
         // VFDB
-        vfdb(prokka.out[5])
+        vfdb(annotation_out_ch[5])
         vfdb_output = vfdb.out[1]
         // Victors db
-        victors(prokka.out[4])
+        victors(annotation_out_ch[4])
         victors_output = victors.out[1]
       } else {
         vfdb_output = Channel.empty()
@@ -187,14 +193,14 @@ workflow BACANNOT {
       // Prophage search
       if (params.skip_prophage_search == false) {
         // PHAST db
-        phast(prokka.out[4])
+        phast(annotation_out_ch[4])
         phast_output = phast.out[1]
         // Phigaro software
-        phigaro(prokka.out[3])
+        phigaro(annotation_out_ch[3])
         phigaro_output_1 = phigaro.out[0]
         phigaro_output_2 = phigaro.out[1]
         // PhiSpy
-        phispy(prokka.out[2])
+        phispy(annotation_out_ch[2])
         phispy_output = phispy.out[1]
       } else {
         phast_output = Channel.empty()
@@ -206,7 +212,7 @@ workflow BACANNOT {
       // ICEs search
       if (params.skip_iceberg_search == false) {
         // ICEberg db
-        iceberg(prokka.out[4], prokka.out[3])
+        iceberg(annotation_out_ch[4], annotation_out_ch[3])
         iceberg_output = iceberg.out[1]
         iceberg_output_2 = iceberg.out[2]
       } else {
@@ -217,18 +223,18 @@ workflow BACANNOT {
       // AMR search
       if (params.skip_resistance_search == false) {
         // AMRFinderPlus
-        amrfinder(prokka.out[4])
+        amrfinder(annotation_out_ch[4])
         amrfinder_output = amrfinder.out[0]
         // CARD-RGI
-        card_rgi(prokka.out[4])
+        card_rgi(annotation_out_ch[4])
         rgi_output = card_rgi.out[2]
         rgi_output_parsed = card_rgi.out[1]
         rgi_heatmap = card_rgi.out[3]
         // ARGMiner
-        argminer(prokka.out[4])
+        argminer(annotation_out_ch[4])
         argminer_output = argminer.out[0]
         // Resfinder
-        resfinder(prokka.out[7])
+        resfinder(annotation_out_ch[7])
         resfinder_output_1 = resfinder.out[0]
         resfinder_output_2 = resfinder.out[1]
         resfinder_phenotable = resfinder.out[2]
@@ -248,7 +254,7 @@ workflow BACANNOT {
       /*
           Seventh step -- Methylation call
       */
-      call_methylation(prokka.out[6])
+      call_methylation(annotation_out_ch[6])
       methylation_out_1 = call_methylation.out[2]
       methylation_out_2 = call_methylation.out[3]
 
@@ -259,26 +265,26 @@ workflow BACANNOT {
        */
 
       // species identification
-      refseq_masher(prokka.out[3])
+      refseq_masher(annotation_out_ch[3])
 
       // IS identification
-      digis(prokka.out[3].join(prokka.out[2]))
+      digis(annotation_out_ch[3].join(annotation_out_ch[2]))
 
       // antiSMASH
       if (params.skip_antismash == false) {
-        antismash(prokka.out[2])
+        antismash(annotation_out_ch[2])
         antismash_output = antismash.out[0]
       } else {
         antismash_output = Channel.empty()
       }
 
       // sequenceserver
-      sequenceserver(prokka.out[3].join(prokka.out[5]).join(prokka.out[4]))
+      sequenceserver(annotation_out_ch[3].join(annotation_out_ch[5]).join(annotation_out_ch[4]))
 
       /*
           Eighth step -- Merge all annotations with the same Prefix value in a single Channel
       */
-      annotations_files = prokka.out[3].join(prokka.out[1])
+      annotations_files = annotation_out_ch[3].join(annotation_out_ch[1])
                                        .join(mlst.out[0])
                                        .join(barrnap.out[0])
                                        .join(compute_gc.out[0])
@@ -300,12 +306,12 @@ workflow BACANNOT {
       draw_GIs(merge_annotations.out[0].join(find_GIs.out[0]))
 
       // Convert GFF file to GBK file
-      gff2gbk(merge_annotations.out[0].join(prokka.out[3]))
+      gff2gbk(merge_annotations.out[0].join(annotation_out_ch[3]))
 
       // Convert GFF file to sqldb
-      create_sql(merge_annotations.out[0].join(prokka.out[5])
-                                         .join(prokka.out[4])
-                                         .join(prokka.out[3])
+      create_sql(merge_annotations.out[0].join(annotation_out_ch[5])
+                                         .join(annotation_out_ch[4])
+                                         .join(annotation_out_ch[3])
                                          .join(digis.out[2]))
 
       // User wants to merge the final gff file?
@@ -319,7 +325,7 @@ workflow BACANNOT {
 
       */
       if (params.custom_db) {
-        custom_blast(merge_annotations.out[0].join(prokka.out[3]), custom_db)
+        custom_blast(merge_annotations.out[0].join(annotation_out_ch[3]), custom_db)
         custom_blast_report(custom_blast.out[0])
       }
 
@@ -349,7 +355,7 @@ workflow BACANNOT {
                           .join(draw_GIs.out[1],      remainder: true)
                           .join(phigaro_output_1,     remainder: true)
                           .join(platon_output,        remainder: true)
-                          .join(prokka.out[8],        remainder: true)
+                          .join(annotation_out_ch[8],        remainder: true)
                           .join(kegg_decoder_svg,     remainder: true)
                           .join(refseq_masher.out[0], remainder: true))
 
