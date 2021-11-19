@@ -114,7 +114,6 @@ params.skip_vfdb_db           = false
 params.skip_victors_db        = false
 params.skip_iceberg_db        = false
 params.skip_phast_db          = false
-params.skip_prokka_db         = false
 
 /*
  * Define log message
