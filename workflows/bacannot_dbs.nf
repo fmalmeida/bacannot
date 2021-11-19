@@ -1,6 +1,7 @@
 /*
  * Include modules
  */
+include { PROKKA_DB        } from '../modules/bacannot_dbs/prokka.nf'
 include { CARD_DB          } from '../modules/bacannot_dbs/card.nf'
 include { PLATON_DB        } from '../modules/bacannot_dbs/platon.nf'
 include { RESFINDER_DB     } from '../modules/bacannot_dbs/resfinder.nf'
@@ -18,6 +19,9 @@ include { PHAST_DB         } from '../modules/bacannot_dbs/phast.nf'
 */
 
 workflow CREATE_DBS {
+
+    // prokka database
+    if (!params.skip_prokka_db) { download_db("prokka", "PROKKA_DB") }
 
     // card database
     if (!params.skip_card_db) { download_db("card", "CARD_DB") }
