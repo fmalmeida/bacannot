@@ -107,7 +107,11 @@ params.skip_resfinder_db      = false
 params.skip_plasmidfinder_db  = false
 params.skip_phigaro_db        = false
 params.skip_amrfinder_db      = false
+params.skip_argminer_db       = false
 params.skip_vfdb_db           = false
+params.skip_victors_db        = false
+params.skip_iceberg_db        = false
+params.skip_phast_db          = false
 
 /*
  * Define log message

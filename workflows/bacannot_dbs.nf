@@ -7,7 +7,11 @@ include { RESFINDER_DB     } from '../modules/bacannot_dbs/resfinder.nf'
 include { PLASMIDFINDER_DB } from '../modules/bacannot_dbs/plasmidfinder.nf'
 include { PHIGARO_DB       } from '../modules/bacannot_dbs/phigaro.nf'
 include { AMRFINDER_DB     } from '../modules/bacannot_dbs/amrfinder.nf'
+include { ARGMINER_DB      } from '../modules/bacannot_dbs/argminer.nf'
 include { VFDB_DB          } from '../modules/bacannot_dbs/vfdb.nf'
+include { VICTORS_DB       } from '../modules/bacannot_dbs/victors.nf'
+include { ICEBERG_DB       } from '../modules/bacannot_dbs/iceberg.nf'
+include { PHAST_DB         } from '../modules/bacannot_dbs/phast.nf'
 
 /*
     DEF WORKFLOW
@@ -33,8 +37,20 @@ workflow CREATE_DBS {
     // amrfinder database
     if (!params.skip_amrfinder_db) { download_db("amrfinder", "AMRFINDER_DB") }
 
+    // argminer database
+    if (!params.skip_argminer_db) { download_db("argminer", "ARGMINER_DB") }
+
     // vfdb database
     if (!params.skip_vfdb_db) { download_db("vfdb", "VFDB_DB") }
+
+    // victors database
+    if (!params.skip_victors_db) { download_db("victors", "VICTORS_DB") }
+
+    // iceberg database
+    if (!params.skip_iceberg_db) { download_db("iceberg", "ICEBERG_DB") }
+
+    // phast database
+    if (!params.skip_phast_db) { download_db("phast", "PHAST_DB") }
 
 }
 
