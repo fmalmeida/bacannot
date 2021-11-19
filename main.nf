@@ -108,6 +108,11 @@ include { parse_samplesheet } from './workflows/parse_samples.nf'
 // Bacannot pipeline for multiple genomes
 include { BACANNOT } from './workflows/bacannot.nf'
 
+/*
+ * Create DBS modules
+ */
+include { CREATE_DBS } from './modules/generic/create_dbs.nf'
+
 
 /*
  * Define main workflow
@@ -115,7 +120,11 @@ include { BACANNOT } from './workflows/bacannot.nf'
 
 workflow {
 
-  if (params.input) {
+  if (params.get_dbs) {
+    CREATE_DBS()
+  }
+
+  else if (params.input) {
 
     // Load yaml
     samplesheet_yaml = file(params.input)
