@@ -63,18 +63,23 @@ if (params.get_samplesheet) {
 params.output                  = 'outdir'
 params.threads                 = 2
 params.bedtools_merge_distance = ''
+
 // Input parameters
 params.input  = ''
+
 // Prokka parameters
 params.prokka_kingdom      = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer  = false
+
 // User custom db
 params.custom_db           = ''
 params.blast_custom_minid  = 0
 params.blast_custom_mincov = 0
+
 // Resfinder parameters
 params.resfinder_species = ''
+
 // Blast parameters
 params.plasmids_minid          = 90
 params.plasmids_mincov         = 60
@@ -84,6 +89,7 @@ params.blast_resistance_minid  = 90
 params.blast_resistance_mincov = 80
 params.blast_MGEs_minid        = 65
 params.blast_MGEs_mincov       = 65
+
 // Workflow parameters
 params.skip_plasmid_search    = false
 params.skip_virulence_search  = false
@@ -92,6 +98,11 @@ params.skip_iceberg_search    = false
 params.skip_prophage_search   = false
 params.skip_kofamscan         = false
 params.skip_antismash         = false
+
+// database download
+params.force_update           = false
+params.skip_card_db           = false
+params.skip_platon_db         = false
 
 /*
  * Define log message
@@ -106,12 +117,8 @@ logMessage()
 include { parse_samplesheet } from './workflows/parse_samples.nf'
 
 // Bacannot pipeline for multiple genomes
-include { BACANNOT } from './workflows/bacannot.nf'
-
-/*
- * Create DBS modules
- */
-include { CREATE_DBS } from './modules/generic/create_dbs.nf'
+include { BACANNOT   } from './workflows/bacannot.nf'
+include { CREATE_DBS } from './workflows/bacannot_dbs.nf'
 
 
 /*

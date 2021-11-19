@@ -1,18 +1,11 @@
 process CREATE_DBS {
-    publishDir "${params.output}", mode: 'copy'
+    publishDir "${params.output}", mode: 'copy', overwrite: "$params.force_update"
    
     output:
-    file('barrnap_version.txt')
+    file("*")
 
     script:
-    """
-    # download CARD database
-    mkdir card_db && \\
-        wget https://card.mcmaster.ca/latest/data && \\
-        tar -xvf data ./card.json && \\
-        rm data && \\
-        mv card.json card_db
-   
+    """   
     # download platon database
     mkdir -p platon_db && \\
         wget -O platon_db/db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz"
