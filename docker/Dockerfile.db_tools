@@ -1,0 +1,17 @@
+FROM nfcore/base
+LABEL authors="Felipe Almeida" \
+      description="Docker image containing tools to get bacannot databases"
+
+# Install the conda environment
+RUN conda install -y -c conda-forge mamba
+COPY db_tools.yml /
+RUN mamba env create --quiet -f /db_tools.yml && mamba clean -a
+
+# Add conda installation dir to PATH (instead of doing 'conda activate')
+ENV PATH /opt/conda/envs/bacannot-db-tools/bin:$PATH
+
+# Dump the details of the installed packages to a file for posterity
+RUN conda env export --name bacannot-db-tools > bacannot-db-tools.yml
+
+# set CONDA_PREFIX
+ENV CONDA_PREFIX=/opt/conda

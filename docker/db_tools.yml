@@ -1,0 +1,19 @@
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f environment.yml
+name: bacannot-db-tools
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - anaconda
+
+dependencies:
+
+  ## anaconda packages
+  - anaconda::git
+
+  ## bioconda packages
+  - bioconda::mlst=2.19
+  - bioconda::blast=2.12.0
+  - bioconda::diamond=2.0.13
