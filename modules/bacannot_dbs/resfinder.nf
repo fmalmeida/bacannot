@@ -1,5 +1,6 @@
 process RESFINDER_DB {
     publishDir "${params.output}/resfinder_db", mode: 'copy', overwrite: "$params.force_update"
+    label 'db_download'
    
     output:
     file("*")

@@ -1,5 +1,6 @@
 process VFDB_DB {
     publishDir "${params.output}/vfdb_db", mode: 'copy', overwrite: "$params.force_update"
+    label 'db_download'
    
     output:
     file("*")

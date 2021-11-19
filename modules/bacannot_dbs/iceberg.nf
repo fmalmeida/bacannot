@@ -1,5 +1,6 @@
 process ICEBERG_DB {
     publishDir "${params.output}/iceberg_db", mode: 'copy', overwrite: "$params.force_update"
+    label 'db_download'
    
     output:
     file("*")
