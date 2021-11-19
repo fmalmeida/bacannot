@@ -6,16 +6,6 @@ process CREATE_DBS {
 
     script:
     """   
-    # download platon database
-    mkdir -p platon_db && \\
-        wget -O platon_db/db.tar.gz "https://zenodo.org/record/4066768/files/db.tar.gz"
-   
-    # download resfinder databases
-    mkdir resfinder_db && \\
-        git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder && \\
-        git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder && \\
-        mv db_resfinder db_pointfinder resfinder_db
-   
     # download plasmidfinder database
     git clone https://bitbucket.org/genomicepidemiology/plasmidfinder_db.git
 
