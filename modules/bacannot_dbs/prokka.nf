@@ -9,6 +9,7 @@ process PROKKA_DB {
     """
     # download prokka additional database
     wget https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/TIGRFAMs_15.0_HMM.LIB.gz && \
-	    gzip -d TIGRFAMs_15.0_HMM.LIB.gz
+	    gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \\
+        mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.0.hmm
     """
 }

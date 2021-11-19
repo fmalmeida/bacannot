@@ -1,43 +1,53 @@
-process prokka {
+process PROKKA {
     publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
       if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
       else if (filename == "annotation") "$filename"
       else null
     }
     tag "${prefix}"
-    label 'main'
 
     input:
     tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), file(assembly), val(resfinder_species)
+    file(bacannot_db)
 
     output:
     // Grab all outputs
     file "annotation"
     // Outputs must be linked to each prefix (tag)
-    tuple val(prefix), file("annotation/${prefix}.gff") // annotation in gff format
-    tuple val(prefix), file("annotation/${prefix}.gbk") // annotation in gbk format
-    tuple val(prefix), file("annotation/${prefix}.fna") // renamed genome
-    tuple val(prefix), file("annotation/${prefix}.faa") // gene aa sequences
-    tuple val(prefix), file("annotation/${prefix}.ffn") // gene nt sequences
-    tuple val(prefix), file("annotation/${prefix}.fna"), file("${lreads}"), file("${fast5}") // For methylation calling
-    tuple val(prefix), file("annotation/${prefix}.fna"), val("${resfinder_species}") // For resfinder
-    tuple val(prefix), file("annotation/${prefix}.txt") // prokka stats
-    file('prokka_version.txt') // Save prokka version
+    tuple val(prefix), path("annotation/${prefix}.gff"), emit: gff
+    tuple val(prefix), path("annotation/${prefix}.gbk"), emit: gbk
+    tuple val(prefix), path("annotation/${prefix}.fna"), emit: renamedGenome
+    tuple val(prefix), path("annotation/${prefix}.faa"), emit: genesAA
+    tuple val(prefix), path("annotation/${prefix}.ffn"), emit: genesNT
+    tuple val(prefix), path("annotation/${prefix}.fna"), path("${lreads}"), path("${fast5}"), emit: fast5
+    tuple val(prefix), path("annotation/${prefix}.fna"), val("${resfinder_species}"), emit: resfinder
+    tuple val(prefix), path("annotation/${prefix}.txt"), emit: stats
+    path('prokka_version.txt'), emit: version
 
     script:
     kingdom = (params.prokka_kingdom)      ? "--kingdom ${params.prokka_kingdom}"        : ''
     gcode   = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}"     : ''
     rnammer = (params.prokka_use_rnammer)  ? "--rnammer"                                 : ''
     """
-    # activate env
-    source activate PERL_env ;
-
-    # Save Prokka version
+    # save prokka version
     prokka -v &> prokka_version.txt ;
 
+    # rebuild prokka dbs with downloaded HMM
+    cp ${bacannot_db}/prokka_db/* \$(find / -name "hmm" -type d) ;
+    prokka --setupdb ;
+
     # Run prokka
-    prokka $kingdom $gcode $rnammer --outdir annotation \
-    --cpus ${params.threads} --mincontiglen 200 --prefix ${prefix} \
-    --genus '' --species '' --strain \"${prefix}\" $assembly
+    prokka \\
+        $kingdom \\
+        $gcode \\
+        $rnammer \\
+        --outdir annotation \\
+        --cpus ${params.threads} \\
+        --mincontiglen 200 \\
+        --prefix ${prefix} \\
+        --genus '' \\
+        --species '' \\
+        --strain \"${prefix}\" \\
+        $assembly
     """
 }

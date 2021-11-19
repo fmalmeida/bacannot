@@ -65,7 +65,8 @@ params.threads                 = 2
 params.bedtools_merge_distance = ''
 
 // Input parameters
-params.input  = ''
+params.input       = ''
+params.bacannot_db = ''
 
 // Prokka parameters
 params.prokka_kingdom      = ''
@@ -100,6 +101,7 @@ params.skip_kofamscan         = false
 params.skip_antismash         = false
 
 // database download
+params.get_dbs                = false
 params.force_update           = false
 params.skip_card_db           = false
 params.skip_platon_db         = false
@@ -143,6 +145,20 @@ workflow {
 
   else if (params.input) {
 
+    // check if user gave path to bacannot databases
+    if (!params.bacannot_db) {
+      // Message to user
+      exit("""
+      ERROR!
+      A major error has occurred!
+        ==> User forgot to set path to databases with --bacannot_db. Online documentation is available at: https://bacannot.readthedocs.io/en/latest/
+      Please, read the docs.
+      Cheers.
+      """)
+    } else {
+      bacannot_db = file(params.bacannot_db)
+    }
+
     // Load yaml
     samplesheet_yaml = file(params.input)
     parameter_yaml = samplesheet_yaml.readLines().join("\n")
@@ -158,6 +174,7 @@ workflow {
     // Run annotation
     BACANNOT(
       parse_samplesheet.out,
+      bacannot_db,
       (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty()
     )
 

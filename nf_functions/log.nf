@@ -30,6 +30,7 @@ def logMessage() {
     summary['Action']       = "Downloading databases for bacannot"
     summary['Output dir']   = "${params.output}"
   }
+  
   if(workflow.revision) summary['Pipeline Release'] = workflow.revision
   summary['Current home']   = "$HOME"
   summary['Current user']   = "$USER"
