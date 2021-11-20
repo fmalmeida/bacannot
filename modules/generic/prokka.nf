@@ -28,7 +28,7 @@ process PROKKA {
     kingdom = (params.prokka_kingdom)      ? "--kingdom ${params.prokka_kingdom}"        : ''
     gcode   = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}"     : ''
     rnammer = (params.prokka_use_rnammer)  ? "--rnammer"                                 : ''
-    pgap    - (params.prokka_skip_pgap)    ? "" : "cp ${bacannot_db}/prokka_db/PGAP_NCBI.hmm \${dbs_dir}/hmm"
+    pgap    = (params.prokka_skip_pgap)    ? "" : "cp ${bacannot_db}/prokka_db/PGAP_NCBI.hmm \${dbs_dir}/hmm"
     """
     # save prokka version
     prokka -v &> prokka_version.txt ;
