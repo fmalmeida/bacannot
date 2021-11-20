@@ -1,4 +1,4 @@
-process barrnap {
+process BARRNAP {
    publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
      if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
      else "rRNA/$filename"
@@ -10,19 +10,16 @@ process barrnap {
    tuple val(prefix), file(genome)
 
    output:
-   tuple val(prefix), file("${prefix}_rRNA.gff")
-   tuple val(prefix), file("${prefix}_rRNA.fa") optional true
-   file('barrnap_version.txt')
+   tuple val(prefix), path("${prefix}_rRNA.gff"), emit: gff
+   tuple val(prefix), path("${prefix}_rRNA.fa") , emit: fasta
+   path('barrnap_version.txt')                  , emit: version
 
    script:
    """
-   # activate env
-   source activate PERL_env ;
-
-   # Save barrnap tool version
+   # save barrnap tool version
    barrnap --version &> barrnap_version.txt ;
 
-   # Run barrnap
+   # run barrnap
    barrnap -o ${prefix}_rRNA.fa < $genome > ${prefix}_rRNA.gff
    """
 }
