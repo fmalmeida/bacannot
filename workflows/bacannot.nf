@@ -15,7 +15,7 @@ include { refseq_masher } from '../modules/generic/mash.nf'
 include { PROKKA } from '../modules/generic/prokka.nf'
 
 // MLST annotation
-include { mlst } from '../modules/generic/mlst.nf'
+include { MLST } from '../modules/generic/mlst.nf'
 
 // rRNA annotation
 include { barrnap } from '../modules/generic/barrnap.nf'
@@ -135,8 +135,11 @@ workflow BACANNOT {
         dbs_ch
       )
 
-      // // Second step -- MLST analysis
-      // mlst(prokka.out[3])
+      // Second step -- MLST analysis
+      MLST(
+        PROKKA.out.renamedGenome,
+        dbs_ch
+      )
 
       // // Third step -- rRNA annotation
       // barrnap(prokka.out[3])

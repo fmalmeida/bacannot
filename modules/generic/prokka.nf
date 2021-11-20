@@ -28,15 +28,20 @@ process PROKKA {
     kingdom = (params.prokka_kingdom)      ? "--kingdom ${params.prokka_kingdom}"        : ''
     gcode   = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}"     : ''
     rnammer = (params.prokka_use_rnammer)  ? "--rnammer"                                 : ''
+    pgap    - (params.prokka_skip_pgap)    ? "" : "cp ${bacannot_db}/prokka_db/PGAP_NCBI.hmm \${dbs_dir}/hmm"
     """
     # save prokka version
     prokka -v &> prokka_version.txt ;
 
-    # rebuild prokka dbs with downloaded HMM
-    cp ${bacannot_db}/prokka_db/* \$(find / -name "hmm" -type d) ;
+    # copy additional prokka HMM dbs
+    dbs_dir=\$(prokka --listdb 2>&1 >/dev/null |  grep "databases in" | cut -f 4 -d ":" | tr -d " ") ;
+    cp ${bacannot_db}/prokka_db/TIGRFAMs_15.0.hmm \${dbs_dir}/hmm ;
+    ${pgap} ;                             # get PGAP for prokka if user wants
+
+    # rebuild prokka databases
     prokka --setupdb ;
 
-    # Run prokka
+    # run prokka
     prokka \\
         $kingdom \\
         $gcode \\

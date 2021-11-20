@@ -72,6 +72,7 @@ params.bacannot_db = ''
 params.prokka_kingdom      = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer  = false
+params.prokka_skip_pgap    = false
 
 // User custom db
 params.custom_db           = ''

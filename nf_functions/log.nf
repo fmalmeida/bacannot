@@ -37,5 +37,5 @@ def logMessage() {
   summary['Current path']   = "$PWD"
   summary['Configuration file'] = workflow.configFiles[0]
   log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
-  log.info "=============================================================="
+  log.info "================================================================="
 }
