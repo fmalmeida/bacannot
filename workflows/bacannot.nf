@@ -21,7 +21,7 @@ include { MLST } from '../modules/generic/mlst.nf'
 include { BARRNAP } from '../modules/generic/barrnap.nf'
 
 // Calculate GC content
-include { compute_gc } from '../modules/generic/compute_gc.nf'
+include { COMPUTE_GC } from '../modules/generic/compute_gc.nf'
 
 // KOFAM annotation
 include { kofamscan } from '../modules/KOs/kofamscan.nf'
@@ -144,8 +144,8 @@ workflow BACANNOT {
       // Third step -- rRNA annotation
       BARRNAP(PROKKA.out.renamedGenome)
 
-      // // Fouth step -- calculate GC content for JBrowse
-      // compute_gc(PROKKA.out[3])
+      // Fouth step -- calculate GC content for JBrowse
+      COMPUTE_GC(PROKKA.out.renamedGenome)
 
       // // Fifth step -- run kofamscan
       // if (params.skip_kofamscan == false) {
