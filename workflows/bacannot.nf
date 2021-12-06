@@ -33,7 +33,7 @@ include { kegg_decoder } from '../modules/KOs/kegg-decoder.nf'
 include { PLASMIDFINDER } from '../modules/MGEs/plasmidfinder.nf'
 
 // Plasmid annotation with platon
-include { platon } from '../modules/MGEs/platon.nf'
+include { PLATON } from '../modules/MGEs/platon.nf'
 
 // Virulence annotation with VFDB
 include { vfdb } from '../modules/virulence/vfdb.nf'
@@ -169,12 +169,8 @@ workflow BACANNOT {
         PLASMIDFINDER(PROKKA.out.renamedGenome, dbs_ch)
 
         // platon
-        //platon(PROKKA.out[3])
-        //platon_output = platon.out[1]
+        PLATON(PROKKA.out.renamedGenome, dbs_ch)
 
-      } else {
-        plasmidfinder_output = Channel.empty()
-        platon_output        = Channel.empty()
       }
 
       // // IslandPath software
