@@ -1,0 +1,17 @@
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f environment.yml
+name: bacannot-custom
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - anaconda
+  - falmeida
+
+dependencies:
+
+  # bioconda packages
+  - bioconda::phigaro>=2.3.0
+  - bioconda::refseq_masher
+  - bioconda::rgi>=5.2.0
