@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-MAINTAINER Felipe Marques <marques.felipe@aluno.unb.br>
+LABEL MAINTAINER Felipe Marques <marques.felipe@aluno.unb.br>
 
 WORKDIR /work
 
