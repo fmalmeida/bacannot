@@ -30,7 +30,7 @@ include { kofamscan } from '../modules/KOs/kofamscan.nf'
 include { kegg_decoder } from '../modules/KOs/kegg-decoder.nf'
 
 // Plasmid annotation with plasmidfinder
-include { plasmidfinder } from '../modules/MGEs/plasmidfinder.nf'
+include { PLASMIDFINDER } from '../modules/MGEs/plasmidfinder.nf'
 
 // Plasmid annotation with platon
 include { platon } from '../modules/MGEs/platon.nf'
@@ -158,22 +158,24 @@ workflow BACANNOT {
       //   kegg_decoder_svg = Channel.empty()
       // }
 
-      // /*
-      //     Sixth step -- MGE, Virulence and AMR annotations
-      // */
+      /*
+          Sixth step -- MGE, Virulence and AMR annotations
+      */
 
-      // // Plasmid finder
-      // if (params.skip_plasmid_search == false) {
-      //   // plasmidfinder
-      //   plasmidfinder(PROKKA.out[3])
-      //   plasmidfinder_output = plasmidfinder.out[1]
-      //   // platon
-      //   platon(PROKKA.out[3])
-      //   platon_output = platon.out[1]
-      // } else {
-      //   plasmidfinder_output = Channel.empty()
-      //   platon_output = Channel.empty()
-      // }
+      // plasmids
+      if (params.skip_plasmid_search == false) {
+        
+        // plasmidfinder
+        PLASMIDFINDER(PROKKA.out.renamedGenome, dbs_ch)
+
+        // platon
+        //platon(PROKKA.out[3])
+        //platon_output = platon.out[1]
+
+      } else {
+        plasmidfinder_output = Channel.empty()
+        platon_output        = Channel.empty()
+      }
 
       // // IslandPath software
       // find_GIs(PROKKA.out[2])
