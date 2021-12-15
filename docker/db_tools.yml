@@ -10,6 +10,13 @@ channels:
 
 dependencies:
 
+  ## pip dependecies
+  - pip
+  - pip:
+    - docopt
+    - pandas
+
+
   ## conda-forge packages
   - conda-forge::curl
 

@@ -36,7 +36,7 @@ include { PLASMIDFINDER } from '../modules/MGEs/plasmidfinder.nf'
 include { PLATON } from '../modules/MGEs/platon.nf'
 
 // Virulence annotation with VFDB
-include { vfdb } from '../modules/virulence/vfdb.nf'
+include { VFDB } from '../modules/virulence/vfdb.nf'
 
 // Virulence annotation with Victors
 include { victors } from '../modules/virulence/victors.nf'
@@ -176,18 +176,15 @@ workflow BACANNOT {
       // IslandPath software
       ISLANDPATH(PROKKA.out.gbk)
 
-      // // Virulence search
-      // if (params.skip_virulence_search == false) {
-      //   // VFDB
-      //   vfdb(PROKKA.out[5])
-      //   vfdb_output = vfdb.out[1]
-      //   // Victors db
-      //   victors(PROKKA.out[4])
-      //   victors_output = victors.out[1]
-      // } else {
-      //   vfdb_output = Channel.empty()
-      //   victors_output = Channel.empty()
-      // }
+      // Virulence search
+      if (params.skip_virulence_search == false) {
+        
+        // VFDB
+        VFDB(PROKKA.out.genesNT, dbs_ch)
+        
+        // Victors db
+        // victors(PROKKA.out[4])
+      }
 
       // // Prophage search
       // if (params.skip_prophage_search == false) {
