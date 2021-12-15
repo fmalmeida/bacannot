@@ -9,16 +9,8 @@ WORKDIR /work
 RUN conda install -y -c anaconda -c bioconda -c conda-forge -c defaults \
 		pip samtools "platon>=1.6.0" emboss nomkl seqkit \
 		plasmidfinder phispy "blast>=2.11.0" "diamond>=2" "biopython>=1.71" prodigal hmmer \
-		minimap2 bedtools bc ncbi-amrfinderplus kma && \
+		minimap2 bedtools bc ncbi-amrfinderplus nanopolish kma && \
 		conda clean -afy
-RUN apt-get update && \
-		apt-get install -y procps build-essential libhdf5-dev && \
-		apt-get update && apt-get install -y  && \
-		git clone --recursive https://github.com/jts/nanopolish.git && \
-		cd nanopolish && \
-		make all && \
-		rm /work/nanopolish/hdf5-1.8.14.tar.gz /work/nanopolish/eigen-3.3.7.tar.bz2
-ENV PATH="$PATH:/work/nanopolish"
 RUN python3 -m pip install docopt pandas tabulate numpy bcbio-gff cgecore gitpython setuptools python-dateutil && \
 		git clone https://github.com/fmalmeida/gff-toolbox.git && \
 		cd gff-toolbox && \
@@ -32,11 +24,7 @@ RUN python3 -m pip install docopt pandas tabulate numpy bcbio-gff cgecore gitpyt
 ### tools that rely on PERL ###
 ###############################
 RUN conda create -n PERL_env -c bioconda -c conda-forge -c defaults -y "prokka>=1.14" mlst nomkl islandpath && \
-		wget https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/TIGRFAMs_15.0_HMM.LIB.gz && \
-		gzip -d TIGRFAMs_15.0_HMM.LIB.gz && \
-		mv TIGRFAMs_15.0_HMM.LIB TIGRFAMs_15.hmm && \
-		mv TIGRFAMs_15.hmm /opt/conda/envs/PERL_env/db/hmm/ && \
-    	conda run -n PERL_env prokka --setupdb && \
+		conda run -n PERL_env prokka --setupdb && \
 		git clone https://github.com/brinkmanlab/islandpath.git ./islandpath && \
 		ln -rs ./islandpath/Dimob.pl /usr/local/bin && \
 		conda run -n PERL_env python -m pip install biopython && \

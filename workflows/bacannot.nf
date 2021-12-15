@@ -54,7 +54,7 @@ include { phispy } from '../modules/prophages/phispy.nf'
 include { iceberg } from '../modules/MGEs/iceberg.nf'
 
 // Genomic Islands detection with Islandpath-DIMOB
-include { find_GIs } from '../modules/MGEs/islandPath_DIMOB.nf'
+include { ISLANDPATH } from '../modules/MGEs/islandpath.nf'
 include { draw_GIs } from '../modules/MGEs/draw_gis.nf'
 
 // IS identification
@@ -173,8 +173,8 @@ workflow BACANNOT {
 
       }
 
-      // // IslandPath software
-      // find_GIs(PROKKA.out[2])
+      // IslandPath software
+      ISLANDPATH(PROKKA.out.gbk)
 
       // // Virulence search
       // if (params.skip_virulence_search == false) {

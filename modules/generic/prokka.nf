@@ -12,7 +12,7 @@ process PROKKA {
 
     output:
     // Grab all outputs
-    file "annotation"
+    path("annotation"), emit: all
     // Outputs must be linked to each prefix (tag)
     tuple val(prefix), path("annotation/${prefix}.gff"), emit: gff
     tuple val(prefix), path("annotation/${prefix}.gbk"), emit: gbk
