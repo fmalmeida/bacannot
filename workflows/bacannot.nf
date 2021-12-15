@@ -42,7 +42,7 @@ include { VFDB } from '../modules/virulence/vfdb.nf'
 include { VICTORS } from '../modules/virulence/victors.nf'
 
 // Prophage annotation with PHAST
-include { phast } from '../modules/prophages/phast.nf'
+include { PHAST } from '../modules/prophages/phast.nf'
 
 // Prophage annotation with PHIGARO
 include { phigaro } from '../modules/prophages/phigaro.nf'
@@ -185,24 +185,17 @@ workflow BACANNOT {
         VICTORS(PROKKA.out.genesAA, dbs_ch)
       }
 
-      // // Prophage search
-      // if (params.skip_prophage_search == false) {
-      //   // PHAST db
-      //   phast(PROKKA.out[4])
-      //   phast_output = phast.out[1]
-      //   // Phigaro software
-      //   phigaro(PROKKA.out[3])
-      //   phigaro_output_1 = phigaro.out[0]
-      //   phigaro_output_2 = phigaro.out[1]
-      //   // PhiSpy
-      //   phispy(PROKKA.out[2])
-      //   phispy_output = phispy.out[1]
-      // } else {
-      //   phast_output = Channel.empty()
-      //   phigaro_output_1 = Channel.empty()
-      //   phigaro_output_2 = Channel.empty()
-      //   phispy_output = Channel.empty()
-      // }
+      // Prophage search
+      if (params.skip_prophage_search == false) {
+        // PHAST db
+        PHAST(PROKKA.out.genesAA, dbs_ch)
+        
+        // Phigaro software
+        // phigaro(PROKKA.out[3])
+        
+        // PhiSpy
+        // phispy(PROKKA.out[2])
+      }
 
       // // ICEs search
       // if (params.skip_iceberg_search == false) {

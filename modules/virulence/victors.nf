@@ -15,7 +15,7 @@ process VICTORS {
 
   script:
   """
-  # VFDB has protein database
+  # Victors has protein database
   run_blasts.py \\
       blastp \\
       --query $genes \\
