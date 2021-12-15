@@ -1,5 +1,6 @@
 process COMPUTE_GC {
   tag "${prefix}"
+  label 'misc'
 
   input:
   tuple val(prefix), file(genome)

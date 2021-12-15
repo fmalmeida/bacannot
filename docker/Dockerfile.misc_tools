@@ -4,14 +4,14 @@ LABEL authors="Felipe Almeida" \
 
 # Install the conda environment
 RUN conda install -y -c conda-forge mamba
-COPY db_tools.yml /
-RUN mamba env create --quiet -f /db_tools.yml && mamba clean -a
+COPY misc_tools.yml /
+RUN mamba env create --quiet -f /misc_tools.yml && mamba clean -a
 
 # Add conda installation dir to PATH (instead of doing 'conda activate')
-ENV PATH /opt/conda/envs/bacannot-db-tools/bin:$PATH
+ENV PATH /opt/conda/envs/bacannot-miscellaneous/bin:$PATH
 
 # Dump the details of the installed packages to a file for posterity
-RUN conda env export --name bacannot-db-tools > bacannot-db-tools.yml
+RUN conda env export --name bacannot-miscellaneous > bacannot-miscellaneous.yml
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda

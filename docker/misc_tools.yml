@@ -1,6 +1,6 @@
 # You can use this file to create a conda environment for this pipeline:
 #   conda env create -f environment.yml
-name: bacannot-db-tools
+name: bacannot-miscellaneous
 
 channels:
   - conda-forge
@@ -26,3 +26,5 @@ dependencies:
   ## bioconda packages
   - bioconda::blast=2.12.0
   - bioconda::diamond=2.0.13
+  - bioconda::bedtools=2.30
+  - bioconda::samtools=1.14
