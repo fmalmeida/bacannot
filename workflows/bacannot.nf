@@ -39,7 +39,7 @@ include { PLATON } from '../modules/MGEs/platon.nf'
 include { VFDB } from '../modules/virulence/vfdb.nf'
 
 // Virulence annotation with Victors
-include { victors } from '../modules/virulence/victors.nf'
+include { VICTORS } from '../modules/virulence/victors.nf'
 
 // Prophage annotation with PHAST
 include { phast } from '../modules/prophages/phast.nf'
@@ -177,13 +177,12 @@ workflow BACANNOT {
       ISLANDPATH(PROKKA.out.gbk)
 
       // Virulence search
-      if (params.skip_virulence_search == false) {
-        
+      if (params.skip_virulence_search == false) {     
         // VFDB
         VFDB(PROKKA.out.genesNT, dbs_ch)
         
         // Victors db
-        // victors(PROKKA.out[4])
+        VICTORS(PROKKA.out.genesAA, dbs_ch)
       }
 
       // // Prophage search
