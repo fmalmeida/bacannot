@@ -45,7 +45,7 @@ include { VICTORS } from '../modules/virulence/victors.nf'
 include { PHAST } from '../modules/prophages/phast.nf'
 
 // Prophage annotation with PHIGARO
-include { phigaro } from '../modules/prophages/phigaro.nf'
+include { PHIGARO } from '../modules/prophages/phigaro.nf'
 
 // Prophage annotation with phispy
 include { phispy } from '../modules/prophages/phispy.nf'
@@ -191,7 +191,7 @@ workflow BACANNOT {
         PHAST(PROKKA.out.genesAA, dbs_ch)
         
         // Phigaro software
-        // phigaro(PROKKA.out[3])
+        PHIGARO(PROKKA.out.renamedGenome, dbs_ch)
         
         // PhiSpy
         // phispy(PROKKA.out[2])
