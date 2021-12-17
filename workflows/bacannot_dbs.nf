@@ -14,6 +14,7 @@ include { VFDB_DB          } from '../modules/bacannot_dbs/vfdb.nf'
 include { VICTORS_DB       } from '../modules/bacannot_dbs/victors.nf'
 include { ICEBERG_DB       } from '../modules/bacannot_dbs/iceberg.nf'
 include { PHAST_DB         } from '../modules/bacannot_dbs/phast.nf'
+include { KOFAMSCAN_DB     } from '../modules/bacannot_dbs/kofamscan.nf'
 
 /*
     DEF WORKFLOW
@@ -28,6 +29,11 @@ workflow CREATE_DBS {
     // mlst database
     // core pipeline -- cannot skip
     download_db("mlst", "MLST_DB")
+
+    /*
+     * kofamscan -- can skip
+     */
+    if (!params.skip_kofamscan_db) { download_db("kofamscan", "KOFAMSCAN_DB") }
 
     /*
      * resistance -- can skip

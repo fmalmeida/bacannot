@@ -104,6 +104,7 @@ params.skip_antismash         = false
 // database download
 params.get_dbs                = false
 params.force_update           = false
+params.skip_kofamscan_db      = false
 params.skip_card_db           = false
 params.skip_platon_db         = false
 params.skip_resfinder_db      = false
