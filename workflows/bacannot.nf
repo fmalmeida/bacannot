@@ -51,7 +51,7 @@ include { PHIGARO } from '../modules/prophages/phigaro.nf'
 include { PHISPY } from '../modules/prophages/phispy.nf'
 
 // ICE annotation with ICEberg db
-include { iceberg } from '../modules/MGEs/iceberg.nf'
+include { ICEBERG } from '../modules/MGEs/iceberg.nf'
 
 // Genomic Islands detection with Islandpath-DIMOB
 include { ISLANDPATH } from '../modules/MGEs/islandpath.nf'
@@ -197,16 +197,11 @@ workflow BACANNOT {
         PHISPY(PROKKA.out.gbk)
       }
 
-      // // ICEs search
-      // if (params.skip_iceberg_search == false) {
-      //   // ICEberg db
-      //   iceberg(PROKKA.out[4], PROKKA.out[3])
-      //   iceberg_output = iceberg.out[1]
-      //   iceberg_output_2 = iceberg.out[2]
-      // } else {
-      //   iceberg_output = Channel.empty()
-      //   iceberg_output_2 = Channel.empty()
-      // }
+      // ICEs search
+      if (params.skip_iceberg_search == false) {
+        // ICEberg db
+        ICEBERG(PROKKA.out.genesAA, PROKKA.out.renamedGenome, dbs_ch)
+      }
 
       // // AMR search
       // if (params.skip_resistance_search == false) {
