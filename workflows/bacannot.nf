@@ -48,7 +48,7 @@ include { PHAST } from '../modules/prophages/phast.nf'
 include { PHIGARO } from '../modules/prophages/phigaro.nf'
 
 // Prophage annotation with phispy
-include { phispy } from '../modules/prophages/phispy.nf'
+include { PHISPY } from '../modules/prophages/phispy.nf'
 
 // ICE annotation with ICEberg db
 include { iceberg } from '../modules/MGEs/iceberg.nf'
@@ -194,7 +194,7 @@ workflow BACANNOT {
         PHIGARO(PROKKA.out.renamedGenome, dbs_ch)
         
         // PhiSpy
-        // phispy(PROKKA.out[2])
+        PHISPY(PROKKA.out.gbk)
       }
 
       // // ICEs search
