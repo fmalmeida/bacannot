@@ -3,22 +3,22 @@
  */
 
 // Unicycler assembly
-include { unicycler } from '../modules/assembly/unicycler.nf'
+include { UNICYCLER } from '../modules/assembly/unicycler.nf'
 
 // Flye assembly
-include { flye } from '../modules/assembly/flye.nf'
+include { FLYE } from '../modules/assembly/flye.nf'
 
 // Species identification
-include { refseq_masher } from '../modules/generic/mash.nf'
+include { REFSEQ_MASHER } from '../modules/generic/mash.nf'
 
 // Prokka annotation
-include { prokka } from '../modules/generic/prokka.nf'
+include { PROKKA } from '../modules/generic/prokka.nf'
 
 // MLST annotation
-include { mlst } from '../modules/generic/mlst.nf'
+include { MLST } from '../modules/generic/mlst.nf'
 
 // rRNA annotation
-include { barrnap } from '../modules/generic/barrnap.nf'
+include { BARRNAP } from '../modules/generic/barrnap.nf'
 
 // Calculate GC content
 include { compute_gc } from '../modules/generic/compute_gc.nf'

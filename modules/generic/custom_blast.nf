@@ -1,4 +1,4 @@
-process custom_blast {
+process CUSTOM_BLAST {
   publishDir "${params.output}/${prefix}/custom_annotations/${customDB.baseName}", mode: 'copy'
   tag "${prefix}"
   label 'main'

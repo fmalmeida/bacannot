@@ -1,4 +1,4 @@
-process amrfinder {
+process AMRFINDER {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "resistance/AMRFinderPlus/$filename"

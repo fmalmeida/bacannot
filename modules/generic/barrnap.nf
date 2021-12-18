@@ -1,4 +1,4 @@
-process barrnap {
+process BARRNAP {
    publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
      if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
      else "rRNA/$filename"

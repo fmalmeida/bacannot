@@ -1,4 +1,4 @@
-process digis {
+process DIGIS {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else if (filename == "${prefix}.gff") null

@@ -1,4 +1,4 @@
-process phast {
+process PHAST {
   publishDir "${params.output}/${prefix}/prophages/phast_db", mode: 'copy'
   tag "${prefix}"
   label 'main'

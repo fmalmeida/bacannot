@@ -1,4 +1,4 @@
-process draw_GIs {
+process DRAW_GIS {
   publishDir "${params.output}/${prefix}/genomic_islands", mode: 'copy', saveAs: { filename ->
     if (filename == "plots") "$filename"
     else null
