@@ -137,26 +137,26 @@ workflow BACANNOT {
 
       // Second step -- MLST analysis
       MLST(
-        PROKKA.out.renamedGenome,
+        PROKKA.out[3],
         dbs_ch
       )
 
       // Third step -- rRNA annotation
-      BARRNAP(PROKKA.out.renamedGenome)
+      BARRNAP(PROKKA.out[3])
 
       // Fouth step -- calculate GC content for JBrowse
-      COMPUTE_GC(PROKKA.out.renamedGenome)
+      COMPUTE_GC(PROKKA.out[3])
 
-      // // Fifth step -- run kofamscan
-      // if (params.skip_kofamscan == false) {
-      //   kofamscan(PROKKA.out[4])
-      //   kegg_decoder(kofamscan.out[1])
-      //   kofamscan_output = kofamscan.out[1]
-      //   kegg_decoder_svg = kegg_decoder.out[1]
-      // } else {
-      //   kofamscan_output = Channel.empty()
-      //   kegg_decoder_svg = Channel.empty()
-      // }
+      // Fifth step -- run kofamscan
+      if (params.skip_kofamscan == false) {
+        kofamscan(PROKKA.out[4])
+        //kegg_decoder(kofamscan.out[1])
+        //kofamscan_output = kofamscan.out[1]
+        //kegg_decoder_svg = kegg_decoder.out[1]
+      } else {
+        kofamscan_output = Channel.empty()
+        kegg_decoder_svg = Channel.empty()
+      }
 
       /*
           Sixth step -- MGE, Virulence and AMR annotations
@@ -166,10 +166,10 @@ workflow BACANNOT {
       if (params.skip_plasmid_search == false) {
         
         // plasmidfinder
-        PLASMIDFINDER(PROKKA.out.renamedGenome, dbs_ch)
+        PLASMIDFINDER(PROKKA.out[3], dbs_ch)
 
         // platon
-        PLATON(PROKKA.out.renamedGenome, dbs_ch)
+        PLATON(PROKKA.out[3], dbs_ch)
 
       }
 
@@ -191,7 +191,7 @@ workflow BACANNOT {
         PHAST(PROKKA.out.genesAA, dbs_ch)
         
         // Phigaro software
-        PHIGARO(PROKKA.out.renamedGenome, dbs_ch)
+        PHIGARO(PROKKA.out[3], dbs_ch)
         
         // PhiSpy
         PHISPY(PROKKA.out.gbk)
@@ -200,7 +200,7 @@ workflow BACANNOT {
       // ICEs search
       if (params.skip_iceberg_search == false) {
         // ICEberg db
-        ICEBERG(PROKKA.out.genesAA, PROKKA.out.renamedGenome, dbs_ch)
+        ICEBERG(PROKKA.out.genesAA, PROKKA.out[3], dbs_ch)
       }
 
       // // AMR search

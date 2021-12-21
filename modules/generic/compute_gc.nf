@@ -7,7 +7,7 @@ process COMPUTE_GC {
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("input_GC_500_bps.sorted.bedGraph"), file("input.sizes")
+  tuple val(prefix), path("input_GC_500_bps.sorted.bedGraph"), path("input.sizes")
 
   script:
   """

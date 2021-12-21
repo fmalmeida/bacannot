@@ -9,9 +9,9 @@ process VICTORS {
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), path("${prefix}_victors_blastp_onGenes.summary.txt"), emit: summary
-  tuple val(prefix), path("${prefix}_victors_blastp_onGenes.txt"), emit: results
-  path('*.txt'), emit: all
+  tuple val(prefix), path("${prefix}_victors_blastp_onGenes.summary.txt")
+  tuple val(prefix), path("${prefix}_victors_blastp_onGenes.txt")
+  path('*.txt')
 
   script:
   """

@@ -10,8 +10,8 @@ process PLASMIDFINDER {
   file(bacannot_db)
 
   output:
-  tuple val(prefix), path("plasmidfinder"), emit: all
-  tuple val(prefix), path("plasmidfinder/results_tab.tsv"), emit: results
+  tuple val(prefix), path("plasmidfinder")
+  tuple val(prefix), path("plasmidfinder/results_tab.tsv")
 
   script:
   """

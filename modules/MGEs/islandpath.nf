@@ -7,7 +7,7 @@ process ISLANDPATH {
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), path("${prefix}_predicted_GIs.bed"), emit: results
+  tuple val(prefix), path("${prefix}_predicted_GIs.bed")
 
   script:
   """

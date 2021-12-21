@@ -12,17 +12,17 @@ process PROKKA {
 
     output:
     // Grab all outputs
-    path("annotation"), emit: all
+    path("annotation")
     // Outputs must be linked to each prefix (tag)
-    tuple val(prefix), path("annotation/${prefix}.gff"), emit: gff
-    tuple val(prefix), path("annotation/${prefix}.gbk"), emit: gbk
-    tuple val(prefix), path("annotation/${prefix}.fna"), emit: renamedGenome
-    tuple val(prefix), path("annotation/${prefix}.faa"), emit: genesAA
-    tuple val(prefix), path("annotation/${prefix}.ffn"), emit: genesNT
-    tuple val(prefix), path("annotation/${prefix}.fna"), path("${lreads}"), path("${fast5}"), emit: fast5
-    tuple val(prefix), path("annotation/${prefix}.fna"), val("${resfinder_species}"), emit: resfinder
-    tuple val(prefix), path("annotation/${prefix}.txt"), emit: stats
-    path('prokka_version.txt'), emit: version
+    tuple val(prefix), path("annotation/${prefix}.gff")
+    tuple val(prefix), path("annotation/${prefix}.gbk")
+    tuple val(prefix), path("annotation/${prefix}.fna")
+    tuple val(prefix), path("annotation/${prefix}.faa")
+    tuple val(prefix), path("annotation/${prefix}.ffn")
+    tuple val(prefix), path("annotation/${prefix}.fna"), path("${lreads}"), path("${fast5}")
+    tuple val(prefix), path("annotation/${prefix}.fna"), val("${resfinder_species}")
+    tuple val(prefix), path("annotation/${prefix}.txt")
+    path('prokka_version.txt')
 
     script:
     kingdom = (params.prokka_kingdom)      ? "--kingdom ${params.prokka_kingdom}"        : ''

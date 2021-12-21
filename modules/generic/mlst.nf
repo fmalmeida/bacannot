@@ -10,9 +10,9 @@ process MLST {
    file(bacannot_db)
 
    output:
-   tuple val(prefix), path("${prefix}_mlst_analysis.txt")  , emit: mlst optional true
-   tuple val(prefix), path("${prefix}_novel_alleles.fasta"), emit: novelAlleles optional true
-   path('mlst_version.txt'), emit: version
+   tuple val(prefix), path("${prefix}_mlst_analysis.txt")   optional true
+   tuple val(prefix), path("${prefix}_novel_alleles.fasta") optional true
+   path('mlst_version.txt')
 
    script:
    """
