@@ -15,6 +15,7 @@ dependencies:
   - pip:
     - docopt
     - pandas
+    - KEGGDecoder
 
 
   ## conda-forge packages
@@ -22,6 +23,7 @@ dependencies:
 
   ## anaconda packages
   - anaconda::git
+  - anaconda::python=3.7
 
   ## bioconda packages
   - bioconda::blast=2.12.0

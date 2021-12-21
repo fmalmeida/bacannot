@@ -1,7 +1,7 @@
-process kegg_decoder {
+process KEGG_DECODER {
   publishDir "${params.output}/${prefix}/KOfamscan", mode: 'copy'
   tag "${prefix}"
-  label 'kofam'
+  label 'misc'
 
   input:
   tuple val(prefix), file('input_mapper.txt')
@@ -13,11 +13,10 @@ process kegg_decoder {
 
   script:
   """
-  # KEGG-DECODER
-  source activate kegg-decoder-env ;
-
-  # Draw static heatmap
-  KEGG-decoder --input input_mapper.txt\
-  --output ${prefix}_kegg-decoder_heatmap-static.tsv --vizoption static ;
+  # draw static heatmap
+  KEGG-decoder \\
+      --input input_mapper.txt \\
+      --output ${prefix}_kegg-decoder_heatmap_static.tsv \\
+      --vizoption static ;
   """
 }

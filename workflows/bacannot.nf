@@ -27,7 +27,7 @@ include { COMPUTE_GC } from '../modules/generic/compute_gc.nf'
 include { KOFAMSCAN } from '../modules/KOs/kofamscan.nf'
 
 // KEGG decoder
-include { kegg_decoder } from '../modules/KOs/kegg-decoder.nf'
+include { KEGG_DECODER } from '../modules/KOs/kegg-decoder.nf'
 
 // Plasmid annotation with plasmidfinder
 include { PLASMIDFINDER } from '../modules/MGEs/plasmidfinder.nf'
@@ -144,12 +144,12 @@ workflow BACANNOT {
       // Fifth step -- run kofamscan
       if (params.skip_kofamscan == false) {
         KOFAMSCAN(PROKKA.out[4], dbs_ch)
-        //kegg_decoder(kofamscan.out[1])
-        //kofamscan_output = kofamscan.out[1]
-        //kegg_decoder_svg = kegg_decoder.out[1]
+        KEGG_DECODER(KOFAMSCAN.out[1])
+        kofamscan_output_ch = KOFAMSCAN.out[1]
+        kegg_decoder_svg_ch = KEGG_DECODER.out[1]
       } else {
-        kofamscan_output = Channel.empty()
-        kegg_decoder_svg = Channel.empty()
+        kofamscan_output_ch = Channel.empty()
+        kegg_decoder_svg_ch = Channel.empty()
       }
 
       /*
