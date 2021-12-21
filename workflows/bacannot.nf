@@ -24,7 +24,7 @@ include { BARRNAP } from '../modules/generic/barrnap.nf'
 include { COMPUTE_GC } from '../modules/generic/compute_gc.nf'
 
 // KOFAM annotation
-include { kofamscan } from '../modules/KOs/kofamscan.nf'
+include { KOFAMSCAN } from '../modules/KOs/kofamscan.nf'
 
 // KEGG decoder
 include { kegg_decoder } from '../modules/KOs/kegg-decoder.nf'
@@ -130,16 +130,10 @@ workflow BACANNOT {
       flye(parsed_inputs.flye)
 
       // First step -- Prokka annotation
-      PROKKA(
-        parsed_inputs.annotation.mix(flye.out[1], unicycler.out[1]), 
-        dbs_ch
-      )
+      PROKKA(parsed_inputs.annotation.mix(flye.out[1], unicycler.out[1]), dbs_ch)
 
       // Second step -- MLST analysis
-      MLST(
-        PROKKA.out[3],
-        dbs_ch
-      )
+      MLST(PROKKA.out[3], dbs_ch)
 
       // Third step -- rRNA annotation
       BARRNAP(PROKKA.out[3])
@@ -149,7 +143,7 @@ workflow BACANNOT {
 
       // Fifth step -- run kofamscan
       if (params.skip_kofamscan == false) {
-        kofamscan(PROKKA.out[4])
+        KOFAMSCAN(PROKKA.out[4], dbs_ch)
         //kegg_decoder(kofamscan.out[1])
         //kofamscan_output = kofamscan.out[1]
         //kegg_decoder_svg = kegg_decoder.out[1]
@@ -174,33 +168,33 @@ workflow BACANNOT {
       }
 
       // IslandPath software
-      ISLANDPATH(PROKKA.out.gbk)
+      ISLANDPATH(PROKKA.out[2])
 
       // Virulence search
       if (params.skip_virulence_search == false) {     
         // VFDB
-        VFDB(PROKKA.out.genesNT, dbs_ch)
+        VFDB(PROKKA.out[5], dbs_ch)
         
         // Victors db
-        VICTORS(PROKKA.out.genesAA, dbs_ch)
+        VICTORS(PROKKA.out[4], dbs_ch)
       }
 
       // Prophage search
       if (params.skip_prophage_search == false) {
         // PHAST db
-        PHAST(PROKKA.out.genesAA, dbs_ch)
+        PHAST(PROKKA.out[4], dbs_ch)
         
         // Phigaro software
         PHIGARO(PROKKA.out[3], dbs_ch)
         
         // PhiSpy
-        PHISPY(PROKKA.out.gbk)
+        PHISPY(PROKKA.out[2])
       }
 
       // ICEs search
       if (params.skip_iceberg_search == false) {
         // ICEberg db
-        ICEBERG(PROKKA.out.genesAA, PROKKA.out[3], dbs_ch)
+        ICEBERG(PROKKA.out[4], PROKKA.out[3], dbs_ch)
       }
 
       // // AMR search
