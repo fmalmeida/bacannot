@@ -12,7 +12,7 @@ include { FLYE } from '../modules/assembly/flye.nf'
 include { REFSEQ_MASHER } from '../modules/generic/mash.nf'
 
 // Prokka annotation
-include { PROKKA } from '../modules/generic/PROKKA.nf'
+include { PROKKA } from '../modules/generic/prokka.nf'
 
 // MLST annotation
 include { MLST } from '../modules/generic/mlst.nf'
