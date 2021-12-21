@@ -54,7 +54,7 @@ include { PHISPY } from '../modules/prophages/phispy.nf'
 include { ICEBERG } from '../modules/MGEs/iceberg.nf'
 
 // Genomic Islands detection with Islandpath-DIMOB
-include { FIND_GIU } from '../modules/MGEs/islandPath_DIMOB.nf'
+include { FIND_GIS } from '../modules/MGEs/islandPath_DIMOB.nf'
 include { DRAW_GIS } from '../modules/MGEs/draw_gis.nf'
 
 // IS identification
