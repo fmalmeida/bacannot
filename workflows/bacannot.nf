@@ -129,7 +129,7 @@ workflow BACANNOT {
       FLYE(parsed_inputs.flye_ch)
 
       // First step -- Prokka annotation
-      PROKKA(parsed_inputs.annotation_ch.mix(flye_ch.out[1], unicycler_ch.out[1]))
+      PROKKA(parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]))
 
       // Second step -- MLST analysis
       MLST(PROKKA.out[3])
