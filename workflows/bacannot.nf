@@ -206,7 +206,7 @@ workflow BACANNOT {
       // ICEs search
       if (params.skip_iceberg_search == false) {
         // ICEberg db
-        iceberg(PROKKA.out[4], PROKKA.out[3])
+        ICEBERG(PROKKA.out[4], PROKKA.out[3])
         iceberg_output_ch = ICEBERG.out[1]
         iceberg_output_2_ch = ICEBERG.out[2]
       } else {
