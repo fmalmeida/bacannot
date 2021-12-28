@@ -294,7 +294,7 @@ workflow BACANNOT {
                                        .join(FIND_GIS.out[0],  remainder: true)
 
       // Contatenation of annotations in a single GFF file
-      MERGE_ANNOTATIONS(ANNOTATIONS_FILES.join(DIGIS.out[1],     remainder: true))
+      MERGE_ANNOTATIONS(annotations_files_ch.join(DIGIS.out[1],     remainder: true))
 
       // Plot genomic islands
       DRAW_GIS(MERGE_ANNOTATIONS.out[0].join(FIND_GIS.out[0]))
