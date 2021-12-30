@@ -328,7 +328,7 @@ workflow BACANNOT {
       */
 
       // Grab inputs needed for JBrowse step
-      jbrowse_input_ch = merge_annotations.out[0].join(annotations_files_ch, remainder: true)
+      jbrowse_input_ch = MERGE_ANNOTATIONS.out[0].join(annotations_files_ch, remainder: true)
                                               .join(methylation_out_1_ch, remainder: true)
                                               .join(methylation_out_2_ch, remainder: true)
                                               .join(phispy_output_ch,     remainder: true)
