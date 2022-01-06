@@ -1,4 +1,4 @@
-process create_sql {
+process CREATE_SQL {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf(".sqlite") > 0) "sqldb/$filename"
     else "$filename"

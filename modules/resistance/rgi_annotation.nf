@@ -1,4 +1,4 @@
-process card_rgi {
+process CARD_RGI {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else if (filename == "Parsed_RGI_${prefix}_hits.txt") null

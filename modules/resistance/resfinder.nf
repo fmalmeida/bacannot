@@ -1,4 +1,4 @@
-process resfinder {
+process RESFINDER {
   publishDir "${params.output}/${prefix}/resistance", mode: 'copy'
   tag "${prefix}"
   label 'main'

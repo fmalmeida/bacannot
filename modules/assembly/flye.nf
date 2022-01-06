@@ -1,4 +1,4 @@
-process flye {
+process FLYE {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else if (filename == "flye_${prefix}") "assembly"

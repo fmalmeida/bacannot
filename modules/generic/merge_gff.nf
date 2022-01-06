@@ -1,4 +1,4 @@
-process gff_merge {
+process GFF_MERGE {
   publishDir "${params.output}/${prefix}/gffs", mode: 'copy'
   label 'main'
   tag "${prefix}"

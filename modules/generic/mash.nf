@@ -1,4 +1,4 @@
-process refseq_masher {
+process REFSEQ_MASHER {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "refseq_masher/$filename"

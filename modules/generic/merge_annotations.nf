@@ -1,4 +1,4 @@
-process merge_annotations {
+process MERGE_ANNOTATIONS {
   publishDir "${params.output}/${prefix}/gffs", mode: 'copy'
   label 'renv'
   tag "${prefix}"

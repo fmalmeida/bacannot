@@ -1,4 +1,4 @@
-process find_GIs {
+process FIND_GIS {
   publishDir "${params.output}/${prefix}/genomic_islands", mode: 'copy'
   errorStrategy 'retry'
   maxRetries 5
