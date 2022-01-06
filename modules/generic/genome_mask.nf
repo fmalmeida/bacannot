@@ -1,4 +1,4 @@
-process masking_genome {
+process MASKING_GENOME {
   publishDir "${params.output}/${prefix}", mode: 'copy',
   saveAs: {filename ->
   //This line saves the files with specific sufixes in specific folders
