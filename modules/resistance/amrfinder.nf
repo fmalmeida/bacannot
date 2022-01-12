@@ -27,8 +27,8 @@ process AMRFINDER {
       --plus \\
       -o AMRFinder_complete.tsv \\
       --threads ${params.threads} \\
-      --ident_min \$(echo print (${params.blast_resistance_minid}/100" | perl ) \\
-      --coverage_min \$(echo print(${params.blast_resistance_mincov}/100" | perl ) \\
+      --ident_min \$(echo print ${params.blast_resistance_minid}/100" | perl ) \\
+      --coverage_min \$(echo print ${params.blast_resistance_mincov}/100" | perl ) \\
       --name ${prefix} \\
       --protein_output ${prefix}_args.faa \\
       --database ${bacannot_db}/amrfinder_db
