@@ -27,8 +27,8 @@ process AMRFINDER {
       --plus \\
       -o AMRFinder_complete.tsv \\
       --threads ${params.threads} \\
-      --ident_min \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \\
-      --coverage_min \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \\
+      --ident_min \$(echo "print (${params.blast_resistance_minid}/100)" | python3 ) \\
+      --coverage_min \$(echo "print(${params.blast_resistance_mincov}/100)" | python3 ) \\
       --name ${prefix} \\
       --protein_output ${prefix}_args.faa \\
       --database ${bacannot_db}/amrfinder_db
