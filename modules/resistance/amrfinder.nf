@@ -17,6 +17,8 @@ process AMRFINDER {
   file("amrfinder_version.txt")
 
   script:
+  resistance_minid  = params.blast_resistance_minid / 100.00
+  resistance_mincov = params.blast_resistance_mincov / 100.00
   """
   # Get tool version
   amrfinder --version > amrfinder_version.txt ;
@@ -27,8 +29,8 @@ process AMRFINDER {
       --plus \\
       -o AMRFinder_complete.tsv \\
       --threads ${params.threads} \\
-      --ident_min \$(echo print ${params.blast_resistance_minid}/100 | perl ) \\
-      --coverage_min \$(echo print ${params.blast_resistance_mincov}/100 | perl ) \\
+      --ident_min ${resistance_minid} \\
+      --coverage_min ${resistance_mincov} \\
       --name ${prefix} \\
       --protein_output ${prefix}_args.faa \\
       --database ${bacannot_db}/amrfinder_db
