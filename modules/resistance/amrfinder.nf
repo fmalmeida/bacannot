@@ -33,10 +33,13 @@ process AMRFINDER {
       --coverage_min ${resistance_mincov} \\
       --name ${prefix} \\
       --protein_output ${prefix}_args.faa \\
-      --database ${bacannot_db}/amrfinder_db
+      --database ${bacannot_db}/amrfinder_db/latest
   
   # filter results
-  awk -F '\t' '{ if (\$3 != "") { print } }' AMRFinder_complete.tsv | \\
+  awk \\
+      -F '\t' \\
+      '{ if (\$3 != "") { print } }' \\
+      AMRFinder_complete.tsv | \\
       grep -v "VIRULENCE" > AMRFinder_resistance-only.tsv ;
   """
 }

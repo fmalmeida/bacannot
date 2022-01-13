@@ -227,8 +227,8 @@ workflow BACANNOT {
         rgi_output_parsed_ch = CARD_RGI.out[1]
         rgi_heatmap_ch = CARD_RGI.out[3]
         // ARGMiner
-        ARGMINER(PROKKA.out[4], dbs_ch)
-        argminer_output_ch = ARGMINER.out[0]
+        //ARGMINER(PROKKA.out[4], dbs_ch)
+        //argminer_output_ch = ARGMINER.out[0]
         // // Resfinder
         // RESFINDER(PROKKA.out[7])
         // resfinder_output_1_ch = RESFINDER.out[0]
