@@ -1,4 +1,0 @@
-samplesheet:
-  - id: h_influenzae
-    assembly: https://github.com/fmalmeida/test_datasets/raw/main/haemophilus.fasta
-    resfinder: Other
