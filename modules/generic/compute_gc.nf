@@ -1,4 +1,4 @@
-process compute_gc {
+process COMPUTE_GC {
   tag "${prefix}"
   label 'main'
 

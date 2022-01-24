@@ -1,4 +1,4 @@
-process report {
+process REPORT {
   publishDir "${params.output}/${prefix}/report_files", mode: 'copy'
   label 'renv'
   tag "${prefix}"

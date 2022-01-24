@@ -1,4 +1,4 @@
-process victors {
+process VICTORS {
   publishDir "${params.output}/${prefix}/virulence/victors", mode: 'copy'
   tag "${prefix}"
   label 'main'

@@ -1,4 +1,4 @@
-process jbrowse {
+process JBROWSE {
   publishDir "${params.output}/${prefix}/jbrowse", mode: 'copy'
   label 'jbrowse'
   tag "${prefix}"

@@ -1,4 +1,4 @@
-process argminer {
+process ARGMINER {
   publishDir "${params.output}/${prefix}/resistance/ARGMiner", mode: 'copy'
   tag "${prefix}"
   label 'main'

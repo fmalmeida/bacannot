@@ -6,10 +6,10 @@ workflow parse_samplesheet {
   main:
 
     // iterate over input list
-    custom_csv = write_csv(Channel.fromList(data))
+    custom_csv_ch = write_csv(Channel.fromList(data))
   
     // now we parse the csv created
-    parsed_csv = custom_csv.splitCsv(header: ['name', 'entrypoint', 'fwd', 'rev', 'single', 'lreads', 'lr_type', 'fast5', 'assembly', 'resfinder']).map{ row ->
+    parsed_csv_ch = custom_csv_ch.splitCsv(header: ['name', 'entrypoint', 'fwd', 'rev', 'single', 'lreads', 'lr_type', 'fast5', 'assembly', 'resfinder']).map{ row ->
       tuple(
         row.name, 
         row.entrypoint,
@@ -25,6 +25,6 @@ workflow parse_samplesheet {
     }
 
     emit:
-    parsed_csv
+    parsed_csv_ch
 
 }

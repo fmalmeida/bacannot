@@ -1,4 +1,4 @@
-process plasmidfinder {
+process PLASMIDFINDER {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename == "plasmidfinder") "plasmids/$filename"
     else null

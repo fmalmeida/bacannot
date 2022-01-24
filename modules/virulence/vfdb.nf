@@ -1,4 +1,4 @@
-process vfdb {
+process VFDB {
   publishDir "${params.output}/${prefix}/virulence/vfdb", mode: 'copy'
   tag "${prefix}"
   label 'main'

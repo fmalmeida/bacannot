@@ -3,105 +3,105 @@
  */
 
 // Unicycler assembly
-include { unicycler } from '../modules/assembly/unicycler.nf'
+include { UNICYCLER } from '../modules/assembly/unicycler.nf'
 
 // Flye assembly
-include { flye } from '../modules/assembly/flye.nf'
+include { FLYE } from '../modules/assembly/flye.nf'
 
 // Species identification
-include { refseq_masher } from '../modules/generic/mash.nf'
+include { REFSEQ_MASHER } from '../modules/generic/mash.nf'
 
 // Prokka annotation
-include { prokka } from '../modules/generic/prokka.nf'
+include { PROKKA } from '../modules/generic/prokka.nf'
 
 // MLST annotation
-include { mlst } from '../modules/generic/mlst.nf'
+include { MLST } from '../modules/generic/mlst.nf'
 
 // rRNA annotation
-include { barrnap } from '../modules/generic/barrnap.nf'
+include { BARRNAP } from '../modules/generic/barrnap.nf'
 
 // Calculate GC content
-include { compute_gc } from '../modules/generic/compute_gc.nf'
+include { COMPUTE_GC } from '../modules/generic/compute_gc.nf'
 
 // KOFAM annotation
-include { kofamscan } from '../modules/KOs/kofamscan.nf'
+include { KOFAMSCAN } from '../modules/KOs/kofamscan.nf'
 
 // KEGG decoder
-include { kegg_decoder } from '../modules/KOs/kegg-decoder.nf'
+include { KEGG_DECODER } from '../modules/KOs/kegg-decoder.nf'
 
 // Plasmid annotation with plasmidfinder
-include { plasmidfinder } from '../modules/MGEs/plasmidfinder.nf'
+include { PLASMIDFINDER } from '../modules/MGEs/plasmidfinder.nf'
 
 // Plasmid annotation with platon
-include { platon } from '../modules/MGEs/platon.nf'
+include { PLATON } from '../modules/MGEs/platon.nf'
 
 // Virulence annotation with VFDB
-include { vfdb } from '../modules/virulence/vfdb.nf'
+include { VFDB } from '../modules/virulence/vfdb.nf'
 
 // Virulence annotation with Victors
-include { victors } from '../modules/virulence/victors.nf'
+include { VICTORS } from '../modules/virulence/victors.nf'
 
 // Prophage annotation with PHAST
-include { phast } from '../modules/prophages/phast.nf'
+include { PHAST } from '../modules/prophages/phast.nf'
 
 // Prophage annotation with PHIGARO
-include { phigaro } from '../modules/prophages/phigaro.nf'
+include { PHIGARO } from '../modules/prophages/phigaro.nf'
 
 // Prophage annotation with phispy
-include { phispy } from '../modules/prophages/phispy.nf'
+include { PHISPY } from '../modules/prophages/phispy.nf'
 
 // ICE annotation with ICEberg db
-include { iceberg } from '../modules/MGEs/iceberg.nf'
+include { ICEBERG } from '../modules/MGEs/iceberg.nf'
 
 // Genomic Islands detection with Islandpath-DIMOB
-include { find_GIs } from '../modules/MGEs/islandPath_DIMOB.nf'
-include { draw_GIs } from '../modules/MGEs/draw_gis.nf'
+include { FIND_GIS } from '../modules/MGEs/islandPath_DIMOB.nf'
+include { DRAW_GIS } from '../modules/MGEs/draw_gis.nf'
 
 // IS identification
-include { digis } from '../modules/MGEs/digIS.nf'
+include { DIGIS } from '../modules/MGEs/digIS.nf'
 
 // AMR annotation with ARGMiner
-include { argminer } from '../modules/resistance/argminer.nf'
+include { ARGMINER } from '../modules/resistance/argminer.nf'
 
 // AMR annotation with Resfinder
-include { resfinder } from '../modules/resistance/resfinder.nf'
+include { RESFINDER } from '../modules/resistance/resfinder.nf'
 
 // AMR annotation with AMRFinderPlus
-include { amrfinder } from '../modules/resistance/amrfinder.nf'
+include { AMRFINDER } from '../modules/resistance/amrfinder.nf'
 
 // AMR annotation with CARD-RGI
-include { card_rgi } from '../modules/resistance/rgi_annotation.nf'
+include { CARD_RGI } from '../modules/resistance/rgi_annotation.nf'
 
 // Methylation calling (Nanopolish)
-include { call_methylation } from '../modules/generic/methylation.nf'
+include { CALL_METHYLATION } from '../modules/generic/methylation.nf'
 
 // User's custom db annotation
-include { custom_blast } from '../modules/generic/custom_blast.nf'
-include { custom_blast_report } from '../modules/generic/custom_blast_report.nf'
+include { CUSTOM_BLAST } from '../modules/generic/custom_blast.nf'
+include { CUSTOM_BLAST_REPORT } from '../modules/generic/custom_blast_report.nf'
 
 // Merging annotation in GFF
-include { merge_annotations } from '../modules/generic/merge_annotations.nf'
+include { MERGE_ANNOTATIONS } from '../modules/generic/merge_annotations.nf'
 
 // Convert GFF to GBK
-include { gff2gbk } from '../modules/generic/gff2gbk.nf'
+include { GFF2GBK } from '../modules/generic/gff2gbk.nf'
 
 // Convert GFF to SQL
-include { create_sql } from '../modules/generic/gff2sql.nf'
+include { CREATE_SQL } from '../modules/generic/gff2sql.nf'
 
 // Bedtools gff merge
-include { gff_merge } from '../modules/generic/merge_gff.nf'
+include { GFF_MERGE } from '../modules/generic/merge_gff.nf'
 
 // JBrowse
-include { jbrowse } from '../modules/generic/jbrowse.nf'
+include { JBROWSE } from '../modules/generic/jbrowse.nf'
 
 // Output reports
-include { report } from '../modules/generic/reports.nf'
+include { REPORT } from '../modules/generic/reports.nf'
 
 // sequenceserver generation
-include { sequenceserver } from '../modules/generic/sequenceserver.nf'
+include { SEQUENCESERVER } from '../modules/generic/sequenceserver.nf'
 
 // antiSMASH
-include { antismash } from '../modules/generic/antismash.nf'
+include { ANTISMASH } from '../modules/generic/antismash.nf'
 
 /*
     DEF WORKFLOW
@@ -117,38 +117,38 @@ workflow BACANNOT {
       // generate channel branches
       // now we create the filtered channels
       input_ch.branch{
-        unicycler:  it[1] == 'unicycler'
-        flye:       it[1] == 'flye'
-        annotation: it[1] == "annotation"
+        unicycler_ch:  it[1] == 'unicycler'
+        flye_ch:       it[1] == 'flye'
+        annotation_ch: it[1] == "annotation"
       }.set { parsed_inputs }
 
       // Step 0 -- Run unicycler when necessary
-      unicycler(parsed_inputs.unicycler)
+      UNICYCLER(parsed_inputs.unicycler_ch)
 
       // Step 0 --  Run flye when necessary
-      flye(parsed_inputs.flye)
+      FLYE(parsed_inputs.flye_ch)
 
       // First step -- Prokka annotation
-      prokka(parsed_inputs.annotation.mix(flye.out[1], unicycler.out[1]))
+      PROKKA(parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]))
 
       // Second step -- MLST analysis
-      mlst(prokka.out[3])
+      MLST(PROKKA.out[3])
 
       // Third step -- rRNA annotation
-      barrnap(prokka.out[3])
+      BARRNAP(PROKKA.out[3])
 
       // Fouth step -- calculate GC content for JBrowse
-      compute_gc(prokka.out[3])
+      COMPUTE_GC(PROKKA.out[3])
 
       // Fifth step -- run kofamscan
       if (params.skip_kofamscan == false) {
-        kofamscan(prokka.out[4])
-        kegg_decoder(kofamscan.out[1])
-        kofamscan_output = kofamscan.out[1]
-        kegg_decoder_svg = kegg_decoder.out[1]
+        KOFAMSCAN(PROKKA.out[4])
+        KEGG_DECODER(KOFAMSCAN.out[1])
+        kofamscan_output_ch = KOFAMSCAN.out[1]
+        kegg_decoder_svg_ch = KEGG_DECODER.out[1]
       } else {
-        kofamscan_output = Channel.empty()
-        kegg_decoder_svg = Channel.empty()
+        kofamscan_output_ch = Channel.empty()
+        kegg_decoder_svg_ch = Channel.empty()
       }
 
       /*
@@ -158,99 +158,99 @@ workflow BACANNOT {
       // Plasmid finder
       if (params.skip_plasmid_search == false) {
         // plasmidfinder
-        plasmidfinder(prokka.out[3])
-        plasmidfinder_output = plasmidfinder.out[1]
+        PLASMIDFINDER(PROKKA.out[3])
+        plasmidfinder_output_ch = PLASMIDFINDER.out[1]
         // platon
-        platon(prokka.out[3])
-        platon_output = platon.out[1]
+        PLATON(PROKKA.out[3])
+        platon_output_ch = PLATON.out[1]
       } else {
-        plasmidfinder_output = Channel.empty()
-        platon_output = Channel.empty()
+        plasmidfinder_output_ch = Channel.empty()
+        platon_output_ch = Channel.empty()
       }
 
       // IslandPath software
-      find_GIs(prokka.out[2])
+      FIND_GIS(PROKKA.out[2])
 
       // Virulence search
       if (params.skip_virulence_search == false) {
         // VFDB
-        vfdb(prokka.out[5])
-        vfdb_output = vfdb.out[1]
+        VFDB(PROKKA.out[5])
+        vfdb_output_ch = VFDB.out[1]
         // Victors db
-        victors(prokka.out[4])
-        victors_output = victors.out[1]
+        VICTORS(PROKKA.out[4])
+        victors_output_ch = VICTORS.out[1]
       } else {
-        vfdb_output = Channel.empty()
-        victors_output = Channel.empty()
+        vfdb_output_ch = Channel.empty()
+        victors_output_ch = Channel.empty()
       }
 
       // Prophage search
       if (params.skip_prophage_search == false) {
         // PHAST db
-        phast(prokka.out[4])
-        phast_output = phast.out[1]
+        PHAST(PROKKA.out[4])
+        phast_output_ch = PHAST.out[1]
         // Phigaro software
-        phigaro(prokka.out[3])
-        phigaro_output_1 = phigaro.out[0]
-        phigaro_output_2 = phigaro.out[1]
+        PHIGARO(PROKKA.out[3])
+        phigaro_output_1_ch = PHIGARO.out[0]
+        phigaro_output_2_ch = PHIGARO.out[1]
         // PhiSpy
-        phispy(prokka.out[2])
-        phispy_output = phispy.out[1]
+        PHISPY(PROKKA.out[2])
+        phispy_output_ch = PHISPY.out[1]
       } else {
-        phast_output = Channel.empty()
-        phigaro_output_1 = Channel.empty()
-        phigaro_output_2 = Channel.empty()
-        phispy_output = Channel.empty()
+        phast_output_ch = Channel.empty()
+        phigaro_output_1_ch = Channel.empty()
+        phigaro_output_2_ch = Channel.empty()
+        phispy_output_ch = Channel.empty()
       }
 
       // ICEs search
       if (params.skip_iceberg_search == false) {
         // ICEberg db
-        iceberg(prokka.out[4], prokka.out[3])
-        iceberg_output = iceberg.out[1]
-        iceberg_output_2 = iceberg.out[2]
+        ICEBERG(PROKKA.out[4], PROKKA.out[3])
+        iceberg_output_ch = ICEBERG.out[1]
+        iceberg_output_2_ch = ICEBERG.out[2]
       } else {
-        iceberg_output = Channel.empty()
-        iceberg_output_2 = Channel.empty()
+        iceberg_output_ch = Channel.empty()
+        iceberg_output_2_ch = Channel.empty()
       }
 
       // AMR search
       if (params.skip_resistance_search == false) {
         // AMRFinderPlus
-        amrfinder(prokka.out[4])
-        amrfinder_output = amrfinder.out[0]
+        AMRFINDER(PROKKA.out[4])
+        amrfinder_output_ch = AMRFINDER.out[0]
         // CARD-RGI
-        card_rgi(prokka.out[4])
-        rgi_output = card_rgi.out[2]
-        rgi_output_parsed = card_rgi.out[1]
-        rgi_heatmap = card_rgi.out[3]
+        CARD_RGI(PROKKA.out[4])
+        rgi_output_ch = CARD_RGI.out[2]
+        rgi_output_parsed_ch = CARD_RGI.out[1]
+        rgi_heatmap_ch = CARD_RGI.out[3]
         // ARGMiner
-        argminer(prokka.out[4])
-        argminer_output = argminer.out[0]
+        ARGMINER(PROKKA.out[4])
+        argminer_output_ch = ARGMINER.out[0]
         // Resfinder
-        resfinder(prokka.out[7])
-        resfinder_output_1 = resfinder.out[0]
-        resfinder_output_2 = resfinder.out[1]
-        resfinder_phenotable = resfinder.out[2]
-        resfinder_gff = resfinder.out[3]
+        RESFINDER(PROKKA.out[7])
+        resfinder_output_1_ch = RESFINDER.out[0]
+        resfinder_output_2_ch = RESFINDER.out[1]
+        resfinder_phenotable_ch = RESFINDER.out[2]
+        resfinder_gff_ch = RESFINDER.out[3]
       } else {
-        rgi_output = Channel.empty()
-        rgi_output_parsed = Channel.empty()
-        rgi_heatmap = Channel.empty()
-        amrfinder_output = Channel.empty()
-        argminer_output = Channel.empty()
-        resfinder_output_1 = Channel.empty()
-        resfinder_output_2 = Channel.empty()
-        resfinder_phenotable = Channel.empty()
-        resfinder_gff = Channel.empty()
+        rgi_output_ch = Channel.empty()
+        rgi_output_parsed_ch = Channel.empty()
+        rgi_heatmap_ch = Channel.empty()
+        amrfinder_output_ch = Channel.empty()
+        argminer_output_ch = Channel.empty()
+        resfinder_output_1_ch = Channel.empty()
+        resfinder_output_2_ch = Channel.empty()
+        resfinder_phenotable_ch = Channel.empty()
+        resfinder_gff_ch = Channel.empty()
       }
 
       /*
           Seventh step -- Methylation call
       */
-      call_methylation(prokka.out[6])
-      methylation_out_1 = call_methylation.out[2]
-      methylation_out_2 = call_methylation.out[3]
+      CALL_METHYLATION(PROKKA.out[6])
+      methylation_out_1_ch = CALL_METHYLATION.out[2]
+      methylation_out_2_ch = CALL_METHYLATION.out[3]
 
       /*
 
@@ -259,58 +259,58 @@ workflow BACANNOT {
        */
 
       // species identification
-      refseq_masher(prokka.out[3])
+      REFSEQ_MASHER(PROKKA.out[3])
 
       // IS identification
-      digis(prokka.out[3].join(prokka.out[2]))
+      DIGIS(PROKKA.out[3].join(PROKKA.out[2]))
 
       // antiSMASH
       if (params.skip_antismash == false) {
-        antismash(prokka.out[2])
-        antismash_output = antismash.out[0]
+        ANTISMASH(PROKKA.out[2])
+        antismash_output_ch = ANTISMASH.out[0]
       } else {
-        antismash_output = Channel.empty()
+        antismash_output_ch = Channel.empty()
       }
 
       // sequenceserver
-      sequenceserver(prokka.out[3].join(prokka.out[5]).join(prokka.out[4]))
+      SEQUENCESERVER(PROKKA.out[3].join(PROKKA.out[5]).join(PROKKA.out[4]))
 
       /*
           Eighth step -- Merge all annotations with the same Prefix value in a single Channel
       */
-      annotations_files = prokka.out[3].join(prokka.out[1])
-                                       .join(mlst.out[0])
-                                       .join(barrnap.out[0])
-                                       .join(compute_gc.out[0])
-                                       .join(kofamscan_output, remainder: true)
-                                       .join(vfdb_output,      remainder: true)
-                                       .join(victors_output,   remainder: true)
-                                       .join(amrfinder_output, remainder: true)
-                                       .join(resfinder_gff,    remainder: true)
-                                       .join(rgi_output,       remainder: true)
-                                       .join(iceberg_output,   remainder: true)
-                                       .join(phast_output,     remainder: true)
-                                       .join(phigaro_output_2, remainder: true)
-                                       .join(find_GIs.out[0],  remainder: true)
+      annotations_files_ch = PROKKA.out[3].join(PROKKA.out[1])
+                                       .join(MLST.out[0])
+                                       .join(BARRNAP.out[0])
+                                       .join(COMPUTE_GC.out[0])
+                                       .join(kofamscan_output_ch, remainder: true)
+                                       .join(vfdb_output_ch,      remainder: true)
+                                       .join(victors_output_ch,   remainder: true)
+                                       .join(amrfinder_output_ch, remainder: true)
+                                       .join(resfinder_gff_ch,    remainder: true)
+                                       .join(rgi_output_ch,       remainder: true)
+                                       .join(iceberg_output_ch,   remainder: true)
+                                       .join(phast_output_ch,     remainder: true)
+                                       .join(phigaro_output_2_ch, remainder: true)
+                                       .join(FIND_GIS.out[0],  remainder: true)
 
       // Contatenation of annotations in a single GFF file
-      merge_annotations(annotations_files.join(digis.out[1],     remainder: true))
+      MERGE_ANNOTATIONS(annotations_files_ch.join(DIGIS.out[1],     remainder: true))
 
       // Plot genomic islands
-      draw_GIs(merge_annotations.out[0].join(find_GIs.out[0]))
+      DRAW_GIS(MERGE_ANNOTATIONS.out[0].join(FIND_GIS.out[0]))
 
       // Convert GFF file to GBK file
-      gff2gbk(merge_annotations.out[0].join(prokka.out[3]))
+      GFF2GBK(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]))
 
       // Convert GFF file to sqldb
-      create_sql(merge_annotations.out[0].join(prokka.out[5])
-                                         .join(prokka.out[4])
-                                         .join(prokka.out[3])
-                                         .join(digis.out[2]))
+      CREATE_SQL(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[5])
+                                         .join(PROKKA.out[4])
+                                         .join(PROKKA.out[3])
+                                         .join(DIGIS.out[2]))
 
       // User wants to merge the final gff file?
       if (params.bedtools_merge_distance) {
-        gff_merge(merge_annotations.out[0])
+        GFF_MERGE(MERGE_ANNOTATIONS.out[0])
       }
 
       /*
@@ -319,8 +319,8 @@ workflow BACANNOT {
 
       */
       if (params.custom_db) {
-        custom_blast(merge_annotations.out[0].join(prokka.out[3]), custom_db)
-        custom_blast_report(custom_blast.out[0])
+        CUSTOM_BLAST(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]), custom_db)
+        CUSTOM_BLAST_REPORT(CUSTOM_BLAST.out[0])
       }
 
       /*
@@ -328,29 +328,29 @@ workflow BACANNOT {
       */
 
       // Grab inputs needed for JBrowse step
-      jbrowse_input = merge_annotations.out[0].join(annotations_files, remainder: true)
-                                              .join(methylation_out_1, remainder: true)
-                                              .join(methylation_out_2, remainder: true)
-                                              .join(phispy_output,     remainder: true)
-                                              .join(merge_annotations.out[8], remainder: true) // parsed and changed digIS
-                                              .join(antismash_output,  remainder: true)
+      jbrowse_input_ch = MERGE_ANNOTATIONS.out[0].join(annotations_files_ch, remainder: true)
+                                              .join(methylation_out_1_ch, remainder: true)
+                                              .join(methylation_out_2_ch, remainder: true)
+                                              .join(phispy_output_ch,     remainder: true)
+                                              .join(MERGE_ANNOTATIONS.out[8], remainder: true) // parsed and changed digIS
+                                              .join(antismash_output_ch,  remainder: true)
       // Jbrowse Creation
-      jbrowse(jbrowse_input)
+      JBROWSE(jbrowse_input_ch)
 
       // Render reports
-      report(jbrowse_input.join(rgi_output_parsed,    remainder: true)
-                          .join(rgi_heatmap,          remainder: true)
-                          .join(argminer_output,      remainder: true)
-                          .join(iceberg_output_2,     remainder: true)
-                          .join(plasmidfinder_output, remainder: true)
-                          .join(resfinder_output_1,   remainder: true)
-                          .join(resfinder_output_2,   remainder: true)
-                          .join(resfinder_phenotable, remainder: true)
-                          .join(draw_GIs.out[1],      remainder: true)
-                          .join(phigaro_output_1,     remainder: true)
-                          .join(platon_output,        remainder: true)
-                          .join(prokka.out[8],        remainder: true)
-                          .join(kegg_decoder_svg,     remainder: true)
-                          .join(refseq_masher.out[0], remainder: true))
+      REPORT(jbrowse_input_ch.join(rgi_output_parsed_ch,    remainder: true)
+                          .join(rgi_heatmap_ch,          remainder: true)
+                          .join(argminer_output_ch,      remainder: true)
+                          .join(iceberg_output_2_ch,     remainder: true)
+                          .join(plasmidfinder_output_ch, remainder: true)
+                          .join(resfinder_output_1_ch,   remainder: true)
+                          .join(resfinder_output_2_ch,   remainder: true)
+                          .join(resfinder_phenotable_ch, remainder: true)
+                          .join(DRAW_GIS.out[1],      remainder: true)
+                          .join(phigaro_output_1_ch,     remainder: true)
+                          .join(platon_output_ch,        remainder: true)
+                          .join(PROKKA.out[8],        remainder: true)
+                          .join(kegg_decoder_svg_ch,     remainder: true)
+                          .join(REFSEQ_MASHER.out[0], remainder: true))
 
 }

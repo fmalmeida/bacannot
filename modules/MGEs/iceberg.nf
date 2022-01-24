@@ -1,4 +1,4 @@
-process iceberg {
+process ICEBERG {
   publishDir "${params.output}/${prefix}/ICEs", mode: 'copy'
   tag "${prefix}"
   label 'main'
