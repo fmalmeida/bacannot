@@ -59,8 +59,11 @@ Moreover, we have also made available a few example datasets in the pipeline so 
 
 .. code-block:: bash
 
-  # Run the pipeline using the provided test datasets
+  # Run the pipeline using the provided (bigger) test dataset
   nextflow run fmalmeida/bacannot --profile test --threads 10
+
+  # Or run the quick test
+  nextflow run fmalmeida/bacannot --profile quicktest --threads 10
 
 .. note::
 

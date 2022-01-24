@@ -1,0 +1,30 @@
+name: Testing pipeline's core for the new PR
+on:
+  pull_request:
+    branches: main
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  run_nextflow:
+    name: Run pipeline for the upcoming PR
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+    
+    steps:
+      
+      - name: Check out pipeline code
+        uses: actions/checkout@v2
+      
+      - name: Install Nextflow
+        env:
+          CAPSULE_LOG: none
+        run: |
+          wget -qO- get.nextflow.io | bash
+          sudo mv nextflow /usr/local/bin/
+
+      - name: Run the pipeline
+        run: |
+          nextflow run main.nf \
+              -profile docker,quicktest
