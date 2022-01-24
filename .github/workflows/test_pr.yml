@@ -26,5 +26,6 @@ jobs:
 
       - name: Run the pipeline
         run: |
-          nextflow run main.nf \
-              -profile docker,quicktest
+          sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
+          sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
+          nextflow run main.nf -profile docker,quicktest
