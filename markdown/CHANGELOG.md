@@ -2,6 +2,26 @@
 
 The tracking for changes started in v2.1
 
+## v3.0.1
+
+### additions
+
+In this version of the pipeline, two things have been added:
+
+1. A small dataset with _Haemophilus influenzae_ to provide a `quicktest` profile that runs in 10~20 min.
+2. A new github action to test the upcoming changes for each new PR using this available `quicktest`.
+
+### fixes/changes/improvements
+
+These improvements in the code and standardization of namings throughout the pipeline have been made possible thanks to the awesome contributions of [@abhi18av](https://github.com/abhi18av).
+
+1. The config files have been splitout into smaller ones and placed inside a `conf` directory to keep things more organized (PR [#43](https://github.com/fmalmeida/bacannot/pull/43))
+2. The names of channels and modules in the pipeline have been changed so they are more standardized and more similar to how it is used for nextflow pipelines in general, so it is easier to read and understand (PR [#45](https://github.com/fmalmeida/bacannot/pull/45))
+
+### comments
+
+> Nothing has changed in terms of how tools are called and used, thus the docker image still the same. In fact, patch/fix releases (x.x.x) will always use the docker from breaking/features release (x.x)
+
 ## v3.0
 
 ### input configuration

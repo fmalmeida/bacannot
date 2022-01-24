@@ -26,5 +26,4 @@ jobs:
 
       - name: Run the pipeline
         run: |
-          nextflow run main.nf \
-              -profile docker,quicktest
+          nextflow run main.nf -profile docker,quicktest
