@@ -1,7 +1,7 @@
 name: Testing pipeline's core for the new PR
 on:
   pull_request:
-    branches: main
+    branches: master
     types: [ opened, synchronize, reopened ]
 
 jobs:
