@@ -9,6 +9,8 @@ process RESFINDER_DB {
     """
     # download resfinder databases
     git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder
+    rm -r db_resfinder/.git
     git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder
+    rm -r db_pointfinder/.git
     """
 }

@@ -9,5 +9,6 @@ process PLASMIDFINDER_DB {
     """   
     # download plasmidfinder database
     git clone https://bitbucket.org/genomicepidemiology/plasmidfinder_db.git
+    rm -r plasmidfinder_db/.git
     """
 }
