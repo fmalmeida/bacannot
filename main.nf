@@ -59,8 +59,12 @@ if (params.get_samplesheet) {
  * Load general parameters and establish defaults
  */
 
+// Workflow for database download
+params.get_dbs                = false
+params.force_update           = false
+
 // General parameters
-params.output                  = 'outdir'
+params.output                  = (params.get_dbs) ? 'bacannot_dbs' : 'outdir'
 params.threads                 = 2
 params.bedtools_merge_distance = ''
 
@@ -101,26 +105,10 @@ params.skip_prophage_search   = false
 params.skip_kofamscan         = false
 params.skip_antismash         = false
 
-// database download
-params.get_dbs                = false
-params.force_update           = false
-params.skip_kofamscan_db      = false
-params.skip_card_db           = false
-params.skip_platon_db         = false
-params.skip_resfinder_db      = false
-params.skip_plasmidfinder_db  = false
-params.skip_phigaro_db        = false
-params.skip_amrfinder_db      = false
-params.skip_argminer_db       = false
-params.skip_vfdb_db           = false
-params.skip_victors_db        = false
-params.skip_iceberg_db        = false
-params.skip_phast_db          = false
-
 /*
  * Define log message
  */
-logMessage()
+logMessage(params.get_dbs)
 
 /*
  * Define custom workflows
@@ -142,9 +130,8 @@ workflow {
 
   if (params.get_dbs) {
     CREATE_DBS()
-  }
-
-  else if (params.input) {
+  } else {
+    if (params.input) {
 
     // check if user gave path to bacannot databases
     if (!params.bacannot_db) {
@@ -179,7 +166,7 @@ workflow {
       (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty()
     )
 
-  } else {
+    } else {
 
     // Message to user
     println("""
@@ -190,6 +177,7 @@ workflow {
     Cheers.
     """)
   
+    }
   }
 }
 

@@ -22,66 +22,20 @@ include { KOFAMSCAN_DB     } from '../modules/bacannot_dbs/kofamscan.nf'
 
 workflow CREATE_DBS {
 
-    // prokka database
-    // core pipeline -- cannot skip
     download_db("prokka", "PROKKA_DB")
-
-    // mlst database
-    // core pipeline -- cannot skip
     download_db("mlst", "MLST_DB")
-
-    /*
-     * kofamscan -- can skip
-     */
-    if (!params.skip_kofamscan_db) { download_db("kofamscan", "KOFAMSCAN_DB") }
-
-    /*
-     * resistance -- can skip
-     */
-    // card database
-    if (!params.skip_card_db) { download_db("card", "CARD_DB") }
-
-    // resfinder database
-    if (!params.skip_resfinder_db) { download_db("resfinder", "RESFINDER_DB") }
-
-    // amrfinder database
-    if (!params.skip_amrfinder_db) { download_db("amrfinder", "AMRFINDER_DB") }
-
-    // argminer database
-    if (!params.skip_argminer_db) { download_db("argminer", "ARGMINER_DB") }
-
-    /*
-     * Plasmids -- can skip
-     */
-    // platon database
-    if (!params.skip_platon_db) { download_db("platon", "PLATON_DB") }    
-
-    // plasmidfinder database
-    if (!params.skip_plasmidfinder_db) { download_db("plasmidfinder", "PLASMIDFINDER_DB") }
-
-    /*
-     * Prophages -- can skip
-     */
-    // phigaro database
-    if (!params.skip_phigaro_db) { download_db("phigaro", "PHIGARO_DB") }
-
-    // phast database
-    if (!params.skip_phast_db) { download_db("phast", "PHAST_DB") }
-
-    /*
-     * Virulence -- can skip
-     */
-    // vfdb database
-    if (!params.skip_vfdb_db) { download_db("vfdb", "VFDB_DB") }
-
-    // victors database
-    if (!params.skip_victors_db) { download_db("victors", "VICTORS_DB") }
-
-    /*
-     * ICEs -- can skip
-     */
-    // iceberg database
-    if (!params.skip_iceberg_db) { download_db("iceberg", "ICEBERG_DB") }
+    download_db("kofamscan", "KOFAMSCAN_DB")
+    download_db("card", "CARD_DB")
+    download_db("resfinder", "RESFINDER_DB")
+    download_db("amrfinder", "AMRFINDER_DB")
+    download_db("argminer", "ARGMINER_DB")
+    download_db("platon", "PLATON_DB")
+    download_db("plasmidfinder", "PLASMIDFINDER_DB")
+    download_db("phigaro", "PHIGARO_DB")
+    download_db("phast", "PHAST_DB")
+    download_db("vfdb", "VFDB_DB")
+    download_db("victors", "VICTORS_DB")
+    download_db("iceberg", "ICEBERG_DB")
 
 }
 
