@@ -1,10 +1,11 @@
 process RESFINDER {
   publishDir "${params.output}/${prefix}/resistance", mode: 'copy'
   tag "${prefix}"
-  label 'main'
+  label 'misc'
 
   input:
   tuple val(prefix), file(genome), val(resfinder_species)
+  file(bacannot_db)
 
   output:
   // Outputs must be linked to each prefix (tag)
@@ -18,45 +19,58 @@ process RESFINDER {
   (resfinder_species && resfinder_species != "missing_resfinder")
 
   script:
+  resistance_minid  = params.blast_resistance_minid / 100.00
+  resistance_mincov = params.blast_resistance_mincov / 100.00
   if (resfinder_species.toLowerCase() != "other")
   """
   # Run resfinder acquired resistance
-  /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${resfinder_species}\" \
-  --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
-  --threshold \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
-  --db_path_res /work/resfinder/db_resfinder --acquired || true ;
+  run_resfinder.py \\
+      --inputfasta $genome \\
+      -o resfinder \\
+      --species \"${resfinder_species}\" \\
+      --min_cov  ${resistance_mincov} \\
+      --threshold ${resistance_minid} \\
+      --db_path_res ${bacannot_db}/resfinder_db/db_resfinder --acquired || true ;
 
   # Fix name of pheno table
-  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt ;
+  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt &> /dev/null || true ;
 
   # Run resfinder pointfinder resistance
-  /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder --species \"${resfinder_species}\" \
-  --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
-  --threshold \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
-  --db_path_point /work/resfinder/db_pointfinder --point || true ;
+  run_resfinder.py \\
+      --inputfasta $genome \\
+      -o resfinder \\
+      --species \"${resfinder_species}\" \\
+      --min_cov  ${resistance_mincov} \\
+      --threshold ${resistance_minid} \\
+      --db_path_point ${bacannot_db}/resfinder_db/db_pointfinder --point || true ;
 
   # Fix name of pheno table
   mv resfinder/pheno_table.txt resfinder/mutation_pheno_table.txt &> /dev/null || true ;
 
   # Convert to GFF
-  resfinder2gff.py -i resfinder/ResFinder_results_tab.txt > resfinder/results_tab.gff ;
+  resfinder2gff.py \\
+      -i resfinder/ResFinder_results_tab.txt > resfinder/results_tab.gff ;
   """
 
   else if (resfinder_species.toLowerCase() == "other")
   """
   # Run resfinder acquired resistance
-  /work/resfinder/run_resfinder.py --inputfasta $genome -o resfinder \
-  --min_cov \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
-  --threshold \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
-  --db_path_res /work/resfinder/db_resfinder --acquired || true ;
+  run_resfinder.py \\
+      --inputfasta $genome \\
+      -o resfinder \\
+      --species \"${resfinder_species}\" \\
+      --min_cov  ${resistance_mincov} \\
+      --threshold ${resistance_minid} \\
+      --db_path_res ${bacannot_db}/resfinder_db/db_resfinder --acquired || true ;
 
   # Fix name of pheno table
-  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt ;
+  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt &> /dev/null || true ;
 
   # touch pointfinder
   touch resfinder/PointFinder_results.txt ;
 
   # Convert to GFF
-  resfinder2gff.py -i resfinder/ResFinder_results_tab.txt > resfinder/results_tab.gff ;
+  resfinder2gff.py \\
+      -i resfinder/ResFinder_results_tab.txt > resfinder/results_tab.gff ;
   """
 }

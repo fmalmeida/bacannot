@@ -1,4 +1,4 @@
-def logMessage() {
+def logMessage(database_wf) {
   log.info "================================================================="
   log.info " Container-based, fmalmeida/bacannot, Genome Annotation Pipeline "
   log.info "================================================================="
@@ -25,7 +25,7 @@ def logMessage() {
     }
   }
 
-  if (params.get_dbs) {
+  if (database_wf) {
     summary['Workflow']     = "CREATE_DBS"
     summary['Action']       = "Downloading databases for bacannot"
     summary['Output dir']   = "${params.output}"

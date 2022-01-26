@@ -227,14 +227,14 @@ workflow BACANNOT {
         rgi_output_parsed_ch = CARD_RGI.out[1]
         rgi_heatmap_ch = CARD_RGI.out[3]
         // ARGMiner
-        //ARGMINER(PROKKA.out[4], dbs_ch)
-        //argminer_output_ch = ARGMINER.out[0]
-        // // Resfinder
-        // RESFINDER(PROKKA.out[7])
-        // resfinder_output_1_ch = RESFINDER.out[0]
-        // resfinder_output_2_ch = RESFINDER.out[1]
-        // resfinder_phenotable_ch = RESFINDER.out[2]
-        // resfinder_gff_ch = RESFINDER.out[3]
+        ARGMINER(PROKKA.out[4], dbs_ch)
+        argminer_output_ch = ARGMINER.out[0]
+        // Resfinder
+        RESFINDER(PROKKA.out[7], dbs_ch)
+        resfinder_output_1_ch = RESFINDER.out[0]
+        resfinder_output_2_ch = RESFINDER.out[1]
+        resfinder_phenotable_ch = RESFINDER.out[2]
+        resfinder_gff_ch = RESFINDER.out[3]
       } else {
         rgi_output_ch = Channel.empty()
         rgi_output_parsed_ch = Channel.empty()

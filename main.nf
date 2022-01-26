@@ -64,7 +64,7 @@ params.get_dbs                = false
 params.force_update           = false
 
 // General parameters
-params.output                  = (params.get_dbs) ? 'bacannot_dbs' : 'outdir'
+params.output                  = 'outdir'
 params.threads                 = 2
 params.bedtools_merge_distance = ''
 
