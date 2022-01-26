@@ -8,10 +8,10 @@ COPY misc_tools.yml /
 RUN mamba env create --quiet -f /misc_tools.yml && mamba clean -a
 
 # Add conda installation dir to PATH (instead of doing 'conda activate')
-ENV PATH /opt/conda/envs/bacannot-miscellaneous/bin:$PATH
+ENV PATH /opt/conda/envs/bacannot-miscellaneous-v3.1/bin:$PATH
 
 # Dump the details of the installed packages to a file for posterity
-RUN conda env export --name bacannot-miscellaneous > bacannot-miscellaneous.yml
+RUN conda env export --name bacannot-miscellaneous-v3.1 > bacannot-miscellaneous-v3.1.yml
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
@@ -21,3 +21,4 @@ WORKDIR /work
 RUN chmod 777 /work
 RUN git clone -b master https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
       chmod a+rwx -R resfinder
+ENV PATH=/work/resfinder:$PATH
