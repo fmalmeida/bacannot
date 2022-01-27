@@ -76,8 +76,12 @@ include { CARD_RGI } from '../modules/resistance/rgi_annotation.nf'
 include { CALL_METHYLATION } from '../modules/generic/methylation.nf'
 
 // User's custom db annotation
-include { CUSTOM_BLAST } from '../modules/generic/custom_blast.nf'
+include { CUSTOM_BLAST        } from '../modules/generic/custom_blast.nf'
 include { CUSTOM_BLAST_REPORT } from '../modules/generic/custom_blast_report.nf'
+
+// NCBI protein annotation
+include { NCBI_PROTEIN        } from '../modules/generic/ncbi_protein.nf'
+include { CUSTOM_BLAST_REPORT as NCBI_PROTEIN_REPORT } from '../modules/generic/custom_blast_report.nf'
 
 // Merging annotation in GFF
 include { MERGE_ANNOTATIONS } from '../modules/generic/merge_annotations.nf'
@@ -111,6 +115,7 @@ workflow BACANNOT {
   take:
     input_ch
     custom_db
+    ncbi_accs
   
   main:
 
@@ -291,7 +296,7 @@ workflow BACANNOT {
                                        .join(iceberg_output_ch,   remainder: true)
                                        .join(phast_output_ch,     remainder: true)
                                        .join(phigaro_output_2_ch, remainder: true)
-                                       .join(FIND_GIS.out[0],  remainder: true)
+                                       .join(FIND_GIS.out[0],     remainder: true)
 
       // Contatenation of annotations in a single GFF file
       MERGE_ANNOTATIONS(annotations_files_ch.join(DIGIS.out[1],     remainder: true))
@@ -318,9 +323,17 @@ workflow BACANNOT {
           Nineth step -- Perform users custom annotation
 
       */
+
+      // user's formatted
       if (params.custom_db) {
         CUSTOM_BLAST(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]), custom_db)
         CUSTOM_BLAST_REPORT(CUSTOM_BLAST.out[0])
+      }
+
+      // from ncbi protein db
+      if (params.ncbi_protein) {
+        NCBI_PROTEIN(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[4]), ncbi_accs)
+        NCBI_PROTEIN_REPORT(NCBI_PROTEIN.out[0])
       }
 
       /*

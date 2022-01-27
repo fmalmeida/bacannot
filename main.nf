@@ -10,7 +10,7 @@ import org.yaml.snakeyaml.Yaml
  * Include functions
  */
 include { helpMessage } from './nf_functions/help.nf'
-include { logMessage } from './nf_functions/log.nf'
+include { logMessage  } from './nf_functions/log.nf'
 include { paramsCheck } from './nf_functions/paramsCheck.nf'
 
 
@@ -70,6 +70,7 @@ params.prokka_kingdom      = ''
 params.prokka_genetic_code = false
 params.prokka_use_rnammer  = false
 // User custom db
+params.ncbi_protein        = ''
 params.custom_db           = ''
 params.blast_custom_minid  = 0
 params.blast_custom_mincov = 0
@@ -132,7 +133,8 @@ workflow {
     // Run annotation
     BACANNOT(
       parse_samplesheet.out,
-      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty()
+      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty(),
+      (params.ncbi_protein) ? Channel.fromPath( params.ncbi_protein ) : Channel.empty()
     )
 
   } else {
