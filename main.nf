@@ -134,7 +134,7 @@ workflow {
     BACANNOT(
       parse_samplesheet.out,
       (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty(),
-      (params.ncbi_protein) ? Channel.fromPath( params.ncbi_protein ) : Channel.empty()
+      (params.ncbi_proteins) ? Channel.fromPath( params.ncbi_proteins ) : Channel.empty()
     )
 
   } else {

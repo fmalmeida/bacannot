@@ -331,7 +331,7 @@ workflow BACANNOT {
       }
 
       // from ncbi protein db
-      if (params.ncbi_protein) {
+      if (params.ncbi_proteins) {
         NCBI_PROTEIN(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[4]), ncbi_accs)
         NCBI_PROTEIN_REPORT(NCBI_PROTEIN.out[0])
       }
