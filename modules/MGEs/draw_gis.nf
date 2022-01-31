@@ -4,7 +4,7 @@ process DRAW_GIS {
     else null
   }
   tag "${prefix}"
-  label 'main'
+  
 
   input:
   tuple val(prefix), file(gff), file(gis_bed)
@@ -16,17 +16,17 @@ process DRAW_GIS {
 
   script:
   """
-  # Create output directories
+  # create output directories
   mkdir -p plots plots/id_label plots/product_label ;
 
-  # Get required files
+  # get required files
   cp /work/bscripts/draw_gis.sh . ;
   cp /work/bscripts/input.fofn . ;
 
-  # Draw genomic islands
+  # draw genomic islands
   ./draw_gis.sh -i $gis_bed -g $gff -f input.fofn ;
 
-  # Get one image
+  # get one image
   name=\$(ls plots/product_label | head -n 1)
   [[ \$(ls plots/product_label/) ]] && cp "plots/product_label/\${name}" ./teste.png || echo "empty" ;
   """

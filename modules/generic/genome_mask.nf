@@ -7,7 +7,7 @@ process MASKING_GENOME {
   else if (filename.indexOf(".txt") > 0 ) "gffs/$filename"
 }
   tag "${prefix}"
-  label 'main'
+  
 
   input:
   file input

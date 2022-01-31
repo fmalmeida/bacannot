@@ -1,7 +1,7 @@
 process CUSTOM_BLAST {
   publishDir "${params.output}/${prefix}/custom_annotations/${customDB.baseName}", mode: 'copy'
   tag "${prefix}"
-  label 'main'
+  
 
   input:
   tuple val(prefix), file(gff), file(genome)
