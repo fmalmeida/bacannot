@@ -15,8 +15,8 @@ def logMessage() {
   summary['Blast query coverage - AMR Genes'] = params.blast_resistance_mincov
   }
   if (params.skip_iceberg_search == false | params.skip_prophage_search == false) {
-  summary['Blast % ID - ICEs or Phages'] = params.blast_MGEs_minid
-  summary['Blast query coverage - ICEs or Phages'] = params.blast_MGEs_mincov
+  summary['Blast % ID - ICEs or Phages'] = params.blast_mge_minid
+  summary['Blast query coverage - ICEs or Phages'] = params.blast_mge_mincov
   }
   if (params.skip_plasmid_search == false) {
   summary['Blast % ID - Plasmids'] = params.plasmids_minid

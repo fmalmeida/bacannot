@@ -16,8 +16,8 @@ process PHAST {
   """
   # With predicted gene sequences
 
-  run_blasts.py blastp --query $genes --db /work/dbs/phast/diamond.dmnd --minid ${params.blast_MGEs_minid} \
-  --mincov ${params.blast_MGEs_mincov} --threads ${params.threads} --out ${prefix}_phast_blastp_onGenes.txt --2way | \
+  run_blasts.py blastp --query $genes --db /work/dbs/phast/diamond.dmnd --minid ${params.blast_mge_minid} \
+  --mincov ${params.blast_mge_mincov} --threads ${params.threads} --out ${prefix}_phast_blastp_onGenes.txt --2way | \
   sed -e 's/PRODUCT/PHAST_ID/g' > ${prefix}_phast_blastp_onGenes.summary.txt ;
   """
 }

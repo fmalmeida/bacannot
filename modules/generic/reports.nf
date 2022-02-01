@@ -62,8 +62,8 @@ process REPORT {
 
   ## Generate MGEs report
   rmarkdown::render("report_MGEs.Rmd", \
-  params = list( blast_id = ${params.blast_MGEs_minid}, \
-                 blast_cov = ${params.blast_MGEs_mincov}, \
+  params = list( blast_id = ${params.blast_mge_minid}, \
+                 blast_cov = ${params.blast_mge_mincov}, \
                  phigaro_dir = "${params.output}/prophages/phigaro", \
                  phigaro_txt = "$phigaro_txt", \
                  phispy_tsv = "$phispy_tsv", \

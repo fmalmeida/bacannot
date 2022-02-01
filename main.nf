@@ -83,8 +83,8 @@ params.blast_virulence_minid   = 90
 params.blast_virulence_mincov  = 80
 params.blast_resistance_minid  = 90
 params.blast_resistance_mincov = 80
-params.blast_MGEs_minid        = 65
-params.blast_MGEs_mincov       = 65
+params.blast_mge_minid        = 65
+params.blast_mge_mincov       = 65
 // Workflow parameters
 params.skip_plasmid_search    = false
 params.skip_virulence_search  = false

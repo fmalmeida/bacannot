@@ -202,7 +202,7 @@
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100"
                 },
-                "blast_MGEs_minid": {
+                "blast_mge_minid": {
                     "type": "number",
                     "description": "Identity threshold for ICEs and prophages annotation",
                     "default": 85,
@@ -210,7 +210,7 @@
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100"
                 },
-                "blast_MGEs_mincov": {
+                "blast_mge_mincov": {
                     "type": "number",
                     "description": "overage threshold for ICEs and prophages annotation",
                     "default": 85,

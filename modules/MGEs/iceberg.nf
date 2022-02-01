@@ -23,8 +23,8 @@ process ICEBERG {
   ## Checking ICE genes
 
   ## With predicted gene sequences
-  run_blasts.py blastp --query $genes_aa --db /work/dbs/iceberg/diamond.dmnd --minid ${params.blast_MGEs_minid} \
-  --mincov ${params.blast_MGEs_mincov} --threads ${params.threads} --out ${prefix}_iceberg_blastp_onGenes.txt --2way | \
+  run_blasts.py blastp --query $genes_aa --db /work/dbs/iceberg/diamond.dmnd --minid ${params.blast_mge_minid} \
+  --mincov ${params.blast_mge_mincov} --threads ${params.threads} --out ${prefix}_iceberg_blastp_onGenes.txt --2way | \
   sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastp_onGenes.summary.txt ;
 
   ## Checking for full-length ICEs
