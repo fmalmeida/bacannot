@@ -3,17 +3,32 @@
 Custom database configuration
 =============================
 
-It is also possible that users use custom databases for the annotation of genomes. Currently, the pipeline only executes BLASTn alignments using the genome as query.
-Therefore, the given databases must be files of **target gene sequences in nucleotide** FASTA.
+It is also possible that users use custom databases for the annotation of genomes, either by providing custom nucleotide FASTAs, properly formatted with **target gene sequences in nucleotide** to be search against the genome with BLASTn, or by providing a file containing a list of NCBI Protein database accession which will retrieve these sequences and annotated the genome against them using BLASTp.
 
-The custom annotation is triggered with the ``--custom_db`` parameter. The pipeline accepts more than one custom database at once, separated by commas, e.g.
+NCBI Protein database
+---------------------
+
+To perform an additional annotation of the genome using proteins from NCBI Protein database, one must use the parameter ``--ncbi_proteins`` and provide a file containing a list of protein IDs such as this one:
+
+.. code-block:: bash
+
+    WP_118891437.1
+    VTX70803.1
+    VTX49335.1
+    WP_005693332.1
+    WP_138172127.1
+
+Custom nucleotide database (in FASTA)
+-------------------------------------
+
+This custom annotation is triggered with the ``--custom_db`` parameter. The pipeline accepts more than one custom database at once, separated by commas, e.g.
 ``--custom_db db1.fasta,db2.fasta``.
 
 Although simple, the custom database must follow some rules about sequence header format in order to make it possible the summarization of alignments and renderization
 of custom reports in HTML format, that shall be available under the ``report_files`` directory.
 
 Sequence header format
-----------------------
+""""""""""""""""""""""
 
 Sequence headers must follow a 5-field rule separated by "~~~" and spaces. The first 4 fields must be separated by "~~~" and the last one by one space, following the
 example shown below:
@@ -34,10 +49,10 @@ example shown below:
 
   It is very important to follow this header format in order to make it possible and easier to render summaries and reports of the BLASTn result, such as below:
 
-BLASTn summary example
-----------------------
+Summary example for custom database annotations
+-----------------------------------------------
 
-When the header is followed, the summaries and reports are very well rendered such as in this example:
+The custom annotations, either with ``--custom_db`` or with ``--ncbi_protein`` will produce useful summaries and reports (:ref:`outputs`) such as in this example:
 
 .. code-block:: bash
 
