@@ -195,8 +195,10 @@ On/Off processes
      - | Tells whether or not to run antiSMASH (secondary metabolite) annotation.
        | AntiSMASH is executed using only its core annotation modules in order to keep it fast
 
-Custom nucl databases
-"""""""""""""""""""""
+Custom databases
+""""""""""""""""
+
+Parameters to load custom databases annotation using nucleotide sequences provided by the user or protein sequences from NCBI (given a list with accessions). Please, to learn more about how to format a nucl custom database or to use sequences from NCBI Protein, refer to :ref:`custom-db`.
 
 .. list-table::
    :widths: 20 10 20 30
@@ -210,7 +212,12 @@ Custom nucl databases
    * - ``--custom_db``
      - N
      - NA
-     - Custom gene nucleotide databases to be used for additional annotations against the genome. See :ref:`custom-db`.
+     - Path to nucleotide FASTA containing a custom database to be used for additional annotations against the genome. Multiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,...
+   
+   * - ``--ncbi_proteins``
+     - N
+     - NA
+     - File containing a list of accessions from `NCBI Protein database <https://www.ncbi.nlm.nih.gov/protein/>`_. The selected proteins will be downloaded and the input genomes will be scaned for with these sequences using ``blastp``.
 
 Annotation thresholds
 """""""""""""""""""""
@@ -254,12 +261,12 @@ Annotation thresholds
      - 60
      - Coverage (%) threshold to be used when detecting plasmids with Plasmidfinder
 
-   * - ``--blast_MGEs_minid``
+   * - ``--blast_mge_minid``
      - N
      - 85
      - Identity (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
 
-   * - ``--blast_MGEs_mincov``
+   * - ``--blast_mge_mincov``
      - N
      - 85
      - Coverage (%) threshold to be used when annotating prophages and mobile elements from PHAST and ICEberg databases
@@ -267,12 +274,12 @@ Annotation thresholds
    * - ``--blast_custom_minid``
      - N
      - 0
-     - Identity (%) threshold to be used when annotating with user's custom databases
+     - Identity (%) threshold to be used when annotating with custom databases (User's Nucl or NCBI Protein)
 
    * - ``--blast_custom_mincov``
      - N
      - 0
-     - Coverage (%) threshold to be used when annotating with user's custom databases
+     - Coverage (%) threshold to be used when annotating with custom databases (User's Nucl or NCBI Protein)
 
 Merge distance
 """"""""""""""
