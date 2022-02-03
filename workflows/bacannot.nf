@@ -76,12 +76,9 @@ include { CARD_RGI } from '../modules/resistance/rgi_annotation.nf'
 include { CALL_METHYLATION } from '../modules/generic/methylation.nf'
 
 // User's custom db annotation
-include { CUSTOM_BLAST        } from '../modules/generic/custom_blast.nf'
-include { CUSTOM_BLAST_REPORT } from '../modules/generic/custom_blast_report.nf'
-
-// NCBI protein annotation
-include { NCBI_PROTEIN        } from '../modules/generic/ncbi_protein.nf'
-include { CUSTOM_BLAST_REPORT as NCBI_PROTEIN_REPORT } from '../modules/generic/custom_blast_report.nf'
+include { CUSTOM_DATABASE        } from '../modules/generic/custom_database.nf'
+include { CUSTOM_DATABASE_REPORT } from '../modules/generic/custom_database_report.nf'
+include { GET_NCBI_PROTEIN       } from '../modules/generic/ncbi_protein.nf'
 
 // Merging annotation in GFF
 include { MERGE_ANNOTATIONS } from '../modules/generic/merge_annotations.nf'
@@ -323,17 +320,13 @@ workflow BACANNOT {
           Nineth step -- Perform users custom annotation
 
       */
-
-      // user's formatted
-      if (params.custom_db) {
-        CUSTOM_BLAST(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]), custom_db)
-        CUSTOM_BLAST_REPORT(CUSTOM_BLAST.out[0])
-      }
-
-      // from ncbi protein db
-      if (params.ncbi_proteins) {
-        NCBI_PROTEIN(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[4]), ncbi_accs)
-        NCBI_PROTEIN_REPORT(NCBI_PROTEIN.out[0])
+      if (params.custom_db || params.ncbi_proteins) {
+        GET_NCBI_PROTEIN(ncbi_accs)
+        CUSTOM_DATABASE(
+          MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]).join(PROKKA.out[4]),
+          custom_db.mix(GET_NCBI_PROTEIN.out[0])
+        )
+        CUSTOM_DATABASE_REPORT(CUSTOM_DATABASE.out[0])
       }
 
       /*
@@ -351,7 +344,7 @@ workflow BACANNOT {
       JBROWSE(jbrowse_input_ch)
 
       // Render reports
-      REPORT(jbrowse_input_ch.join(rgi_output_parsed_ch,    remainder: true)
+      REPORT(jbrowse_input_ch.join(rgi_output_parsed_ch, remainder: true)
                           .join(rgi_heatmap_ch,          remainder: true)
                           .join(argminer_output_ch,      remainder: true)
                           .join(iceberg_output_2_ch,     remainder: true)
@@ -359,11 +352,11 @@ workflow BACANNOT {
                           .join(resfinder_output_1_ch,   remainder: true)
                           .join(resfinder_output_2_ch,   remainder: true)
                           .join(resfinder_phenotable_ch, remainder: true)
-                          .join(DRAW_GIS.out[1],      remainder: true)
+                          .join(DRAW_GIS.out[1],         remainder: true)
                           .join(phigaro_output_1_ch,     remainder: true)
                           .join(platon_output_ch,        remainder: true)
-                          .join(PROKKA.out[8],        remainder: true)
+                          .join(PROKKA.out[8],           remainder: true)
                           .join(kegg_decoder_svg_ch,     remainder: true)
-                          .join(REFSEQ_MASHER.out[0], remainder: true))
+                          .join(REFSEQ_MASHER.out[0],    remainder: true))
 
 }

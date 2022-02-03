@@ -1,4 +1,4 @@
-process CUSTOM_BLAST_REPORT {
+process CUSTOM_DATABASE_REPORT {
   publishDir "${params.output}/${prefix}/report_files/custom_databases", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf(".html") > 0) "report_${customDB}.html"
     else "$filename"
