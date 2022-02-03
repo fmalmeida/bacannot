@@ -26,9 +26,17 @@ process UNICYCLER {
   unicycler --version > unicycler_version.txt
 
   # Run unicycler
-  unicycler $paired_param $unpaired_param $lr_param -o unicycler_${prefix} -t ${params.threads} &> unicycler.log
+  unicycler \\
+      $paired_param \\
+      $unpaired_param \\
+      $lr_param \\
+      -o unicycler_${prefix} \\
+      -t ${params.threads} \\
+      &> unicycler.log
 
   # Save copy for annotation
-  cp unicycler_${prefix}/assembly.fasta unicycler_${prefix}.fasta
+  cp \\
+      unicycler_${prefix}/assembly.fasta \\
+      unicycler_${prefix}.fasta
   """
 }

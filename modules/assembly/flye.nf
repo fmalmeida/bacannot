@@ -23,9 +23,16 @@ process FLYE {
   flye -v > flye_version.txt ;
 
   # Run flye
-  flye ${lr} $lreads --plasmids --out-dir flye_${prefix} --threads ${params.threads} &> flye.log ;
+  flye \\
+      ${lr} \\
+      $lreads \\
+      --out-dir flye_${prefix} \\
+      --threads ${params.threads} \\
+      &> flye.log ;
 
   # Save a copy for annotation
-  cp flye_${prefix}/assembly.fasta flye_${prefix}.fasta
+  cp \\
+      flye_${prefix}/assembly.fasta \\
+      flye_${prefix}.fasta
   """
 }
