@@ -321,7 +321,7 @@ workflow BACANNOT {
 
       */
       if (params.custom_db || params.ncbi_proteins) {
-        GET_NCBI_PROTEIN(ncbi_accs)
+        GET_NCBI_PROTEIN(PROKKA.out[10], ncbi_accs)
         CUSTOM_DATABASE(
           MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]).join(PROKKA.out[4]),
           custom_db.mix(GET_NCBI_PROTEIN.out[0])

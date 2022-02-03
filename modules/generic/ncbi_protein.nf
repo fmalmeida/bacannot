@@ -1,9 +1,10 @@
 process GET_NCBI_PROTEIN {
-  publishDir "${params.output}/${prefix}/custom_annotations/NCBI_PROTEIN", mode: 'copy'
+  publishDir "${params.output}/${prefix}/custom_annotations/ncbi_protein", mode: 'copy'
   tag "${prefix}"
   label 'main'
 
   input:
+  val(prefix)
   file(ncbi_accs)
 
   output:
