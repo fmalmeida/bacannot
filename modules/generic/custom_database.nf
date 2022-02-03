@@ -9,24 +9,23 @@ process CUSTOM_DATABASE {
 
   output:
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), val("${customDB.baseName}"), file("${prefix}_${customDB.baseName}*.summary.txt"), file("${prefix}_${customDB.baseName}*.gff")
-  file('*.txt') // Grab all
+  tuple val(prefix), val("${customDB.baseName}"), path("${prefix}_${customDB.baseName}*.summary.txt"), path("${prefix}_${customDB.baseName}*.gff")
+  path('*.txt') // Grab all
+  path(customDB)
 
   script:
   """
   # Step 1 - Check if input is nucl or protein
-  if seqkit stats input.faa | grep -iq "Protein" ; then
-      blast_db=prot ; blast_cmd="blastp" ; blast_subj=${proteins} ;
-  else
-      blast_db=nucl ; blast_cmd="blastn" ; blast_subj=${genome} ;
-  fi
+  blast_db=prot ; blast_cmd="blastp" ; blast_subj=${proteins}
+  [ \$(grep -i "Protein" <(seqkit stats ${customDB}) | wc -l) -gt 0 ] || \\
+        ( blast_db=nucl ; blast_cmd="blastn" ; blast_subj=${genome} )
 
   # Step 2 - Create blast db
-  makeblastdb -in $customDB -dbtype \$blast_db -out customDB ;
+  makeblastdb -in ${customDB} -dbtype \$blast_db -out customDB ;
 
   # Step 3 - Execute blast
   run_blasts.py \\
-      \$blast_cmd \\
+      \${blast_cmd} \\
       --query \$blast_subj \\
       --db customDB \\
       --minid ${params.blast_custom_minid} \\
