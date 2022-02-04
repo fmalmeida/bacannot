@@ -16,14 +16,16 @@ process CUSTOM_DATABASE {
   script:
   """
   # Step 1 - Check if input is nucl or protein
-  blast_db=prot ; blast_cmd="blastp" ; blast_subj=${proteins}
-  [ \$(grep -i "Protein" <(seqkit stats ${customDB}) | wc -l) -gt 0 ] || \\
-        ( blast_db=nucl ; blast_cmd="blastn" ; blast_subj=${genome} )
+  if [ \$(grep -i "Protein" <(seqkit stats ${customDB}) | wc -l) -gt 0 ]
+  then
+        export blast_cmd="blastp" ; export blast_subj=${proteins} ;
+        diamond makedb --in ${customDB} -d customDB ;
+  else
+        export blast_cmd="blastn" ; export blast_subj=${genome} ; export blast_db=nucl
+        makeblastdb -in ${customDB} -dbtype \$blast_db -out customDB ;
+  fi
 
-  # Step 2 - Create blast db
-  makeblastdb -in ${customDB} -dbtype \$blast_db -out customDB ;
-
-  # Step 3 - Execute blast
+  # Step 2 - Execute blast
   run_blasts.py \\
       \${blast_cmd} \\
       --query \$blast_subj \\
@@ -34,7 +36,7 @@ process CUSTOM_DATABASE {
       --out ${prefix}_${customDB.baseName}_\${blast_cmd}.txt \\
       > ${prefix}_${customDB.baseName}_\${blast_cmd}.summary.txt ;
 
-  # Step 4 - Get BED from blast
+  # Step 3 - Get BED from blast
   awk \\
       '{print \$1 "\t" \$2 "\t" \$3}' \\
       ${prefix}_${customDB.baseName}_\${blast_cmd}.txt | \\

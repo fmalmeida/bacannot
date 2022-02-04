@@ -23,7 +23,6 @@ process PROKKA {
     tuple val(prefix), file("annotation/${prefix}.fna"), val("${resfinder_species}") // For resfinder
     tuple val(prefix), file("annotation/${prefix}.txt") // prokka stats
     file('prokka_version.txt') // Save prokka version
-    val(prefix) // only the input prefix
 
     script:
     kingdom = (params.prokka_kingdom)      ? "--kingdom ${params.prokka_kingdom}"        : ''
