@@ -141,16 +141,16 @@ workflow BACANNOT {
       // Fouth step -- calculate GC content for JBrowse
       COMPUTE_GC(PROKKA.out[3])
 
-      // // Fifth step -- run kofamscan
-      // if (params.skip_kofamscan == false) {
-      //   KOFAMSCAN(PROKKA.out[4], dbs_ch)
-      //   KEGG_DECODER(KOFAMSCAN.out[1])
-      //   kofamscan_output_ch = KOFAMSCAN.out[1]
-      //   kegg_decoder_svg_ch = KEGG_DECODER.out[1]
-      // } else {
-      //   kofamscan_output_ch = Channel.empty()
-      //   kegg_decoder_svg_ch = Channel.empty()
-      // }
+      // Fifth step -- run kofamscan
+      if (params.skip_kofamscan == false) {
+        KOFAMSCAN(PROKKA.out[4], dbs_ch)
+        KEGG_DECODER(KOFAMSCAN.out[1])
+        kofamscan_output_ch = KOFAMSCAN.out[1]
+        kegg_decoder_svg_ch = KEGG_DECODER.out[1]
+      } else {
+        kofamscan_output_ch = Channel.empty()
+        kegg_decoder_svg_ch = Channel.empty()
+      }
 
       // /*
       //     Sixth step -- MGE, Virulence and AMR annotations

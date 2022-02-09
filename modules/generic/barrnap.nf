@@ -4,6 +4,7 @@ process BARRNAP {
      else "rRNA/$filename"
    }
    tag "${prefix}"
+   label 'perl'
 
    input:
    tuple val(prefix), file(genome)
