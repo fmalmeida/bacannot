@@ -138,114 +138,114 @@ workflow BACANNOT {
       // Third step -- rRNA annotation
       BARRNAP(PROKKA.out[3])
 
-      // Fouth step -- calculate GC content for JBrowse
-      COMPUTE_GC(PROKKA.out[3])
+      // // Fouth step -- calculate GC content for JBrowse
+      // COMPUTE_GC(PROKKA.out[3])
 
-      // Fifth step -- run kofamscan
-      if (params.skip_kofamscan == false) {
-        KOFAMSCAN(PROKKA.out[4], dbs_ch)
-        KEGG_DECODER(KOFAMSCAN.out[1])
-        kofamscan_output_ch = KOFAMSCAN.out[1]
-        kegg_decoder_svg_ch = KEGG_DECODER.out[1]
-      } else {
-        kofamscan_output_ch = Channel.empty()
-        kegg_decoder_svg_ch = Channel.empty()
-      }
+      // // Fifth step -- run kofamscan
+      // if (params.skip_kofamscan == false) {
+      //   KOFAMSCAN(PROKKA.out[4], dbs_ch)
+      //   KEGG_DECODER(KOFAMSCAN.out[1])
+      //   kofamscan_output_ch = KOFAMSCAN.out[1]
+      //   kegg_decoder_svg_ch = KEGG_DECODER.out[1]
+      // } else {
+      //   kofamscan_output_ch = Channel.empty()
+      //   kegg_decoder_svg_ch = Channel.empty()
+      // }
 
-      /*
-          Sixth step -- MGE, Virulence and AMR annotations
-      */
+      // /*
+      //     Sixth step -- MGE, Virulence and AMR annotations
+      // */
 
-      // plasmids
-      if (params.skip_plasmid_search == false) {
+      // // plasmids
+      // if (params.skip_plasmid_search == false) {
         
-        // plasmidfinder
-        PLASMIDFINDER(PROKKA.out[3], dbs_ch)
-        plasmidfinder_output_ch = PLASMIDFINDER.out[1]
-        // platon
-        PLATON(PROKKA.out[3], dbs_ch)
-        platon_output_ch = PLATON.out[1]
-      } else {
-        plasmidfinder_output_ch = Channel.empty()
-        platon_output_ch = Channel.empty()
-      }
+      //   // plasmidfinder
+      //   PLASMIDFINDER(PROKKA.out[3], dbs_ch)
+      //   plasmidfinder_output_ch = PLASMIDFINDER.out[1]
+      //   // platon
+      //   PLATON(PROKKA.out[3], dbs_ch)
+      //   platon_output_ch = PLATON.out[1]
+      // } else {
+      //   plasmidfinder_output_ch = Channel.empty()
+      //   platon_output_ch = Channel.empty()
+      // }
 
-      // IslandPath software
-      ISLANDPATH(PROKKA.out[2])
+      // // IslandPath software
+      // ISLANDPATH(PROKKA.out[2])
 
-      // Virulence search
-      if (params.skip_virulence_search == false) {     
-        // VFDB
-        VFDB(PROKKA.out[5], dbs_ch)
-        vfdb_output_ch = VFDB.out[1]
-        // Victors db
-        VICTORS(PROKKA.out[4], dbs_ch)
-        victors_output_ch = VICTORS.out[1]
-      } else {
-        vfdb_output_ch    = Channel.empty()
-        victors_output_ch = Channel.empty()
-      }
+      // // Virulence search
+      // if (params.skip_virulence_search == false) {     
+      //   // VFDB
+      //   VFDB(PROKKA.out[5], dbs_ch)
+      //   vfdb_output_ch = VFDB.out[1]
+      //   // Victors db
+      //   VICTORS(PROKKA.out[4], dbs_ch)
+      //   victors_output_ch = VICTORS.out[1]
+      // } else {
+      //   vfdb_output_ch    = Channel.empty()
+      //   victors_output_ch = Channel.empty()
+      // }
 
-      // Prophage search
-      if (params.skip_prophage_search == false) {
-        // PHAST db
-        PHAST(PROKKA.out[4], dbs_ch)
-        phast_output_ch = PHAST.out[1]
-        // Phigaro software
-        PHIGARO(PROKKA.out[3], dbs_ch)
-        phigaro_output_1_ch = PHIGARO.out[0]
-        phigaro_output_2_ch = PHIGARO.out[1]
-        // PhiSpy
-        PHISPY(PROKKA.out[2])
-        phispy_output_ch = PHISPY.out[1]
-      } else {
-        phast_output_ch     = Channel.empty()
-        phigaro_output_1_ch = Channel.empty()
-        phigaro_output_2_ch = Channel.empty()
-        phispy_output_ch    = Channel.empty()
-      }
+      // // Prophage search
+      // if (params.skip_prophage_search == false) {
+      //   // PHAST db
+      //   PHAST(PROKKA.out[4], dbs_ch)
+      //   phast_output_ch = PHAST.out[1]
+      //   // Phigaro software
+      //   PHIGARO(PROKKA.out[3], dbs_ch)
+      //   phigaro_output_1_ch = PHIGARO.out[0]
+      //   phigaro_output_2_ch = PHIGARO.out[1]
+      //   // PhiSpy
+      //   PHISPY(PROKKA.out[2])
+      //   phispy_output_ch = PHISPY.out[1]
+      // } else {
+      //   phast_output_ch     = Channel.empty()
+      //   phigaro_output_1_ch = Channel.empty()
+      //   phigaro_output_2_ch = Channel.empty()
+      //   phispy_output_ch    = Channel.empty()
+      // }
 
-      // ICEs search
-      if (params.skip_iceberg_search == false) {
-        // ICEberg db
-        ICEBERG(PROKKA.out[4], PROKKA.out[3], dbs_ch)
-        iceberg_output_ch   = ICEBERG.out[1]
-        iceberg_output_2_ch = ICEBERG.out[2]
-      } else {
-        iceberg_output_ch   = Channel.empty()
-        iceberg_output_2_ch = Channel.empty()
-      }
+      // // ICEs search
+      // if (params.skip_iceberg_search == false) {
+      //   // ICEberg db
+      //   ICEBERG(PROKKA.out[4], PROKKA.out[3], dbs_ch)
+      //   iceberg_output_ch   = ICEBERG.out[1]
+      //   iceberg_output_2_ch = ICEBERG.out[2]
+      // } else {
+      //   iceberg_output_ch   = Channel.empty()
+      //   iceberg_output_2_ch = Channel.empty()
+      // }
 
-      // AMR search
-      if (params.skip_resistance_search == false) {
-        // AMRFinderPlus
-        AMRFINDER(PROKKA.out[4], dbs_ch)
-        amrfinder_output_ch = AMRFINDER.out[0]
-        // CARD-RGI
-        CARD_RGI(PROKKA.out[4], dbs_ch)
-        rgi_output_ch = CARD_RGI.out[2]
-        rgi_output_parsed_ch = CARD_RGI.out[1]
-        rgi_heatmap_ch = CARD_RGI.out[3]
-        // ARGMiner
-        ARGMINER(PROKKA.out[4], dbs_ch)
-        argminer_output_ch = ARGMINER.out[0]
-        // Resfinder
-        RESFINDER(PROKKA.out[7], dbs_ch)
-        resfinder_output_1_ch = RESFINDER.out[0]
-        resfinder_output_2_ch = RESFINDER.out[1]
-        resfinder_phenotable_ch = RESFINDER.out[2]
-        resfinder_gff_ch = RESFINDER.out[3]
-      } else {
-        rgi_output_ch = Channel.empty()
-        rgi_output_parsed_ch = Channel.empty()
-        rgi_heatmap_ch = Channel.empty()
-        amrfinder_output_ch = Channel.empty()
-        argminer_output_ch = Channel.empty()
-        resfinder_output_1_ch = Channel.empty()
-        resfinder_output_2_ch = Channel.empty()
-        resfinder_phenotable_ch = Channel.empty()
-        resfinder_gff_ch = Channel.empty()
-      }
+      // // AMR search
+      // if (params.skip_resistance_search == false) {
+      //   // AMRFinderPlus
+      //   AMRFINDER(PROKKA.out[4], dbs_ch)
+      //   amrfinder_output_ch = AMRFINDER.out[0]
+      //   // CARD-RGI
+      //   CARD_RGI(PROKKA.out[4], dbs_ch)
+      //   rgi_output_ch = CARD_RGI.out[2]
+      //   rgi_output_parsed_ch = CARD_RGI.out[1]
+      //   rgi_heatmap_ch = CARD_RGI.out[3]
+      //   // ARGMiner
+      //   ARGMINER(PROKKA.out[4], dbs_ch)
+      //   argminer_output_ch = ARGMINER.out[0]
+      //   // Resfinder
+      //   RESFINDER(PROKKA.out[7], dbs_ch)
+      //   resfinder_output_1_ch = RESFINDER.out[0]
+      //   resfinder_output_2_ch = RESFINDER.out[1]
+      //   resfinder_phenotable_ch = RESFINDER.out[2]
+      //   resfinder_gff_ch = RESFINDER.out[3]
+      // } else {
+      //   rgi_output_ch = Channel.empty()
+      //   rgi_output_parsed_ch = Channel.empty()
+      //   rgi_heatmap_ch = Channel.empty()
+      //   amrfinder_output_ch = Channel.empty()
+      //   argminer_output_ch = Channel.empty()
+      //   resfinder_output_1_ch = Channel.empty()
+      //   resfinder_output_2_ch = Channel.empty()
+      //   resfinder_phenotable_ch = Channel.empty()
+      //   resfinder_gff_ch = Channel.empty()
+      // }
 
       // /*
       //     Seventh step -- Methylation call
