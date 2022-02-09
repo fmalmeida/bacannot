@@ -204,16 +204,16 @@ workflow BACANNOT {
         phispy_output_ch    = Channel.empty()
       }
 
-      // // ICEs search
-      // if (params.skip_iceberg_search == false) {
-      //   // ICEberg db
-      //   ICEBERG(PROKKA.out[4], PROKKA.out[3], dbs_ch)
-      //   iceberg_output_ch   = ICEBERG.out[1]
-      //   iceberg_output_2_ch = ICEBERG.out[2]
-      // } else {
-      //   iceberg_output_ch   = Channel.empty()
-      //   iceberg_output_2_ch = Channel.empty()
-      // }
+      // ICEs search
+      if (params.skip_iceberg_search == false) {
+        // ICEberg db
+        ICEBERG(PROKKA.out[4], PROKKA.out[3], dbs_ch)
+        iceberg_output_ch   = ICEBERG.out[1]
+        iceberg_output_2_ch = ICEBERG.out[2]
+      } else {
+        iceberg_output_ch   = Channel.empty()
+        iceberg_output_2_ch = Channel.empty()
+      }
 
       // // AMR search
       // if (params.skip_resistance_search == false) {
