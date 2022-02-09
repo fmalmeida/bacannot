@@ -138,8 +138,8 @@ workflow BACANNOT {
       // Third step -- rRNA annotation
       BARRNAP(PROKKA.out[3])
 
-      // // Fouth step -- calculate GC content for JBrowse
-      // COMPUTE_GC(PROKKA.out[3])
+      // Fouth step -- calculate GC content for JBrowse
+      COMPUTE_GC(PROKKA.out[3])
 
       // // Fifth step -- run kofamscan
       // if (params.skip_kofamscan == false) {
