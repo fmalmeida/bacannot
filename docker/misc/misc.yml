@@ -38,6 +38,7 @@ dependencies:
   - bioconda::bedtools=2.30
   - bioconda::samtools=1.14
   - bioconda::kma
+  - bioconda::kofamscan
 
   ## falmeida packages
   - falmeida::gff-toolbox

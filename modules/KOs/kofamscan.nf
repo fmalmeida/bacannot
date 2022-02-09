@@ -4,6 +4,7 @@ process KOFAMSCAN {
     else "$filename"
   }
   tag "${prefix}"
+  label 'misc'
 
   input:
   tuple val(prefix), file('proteins.faa')
