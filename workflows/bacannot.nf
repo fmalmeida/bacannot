@@ -185,24 +185,24 @@ workflow BACANNOT {
         victors_output_ch = Channel.empty()
       }
 
-      // // Prophage search
-      // if (params.skip_prophage_search == false) {
-      //   // PHAST db
-      //   PHAST(PROKKA.out[4], dbs_ch)
-      //   phast_output_ch = PHAST.out[1]
-      //   // Phigaro software
-      //   PHIGARO(PROKKA.out[3], dbs_ch)
-      //   phigaro_output_1_ch = PHIGARO.out[0]
-      //   phigaro_output_2_ch = PHIGARO.out[1]
-      //   // PhiSpy
-      //   PHISPY(PROKKA.out[2])
-      //   phispy_output_ch = PHISPY.out[1]
-      // } else {
-      //   phast_output_ch     = Channel.empty()
-      //   phigaro_output_1_ch = Channel.empty()
-      //   phigaro_output_2_ch = Channel.empty()
-      //   phispy_output_ch    = Channel.empty()
-      // }
+      // Prophage search
+      if (params.skip_prophage_search == false) {
+        // PHAST db
+        PHAST(PROKKA.out[4], dbs_ch)
+        phast_output_ch = PHAST.out[1]
+        // Phigaro software
+        PHIGARO(PROKKA.out[3], dbs_ch)
+        phigaro_output_1_ch = PHIGARO.out[0]
+        phigaro_output_2_ch = PHIGARO.out[1]
+        // PhiSpy
+        PHISPY(PROKKA.out[2])
+        phispy_output_ch = PHISPY.out[1]
+      } else {
+        phast_output_ch     = Channel.empty()
+        phigaro_output_1_ch = Channel.empty()
+        phigaro_output_2_ch = Channel.empty()
+        phispy_output_ch    = Channel.empty()
+      }
 
       // // ICEs search
       // if (params.skip_iceberg_search == false) {
