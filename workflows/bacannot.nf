@@ -152,23 +152,22 @@ workflow BACANNOT {
         kegg_decoder_svg_ch = Channel.empty()
       }
 
-      // /*
-      //     Sixth step -- MGE, Virulence and AMR annotations
-      // */
+      /*
+          Sixth step -- MGE, Virulence and AMR annotations
+      */
 
-      // // plasmids
-      // if (params.skip_plasmid_search == false) {
-        
-      //   // plasmidfinder
-      //   PLASMIDFINDER(PROKKA.out[3], dbs_ch)
-      //   plasmidfinder_output_ch = PLASMIDFINDER.out[1]
-      //   // platon
-      //   PLATON(PROKKA.out[3], dbs_ch)
-      //   platon_output_ch = PLATON.out[1]
-      // } else {
-      //   plasmidfinder_output_ch = Channel.empty()
-      //   platon_output_ch = Channel.empty()
-      // }
+      // plasmids
+      if (params.skip_plasmid_search == false) {  
+        // plasmidfinder
+        PLASMIDFINDER(PROKKA.out[3], dbs_ch)
+        plasmidfinder_output_ch = PLASMIDFINDER.out[1]
+        // platon
+        PLATON(PROKKA.out[3], dbs_ch)
+        platon_output_ch = PLATON.out[1]
+      } else {
+        plasmidfinder_output_ch = Channel.empty()
+        platon_output_ch = Channel.empty()
+      }
 
       // // IslandPath software
       // ISLANDPATH(PROKKA.out[2])

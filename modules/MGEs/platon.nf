@@ -5,6 +5,7 @@ process PLATON {
     else null
   }
   tag "${prefix}"
+  label 'python'
 
   input:
   tuple val(prefix), file(genome)
