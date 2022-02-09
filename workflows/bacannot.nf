@@ -169,8 +169,8 @@ workflow BACANNOT {
         platon_output_ch = Channel.empty()
       }
 
-      // // IslandPath software
-      // ISLANDPATH(PROKKA.out[2])
+      // IslandPath software
+      ISLANDPATH(PROKKA.out[2])
 
       // // Virulence search
       // if (params.skip_virulence_search == false) {     
