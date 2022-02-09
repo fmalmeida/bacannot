@@ -1,7 +1,7 @@
 process VICTORS {
   publishDir "${params.output}/${prefix}/virulence/victors", mode: 'copy'
   tag "${prefix}"
-  label 'db_tools'
+  label 'misc'
 
   input:
   tuple val(prefix), file(genes)

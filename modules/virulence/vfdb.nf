@@ -1,7 +1,7 @@
 process VFDB {
   publishDir "${params.output}/${prefix}/virulence/vfdb", mode: 'copy'
   tag "${prefix}"
-  label 'db_tools'
+  label 'misc'
 
   input:
   tuple val(prefix), file(genes)

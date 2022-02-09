@@ -172,18 +172,18 @@ workflow BACANNOT {
       // IslandPath software
       ISLANDPATH(PROKKA.out[2])
 
-      // // Virulence search
-      // if (params.skip_virulence_search == false) {     
-      //   // VFDB
-      //   VFDB(PROKKA.out[5], dbs_ch)
-      //   vfdb_output_ch = VFDB.out[1]
-      //   // Victors db
-      //   VICTORS(PROKKA.out[4], dbs_ch)
-      //   victors_output_ch = VICTORS.out[1]
-      // } else {
-      //   vfdb_output_ch    = Channel.empty()
-      //   victors_output_ch = Channel.empty()
-      // }
+      // Virulence search
+      if (params.skip_virulence_search == false) {     
+        // VFDB
+        VFDB(PROKKA.out[5], dbs_ch)
+        vfdb_output_ch = VFDB.out[1]
+        // Victors db
+        VICTORS(PROKKA.out[4], dbs_ch)
+        victors_output_ch = VICTORS.out[1]
+      } else {
+        vfdb_output_ch    = Channel.empty()
+        victors_output_ch = Channel.empty()
+      }
 
       // // Prophage search
       // if (params.skip_prophage_search == false) {
