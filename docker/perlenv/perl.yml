@@ -1,6 +1,6 @@
 # You can use this file to create a conda environment for this pipeline:
 #   conda env create -f environment.yml
-name: bacannot-perl-v3.1
+name: bacannot-perl
 
 channels:
   - conda-forge
