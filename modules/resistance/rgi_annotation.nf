@@ -5,6 +5,7 @@ process CARD_RGI {
     else "resistance/RGI/$filename"
   }
   tag "${prefix}"
+  label 'python36'
 
   input:
   tuple val(prefix), file(input)
