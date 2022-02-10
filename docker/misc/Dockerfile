@@ -1,6 +1,6 @@
 FROM nfcore/base
 LABEL authors="Felipe Almeida" \
-      description="Docker image containing perl-based bacannot tools"
+      description="Docker image containing any-based bacannot tools"
 ENV IMAGE=misc
 # Install the conda environment
 COPY ${IMAGE}.yml /
@@ -14,3 +14,10 @@ RUN conda env export --name bacannot-${IMAGE} > bacannot-${IMAGE}.yml
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
+
+# get a copy of resfinder
+WORKDIR /work
+RUN chmod 777 /work
+RUN git clone -b master https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
+      chmod a+rwx -R resfinder
+ENV PATH=/work/resfinder:$PATH

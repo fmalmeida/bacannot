@@ -4,6 +4,7 @@ process AMRFINDER {
     else "resistance/AMRFinderPlus/$filename"
   }
   tag "${prefix}"
+  label 'misc'
 
   input:
   tuple val(prefix), file(proteins)

@@ -39,6 +39,7 @@ dependencies:
   - bioconda::samtools=1.14
   - bioconda::kma
   - bioconda::kofamscan
+  - bioconda::ncbi-amrfinderplus
 
   ## falmeida packages
   - falmeida::gff-toolbox
