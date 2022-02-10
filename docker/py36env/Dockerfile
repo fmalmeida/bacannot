@@ -5,7 +5,8 @@ LABEL authors="Felipe Almeida" \
 # Install the conda environment
 RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda --force-reinstall --update-deps --no-channel-priority \
 	'python>3' \
-	'rgi>=5.2.1'
+	'rgi>=5.2.1' \
+	refseq_masher
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda

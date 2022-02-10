@@ -253,14 +253,14 @@ workflow BACANNOT {
       methylation_out_1_ch = CALL_METHYLATION.out[2]
       methylation_out_2_ch = CALL_METHYLATION.out[3]
 
-      // /*
+      /*
 
-      //     Additional steps created after main releases
+          Additional steps created after main releases
 
-      //  */
+       */
 
-      // // species identification
-      // REFSEQ_MASHER(PROKKA.out[3])
+      // species identification
+      REFSEQ_MASHER(PROKKA.out[3])
 
       // // IS identification
       // DIGIS(PROKKA.out[3].join(PROKKA.out[2]))
