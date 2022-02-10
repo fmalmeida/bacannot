@@ -246,12 +246,12 @@ workflow BACANNOT {
         resfinder_gff_ch        = Channel.empty()
       }
 
-      // /*
-      //     Seventh step -- Methylation call
-      // */
-      // CALL_METHYLATION(PROKKA.out[6])
-      // methylation_out_1_ch = CALL_METHYLATION.out[2]
-      // methylation_out_2_ch = CALL_METHYLATION.out[3]
+      /*
+          Seventh step -- Methylation call
+      */
+      CALL_METHYLATION(PROKKA.out[6])
+      methylation_out_1_ch = CALL_METHYLATION.out[2]
+      methylation_out_2_ch = CALL_METHYLATION.out[3]
 
       // /*
 

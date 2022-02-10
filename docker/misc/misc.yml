@@ -40,6 +40,7 @@ dependencies:
   - bioconda::kma
   - bioconda::kofamscan
   - bioconda::ncbi-amrfinderplus
+  - bioconda::nanopolish
 
   ## falmeida packages
   - falmeida::gff-toolbox
