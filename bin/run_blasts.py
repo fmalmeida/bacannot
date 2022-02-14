@@ -54,10 +54,10 @@ def filter(string, substr):
 def blastn(query, db, culling, minid, mincov, out, threads):
 
     # Outfmt
-    outfmt="6 qseqid qstart qend qlen sseqid sstart send slen evalue length pident gaps gapopen stitle"
+    outfmt="6 qseqid qstart qend qlen sseqid sstart send slen evalue length pident gaps gapopen"
 
     # Run blastn
-    os.system(f"echo \"qseqid\tqstart\tqend\tqlen\tsseqid\tsstart\tsend\tslen\tevalue\tlength\tpident\tgaps\tgapopen\tstitle\" > {out}")
+    os.system(f"echo \"qseqid\tqstart\tqend\tqlen\tsseqid\tsstart\tsend\tslen\tevalue\tlength\tpident\tgaps\tgapopen\" > {out}")
 
     if arguments['--2way']:
         os.system(f"blastn -query {query} -db {db} -outfmt \"{outfmt}\" -num_threads {threads} -culling_limit {culling} -perc_identity {minid} | \
@@ -72,10 +72,10 @@ def blastn(query, db, culling, minid, mincov, out, threads):
 def tblastn(query, db, culling, minid, mincov, out, threads):
 
     # Outfmt
-    outfmt="6 sseqid sstart send slen qseqid qstart qend qlen evalue length pident gaps gapopen stitle"
+    outfmt="6 sseqid sstart send slen qseqid qstart qend qlen evalue length pident gaps gapopen"
 
     # Run blastn
-    os.system(f"echo \"qseqid\tqstart\tqend\tqlen\tsseqid\tsstart\tsend\tslen\tevalue\tlength\tpident\tgaps\tgapopen\tstitle\" > {out}")
+    os.system(f"echo \"qseqid\tqstart\tqend\tqlen\tsseqid\tsstart\tsend\tslen\tevalue\tlength\tpident\tgaps\tgapopen\" > {out}")
 
     if arguments['--2way']:
         os.system(f"tblastn -subject {query} -query {db} -outfmt \"{outfmt}\" -num_threads {threads} -culling_limit {culling} | \
@@ -90,10 +90,10 @@ def tblastn(query, db, culling, minid, mincov, out, threads):
 def blastx(query, db, culling, minid, mincov, out, threads):
 
     # Outfmt
-    outfmt="6 qseqid qstart qend qlen sseqid sstart send slen evalue length pident gaps gapopen stitle"
+    outfmt="6 qseqid qstart qend qlen sseqid sstart send slen evalue length pident gaps gapopen"
 
     # Run blastn
-    os.system(f"echo \"qseqid\tqstart\tqend\tqlen\tsseqid\tsstart\tsend\tslen\tevalue\tlength\tpident\tgaps\tgapopen\tstitle\" > {out}")
+    os.system(f"echo \"qseqid\tqstart\tqend\tqlen\tsseqid\tsstart\tsend\tslen\tevalue\tlength\tpident\tgaps\tgapopen\" > {out}")
 
     if arguments['--2way']:
         os.system(f"diamond blastx --query {query} --db {db} --outfmt {outfmt} --max-target-seqs {culling} \
@@ -108,10 +108,10 @@ def blastx(query, db, culling, minid, mincov, out, threads):
 def blastp(query, db, culling, minid, mincov, out, threads):
 
     # Outfmt
-    outfmt="6 qseqid qstart qend qlen sseqid sstart send slen evalue length pident gaps gapopen stitle"
+    outfmt="6 qseqid qstart qend qlen sseqid sstart send slen evalue length pident gaps gapopen"
 
     # Run blastn
-    os.system(f"echo \"qseqid\tqstart\tqend\tqlen\tsseqid\tsstart\tsend\tslen\tevalue\tlength\tpident\tgaps\tgapopen\tstitle\" > {out}")
+    os.system(f"echo \"qseqid\tqstart\tqend\tqlen\tsseqid\tsstart\tsend\tslen\tevalue\tlength\tpident\tgaps\tgapopen\" > {out}")
 
     if arguments['--2way']:
         os.system(f"diamond blastp --query {query} --db {db} --outfmt {outfmt} --max-target-seqs {culling} \
@@ -143,11 +143,11 @@ def summary(output):
         else:
             cov_map=str(line["sstart"]) + '-' + str(line["send"]) + "/" + str(line["slen"])
         # Parse headers
-        db=line["stitle"].split('~~~')[0]
-        gene=line["stitle"].split('~~~')[1]
-        acc=line["stitle"].split('~~~')[2]
-        prodc=line["stitle"].split('~~~')[3].split(" ", 1)[0]
-        desc=line["stitle"].split('~~~')[3].split(" ", 1)[1]
+        db=line["sseqid"].split('~~~')[0]
+        gene=line["sseqid"].split('~~~')[1]
+        acc=line["sseqid"].split('~~~')[2]
+        prodc=line["sseqid"].split('~~~')[4]
+        desc=line["sseqid"].split('~~~')[5]
         # Subject coverage
         cov=round((100 * (line["length"] - line["gaps"]) / line["slen"]), 2)
         # Identity

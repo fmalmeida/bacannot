@@ -59,10 +59,3 @@ RUN conda create -y -n digIS -c bioconda 'hmmer==3.1b2' 'biopython==1.77' nomkl 
 ### my custom scripts ###
 #########################
 COPY scripts/bscripts /work/bscripts
-COPY scripts/pscripts/splitgenbank.py /usr/local/bin/splitgenbank.py
-COPY scripts/pscripts/resfinder2gff.py /usr/local/bin/resfinder2gff.py
-COPY scripts/pscripts/run_blasts.py /usr/local/bin/run_blasts.py
-RUN chmod a+x /usr/local/bin/run_blasts.py && \
-		chmod a+rwx /work/bscripts/* && \
-		chmod a+x /usr/local/bin/splitgenbank.py && \
-		chmod a+x /usr/local/bin/resfinder2gff.py

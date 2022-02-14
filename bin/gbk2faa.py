@@ -48,7 +48,7 @@ for seq_record in SeqIO.parse(input_handle, "genbank") :
     if gene==None or product==None:
         eprint(f"An error has been found with entry {acc}. Either its gene (value found: {gene}) or product (Value found: {product}) was not found in the database genbank.\nPlease make sure this entry is from NCBI Protein db and it has the Gene/Protein information properly formated.")
     else:
-        print(f">NCBI_PROTEIN~~~{gene}~~~{acc}~~~{product} [{organism}]\n{seq}")
+        print(f">NCBI_PROTEIN~~~{gene}~~~{acc}~~~{product}~~~[{organism}]\n{seq}")
 
 # close file connection
 input_handle.close()

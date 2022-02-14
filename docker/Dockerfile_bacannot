@@ -52,7 +52,7 @@ WORKDIR /work/dbs
 RUN mkdir vfdb && \
 		wget http://www.mgc.ac.cn/VFs/Down/VFDB_setA_nt.fas.gz && \
 		gzip -d VFDB_setA_nt.fas.gz && \
-		awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] " " all }1' VFDB_setA_nt.fas | \
+		awk -v db=VFDB '/>/{ split($0,name," "); split($0,id," \\["); all=$0; $0=">" db "~~~" name[2] "~~~" name[1] "~~~[" id[2] "~~~" all }1' VFDB_setA_nt.fas | \
 		sed -e 's/~>/~/g' -e 's/ ~/~/g' -e 's/]~/~/g' -e 's/ >/ /' | \
 		awk -F "]" ' { if ($0 ~ />/) { gsub(" ", "_", $1); print $1 "] " $2 "]"} else { print $0 }}' > vfdb/sequences && \
 		makeblastdb -in vfdb/sequences -title 'vfdb' -dbtype nucl -logfile /dev/null && \
@@ -61,7 +61,7 @@ RUN mkdir vfdb && \
 ## ICEberg nt (ICEs)
 RUN mkdir iceberg && \
 		wget https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/ICE_seq_experimental.fas && \
-		awk -v db=ICEberg '/>/{ split($0,a,"|"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" a[5] "~~~" a[3] " " all }1' ICE_seq_experimental.fas | \
+		awk -v db=ICEberg '/>/{ split($0,a,"|"); all=$0; $0=">" db "~~~" "ICE_" a[2] "~~~" a[5] "~~~" a[3] "~~~" all }1' ICE_seq_experimental.fas | \
 		sed -e 's/ >/ /g' > iceberg/sequences && \
 		rm ICE_seq_experimental.fas && \
 		makeblastdb -in iceberg/sequences -title 'iceberg' -dbtype nucl -logfile /dev/null

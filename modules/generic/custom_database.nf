@@ -4,7 +4,7 @@ process CUSTOM_DATABASE {
   label 'main'
 
   input:
-  tuple val(prefix), file(gff), file(genome), file(proteins)
+  tuple val(prefix), file(gff), file(genome)
   each file(customDB)
 
   output:
@@ -15,21 +15,19 @@ process CUSTOM_DATABASE {
 
   script:
   """
-  # Step 1 - Check if input is nucl or protein
+  # Step 1 - Check if input is nucl or protein and prepare db
   if [ \$(grep -i "Protein" <(seqkit stats ${customDB}) | wc -l) -gt 0 ]
   then
-        export blast_cmd="blastp" ; export blast_subj=${proteins} ;
-        diamond makedb --in ${customDB} -d customDB ;
+        export blast_cmd="tblastn" ;
   else
-        export blast_cmd="blastn" ; export blast_subj=${genome} ; export blast_db=nucl
-        makeblastdb -in ${customDB} -dbtype \$blast_db -out customDB ;
+        export blast_cmd="blastn" ;
   fi
 
   # Step 2 - Execute blast
   run_blasts.py \\
       \${blast_cmd} \\
-      --query \$blast_subj \\
-      --db customDB \\
+      --query ${genome} \\
+      --db ${customDB} \\
       --minid ${params.blast_custom_minid} \\
       --mincov ${params.blast_custom_mincov} \\
       --threads ${params.threads} \\
