@@ -262,8 +262,8 @@ workflow BACANNOT {
       // species identification
       REFSEQ_MASHER(PROKKA.out[3])
 
-      // // IS identification
-      // DIGIS(PROKKA.out[3].join(PROKKA.out[2]))
+      // IS identification
+      DIGIS(PROKKA.out[3].join(PROKKA.out[2]))
 
       // // antiSMASH
       // if (params.skip_antismash == false) {

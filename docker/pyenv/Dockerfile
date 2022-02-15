@@ -1,6 +1,6 @@
 FROM nfcore/base
 LABEL authors="Felipe Almeida" \
-      description="Docker image containing perl-based bacannot tools"
+      description="Docker image containing python-based bacannot tools"
 
 # Install the conda environment
 RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda --force-reinstall --update-deps --no-channel-priority \

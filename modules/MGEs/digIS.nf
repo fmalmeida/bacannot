@@ -5,7 +5,7 @@ process DIGIS {
     else "$filename"
   }
   tag "${prefix}"
-  label 'main'
+  label 'misc'
 
   input:
   tuple val(prefix), file(genome), file(genbank)
@@ -19,18 +19,40 @@ process DIGIS {
   script:
   """
   # activate env
-  source activate digIS ;
+  source activate digIS
 
   # run digIS
-  python3 /work/digIS/digIS_search.py -i $genome -g $genbank -o digIS
+  python3 \$(which digIS_search.py) -i $genome -g $genbank -o digIS
+
+  # deactivate env
+  conda deactivate
 
   # parse digIS to get nucleotide and aminoacide
   # also put ids in uppercase
   # required for annotation merging and sqldb
-  conda deactivate ;
+
+  ## dir for fastas
   mkdir -p digIS/results/fastas ;
-  sed -e 's/id=/ID=/g' digIS/results/${prefix}.gff > ${prefix}.gff ;
-  gff-toolbox convert -i ${prefix}.gff -f fasta-nt --fasta $genome --fasta_features transposable_element > digIS/results/fastas/${prefix}_is.fa  ;
-  gff-toolbox convert -i ${prefix}.gff -f fasta-aa --fasta $genome --fasta_features transposable_element > digIS/results/fastas/${prefix}_is.faa ;
+
+  ## save info in gff
+  sed \
+    -e 's/id=/ID=/g' \
+    digIS/results/${prefix}.gff > ${prefix}.gff ;
+
+  ## get nucl sequences
+  gff-toolbox \
+    convert \
+    -i ${prefix}.gff \
+    -f fasta-nt \
+    --fasta $genome \
+    --fasta_features transposable_element > digIS/results/fastas/${prefix}_is.fa  ;
+  
+  ## get prot sequences
+  gff-toolbox \
+    convert \
+    -i ${prefix}.gff \
+    -f fasta-aa \
+    --fasta $genome \
+    --fasta_features transposable_element > digIS/results/fastas/${prefix}_is.faa ;
   """
 }
