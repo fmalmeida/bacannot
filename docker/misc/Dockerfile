@@ -23,6 +23,10 @@ RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida
 RUN conda create -y -n digIS -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority 'hmmer==3.1b2' 'biopython==1.77' nomkl && \
 		conda clean -afy
 
+# Create env for antismash
+RUN conda create -y -n antismash -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority 'antismash>=6' emboss nomkl && \
+		conda clean -afy
+
 # Install pip packages
 RUN pip install docopt pandas KEGGDecoder tabulate numpy bcbio-gff cgecore gitpython setuptools python-dateutil 'biopython==1.78'
 

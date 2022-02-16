@@ -4,10 +4,11 @@ process ANTISMASH {
     else "$filename"
   }
   tag "${prefix}"
-  label 'smash'
+  label 'misc'
 
   input:
   tuple val(prefix), file(genbank)
+  file(bacannot_db)
 
   output:
   // Grab results
@@ -16,26 +17,48 @@ process ANTISMASH {
 
   script:
   """
-  # activate env
-  source activate antismash ;
-
+  # Activate env
+  set +eu ; source activate antismash
+  
   # Get tool version
   antismash --version > antismash_version.txt ;
 
   # Run tool
-  antismash --output-dir antiSMASH --genefinding-tool none -c ${params.threads} $genbank ;
+  antismash \\
+    --output-dir antiSMASH \\
+    --genefinding-tool none \\
+    -c ${params.threads} \\
+    --databases ${bacannot_db}/antismash_db \\
+    $genbank ;
 
   # enter results dir
   cd antiSMASH ;
 
   # produce gff from main results
   genbank="${genbank}"
-  seqret -sequence \${genbank} -feature -fformat genbank -fopenfile \${genbank} -osformat gff -osname_outseq \${genbank%%.gbk} -auto ;
+  seqret \\
+    -sequence \${genbank} \\
+    -feature \\
+    -fformat genbank \\
+    -fopenfile \${genbank} \\
+    -osformat gff \\
+    -osname_outseq \${genbank%%.gbk} \\
+    -auto ;
 
   # get the locus tags annotated as list
-  grep "locus_tag" *region*gbk | cut -f 2 -d "=" | tr -d '"' | sort -u > gene_ids.lst ;
+  grep \\
+    "locus_tag" \\
+    *region*gbk | \\
+    cut \\
+    -f 2 \\
+    -d "=" | \\
+    tr -d '"' | \\
+    sort -u > gene_ids.lst ;
 
   # subset regions GFF from main GFF for JBrowse
-  grep -w -f gene_ids.lst \${genbank%%.gbk}.gff > regions.gff ;
+  grep \\
+    -w \\
+    -f gene_ids.lst \\
+    \${genbank%%.gbk}.gff > regions.gff ;
   """
 }

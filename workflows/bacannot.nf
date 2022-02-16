@@ -265,13 +265,13 @@ workflow BACANNOT {
       // IS identification
       DIGIS(PROKKA.out[3].join(PROKKA.out[2]))
 
-      // // antiSMASH
-      // if (params.skip_antismash == false) {
-      //   ANTISMASH(PROKKA.out[2])
-      //   antismash_output_ch = ANTISMASH.out[0]
-      // } else {
-      //   antismash_output_ch = Channel.empty()
-      // }
+      // antiSMASH
+      if (params.skip_antismash == false) {
+        ANTISMASH(PROKKA.out[2], dbs_ch)
+        antismash_output_ch = ANTISMASH.out[0]
+      } else {
+        antismash_output_ch = Channel.empty()
+      }
 
       // // sequenceserver
       // SEQUENCESERVER(PROKKA.out[3].join(PROKKA.out[5]).join(PROKKA.out[4]))

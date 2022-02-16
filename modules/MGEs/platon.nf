@@ -21,12 +21,9 @@ process PLATON {
   # Get version
   platon --version > platon_version.txt ;
 
-  # Unpack database
-  tar zxvf ${bacannot_db}/platon_db/db.tar.gz ;
-
   # Run platon
   platon \\
-      --db db/ \\
+      --db ${bacannot_db}/platon_db/ \\
       --output platon \\
       --threads ${params.threads} \\
       $genome > tmp.txt || true ;

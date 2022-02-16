@@ -15,6 +15,7 @@ include { VICTORS_DB       } from '../modules/bacannot_dbs/victors.nf'
 include { ICEBERG_DB       } from '../modules/bacannot_dbs/iceberg.nf'
 include { PHAST_DB         } from '../modules/bacannot_dbs/phast.nf'
 include { KOFAMSCAN_DB     } from '../modules/bacannot_dbs/kofamscan.nf'
+include { ANTISMASH_DB     } from '../modules/bacannot_dbs/antismash.nf'
 
 /*
     DEF WORKFLOW
@@ -36,6 +37,7 @@ workflow CREATE_DBS {
     download_db("vfdb", "VFDB_DB")
     download_db("victors", "VICTORS_DB")
     download_db("iceberg", "ICEBERG_DB")
+    download_db("antismash", "ANTISMASH_DB")
 
 }
 

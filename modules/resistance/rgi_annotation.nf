@@ -5,7 +5,7 @@ process CARD_RGI {
     else "resistance/RGI/$filename"
   }
   tag "${prefix}"
-  label 'python36'
+  label 'python'
 
   input:
   tuple val(prefix), file(input)
@@ -23,6 +23,9 @@ process CARD_RGI {
 
   script:
   """
+  # activate env
+  source activate rgi
+  
   # load database
   rgi load --card_json ${bacannot_db}/card_db/card.json
 

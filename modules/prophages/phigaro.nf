@@ -20,6 +20,9 @@ process PHIGARO {
 
   script:
   """
+  # activate env
+  source activate phigaro
+  
   # get tool version
   phigaro -V > phigaro_version.txt ;
 

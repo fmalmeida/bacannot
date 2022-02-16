@@ -56,56 +56,6 @@ if (params.get_samplesheet) {
 }
 
 /*
- * Load general parameters and establish defaults
- */
-
-// Workflow for database download
-params.get_dbs                = false
-params.force_update           = false
-
-// General parameters
-params.output                  = 'outdir'
-params.threads                 = 2
-params.bedtools_merge_distance = ''
-
-// Input parameters
-params.input       = ''
-params.bacannot_db = ''
-
-// Prokka parameters
-params.prokka_kingdom      = ''
-params.prokka_genetic_code = false
-params.prokka_use_rnammer  = false
-params.prokka_skip_pgap    = false
-
-// User custom db
-params.custom_db           = ''
-params.blast_custom_minid  = 0
-params.blast_custom_mincov = 0
-
-// Resfinder parameters
-params.resfinder_species = ''
-
-// Blast parameters
-params.plasmids_minid          = 90
-params.plasmids_mincov         = 60
-params.blast_virulence_minid   = 90
-params.blast_virulence_mincov  = 80
-params.blast_resistance_minid  = 90
-params.blast_resistance_mincov = 80
-params.blast_MGEs_minid        = 65
-params.blast_MGEs_mincov       = 65
-
-// Workflow parameters
-params.skip_plasmid_search    = false
-params.skip_virulence_search  = false
-params.skip_resistance_search = false
-params.skip_iceberg_search    = false
-params.skip_prophage_search   = false
-params.skip_kofamscan         = false
-params.skip_antismash         = false
-
-/*
  * Define log message
  */
 logMessage(params.get_dbs)
