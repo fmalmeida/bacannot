@@ -273,8 +273,11 @@ workflow BACANNOT {
         antismash_output_ch = Channel.empty()
       }
 
-      // // sequenceserver
-      // SEQUENCESERVER(PROKKA.out[3].join(PROKKA.out[5]).join(PROKKA.out[4]))
+      // sequenceserver
+      SEQUENCESERVER(
+        PROKKA.out[3].join(PROKKA.out[5])
+                     .join(PROKKA.out[4])
+      )
 
       // /*
       //     Eighth step -- Merge all annotations with the same Prefix value in a single Channel

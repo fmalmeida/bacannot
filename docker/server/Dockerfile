@@ -45,12 +45,12 @@ RUN apt-get install -y ruby-full
 RUN gem install sequenceserver
 
 ## Get scripts
-COPY scripts/rscripts/shiny_parser.Rmd /app/shiny_parser.Rmd
-COPY scripts/rscripts/shiny_parser_func.R /app/shiny_parser_func.R
-COPY scripts/rscripts/get_attributes_field.R /app/get_attributes_field.R
-COPY scripts/rscripts/blast_app.R /app/blast_app.R
-COPY scripts/rscripts/SQL_parser.R /app/SQL_parser.R
-COPY scripts/bscripts/server_entry.sh /app/server_entry.sh
+COPY scripts/shiny_parser.Rmd /app/shiny_parser.Rmd
+COPY scripts/shiny_parser_func.R /app/shiny_parser_func.R
+COPY scripts/get_attributes_field.R /app/get_attributes_field.R
+COPY scripts/blast_app.R /app/blast_app.R
+COPY scripts/SQL_parser.R /app/SQL_parser.R
+COPY scripts/server_entry.sh /app/server_entry.sh
 
 # expose port
 EXPOSE 3838
