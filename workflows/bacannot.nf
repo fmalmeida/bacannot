@@ -303,8 +303,8 @@ workflow BACANNOT {
       // Plot genomic islands
       DRAW_GIS(MERGE_ANNOTATIONS.out[0].join(ISLANDPATH.out[0]))
 
-      // // Convert GFF file to GBK file
-      // GFF2GBK(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]))
+      // Convert GFF file to GBK file
+      GFF2GBK(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]))
 
       // // Convert GFF file to sqldb
       // CREATE_SQL(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[5])

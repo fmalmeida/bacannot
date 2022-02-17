@@ -18,7 +18,7 @@ process ANTISMASH {
   script:
   """
   # Activate env
-  set +eu ; source activate antismash
+  export PATH=/opt/conda/envs/antismash/bin:\$PATH
   
   # Get tool version
   antismash --version > antismash_version.txt ;
