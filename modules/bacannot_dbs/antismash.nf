@@ -10,6 +10,5 @@ process ANTISMASH_DB {
     # download antismash database
     export PATH=/opt/conda/envs/antismash/bin:\$PATH
     download-antismash-databases --database-dir \$(pwd)
-    conda deactivate
     """
 }
