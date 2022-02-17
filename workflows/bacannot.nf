@@ -306,11 +306,11 @@ workflow BACANNOT {
       // Convert GFF file to GBK file
       GFF2GBK(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]))
 
-      // // Convert GFF file to sqldb
-      // CREATE_SQL(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[5])
-      //                                    .join(PROKKA.out[4])
-      //                                    .join(PROKKA.out[3])
-      //                                    .join(DIGIS.out[2]))
+      // Convert GFF file to sqldb
+      CREATE_SQL(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[5])
+                                         .join(PROKKA.out[4])
+                                         .join(PROKKA.out[3])
+                                         .join(DIGIS.out[2] ))
 
       // // User wants to merge the final gff file?
       // if (params.bedtools_merge_distance) {
