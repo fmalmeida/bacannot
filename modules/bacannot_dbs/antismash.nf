@@ -1,6 +1,6 @@
 process ANTISMASH_DB {
     publishDir "${params.output}/antismash_db", mode: 'copy', overwrite: "$params.force_update"
-    label 'db_download'
+    label = [ 'db_download', 'process_ultralow' ]
    
     output:
     file("*")
@@ -8,7 +8,7 @@ process ANTISMASH_DB {
     script:
     """
     # download antismash database
-    set +eu ; source activate antismash
+    export PATH=/opt/conda/envs/antismash/bin:\$PATH
     download-antismash-databases --database-dir \$(pwd)
     conda deactivate
     """

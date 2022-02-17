@@ -1,6 +1,6 @@
 process KOFAMSCAN_DB {
     publishDir "${params.output}/kofamscan_db", mode: 'copy', overwrite: "$params.force_update"
-    label 'db_download'
+    label = [ 'db_download', 'process_low' ]
    
     output:
     file("*")

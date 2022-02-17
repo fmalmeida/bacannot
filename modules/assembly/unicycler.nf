@@ -4,7 +4,7 @@ process UNICYCLER {
     else if (filename == "unicycler_${prefix}") "assembly"
     else null
   }
-  label 'unicycler'
+  label 'process_high'
   tag "${prefix}"
 
   input:

@@ -1,6 +1,6 @@
 process CARD_DB {
     publishDir "${params.output}/card_db", mode: 'copy', overwrite: "$params.force_update"
-    label 'db_download'
+    label = [ 'db_download', 'process_ultralow' ]
    
     output:
     file("*")

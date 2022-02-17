@@ -16,7 +16,8 @@ RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida
             'ncbi-amrfinderplus' \
             'nanopolish' \
             'biopython==1.78' \
-            gff-toolbox && \
+            gff-toolbox \
+            seqkit && \
       conda clean -afy
 
 # Create env for digIS
@@ -33,9 +34,11 @@ RUN pip install docopt pandas KEGGDecoder tabulate numpy bcbio-gff cgecore gitpy
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
 
-# get a copy of resfinder
+# get a copy of argminer database
 WORKDIR /work
-RUN chmod 777 /work
+COPY argminer_bkp/argminer.fasta /work/argminer.fasta
+
+# get a copy of resfinder
 RUN git clone -b master https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
       chmod a+rwx -R resfinder
 ENV PATH=/work/resfinder:$PATH
@@ -43,5 +46,7 @@ ENV PATH=/work/resfinder:$PATH
 # get a copy of digis
 RUN git clone -b master https://github.com/janka2012/digIS.git
 COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
-RUN chmod 777 -R /work/digIS
 ENV PATH=/work/digIS:$PATH
+
+# fix permissions
+RUN chmod 777 -R /work

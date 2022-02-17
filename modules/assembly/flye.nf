@@ -4,7 +4,7 @@ process FLYE {
     else if (filename == "flye_${prefix}") "assembly"
     else null
   }
-  label 'flye'
+  label 'process_high'
   tag "${prefix}"
 
   input:
