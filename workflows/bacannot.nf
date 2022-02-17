@@ -279,29 +279,29 @@ workflow BACANNOT {
                      .join(PROKKA.out[4])
       )
 
-      // /*
-      //     Eighth step -- Merge all annotations with the same Prefix value in a single Channel
-      // */
-      // annotations_files_ch = PROKKA.out[3].join(PROKKA.out[1])
-      //                                  .join(MLST.out[0])
-      //                                  .join(BARRNAP.out[0])
-      //                                  .join(COMPUTE_GC.out[0])
-      //                                  .join(kofamscan_output_ch, remainder: true)
-      //                                  .join(vfdb_output_ch,      remainder: true)
-      //                                  .join(victors_output_ch,   remainder: true)
-      //                                  .join(amrfinder_output_ch, remainder: true)
-      //                                  .join(resfinder_gff_ch,    remainder: true)
-      //                                  .join(rgi_output_ch,       remainder: true)
-      //                                  .join(iceberg_output_ch,   remainder: true)
-      //                                  .join(phast_output_ch,     remainder: true)
-      //                                  .join(phigaro_output_2_ch, remainder: true)
-      //                                  .join(FIND_GIS.out[0],  remainder: true)
+      /*
+          Eighth step -- Merge all annotations with the same Prefix value in a single Channel
+      */
+      annotations_files_ch = PROKKA.out[3].join(PROKKA.out[1])
+                                       .join(MLST.out[0])
+                                       .join(BARRNAP.out[0])
+                                       .join(COMPUTE_GC.out[0])
+                                       .join(kofamscan_output_ch, remainder: true)
+                                       .join(vfdb_output_ch,      remainder: true)
+                                       .join(victors_output_ch,   remainder: true)
+                                       .join(amrfinder_output_ch, remainder: true)
+                                       .join(resfinder_gff_ch,    remainder: true)
+                                       .join(rgi_output_ch,       remainder: true)
+                                       .join(iceberg_output_ch,   remainder: true)
+                                       .join(phast_output_ch,     remainder: true)
+                                       .join(phigaro_output_2_ch, remainder: true)
+                                       .join(ISLANDPATH.out[0],   remainder: true)
 
-      // // Contatenation of annotations in a single GFF file
-      // MERGE_ANNOTATIONS(annotations_files_ch.join(DIGIS.out[1],     remainder: true))
+      // Contatenation of annotations in a single GFF file
+      MERGE_ANNOTATIONS(annotations_files_ch.join(DIGIS.out[1], remainder: true))
 
       // // Plot genomic islands
-      // DRAW_GIS(MERGE_ANNOTATIONS.out[0].join(FIND_GIS.out[0]))
+      // DRAW_GIS(MERGE_ANNOTATIONS.out[0].join(ISLANDPATH.out[0]))
 
       // // Convert GFF file to GBK file
       // GFF2GBK(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]))
