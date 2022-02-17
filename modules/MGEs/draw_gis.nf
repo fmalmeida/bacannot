@@ -4,6 +4,7 @@ process DRAW_GIS {
     else null
   }
   tag "${prefix}"
+  label 'misc'
   
 
   input:
@@ -17,17 +18,21 @@ process DRAW_GIS {
   script:
   """
   # create output directories
-  mkdir -p plots plots/id_label plots/product_label ;
-
-  # get required files
-  cp /work/bscripts/draw_gis.sh . ;
-  cp /work/bscripts/input.fofn . ;
+  mkdir \\
+    -p plots \\
+    plots/id_label \\
+    plots/product_label ;
 
   # draw genomic islands
-  ./draw_gis.sh -i $gis_bed -g $gff -f input.fofn ;
+  draw_gis.sh \\
+    -i $gis_bed \\
+    -g $gff \\
+    -f \$(which input.fofn) ;
 
   # get one image
   name=\$(ls plots/product_label | head -n 1)
-  [[ \$(ls plots/product_label/) ]] && cp "plots/product_label/\${name}" ./teste.png || echo "empty" ;
+  [[ \$(ls plots/product_label/) ]] && \\
+    cp "plots/product_label/\${name}" ./teste.png || \\
+    echo "empty" ;
   """
 }
