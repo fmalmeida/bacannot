@@ -294,28 +294,6 @@ workflow BACANNOT {
       /*
           Eighth step -- Merge all annotations
       */
-      // prefix is 0
-      // annotations_files_ch = PROKKA.out[3] // 1
-      //                        .join(PROKKA.out[1]) // 2
-      //                        .join(MLST.out[0]) // 3
-      //                        .join(BARRNAP.out[0]) // 4
-      //                        .join(COMPUTE_GC.out[0]) // 5
-      //                        .join(kofamscan_output_ch,             remainder: true) // 6
-      //                        .join(vfdb_output_ch,                  remainder: true) // 7
-      //                        .join(victors_output_ch,               remainder: true) // 8
-      //                        .join(amrfinder_output_ch,             remainder: true) // 9
-      //                        .join(resfinder_gff_ch,                remainder: true) // 10
-      //                        .join(rgi_output_ch,                   remainder: true) // 11
-      //                        .join(iceberg_output_ch,               remainder: true) // 12
-      //                        .join(phast_output_ch,                 remainder: true) // 13
-      //                        .join(phigaro_output_2_ch,             remainder: true) // 14
-      //                        .join(ISLANDPATH.out[0],               remainder: true) // 15
-      //                        .join(DIGIS.out[1],                    remainder: true) // 16
-      //                        .join(ISLANDPATH.out[0],               remainder: true) // 17
-      //                        .join(ch_custom_databases_annotations, remainder: true) // 18
-      //                        .toList() // transforms in single list with everything
-
-      // Contatenation of annotations in a single GFF file
       MERGE_ANNOTATIONS( 
         PROKKA.out[1].join(kofamscan_output_ch,             remainder: true)
                      .join(vfdb_output_ch,                  remainder: true)
@@ -329,6 +307,9 @@ workflow BACANNOT {
                      .join(ch_custom_databases_annotations, remainder: true) 
       )
 
+      /*
+          Final step -- Create genome browser and reports' files
+      */
       // Plot genomic islands
       DRAW_GIS( MERGE_ANNOTATIONS.out[0].join(ISLANDPATH.out[0]) )
 
@@ -343,19 +324,20 @@ workflow BACANNOT {
                                 .join(DIGIS.out[2] )
       )
 
-      // /*
-      //     Final step -- Create genome browser and reports
-      // */
-
-      // // Grab inputs needed for JBrowse step
-      // jbrowse_input_ch = MERGE_ANNOTATIONS.out[0].join(annotations_files_ch, remainder: true)
-      //                                         .join(methylation_out_1_ch, remainder: true)
-      //                                         .join(methylation_out_2_ch, remainder: true)
-      //                                         .join(phispy_output_ch,     remainder: true)
-      //                                         .join(MERGE_ANNOTATIONS.out[8], remainder: true) // parsed and changed digIS
-      //                                         .join(antismash_output_ch,  remainder: true)
-      // // Jbrowse Creation
-      // JBROWSE(jbrowse_input_ch)
+      JBROWSE(
+        MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3])
+                                .join(PROKKA.out[1])
+                                .join(BARRNAP.out[0])
+                                .join(COMPUTE_GC.out[0])
+                                .join(resfinder_gff_ch,     remainder: true)
+                                .join(phigaro_output_2_ch,  remainder: true)
+                                .join(ISLANDPATH.out[0],    remainder: true)
+                                .join(methylation_out_1_ch, remainder: true)
+                                .join(methylation_out_2_ch, remainder: true)
+                                .join(phispy_output_ch,     remainder: true)
+                                .join(MERGE_ANNOTATIONS.out[1])
+                                .join(antismash_output_ch,  remainder: true)
+      )
 
       // // Render reports
       // CUSTOM_DATABASE_REPORT( CUSTOM_DATABASE.out[0].join(CUSTOM_DATABASE.out[1]) )

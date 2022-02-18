@@ -14,7 +14,7 @@ Help()
 	echo "Simple help message for the utilization of this script"
 	echo "It takes the jbrowse data path and all the files that shall be plotted from bacannot"
 	echo
-	echo "Syntax: run_jbrowse.sh [-h|p|g|b|s|f|r|B|P|G|m|S|R|d]"
+	echo "Syntax: run_jbrowse.sh [-h|p|g|b|s|f|r|B|P|G|m|S|R|d|A]"
 	echo "options:"
 	echo
 	echo "h		Print this help"
@@ -30,13 +30,14 @@ Help()
 	echo "m		Path to Nanopolish methylation results"
 	echo "S		Path to Nanopolish chr sizes"
 	echo "R		Path to Resfinder custom GFF"
-	echo "d         Path to digIS custom GFF"
+	echo "d     Path to digIS custom GFF"
+	echo "A     Path to antismash custom GFF"
 	echo ""
 	echo
 }
 
 # Get the options
-while getopts "hp:g:b:s:f:r:B:P:G:m:S:R:d:" option; do
+while getopts "hp:g:b:s:f:r:B:P:G:m:S:R:d:A:" option; do
    case $option in
       h) # display Help
          Help
@@ -79,6 +80,9 @@ R) # get resfinder GFF
 	 ;;
 d) # get digIS GFF
 	 DIGISGFF="$OPTARG"
+	 ;;
+A) # get antismash GFF
+	 ANTISMASHGFF="$OPTARG"
 	 ;;
    esac
 done
@@ -406,7 +410,7 @@ remove-track.pl --trackLabel "${PREFIX} putative prophages predicted by phispy" 
 	\"urlTemplate\" : \"tracks/${PREFIX} putative genomic islands/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 
 ## digIS transposable elements
-[ $(grep "digIS" $DIGISGFF | wc -l) -eq 0 ] || flatfile-to-json.pl --gff $DIGISGFF --key "${PREFIX} Insertion Sequences predicted with digIS" --trackType CanvasFeatures \
+[ ! -s $DIGISGFF ] || flatfile-to-json.pl --gff $DIGISGFF --key "${PREFIX} Insertion Sequences predicted with digIS" --trackType CanvasFeatures \
 --trackLabel "${PREFIX} Insertion Sequences predicted with digIS" --out "data" --nameAttributes "class_level,class_sim_all,class_sim_is,class_sim_orf,score,ID" ;
 remove-track.pl --trackLabel "${PREFIX} Insertion Sequences predicted with digIS" --dir data &> /tmp/error
 [ $(grep "digIS" $DIGISGFF | wc -l) -eq 0 ] || echo -E " {  \"compress\" : 0, \
@@ -422,7 +426,7 @@ remove-track.pl --trackLabel "${PREFIX} Insertion Sequences predicted with digIS
 	\"urlTemplate\" : \"tracks/${PREFIX} Insertion Sequences predicted with digIS/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 
 ## antiSMASH secondary metabolites
-[ $(ls antiSMASH/regions.gff | wc -l) -eq 0 ] || flatfile-to-json.pl --gff antiSMASH/regions.gff --key "${PREFIX} antismash regions" --trackType CanvasFeatures --trackLabel "${PREFIX} antismash regions" --out "data" ;
+[ ! -s $ANTISMASHGFF ] || flatfile-to-json.pl --gff $ANTISMASHGFF --key "${PREFIX} antismash regions" --trackType CanvasFeatures --trackLabel "${PREFIX} antismash regions" --out "data" ;
 rm tmp.gff ;
 remove-track.pl --trackLabel "${PREFIX} antismash regions" --dir data &> /tmp/error ;
 echo -E " {  \"compress\" : 0, \

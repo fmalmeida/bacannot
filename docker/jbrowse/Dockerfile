@@ -1,15 +1,15 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL MAINTAINER Felipe Marques de Almeida <felipemarques89@gmail.com>
 
 WORKDIR /work
+RUN chmod 777 -R /work
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get -qq update --fix-missing
-RUN apt-get --no-install-recommends -y install git build-essential zlib1g-dev libxml2-dev libexpat-dev postgresql-client libpq-dev
-RUN apt-get install -y libpng-dev build-essential zlib1g-dev curl wget unzip rsync
+RUN export DEBIAN_FRONTEND="noninteractive" ; apt-get --no-install-recommends -y install git build-essential zlib1g-dev libxml2-dev libexpat-dev postgresql-client libpq-dev libpng-dev curl wget unzip rsync
 
-RUN wget https://github.com/GMOD/jbrowse/releases/download/1.16.9-release/JBrowse-1.16.9.zip && \
+RUN wget --no-check-certificate https://github.com/GMOD/jbrowse/releases/download/1.16.9-release/JBrowse-1.16.9.zip && \
     unzip JBrowse-1.16.9.zip && \
     mv JBrowse-1.16.9 jbrowse && \
     apt-get install -y libnet-ssleay-perl samtools && \
@@ -28,9 +28,6 @@ RUN cd /work/jbrowse && \
     Digest::Crc32 File::Copy::Recursive JSON::XS Parse::RecDescent local::lib
 
 # Change Permissions
-RUN mkdir /work/data && chmod -R g+rwx /work/data && chmod -R a+rwx /work/data && chmod -R g+rwx /work/jbrowse && chmod -R a+rwx /work/jbrowse
-
-# Get runner
-ADD scripts/bscripts /work/bscripts
+RUN chmod 777 -R /work
 
 WORKDIR /work/data

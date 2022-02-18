@@ -12,8 +12,9 @@ process ANTISMASH {
 
   output:
   // Grab results
-  tuple val(prefix), file("antiSMASH")
-  file("*_version.txt")
+  tuple val(prefix), path("antiSMASH/regions.gff")
+  path("antiSMASH")
+  path("*_version.txt")
 
   script:
   """
