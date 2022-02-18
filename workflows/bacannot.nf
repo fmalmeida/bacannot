@@ -123,27 +123,29 @@ workflow BACANNOT {
       }.set { parsed_inputs }
 
       // Step 0 -- Run unicycler when necessary
-      UNICYCLER(parsed_inputs.unicycler_ch)
+      UNICYCLER( parsed_inputs.unicycler_ch )
 
       // Step 0 --  Run flye when necessary
-      FLYE(parsed_inputs.flye_ch)
+      FLYE( parsed_inputs.flye_ch )
 
       // First step -- Prokka annotation
-      PROKKA(parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]), dbs_ch)
+      PROKKA( 
+        parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]), dbs_ch 
+      )
 
       // Second step -- MLST analysis
-      MLST(PROKKA.out[3], dbs_ch)
+      MLST( PROKKA.out[3], dbs_ch )
 
       // Third step -- rRNA annotation
-      BARRNAP(PROKKA.out[3])
+      BARRNAP( PROKKA.out[3] )
 
       // Fouth step -- calculate GC content for JBrowse
-      COMPUTE_GC(PROKKA.out[3])
+      COMPUTE_GC( PROKKA.out[3] )
 
       // Fifth step -- run kofamscan
       if (params.skip_kofamscan == false) {
-        KOFAMSCAN(PROKKA.out[4], dbs_ch)
-        KEGG_DECODER(KOFAMSCAN.out[1])
+        KOFAMSCAN( PROKKA.out[4], dbs_ch )
+        KEGG_DECODER( KOFAMSCAN.out[1] )
         kofamscan_output_ch = KOFAMSCAN.out[1]
         kegg_decoder_svg_ch = KEGG_DECODER.out[1]
       } else {
@@ -158,10 +160,10 @@ workflow BACANNOT {
       // plasmids
       if (params.skip_plasmid_search == false) {  
         // plasmidfinder
-        PLASMIDFINDER(PROKKA.out[3], dbs_ch)
+        PLASMIDFINDER( PROKKA.out[3], dbs_ch )
         plasmidfinder_output_ch = PLASMIDFINDER.out[1]
         // platon
-        PLATON(PROKKA.out[3], dbs_ch)
+        PLATON( PROKKA.out[3], dbs_ch )
         platon_output_ch = PLATON.out[1]
       } else {
         plasmidfinder_output_ch = Channel.empty()
@@ -174,10 +176,10 @@ workflow BACANNOT {
       // Virulence search
       if (params.skip_virulence_search == false) {     
         // VFDB
-        VFDB(PROKKA.out[5], dbs_ch)
+        VFDB( PROKKA.out[5], dbs_ch )
         vfdb_output_ch = VFDB.out[1]
         // Victors db
-        VICTORS(PROKKA.out[4], dbs_ch)
+        VICTORS( PROKKA.out[4], dbs_ch )
         victors_output_ch = VICTORS.out[1]
       } else {
         vfdb_output_ch    = Channel.empty()
@@ -187,14 +189,14 @@ workflow BACANNOT {
       // Prophage search
       if (params.skip_prophage_search == false) {
         // PHAST db
-        PHAST(PROKKA.out[4], dbs_ch)
+        PHAST( PROKKA.out[4], dbs_ch )
         phast_output_ch = PHAST.out[1]
         // Phigaro software
-        PHIGARO(PROKKA.out[3], dbs_ch)
+        PHIGARO( PROKKA.out[3], dbs_ch )
         phigaro_output_1_ch = PHIGARO.out[0]
         phigaro_output_2_ch = PHIGARO.out[1]
         // PhiSpy
-        PHISPY(PROKKA.out[2])
+        PHISPY( PROKKA.out[2] )
         phispy_output_ch = PHISPY.out[1]
       } else {
         phast_output_ch     = Channel.empty()
@@ -206,7 +208,7 @@ workflow BACANNOT {
       // ICEs search
       if (params.skip_iceberg_search == false) {
         // ICEberg db
-        ICEBERG(PROKKA.out[4], PROKKA.out[3], dbs_ch)
+        ICEBERG( PROKKA.out[4], PROKKA.out[3], dbs_ch )
         iceberg_output_ch   = ICEBERG.out[1]
         iceberg_output_2_ch = ICEBERG.out[2]
       } else {
@@ -217,18 +219,18 @@ workflow BACANNOT {
       // AMR search
       if (params.skip_resistance_search == false) {
         // AMRFinderPlus
-        AMRFINDER(PROKKA.out[4], dbs_ch)
+        AMRFINDER( PROKKA.out[4], dbs_ch )
         amrfinder_output_ch = AMRFINDER.out[0]
         // CARD-RGI
-        CARD_RGI(PROKKA.out[4], dbs_ch)
+        CARD_RGI( PROKKA.out[4], dbs_ch )
         rgi_output_ch        = CARD_RGI.out[2]
         rgi_output_parsed_ch = CARD_RGI.out[1]
         rgi_heatmap_ch       = CARD_RGI.out[3]
         // ARGMiner
-        ARGMINER(PROKKA.out[4], dbs_ch)
+        ARGMINER( PROKKA.out[4], dbs_ch )
         argminer_output_ch = ARGMINER.out[0]
         // Resfinder
-        RESFINDER(PROKKA.out[7], dbs_ch)
+        RESFINDER( PROKKA.out[7], dbs_ch )
         resfinder_output_1_ch   = RESFINDER.out[0]
         resfinder_output_2_ch   = RESFINDER.out[1]
         resfinder_phenotable_ch = RESFINDER.out[2]
@@ -248,7 +250,7 @@ workflow BACANNOT {
       /*
           Seventh step -- Methylation call
       */
-      CALL_METHYLATION(PROKKA.out[6])
+      CALL_METHYLATION( PROKKA.out[6] )
       methylation_out_1_ch = CALL_METHYLATION.out[2]
       methylation_out_2_ch = CALL_METHYLATION.out[3]
 
@@ -259,14 +261,14 @@ workflow BACANNOT {
        */
 
       // species identification
-      REFSEQ_MASHER(PROKKA.out[3])
+      REFSEQ_MASHER( PROKKA.out[3] )
 
       // IS identification
-      DIGIS(PROKKA.out[3].join(PROKKA.out[2]))
+      DIGIS( PROKKA.out[3].join(PROKKA.out[2]) )
 
       // antiSMASH
       if (params.skip_antismash == false) {
-        ANTISMASH(PROKKA.out[2], dbs_ch)
+        ANTISMASH( PROKKA.out[2], dbs_ch )
         antismash_output_ch = ANTISMASH.out[0]
       } else {
         antismash_output_ch = Channel.empty()
@@ -281,12 +283,11 @@ workflow BACANNOT {
       // custom databases annotation
       ch_custom_databases_annotations = Channel.empty()
       if (params.custom_db || params.ncbi_proteins) {
-        GET_NCBI_PROTEIN(ncbi_accs)
+        GET_NCBI_PROTEIN( ncbi_accs )
         CUSTOM_DATABASE(
           PROKKA.out[1].join(PROKKA.out[3]),
           custom_db.mix(GET_NCBI_PROTEIN.out[0])
         )
-        CUSTOM_DATABASE_REPORT(CUSTOM_DATABASE.out[0].join(CUSTOM_DATABASE.out[1]))
         ch_custom_databases_annotations = CUSTOM_DATABASE.out[1].groupTuple()
       }
 
@@ -328,17 +329,19 @@ workflow BACANNOT {
                      .join(ch_custom_databases_annotations, remainder: true) 
       )
 
-      // // Plot genomic islands
-      // DRAW_GIS(MERGE_ANNOTATIONS.out[0])
+      // Plot genomic islands
+      DRAW_GIS( MERGE_ANNOTATIONS.out[0] )
 
-      // // Convert GFF file to GBK file
-      // GFF2GBK(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]))
+      // Convert GFF file to GBK file
+      GFF2GBK( MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]) )
 
-      // // Convert GFF file to sqldb
-      // CREATE_SQL(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[5])
-      //                                    .join(PROKKA.out[4])
-      //                                    .join(PROKKA.out[3])
-      //                                    .join(DIGIS.out[2] ))
+      // Convert GFF file to sqldb
+      CREATE_SQL(
+        MERGE_ANNOTATIONS.out[0].join(PROKKA.out[5])
+                                .join(PROKKA.out[4])
+                                .join(PROKKA.out[3])
+                                .join(DIGIS.out[2] )
+      )
 
       // /*
       //     Final step -- Create genome browser and reports
@@ -355,6 +358,7 @@ workflow BACANNOT {
       // JBROWSE(jbrowse_input_ch)
 
       // // Render reports
+      // CUSTOM_DATABASE_REPORT( CUSTOM_DATABASE.out[0].join(CUSTOM_DATABASE.out[1]) )
       // REPORT(jbrowse_input_ch.join(rgi_output_parsed_ch,    remainder: true)
       //                     .join(rgi_heatmap_ch,          remainder: true)
       //                     .join(argminer_output_ch,      remainder: true)
