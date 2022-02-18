@@ -1,10 +1,12 @@
 #!/usr/bin/Rscript
 # Setting Help
-'usage: addResfinder.R [--txt=<file> --gff=<file> --out=<chr>]
+'usage: addBedtoolsIntersect.R [--txt=<file> --gff=<file> --type=<chr> --source=<chr> --out=<chr>]
 
 options:
 -g, --gff=<file>      GFF file to merge annotation
--t, --txt=<file>      Resfinder intersect file
+-t, --txt=<file>      Bedtools intersect file
+--type=<chr>          Feature type [default: BLAST]
+--source=<chr>        Feature source [default: CDS]
 -o, --out=<chr>       Output file name [default: out.gff]' -> doc
 
 # Parse parameters
@@ -59,16 +61,16 @@ if (file.info(opt$txt)$size > 0) {
   gff$ID <- getAttributeField(gff$attributes, "ID", ";")
   
   # Load intersection file
-  resfinder <- read.csv(opt$txt, header = F, sep = "\t")
-  colnames(resfinder) <- c("seqname1", "source1", "feature1", "start1", "end1", "score1", "strand1", "frame1", "attributes1",
+  bedtools_intersect <- read.csv(opt$txt, header = F, sep = "\t")
+  colnames(bedtools_intersect) <- c("seqname1", "source1", "feature1", "start1", "end1", "score1", "strand1", "frame1", "attributes1",
                      "seqname2", "source2", "feature2", "start2", "end2", "score2", "strand2", "frame2", "attributes2",
                      "len")
   
   # Create a column in the intersection file with ids
-  resfinder$ID <- getAttributeField(resfinder$attributes2, "ID", ";")
+  bedtools_intersect$ID <- getAttributeField(bedtools_intersect$attributes2, "ID", ";")
   
   # save ids
-  ids <- resfinder$ID
+  ids <- bedtools_intersect$ID
 
   # Subset based on gene IDs
   ## Lines with our IDs
@@ -83,19 +85,20 @@ if (file.info(opt$txt)$size > 0) {
   # Change fields values
   ## source
   s <- sub$source
-  sn <- "Resfinder"
+  sn <- as.character(opt$source)
   snew <- paste(s, sn, sep = ",")
   sub$source <- snew
 
   ## feature
   f <- sub$feature
-  fn <- "Resistance"
+  fn <- as.character(opt$type)
   fnew <- paste(f, fn, sep = ",")
   sub$feature <- fnew
 
   ## attributes
-  sub <- merge.data.frame(sub, resfinder, by = "ID", all = TRUE)
-  sub$attributes1 <- gsub(pattern = "ID=", replacement = "Resfinder_ID=", x=sub$attributes1)
+  sub <- merge.data.frame(sub, bedtools_intersect, by = "ID", all = TRUE)
+  new_ID <- paste(opt$source, "_ID=", sep = "", collapse = "")
+  sub$attributes1 <- gsub(pattern = "ID=", replacement = as.character(new_ID), x=sub$attributes1)
   sub <- unite(sub, "attributes", c("attributes", "attributes1"), sep = ";") %>%
     select(seqname, source, feature, start, end, score, strand, frame, attributes)
 

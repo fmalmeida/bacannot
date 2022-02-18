@@ -65,7 +65,7 @@ logMessage(params.get_dbs)
  */
 
 // Parse samplesheet
-include { parse_samplesheet } from './workflows/parse_samples.nf'
+include { PARSE_SAMPLESHEET } from './workflows/parse_samples.nf'
 
 // Bacannot pipeline for multiple genomes
 include { BACANNOT   } from './workflows/bacannot.nf'
@@ -107,13 +107,14 @@ workflow {
     samplesheet_yaml.copyTo(params.output + "/" + "${samplesheet_yaml.getName()}")
 
     // Parse YAML file
-    parse_samplesheet(params.samplesheet)
+    PARSE_SAMPLESHEET(params.samplesheet)
 
     // Run annotation
     BACANNOT(
-      parse_samplesheet.out,
+      PARSE_SAMPLESHEET.out,
       bacannot_db,
-      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty()
+      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty(),
+      (params.ncbi_proteins) ? Channel.fromPath( params.ncbi_proteins ) : Channel.empty()
     )
 
     } else {

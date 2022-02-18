@@ -1,9 +1,9 @@
-process CUSTOM_BLAST_REPORT {
+process CUSTOM_DATABASE_REPORT {
   publishDir "${params.output}/${prefix}/report_files/custom_databases", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf(".html") > 0) "report_${customDB}.html"
     else "$filename"
   }
-  label 'renv'
+  label = [ 'renv', 'process_low' ]
   tag "${prefix}"
 
   input:
@@ -32,4 +32,5 @@ process CUSTOM_BLAST_REPORT {
     blast_db = "${customDB}", \
     blast_gff = "$custom_gff")) ;
   """
+
 }

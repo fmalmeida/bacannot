@@ -4,7 +4,7 @@ process CALL_METHYLATION {
     else "methylations/$filename"
   }
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_high' ]
 
   input:
   tuple val(prefix), file(draft), file(reads), file(fast5)

@@ -5,7 +5,7 @@ process PHIGARO {
     else "prophages/phigaro/$filename"
   }
   tag "${prefix}"
-  label 'python'
+  label = [ 'python', 'process_medium' ]
 
   input:
   tuple val(prefix), file("assembly.fasta")

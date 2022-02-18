@@ -4,7 +4,7 @@ process MLST {
      else "MLST/$filename"
    }
    tag "${prefix}"
-   label 'perl'
+   label = [ 'perl', 'process_ultralow' ]
 
    input:
    tuple val(prefix), file(genome)

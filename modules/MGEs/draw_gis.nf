@@ -4,7 +4,7 @@ process DRAW_GIS {
     else null
   }
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_ultralow' ]
   
 
   input:

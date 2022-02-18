@@ -1,7 +1,7 @@
 process GFF2GBK {
   publishDir "${params.output}/${prefix}/gbk", mode: 'copy'
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_ultralow' ]
 
   input:
   tuple val(prefix), file(gff), file(input)

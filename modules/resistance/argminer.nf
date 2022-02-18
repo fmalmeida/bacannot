@@ -1,7 +1,7 @@
 process ARGMINER {
   publishDir "${params.output}/${prefix}/resistance/ARGMiner", mode: 'copy'
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_low' ]
 
   input:
   tuple val(prefix), file(genes)

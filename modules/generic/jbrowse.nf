@@ -1,6 +1,6 @@
 process JBROWSE {
   publishDir "${params.output}/${prefix}/jbrowse", mode: 'copy'
-  label 'jbrowse'
+  label = [ 'jbrowse', 'process_low' ]
   tag "${prefix}"
 
   input:

@@ -5,7 +5,7 @@ process DIGIS {
     else "$filename"
   }
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_low' ]
 
   input:
   tuple val(prefix), file(genome), file(genbank)

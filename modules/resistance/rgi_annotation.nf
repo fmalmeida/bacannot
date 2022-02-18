@@ -5,7 +5,7 @@ process CARD_RGI {
     else "resistance/RGI/$filename"
   }
   tag "${prefix}"
-  label 'python'
+  label = [ 'python', 'process_medium' ]
 
   input:
   tuple val(prefix), file(input)

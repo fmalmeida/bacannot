@@ -1,6 +1,6 @@
 process REPORT {
   publishDir "${params.output}/${prefix}/report_files", mode: 'copy'
-  label 'renv'
+  label = [ 'renv', 'process_medium' ]
   tag "${prefix}"
 
   input:

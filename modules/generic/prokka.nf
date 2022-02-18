@@ -5,7 +5,7 @@ process PROKKA {
       else null
     }
     tag "${prefix}"
-    label 'perl'
+    label = [ 'perl', 'process_medium' ]
 
     input:
     tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), file(assembly), val(resfinder_species)

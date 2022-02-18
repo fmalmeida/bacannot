@@ -1,7 +1,7 @@
 process KEGG_DECODER {
   publishDir "${params.output}/${prefix}/KOfamscan", mode: 'copy'
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_low' ]
 
   input:
   tuple val(prefix), file('input_mapper.txt')

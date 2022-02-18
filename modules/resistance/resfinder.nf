@@ -1,7 +1,7 @@
 process RESFINDER {
   publishDir "${params.output}/${prefix}/resistance", mode: 'copy'
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_medium' ]
 
   input:
   tuple val(prefix), file(genome), val(resfinder_species)

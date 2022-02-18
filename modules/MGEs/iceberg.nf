@@ -1,7 +1,7 @@
 process ICEBERG {
   publishDir "${params.output}/${prefix}/ICEs", mode: 'copy'
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_low' ]
 
   input:
   tuple val(prefix), file(genes_aa)

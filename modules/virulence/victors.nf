@@ -1,7 +1,7 @@
 process VICTORS {
   publishDir "${params.output}/${prefix}/virulence/victors", mode: 'copy'
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_low' ]
 
   input:
   tuple val(prefix), file(genes)

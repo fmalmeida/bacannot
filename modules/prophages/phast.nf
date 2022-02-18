@@ -1,7 +1,7 @@
 process PHAST {
   publishDir "${params.output}/${prefix}/prophages/phast_db", mode: 'copy'
   tag "${prefix}"
-  label 'misc'
+  label = [ 'misc', 'process_low' ]
 
   input:
   tuple val(prefix), file(genes)

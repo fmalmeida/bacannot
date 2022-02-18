@@ -1,7 +1,7 @@
 process ISLANDPATH {
   publishDir "${params.output}/${prefix}/genomic_islands", mode: 'copy'
   tag "${prefix}"
-  label 'perl'
+  label = [ 'perl', 'process_low' ]
 
   input:
   tuple val(prefix), file("annotation.gbk")

@@ -76,8 +76,9 @@ include { CARD_RGI } from '../modules/resistance/rgi_annotation.nf'
 include { CALL_METHYLATION } from '../modules/generic/methylation.nf'
 
 // User's custom db annotation
-include { CUSTOM_BLAST } from '../modules/generic/custom_blast.nf'
-include { CUSTOM_BLAST_REPORT } from '../modules/generic/custom_blast_report.nf'
+include { CUSTOM_DATABASE        } from '../modules/generic/custom_database.nf'
+include { CUSTOM_DATABASE_REPORT } from '../modules/generic/custom_database_report.nf'
+include { GET_NCBI_PROTEIN       } from '../modules/generic/ncbi_protein.nf'
 
 // Merging annotation in GFF
 include { MERGE_ANNOTATIONS } from '../modules/generic/merge_annotations.nf'
@@ -87,9 +88,6 @@ include { GFF2GBK } from '../modules/generic/gff2gbk.nf'
 
 // Convert GFF to SQL
 include { CREATE_SQL } from '../modules/generic/gff2sql.nf'
-
-// Bedtools gff merge
-include { GFF_MERGE } from '../modules/generic/merge_gff.nf'
 
 // JBrowse
 include { JBROWSE } from '../modules/generic/jbrowse.nf'
@@ -112,6 +110,7 @@ workflow BACANNOT {
     input_ch
     dbs_ch
     custom_db
+    ncbi_accs
   
   main:
 
@@ -279,53 +278,67 @@ workflow BACANNOT {
                      .join(PROKKA.out[4])
       )
 
+      // custom databases annotation
+      ch_custom_databases_annotations = Channel.empty()
+      if (params.custom_db || params.ncbi_proteins) {
+        GET_NCBI_PROTEIN(ncbi_accs)
+        CUSTOM_DATABASE(
+          PROKKA.out[1].join(PROKKA.out[3]),
+          custom_db.mix(GET_NCBI_PROTEIN.out[0])
+        )
+        CUSTOM_DATABASE_REPORT(CUSTOM_DATABASE.out[0].join(CUSTOM_DATABASE.out[1]))
+        ch_custom_databases_annotations = CUSTOM_DATABASE.out[1].groupTuple()
+      }
+
       /*
-          Eighth step -- Merge all annotations with the same Prefix value in a single Channel
+          Eighth step -- Merge all annotations
       */
-      annotations_files_ch = PROKKA.out[3].join(PROKKA.out[1])
-                                       .join(MLST.out[0])
-                                       .join(BARRNAP.out[0])
-                                       .join(COMPUTE_GC.out[0])
-                                       .join(kofamscan_output_ch, remainder: true)
-                                       .join(vfdb_output_ch,      remainder: true)
-                                       .join(victors_output_ch,   remainder: true)
-                                       .join(amrfinder_output_ch, remainder: true)
-                                       .join(resfinder_gff_ch,    remainder: true)
-                                       .join(rgi_output_ch,       remainder: true)
-                                       .join(iceberg_output_ch,   remainder: true)
-                                       .join(phast_output_ch,     remainder: true)
-                                       .join(phigaro_output_2_ch, remainder: true)
-                                       .join(ISLANDPATH.out[0],   remainder: true)
+      // prefix is 0
+      // annotations_files_ch = PROKKA.out[3] // 1
+      //                        .join(PROKKA.out[1]) // 2
+      //                        .join(MLST.out[0]) // 3
+      //                        .join(BARRNAP.out[0]) // 4
+      //                        .join(COMPUTE_GC.out[0]) // 5
+      //                        .join(kofamscan_output_ch,             remainder: true) // 6
+      //                        .join(vfdb_output_ch,                  remainder: true) // 7
+      //                        .join(victors_output_ch,               remainder: true) // 8
+      //                        .join(amrfinder_output_ch,             remainder: true) // 9
+      //                        .join(resfinder_gff_ch,                remainder: true) // 10
+      //                        .join(rgi_output_ch,                   remainder: true) // 11
+      //                        .join(iceberg_output_ch,               remainder: true) // 12
+      //                        .join(phast_output_ch,                 remainder: true) // 13
+      //                        .join(phigaro_output_2_ch,             remainder: true) // 14
+      //                        .join(ISLANDPATH.out[0],               remainder: true) // 15
+      //                        .join(DIGIS.out[1],                    remainder: true) // 16
+      //                        .join(ISLANDPATH.out[0],               remainder: true) // 17
+      //                        .join(ch_custom_databases_annotations, remainder: true) // 18
+      //                        .toList() // transforms in single list with everything
 
       // Contatenation of annotations in a single GFF file
-      MERGE_ANNOTATIONS(annotations_files_ch.join(DIGIS.out[1], remainder: true))
+      MERGE_ANNOTATIONS( 
+        PROKKA.out[1].join(kofamscan_output_ch,             remainder: true)
+                     .join(vfdb_output_ch,                  remainder: true)
+                     .join(victors_output_ch,               remainder: true)
+                     .join(amrfinder_output_ch,             remainder: true)
+                     .join(resfinder_gff_ch,                remainder: true)
+                     .join(rgi_output_ch,                   remainder: true)
+                     .join(iceberg_output_ch,               remainder: true)
+                     .join(phast_output_ch,                 remainder: true)
+                     .join(DIGIS.out[1],                    remainder: true)
+                     .join(ch_custom_databases_annotations, remainder: true) 
+      )
 
-      // Plot genomic islands
-      DRAW_GIS(MERGE_ANNOTATIONS.out[0].join(ISLANDPATH.out[0]))
+      // // Plot genomic islands
+      // DRAW_GIS(MERGE_ANNOTATIONS.out[0])
 
-      // Convert GFF file to GBK file
-      GFF2GBK(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]))
+      // // Convert GFF file to GBK file
+      // GFF2GBK(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]))
 
-      // Convert GFF file to sqldb
-      CREATE_SQL(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[5])
-                                         .join(PROKKA.out[4])
-                                         .join(PROKKA.out[3])
-                                         .join(DIGIS.out[2] ))
-
-      // // User wants to merge the final gff file?
-      // if (params.bedtools_merge_distance) {
-      //   GFF_MERGE(MERGE_ANNOTATIONS.out[0])
-      // }
-
-      // /*
-
-      //     Nineth step -- Perform users custom annotation
-
-      // */
-      // if (params.custom_db) {
-      //   CUSTOM_BLAST(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[3]), custom_db)
-      //   CUSTOM_BLAST_REPORT(CUSTOM_BLAST.out[0])
-      // }
+      // // Convert GFF file to sqldb
+      // CREATE_SQL(MERGE_ANNOTATIONS.out[0].join(PROKKA.out[5])
+      //                                    .join(PROKKA.out[4])
+      //                                    .join(PROKKA.out[3])
+      //                                    .join(DIGIS.out[2] ))
 
       // /*
       //     Final step -- Create genome browser and reports

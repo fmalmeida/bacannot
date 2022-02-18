@@ -143,11 +143,11 @@ def summary(output):
         else:
             cov_map=str(line["sstart"]) + '-' + str(line["send"]) + "/" + str(line["slen"])
         # Parse headers
-        db=line["stitle"].split('~~~')[0]
-        gene=line["stitle"].split('~~~')[1]
-        acc=line["stitle"].split('~~~')[2]
-        prodc=line["stitle"].split('~~~')[3].split(" ", 1)[0]
-        desc=line["stitle"].split('~~~')[3].split(" ", 1)[1]
+        db=line["sseqid"].split('~~~')[0]
+        gene=line["sseqid"].split('~~~')[1]
+        acc=line["sseqid"].split('~~~')[2]
+        prodc=line["sseqid"].split('~~~')[3]
+        desc=line["sseqid"].split('~~~')[4]
         # Subject coverage
         cov=round((100 * (line["length"] - line["gaps"]) / line["slen"]), 2)
         # Identity
