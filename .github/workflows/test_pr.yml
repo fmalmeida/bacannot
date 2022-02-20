@@ -23,9 +23,18 @@ jobs:
         run: |
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
-
-      - name: Run the pipeline
+      
+      - name: Clean environment
         run: |
           sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
           sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
-          nextflow run main.nf -profile docker,quicktest --threads 2
+      
+      - name: Build docker images
+        run: |
+          source docker/set_version.sh
+          for image_dir in $(ls docker/) ; do (cd docker/${image_dir} && bash build.sh $NEW_VERSION) ; echo built image $image_dir ; done
+
+      - name: Run the pipeline
+        run: |
+          nextflow run main.ng -profile docker --get_dbs --output bacannot_dbs
+          nextflow run main.nf -profile docker,quicktest
