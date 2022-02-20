@@ -4,15 +4,8 @@ process REPORT {
   tag "${prefix}"
 
   input:
-  tuple val(prefix), file(gff), file(draft), file("prokka_gff"), file(mlst), file(barrnap),
-        file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb_blastn), file(victors_blastp),
-        file(amrfinder), file(resfinder_gff), file(rgi), file(iceberg_blastp), file(phast_blastp), file(phigaro_bed),
-        file(genomic_islands), file("methylation"), file("chr.sizes"), file(phispy_tsv),
-        file(digIS), file(antiSMASH), file(rgi_parsed), file(rgi_heatmap), 
-        file(argminer_out), file(iceberg_blastn), file(plasmids_tsv), file(resfinder_tab), 
-        file(resfinder_point), file(resfinder_phenotable), file(gi_image), file(phigaro_txt), 
-        file(platon_tsv), file(prokka_stats), file(keggsvg), file(refseq_masher_txt)
-
+  tuple val(prefix), path(prokka_stats), path(gff), path(barrnap), path(mlst), path(keggsvg), path(refseq_masher_txt), path(amrfinder), path(rgi), path(rgi_parsed), path(rgi_heatmap), path(argminer_out), path(resfinder_tab), path(resfinder_point), path(resfinder_phenotable), path(vfdb_blastn), path(victors_blastp), path(phigaro_txt), path(phispy_tsv), path(iceberg_blastp), path(iceberg_blastn), path(plasmids_tsv), path(platon_tsv), path(gi_image), path(phast_blastp), path(digIS)
+  
   output:
   file '*.html'
 

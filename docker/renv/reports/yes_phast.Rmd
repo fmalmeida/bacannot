@@ -30,9 +30,8 @@ gff$ID <- getAttributeField(as.character(gff$V9), "ID", ";")
 gff$ID <- toupper(gff$ID)
 
 # Parse BLAST
-blast <- phast_prot_blast %>% select(-sseqid)
-blast <- separate(blast, stitle, c("header", "Description"), sep = " ", extra = "merge")
-blast <- separate(blast, header, c("db", "product", "ref", "phast_id"), sep = "~~~", extra = "merge")
+blast <- phast_prot_blast %>% select(-stitle)
+blast <- separate(blast, sseqid, c("db", "product", "ref", "phast_id", "Description"), sep = "~~~", extra = "merge")
 blast$prophage <- sapply(str_split(blast$Description, "\\|"), head, 1)
 blast$prophage <- gsub(blast$prophage, pattern = "-..$", replacement = "")
 blast$product <- gsub(blast$product, pattern = "_", replacement = " ")

@@ -4,7 +4,7 @@ process MERGE_ANNOTATIONS {
   tag "${prefix}"
 
   input:
-  tuple val(prefix), path('prokka_gff'), path(kofamscan), path(vfdb), path(victors), path(amrfinder), path(resfinder), path(rgi), path(iceberg), path(phast), path(digis_gff), path(custom_databases)
+  tuple val(prefix), file('prokka_gff'), file(kofamscan), file(vfdb), file(victors), file(amrfinder), file(resfinder), file(rgi), file(iceberg), file(phast), file('digis_gff'), file(custom_databases)
 
   output:
   tuple val(prefix), path("${prefix}.gff")
@@ -100,9 +100,9 @@ process MERGE_ANNOTATIONS {
 
   ### digIS transposable elements
   touch transposable_elements_digis.gff
-  if [ -s $digis_gff ]
+  if [ -s digis_gff ]
   then
-    ( cat $digis_gff | sed 's/id=/ID=/g' > transposable_elements_digis.gff && rm $digis_gff ) ;
+    ( cat digis_gff | sed 's/id=/ID=/g' > transposable_elements_digis.gff && rm digis_gff ) ;
     cat ${prefix}.gff transposable_elements_digis.gff | bedtools sort > tmp.out.gff ;
     ( cat tmp.out.gff > ${prefix}.gff && rm tmp.out.gff );
   fi
