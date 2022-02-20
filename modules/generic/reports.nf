@@ -4,7 +4,7 @@ process REPORT {
   tag "${prefix}"
 
   input:
-  tuple val(prefix), path(prokka_stats), path(gff), path(barrnap), path(mlst), path(keggsvg), path(refseq_masher_txt), path(amrfinder), path(rgi), path(rgi_parsed), path(rgi_heatmap), path(argminer_out), path(resfinder_tab), path(resfinder_point), path(resfinder_phenotable), path(vfdb_blastn), path(victors_blastp), path(phigaro_txt), path(phispy_tsv), path(iceberg_blastp), path(iceberg_blastn), path(plasmids_tsv), path(platon_tsv), path(gi_image), path(phast_blastp), path(digIS)
+  tuple val(prefix), file(prokka_stats), file(gff), file(barrnap), file(mlst), file(keggsvg), file(refseq_masher_txt), file(amrfinder), file(rgi), file(rgi_parsed), file(rgi_heatmap), file(argminer_out), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable), file(vfdb_blastn), file(victors_blastp), file(phigaro_txt), file(phispy_tsv), file(iceberg_blastp), file(iceberg_blastn), file(plasmids_tsv), file(platon_tsv), file(gi_image), file(phast_blastp), file(digIS)
   
   output:
   file '*.html'
