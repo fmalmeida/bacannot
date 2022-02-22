@@ -8,13 +8,13 @@ process DIGIS {
   label = [ 'misc', 'process_low' ]
 
   input:
-  tuple val(prefix), file(genome), file(genbank)
+  tuple val(prefix), path(genome), path(genbank)
 
   output:
   // Grab results
   file("digIS")
-  tuple val(prefix), file("digIS/results/*.gff")
-  tuple val(prefix), file("${prefix}.gff"), file("digIS/results/fastas/${prefix}_is.fa"), file("digIS/results/fastas/${prefix}_is.faa")
+  tuple val(prefix), path("digIS/results/${prefix}.gff")
+  tuple val(prefix), path("${prefix}_IS.gff"), path("digIS/results/fastas/${prefix}_IS.fa"), path("digIS/results/fastas/${prefix}_IS.faa")
 
   script:
   """
@@ -35,24 +35,24 @@ process DIGIS {
   mkdir -p digIS/results/fastas ;
 
   ## save info in gff
-  sed \
-    -e 's/id=/ID=/g' \
-    digIS/results/${prefix}.gff > ${prefix}.gff ;
+  sed \\
+    -e 's/id=/ID=/g' \\
+    digIS/results/${prefix}.gff > ${prefix}_IS.gff ;
 
   ## get nucl sequences
-  gff-toolbox \
-    convert \
-    -i ${prefix}.gff \
-    -f fasta-nt \
-    --fasta $genome \
-    --fasta_features transposable_element > digIS/results/fastas/${prefix}_is.fa  ;
+  gff-toolbox \\
+    convert \\
+    -i ${prefix}_IS.gff  \\
+    -f fasta-nt \\
+    --fasta $genome \\
+    --fasta_features transposable_element > digIS/results/fastas/${prefix}_IS.fa  ;
   
   ## get prot sequences
-  gff-toolbox \
-    convert \
-    -i ${prefix}.gff \
-    -f fasta-aa \
-    --fasta $genome \
-    --fasta_features transposable_element > digIS/results/fastas/${prefix}_is.faa ;
+  gff-toolbox \\
+    convert \\
+    -i ${prefix}_IS.gff  \\
+    -f fasta-aa \\
+    --fasta $genome \\
+    --fasta_features transposable_element > digIS/results/fastas/${prefix}_IS.faa ;
   """
 }
