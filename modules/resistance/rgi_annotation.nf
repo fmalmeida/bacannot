@@ -8,18 +8,18 @@ process CARD_RGI {
   label = [ 'python', 'process_medium' ]
 
   input:
-  tuple val(prefix), file(input)
-  file(bacannot_db)
+  tuple val(prefix), path(input)
+  path(bacannot_db)
 
   output:
   // Grab all outputs
-  file "*RGI_${prefix}*" optional true
+  path "*RGI_${prefix}*" optional true
   // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("Parsed_RGI_${prefix}_hits.txt") optional true
-  tuple val(prefix), file("RGI_${prefix}.txt") optional true
-  tuple val(prefix), file("heatmap/RGI*heatmap*.png") optional true
-  file("heatmap") optional true
-  file("*_version.txt")
+  tuple val(prefix), path("Parsed_RGI_${prefix}_hits.txt") optional true
+  tuple val(prefix), path("RGI_${prefix}.txt") optional true
+  tuple val(prefix), path("heatmap/RGI*heatmap*.png") optional true
+  path("heatmap") optional true
+  path("*_version.txt")
 
   script:
   """

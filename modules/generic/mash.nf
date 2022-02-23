@@ -7,12 +7,12 @@ process REFSEQ_MASHER {
   label = [ 'python', 'process_low' ]
 
   input:
-  tuple val(prefix), file(genome)
+  tuple val(prefix), path(genome)
 
   output:
   // Grab results
-  tuple val(prefix), file("refseq_masher_results.txt")
-  file("*_version.txt")
+  tuple val(prefix), path("refseq_masher_results.txt")
+  path("*_version.txt")
 
   script:
   """
