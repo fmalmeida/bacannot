@@ -339,8 +339,10 @@ workflow BACANNOT {
                                 .join(antismash_output_ch,  remainder: true)
       )
 
-      // // Render reports
-      // CUSTOM_DATABASE_REPORT( CUSTOM_DATABASE.out[0].join(CUSTOM_DATABASE.out[1]) )
+      // Render reports
+      if (params.custom_db || params.ncbi_proteins) { 
+        CUSTOM_DATABASE_REPORT( CUSTOM_DATABASE.out[0].join( MERGE_ANNOTATIONS.out[0] ) )
+      }
       REPORT(
         PROKKA.out[8].join(MERGE_ANNOTATIONS.out[0])
                      .join(BARRNAP.out[0])

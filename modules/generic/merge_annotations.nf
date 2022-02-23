@@ -90,7 +90,7 @@ process MERGE_ANNOTATIONS {
   do
     if [ -s \$file ]
     then
-      db=\${file%%.gff} ;
+      db=\${file%%_custom_db.gff} ;
       bedtools intersect -a \${file} -b ${prefix}.gff -wo > bedtools_intersected.txt ;
       addBedtoolsIntersect.R -g ${prefix}.gff -t bedtools_intersected.txt --type "CDS" --source "\${db}" -o ${prefix}.gff ;
       grep "\${db}" ${prefix}.gff > \${db}.gff ;

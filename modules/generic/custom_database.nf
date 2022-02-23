@@ -39,7 +39,7 @@ process CUSTOM_DATABASE {
   tail -n+2 ${prefix}_${customDB.baseName}_\${blast_cmd}.summary.txt | \\
   awk \\
     -v source="${customDB.baseName}" \\
-    -F'\t' \\
+    -F'\\t' \\
     'BEGIN{ OFS="\\t"; }
     { 
         atts="Additional_database="\$10";"\$10"_Acc="\$11";"\$10"_Target="\$5";"\$10"_Product="\$12";"\$10"_Description="\$13;
