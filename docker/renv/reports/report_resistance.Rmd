@@ -102,6 +102,7 @@ gff <- try(gffRead(params$gff), silent = TRUE)
 ## Adding IDs and coordinates to the GFF
 gff$`Query Protein Coordinates` <- paste(gff$seqname, ":", gff$start, "-", gff$end, sep = "")
 gff$Prokka_ID <- getAttributeField(gff$attributes, "ID", ";")
+gff$`Prokka Product` <- getAttributeField(gff$attributes, "product", ";")
 
 # Amrfinder
 amrtsv <- try(read.delim(params$amrfinder) %>% select(2,3,4,5,6,7,8,9,10,16), silent = TRUE)
@@ -239,10 +240,10 @@ Additionally, Prokka generically annotates a few proteins that are related to an
 ```{r prokka-general-resistance, echo=FALSE}
 gff %>%
   filter(str_detect(attributes, "resistance|Resistance")) %>%
-  select("seqname", "start", "end", "attributes") %>%
+  select("seqname", "start", "end", `Prokka Product`, "attributes") %>%
   datatable(escape = FALSE,
           filter = 'top',
-          colnames = c("Contig", "Start", "End", "Description"),
+          colnames = c("Contig", "Start", "End", "Prokka Product", "Description"),
           options = list(pageLength = 5,
                          lengthMenu = c(5, 10, 15, 20, 50),
                          dom='flrtBip',
@@ -250,7 +251,7 @@ gff %>%
                          scrollX = TRUE,
                          fixedColumns = FALSE,
                          autoWidth = TRUE,
-                         columnDefs = list(list(className = 'dt-body-left', targets = c(0,3)))),
+                         columnDefs = list(list(className = 'dt-body-left', targets = c(0,4)))),
           extensions = 'Buttons',
           rownames = F)
 ```
