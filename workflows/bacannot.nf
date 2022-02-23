@@ -193,27 +193,27 @@ workflow BACANNOT {
         phast_output_ch = PHAST.out[1]
         // Phigaro software
         PHIGARO( PROKKA.out[3], dbs_ch )
-        phigaro_output_1_ch = PHIGARO.out[0]
-        phigaro_output_2_ch = PHIGARO.out[1]
+        phigaro_output_tsv_ch = PHIGARO.out[0]
+        phigaro_output_bed_ch = PHIGARO.out[1]
         // PhiSpy
         PHISPY( PROKKA.out[2] )
         phispy_output_ch = PHISPY.out[1]
       } else {
-        phast_output_ch     = Channel.empty()
-        phigaro_output_1_ch = Channel.empty()
-        phigaro_output_2_ch = Channel.empty()
-        phispy_output_ch    = Channel.empty()
+        phast_output_ch       = Channel.empty()
+        phigaro_output_tsv_ch = Channel.empty()
+        phigaro_output_bed_ch = Channel.empty()
+        phispy_output_ch      = Channel.empty()
       }
 
       // ICEs search
       if (params.skip_iceberg_search == false) {
         // ICEberg db
         ICEBERG( PROKKA.out[4], PROKKA.out[3], dbs_ch )
-        iceberg_output_ch   = ICEBERG.out[1]
-        iceberg_output_2_ch = ICEBERG.out[2]
+        iceberg_output_blastp_ch   = ICEBERG.out[1]
+        iceberg_output_blastn_ch   = ICEBERG.out[2]
       } else {
-        iceberg_output_ch   = Channel.empty()
-        iceberg_output_2_ch = Channel.empty()
+        iceberg_output_blastp_ch   = Channel.empty()
+        iceberg_output_blastn_ch   = Channel.empty()
       }
 
       // AMR search
@@ -231,20 +231,20 @@ workflow BACANNOT {
         argminer_output_ch = ARGMINER.out[0]
         // Resfinder
         RESFINDER( PROKKA.out[7], dbs_ch )
-        resfinder_output_1_ch   = RESFINDER.out[0]
-        resfinder_output_2_ch   = RESFINDER.out[1]
-        resfinder_phenotable_ch = RESFINDER.out[2]
-        resfinder_gff_ch        = RESFINDER.out[3]
+        resfinder_output_tab_ch           = RESFINDER.out[0]
+        resfinder_output_pointfinder_ch   = RESFINDER.out[1]
+        resfinder_phenotable_ch           = RESFINDER.out[2]
+        resfinder_gff_ch                  = RESFINDER.out[3]
       } else {
-        rgi_output_ch           = Channel.empty()
-        rgi_output_parsed_ch    = Channel.empty()
-        rgi_heatmap_ch          = Channel.empty()
-        amrfinder_output_ch     = Channel.empty()
-        argminer_output_ch      = Channel.empty()
-        resfinder_output_1_ch   = Channel.empty()
-        resfinder_output_2_ch   = Channel.empty()
-        resfinder_phenotable_ch = Channel.empty()
-        resfinder_gff_ch        = Channel.empty()
+        rgi_output_ch                     = Channel.empty()
+        rgi_output_parsed_ch              = Channel.empty()
+        rgi_heatmap_ch                    = Channel.empty()
+        amrfinder_output_ch               = Channel.empty()
+        argminer_output_ch                = Channel.empty()
+        resfinder_output_tab_ch           = Channel.empty()
+        resfinder_output_pointfinder_ch   = Channel.empty()
+        resfinder_phenotable_ch           = Channel.empty()
+        resfinder_gff_ch                  = Channel.empty()
       }
 
       /*
@@ -301,7 +301,7 @@ workflow BACANNOT {
                      .join(amrfinder_output_ch,             remainder: true)
                      .join(resfinder_gff_ch,                remainder: true)
                      .join(rgi_output_ch,                   remainder: true)
-                     .join(iceberg_output_ch,               remainder: true)
+                     .join(iceberg_output_blastp_ch,        remainder: true)
                      .join(phast_output_ch,                 remainder: true)
                      .join(DIGIS.out[1],                    remainder: true)
                      .join(ch_custom_databases_annotations, remainder: true) 
@@ -330,30 +330,42 @@ workflow BACANNOT {
                                 .join(BARRNAP.out[0])
                                 .join(COMPUTE_GC.out[0])
                                 .join(resfinder_gff_ch,     remainder: true)
-                                .join(phigaro_output_2_ch,  remainder: true)
+                                .join(phigaro_output_bed_ch,remainder: true)
                                 .join(ISLANDPATH.out[0],    remainder: true)
                                 .join(methylation_out_1_ch, remainder: true)
                                 .join(methylation_out_2_ch, remainder: true)
                                 .join(phispy_output_ch,     remainder: true)
-                                .join(MERGE_ANNOTATIONS.out[1])
+                                .join(MERGE_ANNOTATIONS.out[1]) // parsed digIS
                                 .join(antismash_output_ch,  remainder: true)
       )
 
       // // Render reports
       // CUSTOM_DATABASE_REPORT( CUSTOM_DATABASE.out[0].join(CUSTOM_DATABASE.out[1]) )
-      // REPORT(jbrowse_input_ch.join(rgi_output_parsed_ch,    remainder: true)
-      //                     .join(rgi_heatmap_ch,          remainder: true)
-      //                     .join(argminer_output_ch,      remainder: true)
-      //                     .join(iceberg_output_2_ch,     remainder: true)
-      //                     .join(plasmidfinder_output_ch, remainder: true)
-      //                     .join(resfinder_output_1_ch,   remainder: true)
-      //                     .join(resfinder_output_2_ch,   remainder: true)
-      //                     .join(resfinder_phenotable_ch, remainder: true)
-      //                     .join(DRAW_GIS.out[1],      remainder: true)
-      //                     .join(phigaro_output_1_ch,     remainder: true)
-      //                     .join(platon_output_ch,        remainder: true)
-      //                     .join(PROKKA.out[8],        remainder: true)
-      //                     .join(kegg_decoder_svg_ch,     remainder: true)
-      //                     .join(REFSEQ_MASHER.out[0], remainder: true))
+      REPORT(
+        PROKKA.out[8].join(MERGE_ANNOTATIONS.out[0])
+                     .join(BARRNAP.out[0])
+                     .join(MLST.out[0])
+                     .join(kegg_decoder_svg_ch,             remainder: true)
+                     .join(REFSEQ_MASHER.out[0])
+                     .join(amrfinder_output_ch,             remainder: true)
+                     .join(rgi_output_ch,                   remainder: true)
+                     .join(rgi_output_parsed_ch,            remainder: true)
+                     .join(rgi_heatmap_ch,                  remainder: true)
+                     .join(argminer_output_ch,              remainder: true)
+                     .join(resfinder_output_tab_ch,         remainder: true)
+                     .join(resfinder_output_pointfinder_ch, remainder: true)
+                     .join(resfinder_phenotable_ch,         remainder: true)
+                     .join(vfdb_output_ch,                  remainder: true)
+                     .join(victors_output_ch,               remainder: true)
+                     .join(phigaro_output_tsv_ch,           remainder: true)
+                     .join(phispy_output_ch,                remainder: true)
+                     .join(iceberg_output_blastp_ch,        remainder: true)
+                     .join(iceberg_output_blastn_ch,        remainder: true)
+                     .join(plasmidfinder_output_ch,         remainder: true)
+                     .join(platon_output_ch,                remainder: true)
+                     .join(DRAW_GIS.out[1],                 remainder: true)
+                     .join(phast_output_ch,                 remainder: true)
+                     .join(MERGE_ANNOTATIONS.out[1]) // parsed digIS
+      )
 
 }
