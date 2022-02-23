@@ -30,9 +30,8 @@ victors_meta <- read.delim("victors_metadata.tsv")
 
 ```{r parsing-db-victors, eval=TRUE, include=FALSE, echo=FALSE}
 # Parse BLAST
-blast <- victors_blast %>% select(qseqid, stitle)
-blast <- separate(blast, stitle, c("vf_header", "Description"), sep = " ", extra = "merge")
-blast <- separate(blast, vf_header, c("db", "Gene Name", "ref", "VF ID"), sep = "~~~", extra = "merge")
+blast <- victors_blast %>% select(qseqid, sseqid)
+blast <- separate(blast, sseqid, c("db", "Gene Name", "ref", "VF ID", "Description"), sep = "~~~", extra = "merge")
 blast <- separate(blast, `VF ID`, c("db", "VF ID"), sep = "_", extra = "merge")
 blast$`Gene Name` <- gsub(blast$`Gene Name`, pattern = "_", replacement = " ")
 
@@ -71,7 +70,8 @@ colnames(blast) <- c("Query Protein ID", "Gene Name", "Product", "Description", 
 blast$`Database ID` <- apply(blast, 1, vf_id_url_DT)
 ## The conversion
 blast[sapply(blast, is.character)] <- lapply(blast[sapply(blast, is.character)], as.factor)
-datatable(blast,
+datatable(blast %>%
+            select(`Gene Name`, `Database ID`, Product, `Query Protein ID`, Description, `Query Protein Coordinates`),
           escape = FALSE,
           filter = 'top',
           options = dt_opt_lst,
