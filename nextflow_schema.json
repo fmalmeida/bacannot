@@ -18,7 +18,7 @@
                 "output": {
                     "type": "string",
                     "description": "Path for output directory",
-                    "default": "outdir"
+                    "default": "results"
                 }
             }
         },

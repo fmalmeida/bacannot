@@ -1,81 +1,43 @@
 #!/usr/bin/env nextflow
-nextflow.enable.dsl=2
+/*
+========================================================================================
+    fmalmeida/bacannot: A Generic Pipeline for Prokariotic Genome Annotation
+========================================================================================
+    Github : https://github.com/fmalmeida/bacannot
+----------------------------------------------------------------------------------------
+*/
+
+nextflow.enable.dsl = 2
 import org.yaml.snakeyaml.Yaml
 
 /*
- * Generic Pipeline for Prokariotic Genome Annotation
- */
+========================================================================================
+    VALIDATE & PRINT PARAMETER SUMMARY
+========================================================================================
+*/
+
+WorkflowMain.initialise(workflow, params, log)
 
 /*
- * Include functions
- */
-include { helpMessage } from './nf_functions/help.nf'
-include { logMessage } from './nf_functions/log.nf'
-include { paramsCheck } from './nf_functions/paramsCheck.nf'
+========================================================================================
+    NAMED WORKFLOWS FOR PIPELINE
+========================================================================================
+*/
 
-
-/*
- * Check parameters
- */
-paramsCheck()
-params.help = false
- // Show help emssage
- if (params.help){
-   helpMessage()
-   exit 0
-}
-
-/*
- * Does the user wants to download the configuration file?
- */
-
-params.get_config = false
-if (params.get_config) {
-  new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
-  println ""
-  println "bacannot.config file saved in working directory"
-  println "After configuration, run:"
-  println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
-  println "Nice code!\n"
-  exit 0
-}
-
-/*
- * Does the user wants to download the YAML samplesheet file?
- */
-
-params.get_samplesheet = false
-if (params.get_samplesheet) {
-  new File("bacannot_samplesheet.yaml").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/example_samplesheet.yaml").getText())
-  println ""
-  println "bacannot_samplesheet.yaml file saved in working directory"
-  println "After configuration, run:"
-  println "nextflow run fmalmeida/bacannot --input bacannot_samplesheet.yaml"
-  println "Nice code!\n"
-  exit 0
-}
-
-/*
- * Define log message
- */
-logMessage(params.get_dbs)
-
-/*
- * Define custom workflows
- */
-
-// Parse samplesheet
 include { PARSE_SAMPLESHEET } from './workflows/parse_samples.nf'
-
-// Bacannot pipeline for multiple genomes
-include { BACANNOT   } from './workflows/bacannot.nf'
-include { CREATE_DBS } from './workflows/bacannot_dbs.nf'
-
+include { BACANNOT          } from './workflows/bacannot.nf'
+include { CREATE_DBS        } from './workflows/bacannot_dbs.nf'
 
 /*
- * Define main workflow
- */
+========================================================================================
+    RUN ALL WORKFLOWS
+========================================================================================
+*/
 
+//
+// WORKFLOW: Execute a single named workflow for the pipeline
+// See: https://github.com/fmalmeida/rnaseq/issues/619
+//
 workflow {
 
   if (params.get_dbs) {
@@ -132,12 +94,40 @@ workflow {
   }
 }
 
+/*
+========================================================================================
+    THE END
+========================================================================================
+*/
 
-// Completition message
-workflow.onComplete {
-    println ""
-    println "Pipeline completed at: $workflow.complete"
-    println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
-    println "Execution duration: $workflow.duration"
-    println "Thank you for using fmalmeida/bacannot pipeline!"
-}
+
+
+/*
+ * Does the user wants to download the configuration file?
+ */
+
+// params.get_config = false
+// if (params.get_config) {
+//   new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
+//   println ""
+//   println "bacannot.config file saved in working directory"
+//   println "After configuration, run:"
+//   println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
+//   println "Nice code!\n"
+//   exit 0
+// }
+
+// /*
+//  * Does the user wants to download the YAML samplesheet file?
+//  */
+
+// params.get_samplesheet = false
+// if (params.get_samplesheet) {
+//   new File("bacannot_samplesheet.yaml").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/example_samplesheet.yaml").getText())
+//   println ""
+//   println "bacannot_samplesheet.yaml file saved in working directory"
+//   println "After configuration, run:"
+//   println "nextflow run fmalmeida/bacannot --input bacannot_samplesheet.yaml"
+//   println "Nice code!\n"
+//   exit 0
+// }
