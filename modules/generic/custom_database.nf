@@ -42,7 +42,7 @@ process CUSTOM_DATABASE {
     -F'\\t' \\
     'BEGIN{ OFS="\\t"; }
     { 
-        atts="Additional_database="\$10";"\$10"_Acc="\$11";"\$10"_Target="\$5";"\$10"_Product="\$12";"\$10"_Description="\$13;
+        atts="Additional_database="\$10";"\$10":Acc="\$11";"\$10":Target="\$5";"\$10":Product="\$12";"\$10"_Description="\$13;
         if (\$4 == "-") {
             print \$1,source,"CDS",\$3,\$2,".",\$4,"0",atts
         } else {

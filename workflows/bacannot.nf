@@ -340,8 +340,11 @@ workflow BACANNOT {
       )
 
       // Render reports
-      if (params.custom_db || params.ncbi_proteins) { 
-        CUSTOM_DATABASE_REPORT( CUSTOM_DATABASE.out[0].join( MERGE_ANNOTATIONS.out[0] ) )
+      if (params.custom_db || params.ncbi_proteins) {
+        CUSTOM_DATABASE_REPORT( 
+          CUSTOM_DATABASE.out[0].combine( MERGE_ANNOTATIONS.out[0] )
+                                .map{ [ it[0], it[1], it[2], it[4] ] } 
+        )
       }
       REPORT(
         PROKKA.out[8].join(MERGE_ANNOTATIONS.out[0])

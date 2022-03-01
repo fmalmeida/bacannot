@@ -57,7 +57,7 @@ check_lines <- function(x) {
   return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
 }
 
-## Read ICEberg documents
+## Read input documents
 custom_blast <- try(read.delim(params$custom_blast, header = TRUE), silent = TRUE)
 blast_gff    <- try(read.delim(params$blast_gff, header = FALSE), silent = TRUE)
 colnames(blast_gff) <-
@@ -65,7 +65,7 @@ colnames(blast_gff) <-
 
 ## Check for emptyness
 if (class(custom_blast) == "try-error" ||
-    check_lines(custom_blast) == 0) {
+    check_lines(custom_blast) == 1) {
   custom_blast <- data.frame(
     matrix(ncol = 14, nrow = 0)
   )
