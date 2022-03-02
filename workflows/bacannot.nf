@@ -337,6 +337,7 @@ workflow BACANNOT {
                                 .join(phispy_output_ch,     remainder: true)
                                 .join(MERGE_ANNOTATIONS.out[1]) // parsed digIS
                                 .join(antismash_output_ch,  remainder: true)
+                                .join(MERGE_ANNOTATIONS.out[2].groupTuple(), remainder: true) // parsed custom db
       )
 
       // Render reports

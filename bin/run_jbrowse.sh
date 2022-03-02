@@ -341,7 +341,7 @@ remove-track.pl --trackLabel "${PREFIX} ICE genes from ICEberg database" --dir d
 	\"type\" : \"CanvasFeatures\", \
 	\"nameAttributes\" : \"ICEberg_Target,ICEberg_Product,Name,ID,product\", \
 	\"urlTemplate\" : \"tracks/${PREFIX} ICE genes from ICEberg database/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
-[ $(grep "ICEberg" $PROKKAGFF | wc -l) -eq 0 ] || rm -f iceberg ;
+[ $(grep "ICEberg" $PROKKAGFF | wc -l) -eq 0 ] || rm -f iceberg ices ;
 
 ## PROPHAGES
 ### PHAST
@@ -444,6 +444,24 @@ echo -E " {  \"compress\" : 0, \
 ## cpg
 [ ! -s $NANOMETHYL ] || bedGraphToBigWig $NANOMETHYL $NANOSIZES data/methylation.bw ;
 [ ! -s data/methylation.bw ] || add-bw-track.pl --bw_url methylation.bw --plot --label "5mC (CpG) Methylations" --key "5mC (CpG) Methylations" --category "Methylations" --pos_color "#0e469a" ;
+
+## add custom databases
+for custom_db_file in $(ls custom_database_*.gff) ; do
+	custom_prefix=${custom_db_file##custom_database_} ;
+	custom_prefix=${custom_prefix%%.gff} ;
+	[ ! -s $custom_db_file ] || flatfile-to-json.pl --gff $custom_db_file --key "${custom_prefix} annotated features" --trackType CanvasFeatures --trackLabel "${custom_prefix} annotated features" --out "data" ;
+	remove-track.pl --trackLabel "${custom_prefix} annotated features" --dir data &> /tmp/error ;
+	echo -E " {  \"compress\" : 0, \
+		\"displayMode\" : \"compact\", \
+		\"key\" : \"${custom_prefix} annotated features\", \
+		\"category\" : \"Custom databases annotations\", \
+		\"label\" : \"${custom_prefix} annotated features\", \
+		\"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
+		\"style\" : { \"className\" : \"feature\", \"color\": \"#323E52\" }, \
+		\"trackType\" : \"CanvasFeatures\", \
+		\"type\" : \"CanvasFeatures\", \
+		\"urlTemplate\" : \"tracks/${custom_prefix} annotated features/{refseq}/trackData.json\" } " | add-track-json.pl data/trackList.json ;
+done
 
 # Finally fix categories order
 echo >> jbrowse.conf

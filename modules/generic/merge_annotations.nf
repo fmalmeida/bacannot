@@ -9,6 +9,7 @@ process MERGE_ANNOTATIONS {
   output:
   tuple val(prefix), path("${prefix}.gff")
   tuple val(prefix), path("transposable_elements_digis.gff")
+  tuple val(prefix), path("custom_database_*.gff")
   path("*.gff")
 
   script:
@@ -93,7 +94,7 @@ process MERGE_ANNOTATIONS {
       db=\${file%%_custom_db.gff} ;
       bedtools intersect -a \${file} -b ${prefix}.gff -wo > bedtools_intersected.txt ;
       addBedtoolsIntersect.R -g ${prefix}.gff -t bedtools_intersected.txt --type "CDS" --source "\${db}" -o ${prefix}.gff ;
-      grep "\${db}" ${prefix}.gff > \${db}.gff ;
+      grep "\${db}" ${prefix}.gff > custom_database_\${db}.gff ;
       rm -f bedtools_intersected.txt ;
     fi
   done
