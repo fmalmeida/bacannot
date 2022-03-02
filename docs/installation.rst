@@ -31,26 +31,30 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
 
       nextflow run fmalmeida/bacannot --help
 
-5. Download required Docker images
+5. Download pipeline databases
 
    .. code-block:: bash
 
-      docker pull fmalmeida/bacannot:main_tools ;  # this is the core of the main image
-      docker pull fmalmeida/bacannot:v3.0       ;
-      docker pull fmalmeida/bacannot:kofamscan  ;
-      docker pull fmalmeida/bacannot:antismash  ;
-      docker pull fmalmeida/bacannot:jbrowse    ;
-      docker pull fmalmeida/bacannot:v3.0_renv  ;
+      nextflow run fmalmeida/bacannot -profile docker --get_dbs
 
 .. tip::
 
-   If the download of ``fmalmeida/bacannot:v3.0`` image keeps hanging due to its size, download the ``fmalmeida/bacannot:main_tools`` first. It is the core of the versioned tag and it will help on the download by creating some cache. Also, remember to always keep your Docker images up to date (Docker pull will always download the latest)
+   This will download the required databases and save them in the current working directory. To save it somewhere else, use ``--output``.
 
-6. (Optional) Install nf-core utility
+6. Download required Docker images
 
    .. code-block:: bash
 
-      pip install nf-core>=1.10
+      docker pull fmalmeida/bacannot:v3.1_misc    ;
+      docker pull fmalmeida/bacannot:v3.1_perlenv ;
+      docker pull fmalmeida/bacannot:v3.1_pyenv   ;
+      docker pull fmalmeida/bacannot:v3.1_py36env ;
+      docker pull fmalmeida/bacannot:v3.1_renv    ;
+      docker pull fmalmeida/bacannot:jbrowse      ;
+
+.. tip::
+
+   Required images can be downloaded on the fly, not requiring to be previously available. Just be sure to select the correct desired profile (``docker/singularity``).
 
 .. note::
 

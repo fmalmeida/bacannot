@@ -64,6 +64,9 @@ Its main steps are:
 
    * - Prediction and visualization of genomic islands
      - `IslandPath-DIMOB <https://github.com/brinkmanlab/islandpath>`_ and `gff-toolbox <https://github.com/fmalmeida/gff-toolbox>`_
+   
+   * - Annotation of custom databases from formatted FASTA or NCBI protein IDs
+     - `BLAST <https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs>`_
 
    * - Merge of annotation results
      - `bedtools <https://bedtools.readthedocs.io/en/latest/>`_

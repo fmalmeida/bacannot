@@ -293,8 +293,3 @@ Merge distance
 
 All this parameters are configurable through a configuration file. We encourage users to use the configuration
 file since it will keep your execution cleaner and more readable. See a :ref:`config` example.
-
-Examples
-^^^^^^^^
-
-For a better understanding of the usage we provided a feel examples. See :ref:`examples`

@@ -30,10 +30,25 @@ After downloading the genome, we must create a samplesheet for the input data as
 
   Download this file and save it as ``bacannot_samplesheet.yaml``.
 
+Download databases
+------------------
+
+.. code-block:: bash
+
+  # Download pipeline databases
+  nextflow run fmalmeida/bacannot \
+    --get_dbs \
+    --output bacannot_dbs \
+    -profile docker
+
+.. note::
+
+  You can choose between docker and singularity profiles. These are the possibilities right now. Conda shall come in near future.
+
 Run the pipeline
 ----------------
 
-For examplification purposes and to get a major overview we will execute the pipeline's major processes:
+In this step we will get a major overview of the main pipeline's steps. To run it, we will use the databases (``bacannot_dbs``) downloaded in the previous step.
 
 .. code-block:: bash
 
@@ -41,7 +56,8 @@ For examplification purposes and to get a major overview we will execute the pip
   nextflow run fmalmeida/bacannot \
     --input bacannot_samplesheet.yaml \
     --output _ANNOTATION \
-    --threads 10
+    --bacannot_db ./bacannot_dbs \
+    --max_cpus 10
 
 .. note::
 
@@ -60,10 +76,10 @@ Moreover, we have also made available a few example datasets in the pipeline so 
 .. code-block:: bash
 
   # Run the pipeline using the provided (bigger) test dataset
-  nextflow run fmalmeida/bacannot --profile test --threads 10
+  nextflow run fmalmeida/bacannot --profile docker,test --bacannot_db ./bacannot_dbs --max_cpus 10
 
   # Or run the quick test
-  nextflow run fmalmeida/bacannot --profile quicktest --threads 10
+  nextflow run fmalmeida/bacannot --profile docker,quicktest --bacannot_db ./bacannot_dbs ---max_cpus 10
 
 .. note::
 
