@@ -26,6 +26,7 @@ RUN conda create -y -n digIS -c bioconda -c defaults -c conda-forge -c anaconda 
 
 # Create env for antismash
 RUN conda create -y -n antismash -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority 'antismash>=6' emboss nomkl && \
+            rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 		conda clean -afy
 
 # Install pip packages
