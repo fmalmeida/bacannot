@@ -28,7 +28,7 @@ process ANTISMASH {
   antismash \\
     --output-dir antiSMASH \\
     --genefinding-tool none \\
-    -c ${params.threads} \\
+    -c $task.cpus \\
     --databases ${bacannot_db}/antismash_db \\
     $genbank ;
 

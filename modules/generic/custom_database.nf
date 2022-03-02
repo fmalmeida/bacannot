@@ -31,7 +31,7 @@ process CUSTOM_DATABASE {
       --db ${customDB} \\
       --minid ${params.blast_custom_minid} \\
       --mincov ${params.blast_custom_mincov} \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       --out ${prefix}_${customDB.baseName}_\${blast_cmd}.txt \\
       > ${prefix}_${customDB.baseName}_\${blast_cmd}.summary.txt ;
 

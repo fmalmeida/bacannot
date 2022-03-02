@@ -22,7 +22,7 @@ process VFDB {
       --db ${bacannot_db}/vfdb_db/sequences \\
       --minid ${params.blast_virulence_minid} \\
       --mincov ${params.blast_virulence_mincov} \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       --out ${prefix}_vfdb_blastn_onGenes.txt \\
       --2way | \\
   sed -e 's/ACCESSION/VFDB_ID/g' > ${prefix}_vfdb_blastn_onGenes.summary.txt ;

@@ -38,7 +38,7 @@ process PHIGARO {
   phigaro \\
       -f assembly.fasta \\
       --config ./custom_config.yml \\
-      -t ${params.threads} \\
+      -t $task.cpus \\
       -e html tsv \\
       -o out.phg \\
       --delete-shorts \\

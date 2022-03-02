@@ -29,7 +29,7 @@ process KOFAMSCAN {
       -k ${bacannot_db}/kofamscan_db/ko_list \\
       -o KOfamscan/${prefix}_ko_detailed.txt \\
       --keep-tabular \\
-      --cpu=${params.threads} \\
+      --cpu=$task.cpus \\
       proteins.faa ;
 
   # Re-run kofamscan with mapper-output
@@ -38,7 +38,7 @@ process KOFAMSCAN {
       -k ${bacannot_db}/kofamscan_db/ko_list \\
       -o KOfamscan/${prefix}_ko_forKEGGMapper.txt \\
       --reannotate \\
-      --cpu=${params.threads} \\
+      --cpu=$task.cpus \\
       -f mapper \\
       proteins.faa ;
   """

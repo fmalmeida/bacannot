@@ -29,7 +29,7 @@ process AMRFINDER {
       -p $proteins \\
       --plus \\
       -o AMRFinder_complete.tsv \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       --ident_min ${resistance_minid} \\
       --coverage_min ${resistance_mincov} \\
       --name ${prefix} \\

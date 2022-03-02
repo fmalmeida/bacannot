@@ -14,7 +14,7 @@ class NfcoreTemplate {
             // Check params.awsqueue and params.awsregion have been set if running on AWSBatch
             assert (params.awsqueue && params.awsregion) : "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
             // Check outdir paths to be S3 buckets if running on AWSBatch
-            assert params.outdir.startsWith('s3:')       : "Outdir not on S3 - specify S3 Bucket to run on AWSBatch!"
+            assert params.output.startsWith('s3:')       : "Outdir not on S3 - specify S3 Bucket to run on AWSBatch!"
         }
     }
 
@@ -26,7 +26,7 @@ class NfcoreTemplate {
             log.warn "[$workflow.manifest.name] You are attempting to run the pipeline without any custom configuration!\n\n" +
                     "This will be dependent on your local compute environment but can be achieved via one or more of the following:\n" +
                     "   (1) Using an existing pipeline profile e.g. `-profile docker` or `-profile singularity`\n" +
-                    "   (2) Using an existing fmalmeida/configs for your Institution e.g. `-profile crick` or `-profile uppmax`\n" +
+                    "   (2) Using an existing nf-core/configs for your Institution e.g. `-profile crick` or `-profile uppmax`\n" +
                     "   (3) Using your own local custom config e.g. `-c /path/to/your/custom.config`\n\n" +
                     "Please refer to the quick start section and usage docs for the pipeline.\n "
         }
@@ -135,7 +135,7 @@ class NfcoreTemplate {
         }
 
         // Write summary e-mail HTML to a file
-        def output_d = new File("${params.outdir}/pipeline_info/")
+        def output_d = new File("${params.output}/pipeline_info/")
         if (!output_d.exists()) {
             output_d.mkdirs()
         }

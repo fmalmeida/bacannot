@@ -29,7 +29,7 @@ process ICEBERG {
       --db ${bacannot_db}/iceberg_db/diamond.dmnd \\
       --minid ${params.blast_MGEs_minid} \\
       --mincov ${params.blast_MGEs_mincov} \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       --out ${prefix}_iceberg_blastp_onGenes.txt --2way | \\
   sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastp_onGenes.summary.txt ;
 
@@ -45,7 +45,7 @@ process ICEBERG {
       --db sequences \\
       --minid 0 \\
       --mincov 0 \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       --out ${prefix}_iceberg_blastn_onGenome.txt | \\
   sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastn_onGenome.summary.txt ;
   """

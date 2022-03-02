@@ -25,7 +25,7 @@ process PLATON {
   platon \\
       --db ${bacannot_db}/platon_db/ \\
       --output platon \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       $genome > tmp.txt || true ;
   [ -s platon/${prefix}.tsv ] || cat tmp.txt > platon/${prefix}.tsv ;
   """

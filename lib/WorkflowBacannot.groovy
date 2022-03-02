@@ -8,12 +8,30 @@ class WorkflowBacannot {
     // Check and validate parameters
     //
     public static void initialise(params, log) {
-        genomeExistsError(params, log)
 
-        if (!params.fasta) {
-            log.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
+        // input has been given and user does not want to download databases?
+        if (!params.input && !params.get_dbs) {
+            log.error "Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.yml'. Or select the download databases mode with --get_dbs."
             System.exit(1)
         }
+
+        // prokka params checkup
+        if (params.prokka_kingdom && !params.prokka_genetic_code) {
+            log.error """
+            ERROR!
+
+            A minor error has occurred
+            ==> User have set --prokka_kingdom but forgot --prokka_genetic_code.
+
+            These parameters must be used together. If you change prokka defaults kingdom parameter you must set the genetic code to be used for translation.
+
+            If in doubt with these parameters let it blank, or get more information in Prokka's documentation.
+
+            Cheers.
+            """.stripIndent()
+            System.exit(1)
+        }
+
     }
 
     //
@@ -43,17 +61,4 @@ class WorkflowBacannot {
         return yaml_file_text
     }
 
-    //
-    // Exit pipeline if incorrect --genome key provided
-    //
-    private static void genomeExistsError(params, log) {
-        if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
-            log.error "=============================================================================\n" +
-                "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" +
-                "  Currently, the available genome keys are:\n" +
-                "  ${params.genomes.keySet().join(", ")}\n" +
-                "==================================================================================="
-            System.exit(1)
-        }
-    }
 }

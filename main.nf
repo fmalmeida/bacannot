@@ -34,10 +34,6 @@ include { CREATE_DBS        } from './workflows/bacannot_dbs.nf'
 ========================================================================================
 */
 
-//
-// WORKFLOW: Execute a single named workflow for the pipeline
-// See: https://github.com/fmalmeida/rnaseq/issues/619
-//
 workflow {
 
   if (params.get_dbs) {
@@ -92,6 +88,7 @@ workflow {
   
     }
   }
+
 }
 
 /*
@@ -99,35 +96,3 @@ workflow {
     THE END
 ========================================================================================
 */
-
-
-
-/*
- * Does the user wants to download the configuration file?
- */
-
-// params.get_config = false
-// if (params.get_config) {
-//   new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
-//   println ""
-//   println "bacannot.config file saved in working directory"
-//   println "After configuration, run:"
-//   println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
-//   println "Nice code!\n"
-//   exit 0
-// }
-
-// /*
-//  * Does the user wants to download the YAML samplesheet file?
-//  */
-
-// params.get_samplesheet = false
-// if (params.get_samplesheet) {
-//   new File("bacannot_samplesheet.yaml").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/example_samplesheet.yaml").getText())
-//   println ""
-//   println "bacannot_samplesheet.yaml file saved in working directory"
-//   println "After configuration, run:"
-//   println "nextflow run fmalmeida/bacannot --input bacannot_samplesheet.yaml"
-//   println "Nice code!\n"
-//   exit 0
-// }

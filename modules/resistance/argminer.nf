@@ -21,7 +21,7 @@ process ARGMINER {
       --db ${bacannot_db}/argminer_db/diamond.dmnd \\
       --minid ${params.blast_resistance_minid} \\
       --mincov ${params.blast_resistance_mincov} \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       --out ${prefix}_argminer_blastp_onGenes.txt \\
       --2way > ${prefix}_argminer_blastp_onGenes.summary.txt ;
   """

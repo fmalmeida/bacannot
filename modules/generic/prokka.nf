@@ -49,7 +49,7 @@ process PROKKA {
         $gcode \\
         $rnammer \\
         --outdir annotation \\
-        --cpus ${params.threads} \\
+        --cpus $task.cpus \\
         --mincontiglen 200 \\
         --prefix ${prefix} \\
         --genus '' \\

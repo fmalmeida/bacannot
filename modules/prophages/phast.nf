@@ -22,7 +22,7 @@ process PHAST {
       --db ${bacannot_db}/phast_db/diamond.dmnd \\
       --minid ${params.blast_MGEs_minid} \\
       --mincov ${params.blast_MGEs_mincov} \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       --out ${prefix}_phast_blastp_onGenes.txt --2way | \\
   sed -e 's/PRODUCT/PHAST_ID/g' > ${prefix}_phast_blastp_onGenes.summary.txt ;
   """

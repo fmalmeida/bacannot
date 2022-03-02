@@ -26,6 +26,6 @@ process PHISPY {
       $input \\
       --color \\
       --output_choice 127 \\
-      --threads ${params.threads}
+      --threads $task.cpus
   """
 }

@@ -22,7 +22,7 @@ process VICTORS {
       --db ${bacannot_db}/victors_db/diamond.dmnd \\
       --minid ${params.blast_virulence_minid} \\
       --mincov ${params.blast_virulence_mincov} \\
-      --threads ${params.threads} \\
+      --threads $task.cpus \\
       --out ${prefix}_victors_blastp_onGenes.txt \\
       --2way | \\
   sed -e 's/PRODUCT/VICTORS_ID/g' > ${prefix}_victors_blastp_onGenes.summary.txt ;

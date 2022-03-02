@@ -53,7 +53,7 @@ process CALL_METHYLATION {
     -r ${reads} \\
     -b reads_output.sorted.bam \\
     -g ${draft} \\
-    -t ${params.threads} > methylation_call.tsv ;
+    -t $task.cpus > methylation_call.tsv ;
 
   # Calculate Methylation Frequencies
   /work/nanopolish/scripts/calculate_methylation_frequency.py methylation_call.tsv > methylation_frequency.tsv ;

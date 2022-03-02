@@ -9,9 +9,8 @@ class WorkflowMain {
     //
     public static String citation(workflow) {
         return "If you use ${workflow.manifest.name} for your analysis please cite:\n\n" +
-            // TODO nf-core: Add Zenodo DOI for pipeline after first release
-            //"* The pipeline\n" +
-            //"  https://doi.org/10.5281/zenodo.XXXXXXX\n\n" +
+            "* The pipeline\n" +
+            "  https://doi.org/10.5281/zenodo.3627669\n\n" +
             "* The nf-core framework\n" +
             "  https://doi.org/10.1038/s41587-020-0439-x\n\n" +
             "* Software dependencies\n" +
@@ -53,6 +52,28 @@ class WorkflowMain {
             System.exit(0)
         }
 
+        // Download template config
+        if (params.get_config) {
+            new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/conf/defaults.config").getText())
+            log.info """
+            bacannot.config file saved in working directory
+            After configuration, run:
+              nextflow run fmalmeida/bacannot -c ./bacannot.config
+            Nice code
+            """.stripIndent()
+            System.exit(0)
+        }
+
+        // Download template samplesheet
+        if (params.get_samplesheet) {
+            new File("bacannot_samplesheet.yaml").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/example_samplesheet.yml").getText())
+            log.info """
+            Samplesheet (bacannot_samplesheet.yml) file saved in working directory
+            Nice code!
+            """.stripIndent()
+            System.exit(0)
+        }
+
         // Validate workflow parameters via the JSON schema
         if (params.validate_params) {
             NfcoreSchema.validateParameters(workflow, params, log)
@@ -65,30 +86,13 @@ class WorkflowMain {
         NfcoreTemplate.checkConfigProvided(workflow, log)
 
         // Check that conda channels are set-up correctly
-        if (params.enable_conda) {
-            Utils.checkCondaChannels(log)
-        }
+        // if (params.enable_conda) {
+        //     Utils.checkCondaChannels(log)
+        // }
 
         // Check AWS batch settings
-        NfcoreTemplate.awsBatch(workflow, params)
-
-        // Check input has been provided
-        if (!params.input) {
-            log.error "Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.csv'"
-            System.exit(1)
-        }
+        // NfcoreTemplate.awsBatch(workflow, params)
+        
     }
 
-    //
-    // Get attribute from genome config file e.g. fasta
-    //
-    public static String getGenomeAttribute(params, attribute) {
-        def val = ''
-        if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-            if (params.genomes[ params.genome ].containsKey(attribute)) {
-                val = params.genomes[ params.genome ][ attribute ]
-            }
-        }
-        return val
-    }
 }
