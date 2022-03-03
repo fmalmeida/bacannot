@@ -26,3 +26,8 @@ RUN cpanm Bio::Perl --force
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
+
+WORKDIR /work
+
+# fix permissions for singularity
+RUN chmod -R 777 /work /opt/conda/db
