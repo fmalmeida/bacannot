@@ -27,6 +27,11 @@ RUN cd /work/jbrowse && \
     ./bin/cpanm --force Bio::GFF3::LowLevel Bio::GFF3::LowLevel::Parser DBD::SQLite \
     Digest::Crc32 File::Copy::Recursive JSON::XS Parse::RecDescent local::lib
 
+# for backup reasons to work with previous versions
+RUN mkdir -p /work/bscripts && \
+      wget -O /work/bscripts/run_jbrowse.sh https://github.com/fmalmeida/bacannot/raw/305956e6ae2b42a8a5f69bedccbacccadaf2a30e/docker/scripts/bscripts/run_jbrowse.sh && \
+      chmod a+x /work/bscripts/run_jbrowse.sh
+
 # Change Permissions
 RUN chmod 777 -R /work
 
