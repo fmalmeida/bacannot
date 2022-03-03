@@ -70,13 +70,12 @@
                 "prokka_skip_pgap": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Do not use PGAP hmm database while annotation"
+                    "description": "Do not use PGAP hmm database in prokka annotation. Although comprehensive it increases runtime."
                 },
                 "prokka_kingdom": {
                     "type": "string",
-                    "description": "Prokka annotation mode",
-                    "default": "Bacteria",
-                    "help_text": "Select which prokka annotation mode to run",
+                    "description": "Prokka annotation mode. Prokka defaults are for Bacteria.",
+                    "help_text": "Select which prokka annotation mode to run.",
                     "enum": [
                         "Archaea",
                         "Bacteria",
@@ -86,8 +85,7 @@
                 },
                 "prokka_genetic_code": {
                     "type": "number",
-                    "default": 11,
-                    "description": "Translation table code"
+                    "description": "Translation table code. Prokka defaults are for Bacteria."
                 },
                 "prokka_use_rnammer": {
                     "type": "boolean",
@@ -264,11 +262,17 @@
                 "blast_custom_minid": {
                     "type": "number",
                     "description": "Min. identity % for the annotation using user's custom database",
+                    "default": 65,
+                    "minimum": 0,
+                    "maximum": 100,
                     "hidden": true
                 },
                 "blast_custom_mincov": {
                     "type": "number",
                     "description": "Min. gene/subject coverage % for the annotation using user's custom database",
+                    "default": 65,
+                    "minimum": 0,
+                    "maximum": 100,
                     "hidden": true
                 }
             }
