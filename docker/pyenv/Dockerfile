@@ -18,3 +18,7 @@ RUN mamba create -n phigaro -c bioconda -c defaults -c conda-forge -c anaconda p
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
+
+# Fix permissions
+WORKDIR /work
+RUN chmod -R 777 /work /opt/conda/envs/rgi/lib/python*/site-packages/app

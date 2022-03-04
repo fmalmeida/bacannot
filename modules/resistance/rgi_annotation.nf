@@ -27,14 +27,15 @@ process CARD_RGI {
   source activate rgi
   
   # load database
-  rgi load --card_json ${bacannot_db}/card_db/card.json
+  rgi load --card_json ${bacannot_db}/card_db/card.json --local
 
   # get tool version
   rgi main --version > rgi_version.txt ;
-  rgi database --version > card_db_version.txt ;
+  rgi database --version --local > card_db_version.txt ;
 
   # execute RGI
   rgi main \\
+      --local \\
       --input_sequence $input \\
       --output_file RGI_${prefix}_unfiltered \\
       --input_type protein \\
