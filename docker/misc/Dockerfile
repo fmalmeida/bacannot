@@ -51,3 +51,4 @@ ENV PATH=/work/digIS:$PATH
 
 # fix permissions
 RUN chmod 777 -R /work
+RUN chmod 777 -R /opt/conda/envs/antismash/lib/python3.8/site-packages/antismash
