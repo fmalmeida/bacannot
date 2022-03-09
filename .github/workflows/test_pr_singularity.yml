@@ -1,7 +1,7 @@
 name: Testing new PR with singularity
 on:
   pull_request:
-    branches: [ master, dev ]
+    branches: [ master, dev, develop ]
     types: [ ready_for_review, synchronize, reopened ]
 
 jobs:
