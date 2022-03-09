@@ -33,7 +33,7 @@ jobs:
       
       - name: Build bacannot database
         run: |
-          nextflow run main.nf -profile singularity --get_dbs --output bacannot_dbs
+          nextflow run main.nf -profile singularity --get_dbs --output bacannot_dbs --max_cpus 2 --max_memory '6.GB' --max_time '6.h'
 
       - name: Run the pipeline
         run: |
