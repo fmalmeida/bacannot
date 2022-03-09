@@ -30,10 +30,10 @@ process RESFINDER {
       --species \"${resfinder_species}\" \\
       --min_cov  ${resistance_mincov} \\
       --threshold ${resistance_minid} \\
-      --db_path_res ${bacannot_db}/resfinder_db/db_resfinder --acquired || true ;
+      --db_path_res ${bacannot_db}/resfinder_db/db_resfinder --acquired ;
 
   # Fix name of pheno table
-  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt &> /dev/null || true ;
+  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt &> /dev/null ;
 
   # Run resfinder pointfinder resistance
   run_resfinder.py \\
@@ -42,10 +42,10 @@ process RESFINDER {
       --species \"${resfinder_species}\" \\
       --min_cov  ${resistance_mincov} \\
       --threshold ${resistance_minid} \\
-      --db_path_point ${bacannot_db}/resfinder_db/db_pointfinder --point || true ;
+      --db_path_point ${bacannot_db}/resfinder_db/db_pointfinder --point ;
 
   # Fix name of pheno table
-  mv resfinder/pheno_table.txt resfinder/mutation_pheno_table.txt &> /dev/null || true ;
+  mv resfinder/pheno_table.txt resfinder/mutation_pheno_table.txt &> /dev/null ;
 
   # Convert to GFF
   resfinder2gff.py \\
@@ -61,10 +61,10 @@ process RESFINDER {
       --species \"${resfinder_species}\" \\
       --min_cov  ${resistance_mincov} \\
       --threshold ${resistance_minid} \\
-      --db_path_res ${bacannot_db}/resfinder_db/db_resfinder --acquired || true ;
+      --db_path_res ${bacannot_db}/resfinder_db/db_resfinder --acquired ;
 
   # Fix name of pheno table
-  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt &> /dev/null || true ;
+  mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt &> /dev/null ;
 
   # touch pointfinder
   touch resfinder/PointFinder_results.txt ;
