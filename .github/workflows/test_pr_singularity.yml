@@ -34,6 +34,7 @@ jobs:
       - name: Build bacannot database
         run: |
           nextflow run main.nf -profile singularity --get_dbs --output bacannot_dbs --max_cpus 2 --max_memory '6.GB' --max_time '6.h'
+          rm -rf bacannot_dbs/antismash_db bacannot_dbs/kofamscan_db bacannot_dbs/prokka_db/PGAP_NCBI.hmm # remove unused in quicktest to diminish size
 
       - name: Run the pipeline
         run: |
