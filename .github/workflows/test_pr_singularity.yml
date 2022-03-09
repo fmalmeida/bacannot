@@ -1,16 +1,13 @@
-name: Testing pipeline's core for the new PR
+name: Testing new PR with singularity
 on:
   pull_request:
-    branches: master
+    branches: [ master, dev ]
     types: [ ready_for_review, synchronize, reopened ]
 
 jobs:
   run_nextflow:
     name: Run pipeline for the upcoming PR
     runs-on: ubuntu-latest
-    env:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
     
     steps:
       
@@ -24,17 +21,20 @@ jobs:
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
       
+      - name: Install Singularity
+        uses: eWaterCycle/setup-singularity@v7
+        with:
+          singularity-version: 3.8.3
+      
       - name: Clean environment
         run: |
           sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
           sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
       
-      - name: Build docker images
+      - name: Build bacannot database
         run: |
-          source docker/set_version.sh
-          for image_dir in $(ls docker/) ; do (cd docker/${image_dir} && bash build.sh $NEW_VERSION) ; echo built image $image_dir ; done
+          nextflow run main.nf -profile singularity --get_dbs --output bacannot_dbs
 
       - name: Run the pipeline
         run: |
-          nextflow run main.ng -profile docker --get_dbs --output bacannot_dbs
-          nextflow run main.nf -profile docker,quicktest
+          nextflow run main.nf -profile singularity,quicktest --bacannot_db bacannot_dbs
