@@ -57,3 +57,7 @@ This pipeline requires only `Docker <https://www.docker.com/>`_ (and its Docker 
   The pipeline requires a UNIX system, therefore, Windows users may successfully use this pipeline via the `Linux subsystem for windows <https://docs.microsoft.com/pt-br/windows/wsl/install-win10>`_.
 
   Nextflow team has made available a `nice tutorial <https://www.nextflow.io/blog.html>`_ about this issue.
+
+.. note::
+
+   To run the pipeline now users **need** to pass the ``-profile docker`` parameter explicitely. The pipeline does not load it automatically anymore as a preparation for the new version which will also have a profile for singularity.

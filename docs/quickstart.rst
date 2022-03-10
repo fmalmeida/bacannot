@@ -39,11 +39,14 @@ For examplification purposes and to get a major overview we will execute the pip
 
   # Run the pipeline using the Escherichia coli resfinder database
   nextflow run fmalmeida/bacannot \
+    -profile docker \
     --input bacannot_samplesheet.yaml \
     --output _ANNOTATION \
     --threads 10
 
 .. note::
+
+  To run the pipeline now users **need** to pass the ``-profile docker`` parameter explicitely. The pipeline does not load it automatically anymore as a preparation for the new version which will also have a profile for singularity.
 
   The resfinder species could also be selected via the command line with ``--resfinder_species``. Please, read more about it at :ref:`manual` and :ref:`samplesheet`.
 
@@ -60,10 +63,10 @@ Moreover, we have also made available a few example datasets in the pipeline so 
 .. code-block:: bash
 
   # Run the pipeline using the provided (bigger) test dataset
-  nextflow run fmalmeida/bacannot -profile test --threads 10
+  nextflow run fmalmeida/bacannot -profile test,docker --threads 10
 
   # Or run the quick test
-  nextflow run fmalmeida/bacannot -profile quicktest --threads 10
+  nextflow run fmalmeida/bacannot -profile quicktest,docker --threads 10
 
 .. note::
 

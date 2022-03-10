@@ -5,7 +5,7 @@
 def helpMessage() {
    log.info """
    Usage:
-   nextflow run fmalmeida/bacannot [--help] [ -c nextflow.config ] [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
+   nextflow run fmalmeida/bacannot [--help] [-profile docker] [ -c nextflow.config ] [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
    Comments:
 
    This pipeline contains a massive amount of configuration variables and its usage as CLI parameters would cause the command
@@ -18,7 +18,7 @@ def helpMessage() {
 
    Execution Reports:
 
-   nextflow run fmalmeida/bacannot [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
+   nextflow run fmalmeida/bacannot [-profile docker] [OPTIONS] [-with-report] [-with-trace] [-with-timeline]
 
    OPTIONS:
 

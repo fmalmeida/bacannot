@@ -35,7 +35,7 @@ if (params.get_config) {
   println ""
   println "bacannot.config file saved in working directory"
   println "After configuration, run:"
-  println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
+  println "nextflow run fmalmeida/bacannot -profile docker -c ./bacannot.config"
   println "Nice code!\n"
   exit 0
 }
@@ -50,7 +50,7 @@ if (params.get_samplesheet) {
   println ""
   println "bacannot_samplesheet.yaml file saved in working directory"
   println "After configuration, run:"
-  println "nextflow run fmalmeida/bacannot --input bacannot_samplesheet.yaml"
+  println "nextflow run fmalmeida/bacannot -profile docker --input bacannot_samplesheet.yaml"
   println "Nice code!\n"
   exit 0
 }
