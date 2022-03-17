@@ -85,9 +85,9 @@ if (class(custom_blast) == "try-error" ||
   } else {
     db_name <- params$blast_db
   }
-  blast_gff$`Custom DB Acc` <- getAttributeField(blast_gff$Attributes, paste(db_name, "_Acc", sep=""), ";")
-  blast_gff$`Custom DB Target` <- getAttributeField(blast_gff$Attributes, paste(db_name, "_Target", sep=""), ";")
-  blast_gff$`Custom DB Product` <- getAttributeField(blast_gff$Attributes, paste(db_name, "_Product", sep=""), ";")
+  blast_gff$`Custom DB Acc` <- getAttributeField(blast_gff$Attributes, paste(db_name, ":Acc", sep=""), ";")
+  blast_gff$`Custom DB Target` <- getAttributeField(blast_gff$Attributes, paste(db_name, ":Target", sep=""), ";")
+  blast_gff$`Custom DB Product` <- getAttributeField(blast_gff$Attributes, paste(db_name, ":Product", sep=""), ";")
   blast_gff$`Query Protein ID` <- getAttributeField(blast_gff$Attributes, "ID", ";")
   blast_gff$`Prokka Annotation (Gene)` <- getAttributeField(blast_gff$Attributes, "gene", ";")
   blast_gff$`Prokka Annotation (Product)` <- getAttributeField(blast_gff$Attributes, "product", ";")
