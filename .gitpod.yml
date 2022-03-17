@@ -1,7 +1,7 @@
 image: nfcore/gitpod:latest
 
 tasks:
-  - init: |
+  - before: |
         wget -qO- get.nextflow.io | bash
         chmod 777 nextflow
         sudo mv nextflow /usr/local/bin/
