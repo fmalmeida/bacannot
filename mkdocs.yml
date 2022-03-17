@@ -1,0 +1,30 @@
+site_name: bacannot
+repo_url: https://github.com/fmalmeida/bacannot
+repo_name: fmalmeida/bacannot
+extra_css:
+  - stylesheets/extra.css
+nav:
+    - Home: index.md
+theme:
+  name: material
+  palette:
+    primary: black
+    accent: light green
+  icon:
+    repo: fontawesome/brands/github-alt
+plugins:
+  - git-revision-date
+markdown_extensions:
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
