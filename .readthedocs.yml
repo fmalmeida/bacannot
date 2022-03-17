@@ -1,9 +1,3 @@
-version: 2
-
-mkdocs:
-  configuration: mkdocs.yml
-  fail_on_warning: false
-  
 build:
   image: latest
 
@@ -11,3 +5,7 @@ python:
   setup_py_install: true
 
 requirements_file: docs/requirements.txt
+
+mkdocs:
+  configuration: mkdocs.yml
+  fail_on_warning: false
