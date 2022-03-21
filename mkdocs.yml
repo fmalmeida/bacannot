@@ -5,6 +5,14 @@ extra_css:
   - stylesheets/extra.css
 nav:
     - Home: index.md
+    - Installation: installation.md
+# installation
+#    quickstart
+#    samplesheet
+#    outputs
+#    manual
+#    config
+#    custom-db
 theme:
   name: material
   palette:
