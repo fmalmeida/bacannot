@@ -1,4 +1,4 @@
-# Welcome to <u>phylogram</u> pipeline documentation
+# Welcome to](u>bacannot</u> pipeline documentation
 
 <img src="./lab_logo.png" width="300px">
 
@@ -11,21 +11,33 @@
 
 ## About
 
-[Phylogram](https://github.com/fmalmeida/phylogram) is a pipeline that automatically reconstructs phylogeny relationships and trees based on domain alignments. It aligns domains to sequences using `hmmsearch` and creates trees and annotation files ready to be loaded in [Itol](https://itol.embl.de/).
+[Bacannot](https://github.com/fmalmeida/bacannot) is a pipeline designed to provide an easy-to-use framework for performing a comprehensive annotation on prokaryotic genomes. It is developed with [Nextflow](https://www.nextflow.io/docs/latest/index.html) and [Docker](https://www.docker.com/). It can annotate resistance genes, virulence factors, genomic islands, prophages, methylation and more.
 
 ## Workflow
 
-The steps taken by the pipeline to reconstruct the phylogeny between sequences is outlined below:
+The pipeline's main steps are:
 
-1. Subset a references from [RefPlants](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3001124)
-2. Aligns input sequences against desired Pfam domain with [hmmsearch](https://github.com/EddyRivasLab/hmmer)
-3. Alignment is "preprocessed" with [ClipKIT](https://github.com/JLSteenwyk/ClipKIT)
-4. Alignment is trimmed with [Trimal](https://github.com/inab/trimal)
-5. Alignment is weighted with [Tcoffee TCS](https://tcoffee.readthedocs.io/en/latest/tcoffee_main_documentation.html#transitive-consistency-score-tcs)
-6. Phylogeny tree is built with [FastTree](http://www.microbesonline.org/fasttree/), [IQTree](http://www.iqtree.org/) or [Raxml-ng](https://github.com/amkozlov/raxml-ng)
-    + Best model is selected with [ModelFinder](http://dx.doi.org/10.1038/nmeth.4285) or [jmodeltest](https://github.com/ddarriba/jmodeltest2)
-7. [TreeShrink](https://github.com/uym2/TreeShrink) and [gotree](https://github.com/evolbioinfo/gotree) are used to prune the final tree, removing long branches
-8. Itol Annotation files are generated with custom scripts
+| <div style="width:130px">Analysis steps</div> | Used software or databases |
+| :-------------------------------------------- | :------------------------- |
+| Genome assembly (if raw reads are given) | [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
+| Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
+| Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
+| rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
+| Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |
+| KEGG KO annotation and visualization | [KofamScan](https://github.com/takaram/kofam_scan) and [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) |
+| Annotation of secondary metabolites | [antiSMASH](https://docs.antismash.secondarymetabolites.org/) |
+| Methylation annotation | [Nanopolish](https://github.com/jts/nanopolish) |
+| Annotation of antimicrobial (AMR) genes | [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) |
+| Annotation of virulence genes | [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
+| Prophage sequences and genes annotation | [PHASTER](http://phast.wishartlab.com/), [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) |
+| Annotation of integrative and conjugative elements | [ICEberg](http://db-mml.sjtu.edu.cn/ICEberg/) |
+| Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
+| _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
+| Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
+| Custom annotation from formatted FASTA or NCBI protein IDs | [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) |
+| Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
+| Genome Browser renderization | [JBrowse](http://jbrowse.org/) |
+| Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/), [Shiny](https://shiny.rstudio.com/) and [SequenceServer](https://sequenceserver.com/) |
 
 !!! note "Quickstart"
 
@@ -37,19 +49,13 @@ The pipeline's common usage is very simple as shown below:
 
 ```bash
 # usual command-line
-nextflow run fmalmeida/phylogram \
-    --prefix "testing" \
-    --fasta "input.faa" \
-    --hmm "PF00931" \
-    --refplants_species "Arabidopsis"
+nextflow run fmalmeida/bacannot \
+    --bacannot_db "./bacannot_databases" \
+    --input "bacannot_samplesheet.yml"
 ```
 
 > Some parameters are required, some are not. Please read the pipeline's manual reference to understand each parameter.
 
-## Testing
+## Support contact
 
-A testing profile is available with:
-
-```bash
-nextflow run fmalmeida/phylogram -profile docker,test
-```
+Whenever a doubt arise feel free to contact me at almeidafmarques@gmail.com
