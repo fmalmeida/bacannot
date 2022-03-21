@@ -3,6 +3,20 @@
     font-size: 16px;
 }
 
+/* table header */
+th {
+    color: white;
+    background: #666565;
+    font-size: 15px;
+    /* font-family: Georgia, 'Times New Roman', Times, serif */
+}
+
+/* inside table body */
+td { 
+    font-size: 14px;
+    /* font-family: Georgia, 'Times New Roman', Times, serif */
+}
+
 /* light mode alternating table bg colors */
 .md-typeset__table tr:nth-child(2n) {
     background-color: #f8f8f8;

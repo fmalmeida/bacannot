@@ -17,8 +17,8 @@ nav:
 theme:
   name: material
   palette:
-    primary: black
-    accent: light green
+    primary: green
+    accent: deep purple
   icon:
     repo: fontawesome/brands/github-alt
 plugins:
@@ -37,3 +37,8 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.superfences
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde

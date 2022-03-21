@@ -19,8 +19,8 @@
 
 The pipeline's main steps are:
 
-| <div style="width:130px">Analysis steps</div> | Used software or databases |
-| :-------------------------------------------- | :------------------------- |
+| Analysis steps | Used software or databases |
+| :------------- | :------------------------- |
 | Genome assembly (if raw reads are given) | [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
 | Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
 | Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
@@ -56,7 +56,9 @@ nextflow run fmalmeida/bacannot \
     --input "bacannot_samplesheet.yml"
 ```
 
-> Some parameters are required, some are not. Please read the pipeline's manual reference to understand each parameter.
+!!! quote
+
+    Some parameters are required, some are not. Please read the pipeline's manual reference to understand each parameter.
 
 ## Support contact
 

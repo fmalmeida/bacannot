@@ -13,11 +13,9 @@ You can easily get a copy of the pipeline with:
 nextflow pull fmalmeida/bacannot
 ```
 
-!!! note
+!!! warning
     
-    The pipeline requires a UNIX system, therefore, Windows users may successfully use this pipeline via the [Linux subsystem for window](https://docs.microsoft.com/pt-br/windows/wsl/install-win10).
-    
-    Nextflow team has made available a [nice tutorial](https://www.nextflow.io/blog.html) about this issue.
+    The pipeline requires a UNIX system, therefore, Windows users may successfully use this pipeline via the [Linux subsystem for window](https://docs.microsoft.com/pt-br/windows/wsl/install-win10). Nextflow team has made available a [nice tutorial](https://www.nextflow.io/blog.html) about this issue.
 
 ## Downloading docker images
 
@@ -32,7 +30,7 @@ docker pull fmalmeida/bacannot:v3.1_renv    ;
 docker pull fmalmeida/bacannot:jbrowse      ;
 ```
 
-!!! note "Using singularity"
+!!! info "Using singularity"
 
     Docker and singularity images are downloaded on the fly. Be sure to properly set `NXF_SINGULARITY_LIBRARYDIR` env variable to a writable directory if using Singularity. This will make that the downloaded images are resuable through different executions. Read more at: https://www.nextflow.io/docs/latest/singularity.html#singularity-docker-hub
 
