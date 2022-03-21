@@ -1,4 +1,4 @@
-site_name: bacannot
+site_name: Bacannot pipeline
 repo_url: https://github.com/fmalmeida/bacannot
 repo_name: fmalmeida/bacannot
 extra_css:
@@ -6,6 +6,7 @@ extra_css:
 nav:
     - Home: index.md
     - Installation: installation.md
+    - Quickstart: quickstart.md
 # installation
 #    quickstart
 #    samplesheet
