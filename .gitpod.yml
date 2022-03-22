@@ -7,6 +7,9 @@ tasks:
         sudo mv nextflow /usr/local/bin/
         pip install tiptop
         pip install nf-core
+  - init: |
+        mkdir -p testing
+        cd testing && nextflow run ../main.nf --get_dbs --output bacannot_dbs
 
 vscode:
   extensions: # based on nf-core.nf-core-extensionpack
