@@ -7,8 +7,7 @@ nav:
     - Home: index.md
     - Installation: installation.md
     - Quickstart: quickstart.md
-# installation
-#    quickstart
+    - Samplesheet: samplesheet.md
 #    samplesheet
 #    outputs
 #    manual
