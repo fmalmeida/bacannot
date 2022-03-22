@@ -8,7 +8,7 @@ nav:
     - Installation: installation.md
     - Quickstart: quickstart.md
     - Samplesheet: samplesheet.md
-#    samplesheet
+    - Outputs: outputs.md
 #    outputs
 #    manual
 #    config
