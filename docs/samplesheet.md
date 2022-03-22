@@ -67,7 +67,7 @@ The available keys (input tags) are:
 
     All the other input tags **must** be set in the same line, right after the separator (":"), without quotations, white spaces or signs.
 
-# Complete samplesheet example
+## Complete samplesheet example
 
 ```yaml
 samplesheet:
