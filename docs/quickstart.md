@@ -41,7 +41,9 @@ nextflow run fmalmeida/bacannot \
     -profile docker
 ```
 
-* Users **must** select one of the available profiles: docker or singularity. Conda may come in near future.
+!!! important "About profiles"
+    
+    Users **must** select one of the available profiles: docker or singularity. Conda may come in near future. Please read more about how to [proper select NF profiles](profiles.md#)
 
 ## Run the pipeline
 
@@ -53,7 +55,8 @@ nextflow run fmalmeida/bacannot \
     --input bacannot_samplesheet.yaml \
     --output _ANNOTATION \
     --bacannot_db ./bacannot_dbs \
-    --max_cpus 10
+    --max_cpus 10 \
+    -profile docker
 ```
 
 !!! note "About resfinder"
@@ -70,10 +73,10 @@ Moreover, we have also made available a few example datasets in the pipeline so 
 
 ```bash
 # Run the pipeline using the provided (bigger) test dataset
-nextflow run fmalmeida/bacannot --profile docker,test --bacannot_db ./bacannot_dbs --max_cpus 10
+nextflow run fmalmeida/bacannot -profile docker,test --bacannot_db ./bacannot_dbs --max_cpus 10
 
 # Or run the quick test
-nextflow run fmalmeida/bacannot --profile docker,quicktest --bacannot_db ./bacannot_dbs ---max_cpus 10
+nextflow run fmalmeida/bacannot -profile docker,quicktest --bacannot_db ./bacannot_dbs ---max_cpus 10
 ```
 
 !!! info ""

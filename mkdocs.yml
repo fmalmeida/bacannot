@@ -9,8 +9,8 @@ nav:
     - Quickstart: quickstart.md
     - Samplesheet: samplesheet.md
     - Outputs: outputs.md
-#    outputs
-#    manual
+    - Manual: manual.md
+    - Selecting NF profiles: profiles.md
 #    config
 #    custom-db
 theme:

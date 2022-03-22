@@ -52,4 +52,4 @@ After that, you can run the pipeline with a testing dataset by selecting one of 
 
 !!! note "About NF profiles"
 
-    Please read more about how to [proper select NF profiles](https://github.com/fmalmeida/bacannot#selecting-between-profiles) to better understand it.
+    Please read more about how to [proper select NF profiles](profiles.md#) to better understand it.
