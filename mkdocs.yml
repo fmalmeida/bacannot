@@ -11,9 +11,8 @@ nav:
     - Outputs: outputs.md
     - Manual: manual.md
     - Config template: config.md
+    - Custom databases: custom-db.md
     - Selecting NF profiles: profiles.md
-#    config
-#    custom-db
 theme:
   name: material
   palette:
