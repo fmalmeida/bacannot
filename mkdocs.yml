@@ -10,6 +10,7 @@ nav:
     - Samplesheet: samplesheet.md
     - Outputs: outputs.md
     - Manual: manual.md
+    - Config template: config.md
     - Selecting NF profiles: profiles.md
 #    config
 #    custom-db
