@@ -38,7 +38,9 @@ docker pull fmalmeida/bacannot:jbrowse      ;
 
     ```bash
     # apply this command to each image
-    singularity pull --dir $NXF_SINGULARITY_LIBRARYDIR docker://fmalmeida/bacannot:v3.1_misc
+    # just change the "/" and ":" for "-".
+    # E.g. Image fmalmeida/bacannot:v3.1_misc becomes fmalmeida-bacannot-v3.1_misc.img
+    singularity pull --dir $NXF_SINGULARITY_LIBRARYDIR fmalmeida-bacannot-v3.1_misc.img docker://fmalmeida/bacannot:v3.1_misc
     ```
 
 ## Testing your installation
