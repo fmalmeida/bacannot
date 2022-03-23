@@ -251,7 +251,7 @@
                 "custom_db": {
                     "type": "string",
                     "description": "Path to the nucleotide FASTA",
-                    "help_text": "Path to the (properly formatted) nucleotide FASTA file containing the user's custom database for annotation.\nMultiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,etc.\n\nThe custom database must be a gene nucleotide FASTA since BLASTn against the genome will be used for annotation.\n\nCheck out the required header format at: https://bacannot.readthedocs.io/en/latest/custom-db.html",
+                    "help_text": "Path to the (properly formatted) nucleotide or protein FASTA file containing the user's custom database for annotation.\nMultiple FASTAs can be provided separated by comma. E.g. db1.fasta,db2.fasta,etc.\n\nCheck out the required header format at: https://bacannot.readthedocs.io/en/latest/custom-db.html",
                     "hidden": true
                 },
                 "ncbi_proteins": {
