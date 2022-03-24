@@ -169,7 +169,7 @@
                 "plasmids_minid": {
                     "type": "number",
                     "description": "Identity threshold for plasmid annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -178,7 +178,7 @@
                 "plasmids_mincov": {
                     "type": "number",
                     "description": "overage threshold for plasmid annotation",
-                    "default": 60,
+                    "default": 60.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -187,7 +187,7 @@
                 "blast_virulence_minid": {
                     "type": "number",
                     "description": "Identity threshold for virulence factors annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -196,7 +196,7 @@
                 "blast_virulence_mincov": {
                     "type": "number",
                     "description": "overage threshold for virulence factors annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -205,7 +205,7 @@
                 "blast_resistance_minid": {
                     "type": "number",
                     "description": "Identity threshold for resistance genes annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -214,7 +214,7 @@
                 "blast_resistance_mincov": {
                     "type": "number",
                     "description": "overage threshold for resistance genes annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -223,7 +223,7 @@
                 "blast_MGEs_minid": {
                     "type": "number",
                     "description": "Identity threshold for ICEs and prophages annotation",
-                    "default": 85,
+                    "default": 85.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -232,7 +232,7 @@
                 "blast_MGEs_mincov": {
                     "type": "number",
                     "description": "overage threshold for ICEs and prophages annotation",
-                    "default": 85,
+                    "default": 85.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -262,7 +262,7 @@
                 "blast_custom_minid": {
                     "type": "number",
                     "description": "Min. identity % for the annotation using user's custom database",
-                    "default": 65,
+                    "default": 65.0,
                     "minimum": 0,
                     "maximum": 100,
                     "hidden": true
@@ -270,7 +270,7 @@
                 "blast_custom_mincov": {
                     "type": "number",
                     "description": "Min. gene/subject coverage % for the annotation using user's custom database",
-                    "default": 65,
+                    "default": 65.0,
                     "minimum": 0,
                     "maximum": 100,
                     "hidden": true
