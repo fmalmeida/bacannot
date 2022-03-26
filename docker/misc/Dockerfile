@@ -25,7 +25,7 @@ RUN conda create -y -n digIS -c bioconda -c defaults -c conda-forge -c anaconda 
 		conda clean -afy
 
 # Create env for antismash
-RUN conda create -y -n antismash -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority 'antismash>=6' emboss nomkl && \
+RUN conda create -y -n antismash -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority 'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl && \
             rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 		conda clean -afy
 
@@ -51,4 +51,4 @@ ENV PATH=/work/digIS:$PATH
 
 # fix permissions
 RUN chmod 777 -R /work
-RUN chmod 777 -R /opt/conda/envs/antismash/lib/python3.8/site-packages/antismash
+RUN chmod 777 -R /opt/conda/envs/antismash/lib/*/site-packages/antismash
