@@ -13,6 +13,9 @@ process KEGG_DECODER {
 
   script:
   """
+  # Activate env
+  export PATH=/opt/conda/envs/KEGGDecoder/bin:\$PATH
+
   # draw static heatmap
   KEGG-decoder \\
       --input input_mapper.txt \\

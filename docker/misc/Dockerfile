@@ -30,7 +30,11 @@ RUN conda create -y -n antismash -c bioconda -c defaults -c conda-forge -c anaco
 		conda clean -afy
 
 # Install pip packages
-RUN pip install docopt pandas KEGGDecoder tabulate numpy bcbio-gff cgecore gitpython setuptools python-dateutil 'biopython==1.78'
+RUN pip install docopt pandas tabulate numpy bcbio-gff cgecore gitpython setuptools python-dateutil 'biopython==1.78'
+
+# Install KEGGDecoder
+RUN conda create -n KEGGDecoder python=3.6 && \
+      conda run -n KEGGDecoder python3 -m pip install KEGGDecoder
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
