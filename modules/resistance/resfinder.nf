@@ -23,6 +23,9 @@ process RESFINDER {
   resistance_mincov = params.blast_resistance_mincov / 100.00
   if (resfinder_species.toLowerCase() != "other")
   """
+  # Make databases available
+  ln -rs ${bacannot_db}/resfinder_db/db_* \$(dirname \$(which run_resfinder.py))
+
   # Run resfinder acquired resistance
   run_resfinder.py \\
       --inputfasta $genome \\
@@ -30,7 +33,7 @@ process RESFINDER {
       --species \"${resfinder_species}\" \\
       --min_cov  ${resistance_mincov} \\
       --threshold ${resistance_minid} \\
-      --db_path_res ${bacannot_db}/resfinder_db/db_resfinder --acquired ;
+      --acquired ;
 
   # Fix name of pheno table
   mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt &> /dev/null ;
@@ -42,7 +45,7 @@ process RESFINDER {
       --species \"${resfinder_species}\" \\
       --min_cov  ${resistance_mincov} \\
       --threshold ${resistance_minid} \\
-      --db_path_point ${bacannot_db}/resfinder_db/db_pointfinder --point ;
+      --point ;
 
   # Fix name of pheno table
   mv resfinder/pheno_table.txt resfinder/mutation_pheno_table.txt &> /dev/null ;
@@ -54,6 +57,9 @@ process RESFINDER {
 
   else if (resfinder_species.toLowerCase() == "other")
   """
+  # Make databases available
+  ln -rs ${bacannot_db}/resfinder_db/db_* \$(dirname \$(which run_resfinder.py))
+
   # Run resfinder acquired resistance
   run_resfinder.py \\
       --inputfasta $genome \\
@@ -61,7 +67,7 @@ process RESFINDER {
       --species \"${resfinder_species}\" \\
       --min_cov  ${resistance_mincov} \\
       --threshold ${resistance_minid} \\
-      --db_path_res ${bacannot_db}/resfinder_db/db_resfinder --acquired ;
+      --acquired ;
 
   # Fix name of pheno table
   mv resfinder/pheno_table.txt resfinder/args_pheno_table.txt &> /dev/null ;
