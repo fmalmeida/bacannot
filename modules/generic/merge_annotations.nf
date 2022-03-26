@@ -9,7 +9,7 @@ process MERGE_ANNOTATIONS {
   output:
   tuple val(prefix), path("${prefix}.gff")
   tuple val(prefix), path("transposable_elements_digis.gff")
-  tuple val(prefix), path("custom_database_*.gff")
+  tuple val(prefix), path("custom_database_*.gff"), optional: true
   path("*.gff")
 
   script:
