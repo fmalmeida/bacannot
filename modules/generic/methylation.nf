@@ -4,7 +4,7 @@ process CALL_METHYLATION {
     else "methylations/$filename"
   }
   tag "${prefix}"
-  label 'main'
+  label = [ 'misc', 'process_high' ]
 
   input:
   tuple val(prefix), file(draft), file(reads), file(fast5)
@@ -28,23 +28,48 @@ process CALL_METHYLATION {
   nanopolish --version > nanopolish_version.txt ;
 
   # Index Our Fast5 Data
-  nanopolish index -d ${fast5_dir} ${reads} ;
+  nanopolish \\
+    index \\
+    -d ${fast5_dir} \\
+    ${reads} ;
 
   # Map Our Indexed Reads to Our Genome
-  minimap2 -a -x map-ont ${draft} ${reads} | samtools sort -T tmp -o reads_output.sorted.bam ;
+  minimap2 \\
+    -a \\
+    -x map-ont \\
+    ${draft} \\
+    ${reads} | \\
+    samtools \\
+      sort \\
+      -T tmp \\
+      -o reads_output.sorted.bam ;
+  
+  # Index BAM
   samtools index reads_output.sorted.bam ;
 
   # Call Methylation
-  nanopolish call-methylation -r ${reads} -b reads_output.sorted.bam -g ${draft} -t ${params.threads} > methylation_call.tsv ;
+  nanopolish \\
+    call-methylation \\
+    -r ${reads} \\
+    -b reads_output.sorted.bam \\
+    -g ${draft} \\
+    -t $task.cpus > methylation_call.tsv ;
 
   # Calculate Methylation Frequencies
   /work/nanopolish/scripts/calculate_methylation_frequency.py methylation_call.tsv > methylation_frequency.tsv ;
 
   # Transform These TSV files into bedGraph
-  [ ! -s methylation_frequency.tsv ] || grep -v "start" methylation_frequency.tsv | \
-  awk '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > methylation_frequency.bedGraph ;
+  [ ! -s methylation_frequency.tsv ] || \\
+    grep \\
+      -v "start" \\
+      methylation_frequency.tsv | \\
+    awk \\
+      '{ print \$1 "\t" \$2 "\t" \$3 "\t" \$7 }' > methylation_frequency.bedGraph ;
 
   # Create Contig Sizes File
-  seqtk comp ${draft} | awk '{ print \$1 "\t" \$2 }' > chr.sizes
+  seqtk \\
+    comp \\
+    ${draft} | \\
+    awk '{ print \$1 "\t" \$2 }' > chr.sizes
   """
 }

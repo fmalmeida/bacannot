@@ -5,39 +5,62 @@ process PROKKA {
       else null
     }
     tag "${prefix}"
-    label 'main'
+    label = [ 'perl', 'process_medium' ]
 
     input:
     tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), file(assembly), val(resfinder_species)
+    file(bacannot_db)
 
     output:
     // Grab all outputs
-    file "annotation"
+    path("annotation")
     // Outputs must be linked to each prefix (tag)
-    tuple val(prefix), file("annotation/${prefix}.gff") // annotation in gff format
-    tuple val(prefix), file("annotation/${prefix}.gbk") // annotation in gbk format
-    tuple val(prefix), file("annotation/${prefix}.fna") // renamed genome
-    tuple val(prefix), file("annotation/${prefix}.faa") // gene aa sequences
-    tuple val(prefix), file("annotation/${prefix}.ffn") // gene nt sequences
-    tuple val(prefix), file("annotation/${prefix}.fna"), file("${lreads}"), file("${fast5}") // For methylation calling
-    tuple val(prefix), file("annotation/${prefix}.fna"), val("${resfinder_species}") // For resfinder
-    tuple val(prefix), file("annotation/${prefix}.txt") // prokka stats
-    file('prokka_version.txt') // Save prokka version
+    tuple val(prefix), path("annotation/${prefix}.gff")
+    tuple val(prefix), path("annotation/${prefix}.gbk")
+    tuple val(prefix), path("annotation/${prefix}.fna")
+    tuple val(prefix), path("annotation/${prefix}.faa")
+    tuple val(prefix), path("annotation/${prefix}.ffn")
+    tuple val(prefix), path("annotation/${prefix}.fna"), path("${lreads}"), path("${fast5}")
+    tuple val(prefix), path("annotation/${prefix}.fna"), val("${resfinder_species}")
+    tuple val(prefix), path("annotation/${prefix}.txt")
+    path('prokka_version.txt')
 
     script:
     kingdom = (params.prokka_kingdom)      ? "--kingdom ${params.prokka_kingdom}"        : ''
     gcode   = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}"     : ''
     rnammer = (params.prokka_use_rnammer)  ? "--rnammer"                                 : ''
+    pgap    = (params.prokka_skip_pgap)    ? "" : "cp ${bacannot_db}/prokka_db/PGAP_NCBI.hmm prokka_db/hmm ;"
     """
-    # activate env
-    source activate PERL_env ;
-
-    # Save Prokka version
+    # save prokka version
     prokka -v &> prokka_version.txt ;
 
-    # Run prokka
-    prokka $kingdom $gcode $rnammer --outdir annotation \
-    --cpus ${params.threads} --mincontiglen 200 --prefix ${prefix} \
-    --genus '' --species '' --strain \"${prefix}\" $assembly
+    # where are default prokka dbs?
+    dbs_dir=\$(prokka --listdb 2>&1 >/dev/null |  grep "databases in" | cut -f 4 -d ":" | tr -d " ") ;
+
+    # get hmms that shall be used
+    cp -r \$dbs_dir prokka_db
+    cp ${bacannot_db}/prokka_db/TIGRFAMs_15.0.hmm prokka_db/hmm
+    ${pgap}
+
+    # hmmpress
+    ( cd  prokka_db/hmm/ ; for i in *.hmm ; do hmmpress -f \$i ; done )
+
+    # run prokka
+    prokka \\
+        --dbdir prokka_db \\
+        $kingdom \\
+        $gcode \\
+        $rnammer \\
+        --outdir annotation \\
+        --cpus $task.cpus \\
+        --mincontiglen 200 \\
+        --prefix ${prefix} \\
+        --genus '' \\
+        --species '' \\
+        --strain \"${prefix}\" \\
+        $assembly
+    
+    # remove tmp dir to gain space
+    rm -r prokka_db
     """
 }

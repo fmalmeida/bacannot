@@ -1,5 +1,5 @@
 include { write_csv } from '../nf_functions/writeCSV.nf'
-workflow parse_samplesheet {
+workflow PARSE_SAMPLESHEET {
 
   take:
     data

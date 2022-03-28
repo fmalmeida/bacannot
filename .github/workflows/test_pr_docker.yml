@@ -1,0 +1,39 @@
+name: Testing new PR with docker
+on:
+  pull_request:
+    branches: [ master, dev, develop ]
+    types: [ ready_for_review, synchronize, reopened ]
+
+jobs:
+  run_nextflow:
+    name: Run pipeline for the upcoming PR
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+    
+    steps:
+      
+      - name: Check out pipeline code
+        uses: actions/checkout@v2
+      
+      - name: Install Nextflow
+        env:
+          CAPSULE_LOG: none
+        run: |
+          wget -qO- get.nextflow.io | bash
+          sudo mv nextflow /usr/local/bin/
+      
+      - name: Clean environment
+        run: |
+          sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
+          sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
+      
+      - name: Build bacannot database
+        run: |
+          nextflow run main.nf -profile docker --get_dbs --output bacannot_dbs --max_cpus 2 --max_memory '6.GB' --max_time '6.h'
+          rm -rf bacannot_dbs/antismash_db bacannot_dbs/kofamscan_db bacannot_dbs/prokka_db/PGAP_NCBI.hmm # remove unused in quicktest to diminish size
+
+      - name: Run the pipeline
+        run: |
+          nextflow run main.nf -profile docker,quicktest --bacannot_db bacannot_dbs

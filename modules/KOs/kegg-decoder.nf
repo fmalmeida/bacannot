@@ -1,23 +1,25 @@
 process KEGG_DECODER {
   publishDir "${params.output}/${prefix}/KOfamscan", mode: 'copy'
   tag "${prefix}"
-  label 'kofam'
+  label = [ 'misc', 'process_low' ]
 
   input:
-  tuple val(prefix), file('input_mapper.txt')
+  tuple val(prefix), path('input_mapper.txt')
 
   output:
   // Grab all outputs
-  file("*") // Get all files to input directory
-  tuple val(prefix), file("*.svg") // get svg
+  path("*") // Get all files to input directory
+  tuple val(prefix), path("*.svg") // get svg
 
   script:
   """
-  # KEGG-DECODER
-  source activate kegg-decoder-env ;
+  # Activate env
+  export PATH=/opt/conda/envs/KEGGDecoder/bin:\$PATH
 
-  # Draw static heatmap
-  KEGG-decoder --input input_mapper.txt\
-  --output ${prefix}_kegg-decoder_heatmap-static.tsv --vizoption static ;
+  # draw static heatmap
+  KEGG-decoder \\
+      --input input_mapper.txt \\
+      --output ${prefix}_kegg-decoder_heatmap_static.tsv \\
+      --vizoption static ;
   """
 }

@@ -4,25 +4,26 @@ process REFSEQ_MASHER {
     else "refseq_masher/$filename"
   }
   tag "${prefix}"
-  label 'main'
+  label = [ 'python', 'process_low' ]
 
   input:
-  tuple val(prefix), file(genome)
+  tuple val(prefix), path(genome)
 
   output:
   // Grab results
-  tuple val(prefix), file("refseq_masher_results.txt")
-  file("*_version.txt")
+  tuple val(prefix), path("refseq_masher_results.txt")
+  path("*_version.txt")
 
   script:
   """
-  # activate env
-  source activate PY36_env ;
-
   # Get tool version
   refseq_masher --version > refseq_masher_version.txt ;
 
   # Run tool
-  refseq_masher -vv matches --top-n-results 10 --output-type tab $genome > refseq_masher_results.txt
+  refseq_masher \\
+    -vv matches \\
+    --top-n-results 10 \\
+    --output-type tab \\
+    $genome > refseq_masher_results.txt
   """
 }

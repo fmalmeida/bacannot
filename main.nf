@@ -1,121 +1,59 @@
 #!/usr/bin/env nextflow
-nextflow.enable.dsl=2
+/*
+========================================================================================
+    fmalmeida/bacannot: A Generic Pipeline for Prokariotic Genome Annotation
+========================================================================================
+    Github : https://github.com/fmalmeida/bacannot
+----------------------------------------------------------------------------------------
+*/
+
+nextflow.enable.dsl = 2
 import org.yaml.snakeyaml.Yaml
 
 /*
- * Generic Pipeline for Prokariotic Genome Annotation
- */
+========================================================================================
+    VALIDATE & PRINT PARAMETER SUMMARY
+========================================================================================
+*/
+
+WorkflowMain.initialise(workflow, params, log)
 
 /*
- * Include functions
- */
-include { helpMessage } from './nf_functions/help.nf'
-include { logMessage } from './nf_functions/log.nf'
-include { paramsCheck } from './nf_functions/paramsCheck.nf'
+========================================================================================
+    NAMED WORKFLOWS FOR PIPELINE
+========================================================================================
+*/
 
-
-/*
- * Check parameters
- */
-paramsCheck()
-params.help = false
- // Show help emssage
- if (params.help){
-   helpMessage()
-   exit 0
-}
+include { PARSE_SAMPLESHEET } from './workflows/parse_samples.nf'
+include { BACANNOT          } from './workflows/bacannot.nf'
+include { CREATE_DBS        } from './workflows/bacannot_dbs.nf'
 
 /*
- * Does the user wants to download the configuration file?
- */
-
-params.get_config = false
-if (params.get_config) {
-  new File("bacannot.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/nextflow.config").getText())
-  println ""
-  println "bacannot.config file saved in working directory"
-  println "After configuration, run:"
-  println "nextflow run fmalmeida/bacannot -c ./bacannot.config"
-  println "Nice code!\n"
-  exit 0
-}
-
-/*
- * Does the user wants to download the YAML samplesheet file?
- */
-
-params.get_samplesheet = false
-if (params.get_samplesheet) {
-  new File("bacannot_samplesheet.yaml").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/example_samplesheet.yaml").getText())
-  println ""
-  println "bacannot_samplesheet.yaml file saved in working directory"
-  println "After configuration, run:"
-  println "nextflow run fmalmeida/bacannot --input bacannot_samplesheet.yaml"
-  println "Nice code!\n"
-  exit 0
-}
-
-/*
- * Load general parameters and establish defaults
- */
-
-// General parameters
-params.output                  = 'outdir'
-params.threads                 = 2
-params.bedtools_merge_distance = ''
-// Input parameters
-params.input  = ''
-// Prokka parameters
-params.prokka_kingdom      = ''
-params.prokka_genetic_code = false
-params.prokka_use_rnammer  = false
-// User custom db
-params.custom_db           = ''
-params.blast_custom_minid  = 0
-params.blast_custom_mincov = 0
-// Resfinder parameters
-params.resfinder_species = ''
-// Blast parameters
-params.plasmids_minid          = 90
-params.plasmids_mincov         = 60
-params.blast_virulence_minid   = 90
-params.blast_virulence_mincov  = 80
-params.blast_resistance_minid  = 90
-params.blast_resistance_mincov = 80
-params.blast_MGEs_minid        = 65
-params.blast_MGEs_mincov       = 65
-// Workflow parameters
-params.skip_plasmid_search    = false
-params.skip_virulence_search  = false
-params.skip_resistance_search = false
-params.skip_iceberg_search    = false
-params.skip_prophage_search   = false
-params.skip_kofamscan         = false
-params.skip_antismash         = false
-
-/*
- * Define log message
- */
-logMessage()
-
-/*
- * Define custom workflows
- */
-
-// Parse samplesheet
-include { parse_samplesheet } from './workflows/parse_samples.nf'
-
-// Bacannot pipeline for multiple genomes
-include { BACANNOT } from './workflows/bacannot.nf'
-
-
-/*
- * Define main workflow
- */
+========================================================================================
+    RUN ALL WORKFLOWS
+========================================================================================
+*/
 
 workflow {
 
-  if (params.input) {
+  if (params.get_dbs) {
+    CREATE_DBS()
+  } else {
+    if (params.input) {
+
+    // check if user gave path to bacannot databases
+    if (!params.bacannot_db) {
+      // Message to user
+      exit("""
+      ERROR!
+      A major error has occurred!
+        ==> User forgot to set path to databases with --bacannot_db. Online documentation is available at: https://bacannot.readthedocs.io/en/latest/
+      Please, read the docs.
+      Cheers.
+      """)
+    } else {
+      bacannot_db = file(params.bacannot_db)
+    }
 
     // Load yaml
     samplesheet_yaml = file(params.input)
@@ -127,15 +65,17 @@ workflow {
     samplesheet_yaml.copyTo(params.output + "/" + "${samplesheet_yaml.getName()}")
 
     // Parse YAML file
-    parse_samplesheet(params.samplesheet)
+    PARSE_SAMPLESHEET(params.samplesheet)
 
     // Run annotation
     BACANNOT(
-      parse_samplesheet.out,
-      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty()
+      PARSE_SAMPLESHEET.out,
+      bacannot_db,
+      (params.custom_db) ? Channel.fromPath( params.custom_db.split(',').collect{ it } ) : Channel.empty(),
+      (params.ncbi_proteins) ? Channel.fromPath( params.ncbi_proteins ) : Channel.empty()
     )
 
-  } else {
+    } else {
 
     // Message to user
     println("""
@@ -146,15 +86,13 @@ workflow {
     Cheers.
     """)
   
+    }
   }
+
 }
 
-
-// Completition message
-workflow.onComplete {
-    println ""
-    println "Pipeline completed at: $workflow.complete"
-    println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
-    println "Execution duration: $workflow.duration"
-    println "Thank you for using fmalmeida/bacannot pipeline!"
-}
+/*
+========================================================================================
+    THE END
+========================================================================================
+*/
