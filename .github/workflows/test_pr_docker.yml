@@ -1,7 +1,7 @@
 name: Testing new PR with docker
 on:
   pull_request:
-    branches: [ master, dev, develop ]
+    branches: master
     types: [ ready_for_review, synchronize, reopened ]
 
 jobs:

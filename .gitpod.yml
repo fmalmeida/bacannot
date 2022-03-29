@@ -7,9 +7,6 @@ tasks:
         sudo mv nextflow /usr/local/bin/
         pip install tiptop
         pip install nf-core
-        mkdir -p /testing
-        sudo chmod 777 -R /testing
-        ln -rs /testing .        
 
 vscode:
   extensions: # based on nf-core.nf-core-extensionpack

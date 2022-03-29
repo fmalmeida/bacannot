@@ -105,7 +105,9 @@ These images have been kept separate to not create massive Docker image and to a
 
 3. Give it a try:
 
-       nextflow run fmalmeida/bacannot --help
+       nextflow run fmalmeida/bacannot -profile docker --help
+
+:fire: To run the pipeline now users **need** to pass the `-profile docker` parameter explicitely. The pipeline does not load it automatically anymore as a preparation for the new version which will also have a profile for singularity.
 
 🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
