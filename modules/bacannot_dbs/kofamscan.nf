@@ -8,11 +8,11 @@ process KOFAMSCAN_DB {
     script:
     """
     # download kofamscan database
-    wget ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz && \\
-        wget ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz && \\
-        gunzip ko_list.gz && \\
-        tar xvzf profiles.tar.gz && \\
-        rm -rf profiles.tar.gz
+    wget --tries=10 ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz
+    wget --tries=10 ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz
+    gunzip ko_list.gz
+    tar xvzf profiles.tar.gz
+    rm -rf profiles.tar.gz
 
     # for the sake of size and fastness
     # let's select only the KOs from prokaryotes

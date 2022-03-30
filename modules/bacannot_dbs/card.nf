@@ -8,8 +8,8 @@ process CARD_DB {
     script:
     """
     # download CARD database
-    wget https://card.mcmaster.ca/latest/data && \\
-        tar -xvf data ./card.json && \\
-        rm data
+    wget --tries=10 https://card.mcmaster.ca/latest/data
+    tar -xvf data ./card.json
+    rm data
    """
 }

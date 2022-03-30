@@ -8,10 +8,10 @@ process PHIGARO_DB {
     script:
     """   
     # download phigaro database
-    wget http://download.ripcm.com/phigaro/allpvoghmms
-    wget http://download.ripcm.com/phigaro/allpvoghmms.h3f
-    wget http://download.ripcm.com/phigaro/allpvoghmms.h3i
-    wget http://download.ripcm.com/phigaro/allpvoghmms.h3m
-    wget http://download.ripcm.com/phigaro/allpvoghmms.h3p
+    wget --tries=10 http://download.ripcm.com/phigaro/allpvoghmms
+    wget --tries=10 http://download.ripcm.com/phigaro/allpvoghmms.h3f
+    wget --tries=10 http://download.ripcm.com/phigaro/allpvoghmms.h3i
+    wget --tries=10 http://download.ripcm.com/phigaro/allpvoghmms.h3m
+    wget --tries=10 http://download.ripcm.com/phigaro/allpvoghmms.h3p
     """
 }
