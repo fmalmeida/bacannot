@@ -25,7 +25,6 @@ The docker images used by the pipeline are:
 docker pull fmalmeida/bacannot:v3.1_misc    ;
 docker pull fmalmeida/bacannot:v3.1_perlenv ;
 docker pull fmalmeida/bacannot:v3.1_pyenv   ;
-docker pull fmalmeida/bacannot:v3.1_py36env ;
 docker pull fmalmeida/bacannot:v3.1_renv    ;
 docker pull fmalmeida/bacannot:jbrowse      ;
 ```
