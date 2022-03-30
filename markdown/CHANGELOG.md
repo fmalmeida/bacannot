@@ -2,6 +2,19 @@
 
 The tracking for changes started in v2.1
 
+## v3.1
+
+In this version of the pipeline, N things have been added / changed:
+
+1. In order to diminish docker image sizes and to avoid problems with its download hanging and being limited, the databases are not anymore available inside the images. Users must first download the databases with the parameter `--get_dbs`.
+    * See https://bacannot.readthedocs.io/en/master/quickstart/#bacannot-databases
+2. Since the databases are now downloaded by the pipeline and saved in the user machine, the pipeline now requires the database path as input. E.g. `--bacannot_db ./bacannot_dbs`.
+    * See https://bacannot.readthedocs.io/en/master/quickstart/#run-the-pipeline
+3. The pipeline now does not have a default profile set, and users must use either `-profile docker` or `-profile singularity`, otherwise it will try to load tools from your system and will surely fail.
+4. In previous versions, the pipeline only accepted custom gene databases for additional annotation in nucleotide fasta. Now, the pipeline also accepts protein fastas. Be aware that headers must be properly formatted. Additionally, the pipeline now also accepts a list of `NCBI protein IDs` as additional database with `--ncbi_proteins`. Using it, the pipeline will download the protein sequences and format the databases automatically.
+    * See https://bacannot.readthedocs.io/en/master/custom-db/
+5. Finally, the pipeline have been reestructured to use and benefit more from the incredible nf-core framework.
+
 ## v3.0.1
 
 ### additions

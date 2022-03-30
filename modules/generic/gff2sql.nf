@@ -4,7 +4,7 @@ process CREATE_SQL {
     else "$filename"
   }
   tag "${prefix}"
-  label 'renv'
+  label = [ 'renv', 'process_medium' ]
 
   input:
     tuple val(prefix), file(gff), file(genes_nt), file(genes_aa), file(genome), file("digIS.gff"), file("digIS.fa"), file("digIS.faa")

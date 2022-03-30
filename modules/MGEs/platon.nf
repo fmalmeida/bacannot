@@ -5,26 +5,28 @@ process PLATON {
     else null
   }
   tag "${prefix}"
-  label 'main'
+  label = [ 'python', 'process_medium' ]
 
   input:
   tuple val(prefix), file(genome)
+  file(bacannot_db)
 
   output:
-  file("platon")
-  tuple val(prefix), file("platon/${prefix}.tsv")
-  file("platon_version.txt")
+  path("platon")
+  tuple val(prefix), path("platon/${prefix}.tsv")
+  path("platon_version.txt")
 
   script:
   """
   # Get version
   platon --version > platon_version.txt ;
 
-  # Unpack database
-  tar zxvf /work/platon/db.tar.gz ;
-
   # Run platon
-  platon --db db/ --output platon --threads ${params.threads} $genome > tmp.txt || true ;
+  platon \\
+      --db ${bacannot_db}/platon_db/ \\
+      --output platon \\
+      --threads $task.cpus \\
+      $genome > tmp.txt || true ;
   [ -s platon/${prefix}.tsv ] || cat tmp.txt > platon/${prefix}.tsv ;
   """
 }

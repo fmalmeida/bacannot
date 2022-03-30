@@ -3,31 +3,43 @@ process KOFAMSCAN {
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "$filename"
   }
-  errorStrategy 'retry'
-  maxRetries 2
   tag "${prefix}"
-  label 'kofam'
+  label = [ 'misc', 'process_high' ]
 
   input:
   tuple val(prefix), file('proteins.faa')
+  file(bacannot_db)
 
   output:
   // Grab all outputs
-  file("KOfamscan") // Get all files to input directory
-  tuple val(prefix), file("KOfamscan/${prefix}_ko_forKEGGMapper.txt") // Kegg-mapper file
+  file("KOfamscan")
+  tuple val(prefix), file("KOfamscan/${prefix}_ko_forKEGGMapper.txt")
 
   script:
   """
   # Get kofamscan version
-  kofamscan -v > kofamscan_version.txt
+  exec_annotation -v | sed "s/exec_annotation/kofamscan/" > kofamscan_version.txt
 
   # Create dir for results
   mkdir KOfamscan ;
 
   # Run kofamscan with detailed output
-  kofamscan -o KOfamscan/${prefix}_ko_detailed.txt --keep-tabular --cpu=${params.threads} proteins.faa ;
+  exec_annotation \\
+      -p ${bacannot_db}/kofamscan_db/profiles/prokaryote.hal \\
+      -k ${bacannot_db}/kofamscan_db/ko_list \\
+      -o KOfamscan/${prefix}_ko_detailed.txt \\
+      --keep-tabular \\
+      --cpu=$task.cpus \\
+      proteins.faa ;
 
   # Re-run kofamscan with mapper-output
-  kofamscan -o KOfamscan/${prefix}_ko_forKEGGMapper.txt --reannotate --cpu=${params.threads} -f mapper proteins.faa ;
+  exec_annotation \\
+      -p ${bacannot_db}/kofamscan_db/profiles/prokaryote.hal \\
+      -k ${bacannot_db}/kofamscan_db/ko_list \\
+      -o KOfamscan/${prefix}_ko_forKEGGMapper.txt \\
+      --reannotate \\
+      --cpu=$task.cpus \\
+      -f mapper \\
+      proteins.faa ;
   """
 }

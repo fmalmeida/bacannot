@@ -1,0 +1,163 @@
+---
+title: "Custom database annotation"
+author: "Produced with bacannot pipeline"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+params:
+  blast_id:
+  blast_cov:
+  custom_blast:
+  blast_db:
+  blast_gff:
+  query:
+output:
+  bookdown::html_document2: 
+    css: styles.css
+    df_print: paged
+    number_sections: false
+    syntax: espresso
+    self_contained: yes
+    theme: readable
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.pos = 'H')
+suppressMessages(library(magrittr))
+suppressMessages(library(ballgown))
+suppressMessages(library(knitr))
+suppressMessages(library(tidyr))
+suppressMessages(library(plyr))
+suppressMessages(library(DT))
+suppressMessages(library(dplyr))
+suppressMessages(library(stringr))
+suppressMessages(library(ggplot2))
+
+########################
+### Useful functions ###
+########################
+
+# get value from gff attributes
+getAttributeField <- function (x, field, attrsep = ";") {
+  s = strsplit(as.character(x), split = as.character(attrsep), fixed = TRUE)
+  sapply(s, function(atts) {
+    a = strsplit(atts, split = "=", fixed = TRUE)
+    m = match(field, sapply(a, "[", 1))
+    if (!is.na(m)) { rv = a[[m]][2]
+    }
+    else {
+      rv = as.character(NA)
+    }
+    return(rv)
+  })
+}
+
+
+# Line checker
+check_lines <- function(x) {
+  return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
+}
+
+## Read input documents
+custom_blast <- try(read.delim(params$custom_blast, header = TRUE), silent = TRUE)
+blast_gff    <- try(read.delim(params$blast_gff, header = FALSE), silent = TRUE)
+colnames(blast_gff) <-
+  c("Contig", "Source", "Feature", "Start", "End", "Score", "Strand", "Phase", "Attributes")
+
+## Check for emptyness
+if (class(custom_blast) == "try-error" ||
+    check_lines(custom_blast) == 1) {
+  custom_blast <- data.frame(
+    matrix(ncol = 14, nrow = 0)
+  )
+  blast_gff <- data.frame(
+    matrix(ncol = 9, nrow = 0)
+  )
+} else {
+  
+  # read blast summary
+  custom_blast[sapply(custom_blast, is.character)] <- 
+    lapply(custom_blast[sapply(custom_blast, is.character)], as.factor)
+  
+  # read gff
+  blast_gff <- blast_gff %>% filter(str_detect(Source, params$blast_db))
+  if (params$blast_db == 'ncbi_protein') {
+    db_name <- 'NCBI_PROTEIN'
+  } else {
+    db_name <- params$blast_db
+  }
+  blast_gff$`Custom DB Acc` <- getAttributeField(blast_gff$Attributes, paste(db_name, ":Acc", sep=""), ";")
+  blast_gff$`Custom DB Target` <- getAttributeField(blast_gff$Attributes, paste(db_name, ":Target", sep=""), ";")
+  blast_gff$`Custom DB Product` <- getAttributeField(blast_gff$Attributes, paste(db_name, ":Product", sep=""), ";")
+  blast_gff$`Query Protein ID` <- getAttributeField(blast_gff$Attributes, "ID", ";")
+  blast_gff$`Prokka Annotation (Gene)` <- getAttributeField(blast_gff$Attributes, "gene", ";")
+  blast_gff$`Prokka Annotation (Product)` <- getAttributeField(blast_gff$Attributes, "product", ";")
+}
+```
+
+# `r params$query` report of `r params$blast_db` custom database annotation
+
+## About
+
+This report is based on the user's custom database input called `r params$blast_db`. The custom databases are annotated with an alignment against the query genome sequence. The tool used for alignment is BLASTn if database is nucleotide and tBLASTn if database is protein. The raw BLAST results are shown in the table \@ref(tab:blast-raw-table).
+
+Additionally, the BLAST results have been used to detect intersection points with the main pipeline annotation using the software bedtools. Therefore, in table \@ref(tab:blast-gff-table), we show the gene features from the query genome that have intersection points with these BLAST results.
+
+> Take note that DT tables will only be rendered when input is available. Thus, whenever a table is missing it is because no results have been found.
+
+### BLAST prediction thresholds
+
+All the predictions were passed through a user defined threshold for minimum coverage and identity:
+
+* Min. Identity (%): `> `r params$blast_id``
+* Min. Coverage (%): `> `r params$blast_cov``
+
+## Results
+
+### BLAST results
+
+<br>
+<caption>(#tab:blast-raw-table) Alignment of the `r params$blast_db` custom database against the query genome via BLASTn for nucleotide database and with tBLASTn for protein database</caption>
+```{r}
+blast <- custom_blast
+colnames(blast) <-
+  c("SEQUENCE", "START", "END", "STRAND", "GENE", "COVERAGE", "GAPS", "% COVERAGE", "% IDENTITY", "DATABASE", "ACCESSION", "PRODUCT", "DESCRIPTION")
+# Render dt
+datatable(blast,
+          escape = FALSE,
+          filter = 'top',
+          options = list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(className = 'dt-body-left', targets = c(4,10,11,12)))),
+          extensions = 'Buttons',
+          rownames = F)
+```
+
+### Annotation intersection
+
+Using the software bedtools intersect, the BLAST results have been used to search for intersections against the query genome annotation. This result is shown in table \@ref(tab:blast-gff-table).
+
+<br>
+<caption>(#tab:blast-gff-table) Annotation intersection of the `r params$blast_db` custom database BLAST results with the main pipeline results</caption>
+```{r}
+blast <- blast_gff
+# Render dt
+datatable(blast %>%
+            select(`Query Protein ID`, `Prokka Annotation (Gene)`, `Prokka Annotation (Product)`, `Custom DB Acc`, `Custom DB Target`, `Custom DB Product`, Attributes),
+          escape = FALSE,
+          filter = 'top',
+          options = list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(className = 'dt-body-left', targets = c(0,1,2,3,4,5,6)))),
+          extensions = 'Buttons',
+          rownames = F)
+```

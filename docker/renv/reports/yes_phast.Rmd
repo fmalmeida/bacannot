@@ -1,0 +1,54 @@
+```{r setup-phast, eval=TRUE, include=FALSE, echo=FALSE}
+# Fucntions
+
+## Function to get Attribute Fields
+getAttributeField <- function (x, field, attrsep = ";") { 
+  s = strsplit(x, split = attrsep, fixed = TRUE) 
+  sapply(s, function(atts) { 
+    a = strsplit(atts, split = "=", fixed = TRUE) 
+    m = match(field, sapply(a, "[", 1)) 
+    if (!is.na(m)) { rv = a[[m]][2] 
+    } 
+    else { 
+      rv = as.character(NA) 
+    } 
+    return(rv) 
+  }) 
+}
+```
+
+All prophage genes from PHAST database that had good alignments to the genes of the query genome are summarized in Table \@ref(tab:phast-table). The protein sequences of these genes were aligned against the gene sequences predicted by Prokka via BLASTp. They are all available in the genome browser provided. A good way to interrogate this annotation is to visualize the putative prophage regions predicted by phigaro and phispy interpolating it with the prophage gene annotation provided with phast database.
+
+> Unfortunately, PHASTER database have no searchable interface to visualize its prophages. Therefore, this table has no links to external sources.
+
+<caption>(#tab:phast-table) Prophage genes annotated using PHAST database via BLASTp</caption>
+```{r phast-table}
+# Create ID Column
+gff$ID <- getAttributeField(as.character(gff$V9), "ID", ";")
+
+# To upper
+gff$ID <- toupper(gff$ID)
+
+# Parse BLAST
+blast <- phast_prot_blast %>% select(-stitle)
+blast <- separate(blast, sseqid, c("db", "product", "ref", "phast_id", "Description"), sep = "~~~", extra = "merge")
+blast$prophage <- sapply(str_split(blast$Description, "\\|"), head, 1)
+blast$prophage <- gsub(blast$prophage, pattern = "-..$", replacement = "")
+blast$product <- gsub(blast$product, pattern = "_", replacement = " ")
+
+# Data Complete
+full_info <- merge.data.frame(blast, gff, by.x = "qseqid", by.y = "ID", all = TRUE)
+
+# Create Position Column
+full_info$position <- paste(full_info$V1, ":", full_info$V4, "-", full_info$V5, sep = "")
+full_info <- full_info %>% select(prophage, Description, qseqid, product, position) %>%
+  arrange(prophage) %>% filter(prophage != "" & Description != "")
+colnames(full_info) <- c("Prophage of origin", "Description", "Query protein", "Product", "Genomic Position")
+
+datatable(full_info,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```
