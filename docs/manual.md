@@ -30,9 +30,9 @@ The pipeline accepts as input two other input files types that are used to perfo
 ## Input/output options
 
 | <div style="width:100px">Parameter</div> | Required | Default | Description |
-| :-------------------------------------- | :------- | :------ | :---------- |
-| `--input`  | :material-check: | NA      | Input samplesheet describing all the samples to be analysed |
-| `--output` | :material-check: | results |  Name of directory to store output values. A sub-directory for each genome will be created inside this main directory. |
+| :--------------------------------------- | :------- | :------ | :---------- |
+| `--input`  | :material-check: | NA       | Input samplesheet describing all the samples to be analysed |
+| `--output` | :material-check: | results  |  Name of directory to store output values. A sub-directory for each genome will be created inside this main directory. |
 | `--bacannot_db` | :material-check: | NA | Path for root directory containing required bacannot databases |
 
 !!! note "About the samplesheet"
@@ -41,9 +41,9 @@ The pipeline accepts as input two other input files types that are used to perfo
 
 ## Database download options
 
-| <div style="width:120px">Parameter</div> | Required | Default | Description |
-| :-------------------------------------- | :------- | :------ | :---------- |
-| `--get_dbs`  | :material-close: | false | Instead of running the analysis workflow, it will try to download required databases and save them in `--output` |
+| <div style="width:140px">Parameter</div> | Required | Default | Description |
+| :--------------------------------------- | :------- | :------ | :---------- |
+| `--get_dbs`  | :material-close: | false  | Instead of running the analysis workflow, it will try to download required databases and save them in `--output` |
 | `--force_update` | :material-close: | false | Instead of only downloading missing databases, download everything again and overwrite. |
 
 !!! tip ""
