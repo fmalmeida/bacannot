@@ -59,6 +59,10 @@ The pipeline accepts as input two other input files types that are used to perfo
 | `--prokka_use_rnammer`  | :material-close: | false | Tells Prokka whether to use rnammer instead of barrnap |
 | `--prokka_use_pgap`     | :material-close: | false | Include comprehensive PGAP hmm database in prokka annotation instead of TIGRFAM. Although comprehensive it increases runtime |
 
+!!! info "About prokka annotation"
+
+    In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
+
 ## Resfinder annotation
 
 The use of this parameter sets a default value for input samples. If a sample has a different value given inside the samplesheet, the pipeline will use, for that sample, the value found inside the [samplesheet](samplesheet.md#).

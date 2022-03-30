@@ -55,6 +55,8 @@ Its main steps are:
 | Genome Browser renderization | [JBrowse](http://jbrowse.org/) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/), [Shiny](https://shiny.rstudio.com/) and [SequenceServer](https://sequenceserver.com/) |
 
+:target: In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
+
 ### Release notes
 
 Are you curious about changes between releases? See the [changelog](markdown/CHANGELOG.md).

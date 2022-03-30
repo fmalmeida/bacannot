@@ -45,6 +45,10 @@ The pipeline's main steps are:
 
     A [quickstart](quickstart.md#) is available so you can quickly get the gist of the pipeline's capabilities.
 
+!!! info "About prokka annotation"
+
+    In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
+
 ## Usage
 
 The pipeline's common usage is very simple as shown below:
