@@ -20,5 +20,8 @@ process KOFAMSCAN_DB {
         for dirs in *.hmm ; do
             if ! grep -qxFe "\$dirs" prokaryote.hal ; then rm -rf \$dirs ; fi; 
         done
+    
+    # chmod
+    chmod a+rw -R *
     """
 }
