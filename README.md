@@ -55,7 +55,7 @@ Its main steps are:
 | Genome Browser renderization | [JBrowse](http://jbrowse.org/) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/), [Shiny](https://shiny.rstudio.com/) and [SequenceServer](https://sequenceserver.com/) |
 
-:target: In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
+🎯 In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
 
 ### Release notes
 
@@ -107,7 +107,7 @@ These images have been kept separate to not create massive Docker image and to a
 
        nextflow run fmalmeida/bacannot -profile docker --help
 
-:fire: To run the pipeline now users **need** to pass the `-profile docker` or `-profile singularity` parameter explicitely. The pipeline does not load it automatically anymore.
+🔥 To run the pipeline now users **need** to pass the `-profile docker` or `-profile singularity` parameter explicitely. The pipeline does not load it automatically anymore.
 
 🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
