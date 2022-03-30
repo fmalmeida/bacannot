@@ -4,4 +4,4 @@ modules/** linguist-generated
 workflows/** linguist-generated
 lib/** linguist-vendored
 bin/** linguist-vendored
-docker/** linguist-vendored
+docker/renv/** linguist-vendored
