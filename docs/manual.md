@@ -24,8 +24,8 @@ The pipeline accepts as input two other input files types that are used to perfo
 
 * path to a directory of FAST5
     * Then used together with nanopore reads it will call DNA methylation with Nanopolish.
-* path to custom **nucleotide** databases as described in [custom-db reference page](custom-db.md#)
-    * These custom databases (``--custom_db``) will be used to perform additional annotation processes using BLASTn. Please check the both the explanation [about the parameter](manual.md#custom-nucl-databases) and about its [configuration](custom-db.md#).
+* path to custom databases as described in [custom-db reference page](custom-db.md#)
+    * These custom databases will be used to perform additional annotation processes using BLAST. Please check the both the explanation [about the parameters](manual.md#custom-nucl-databases) and about its [configuration](custom-db.md#).
 
 ## Input/output options
 
