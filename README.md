@@ -110,7 +110,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
-### Downloading and databases up-to-date
+### Downloading and updating databases
 
 Bacannot databases are not inside the docker images anymore to avoid huge images and problems with conexions and limit rates with dockerhub.
 
