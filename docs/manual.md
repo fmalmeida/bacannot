@@ -33,7 +33,7 @@ The pipeline accepts as input two other input files types that are used to perfo
 | :-------------------------------------- | :------- | :------ | :---------- |
 | `--input`  | :material-check: | NA      | Input samplesheet describing all the samples to be analysed |
 | `--output` | :material-check: | results |  Name of directory to store output values. A sub-directory for each genome will be created inside this main directory. |
-
+| `--bacannot_db` | :material-check: | NA | Path for root directory containing required bacannot databases |
 
 !!! note "About the samplesheet"
     

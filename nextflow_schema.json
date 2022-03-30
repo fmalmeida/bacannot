@@ -36,7 +36,8 @@
                     "default": "results"
                 },
                 "bacannot_db": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Path for root directory containing required bacannot databases"
                 }
             }
         },
