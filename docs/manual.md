@@ -57,7 +57,7 @@ The pipeline accepts as input two other input files types that are used to perfo
 | `--prokka_kingdom`      | :material-close: | Bacteria | Prokka annotation mode. Possibilities: Archaea|Bacteria |
 | `--prokka_genetic_code` | :material-close: | 11 | Genetic Translation code. Must be set if a different kingdom is customized. |
 | `--prokka_use_rnammer`  | :material-close: | false | Tells Prokka whether to use rnammer instead of barrnap |
-| `--prokka_skip_pgap`    | :material-close: | false | Do not use PGAP hmm database in prokka annotation. Although comprehensive, PGAP increases runtime |
+| `--prokka_use_pgap`     | :material-close: | false | Include comprehensive PGAP hmm database in prokka annotation instead of TIGRFAM. Although comprehensive it increases runtime |
 
 ## Resfinder annotation
 

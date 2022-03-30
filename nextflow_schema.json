@@ -68,10 +68,10 @@
             "description": "Sets parameters specific for prokka",
             "default": "",
             "properties": {
-                "prokka_skip_pgap": {
+                "prokka_use_pgap": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Do not use PGAP hmm database in prokka annotation. Although comprehensive it increases runtime."
+                    "description": "Include comprehensive PGAP hmm database in prokka annotation instead of TIGRFAM. Although comprehensive it increases runtime."
                 },
                 "prokka_kingdom": {
                     "type": "string",

@@ -74,7 +74,7 @@ params {
 // Do not use PGAP (NCBI) database?
 // PGAP is big and using it may have higher running times but better results
 // To do not use it, set the following to true
-  prokka_skip_pgap = false
+  prokka_use_pgap = false
 
 // Annotation mode: Archaea|Bacteria|Mitochondria|Viruses (default 'Bacteria')
   prokka_kingdom = null

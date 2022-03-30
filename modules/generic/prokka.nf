@@ -29,7 +29,7 @@ process PROKKA {
     kingdom = (params.prokka_kingdom)      ? "--kingdom ${params.prokka_kingdom}"        : ''
     gcode   = (params.prokka_genetic_code) ? "--gcode ${params.prokka_genetic_code}"     : ''
     rnammer = (params.prokka_use_rnammer)  ? "--rnammer"                                 : ''
-    pgap    = (params.prokka_skip_pgap)    ? "" : "cp ${bacannot_db}/prokka_db/PGAP_NCBI.hmm prokka_db/hmm ;"
+    models  = (params.prokka_use_pgap)     ? "PGAP_NCBI.hmm" : "TIGRFAMs_15.0.hmm"
     """
     # save prokka version
     prokka -v &> prokka_version.txt ;
@@ -38,9 +38,9 @@ process PROKKA {
     dbs_dir=\$(prokka --listdb 2>&1 >/dev/null |  grep "databases in" | cut -f 4 -d ":" | tr -d " ") ;
 
     # get hmms that shall be used
+    # PGAP contains TIGRFAM hmm models. When not skipping PGAP, TIGRFAM is not loaded.
     cp -r \$dbs_dir prokka_db
-    cp ${bacannot_db}/prokka_db/TIGRFAMs_15.0.hmm prokka_db/hmm
-    ${pgap}
+    cp ${bacannot_db}/prokka_db/${models} prokka_db/hmm
 
     # hmmpress
     ( cd  prokka_db/hmm/ ; for i in *.hmm ; do hmmpress -f \$i ; done )
@@ -48,9 +48,7 @@ process PROKKA {
     # run prokka
     prokka \\
         --dbdir prokka_db \\
-        $kingdom \\
-        $gcode \\
-        $rnammer \\
+        $kingdom $gcode $rnammer \\
         --outdir annotation \\
         --cpus $task.cpus \\
         --mincontiglen 200 \\
