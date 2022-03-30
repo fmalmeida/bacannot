@@ -41,7 +41,7 @@ The pipeline accepts as input two other input files types that are used to perfo
 
 ## Database download options
 
-| <div style="width:140px">Parameter</div> | Required | Default | Description |
+| <div style="width:120px">Parameter</div> | Required | Default | Description |
 | :--------------------------------------- | :------- | :------ | :---------- |
 | `--get_dbs`  | :material-close: | false  | Instead of running the analysis workflow, it will try to download required databases and save them in `--output` |
 | `--force_update` | :material-close: | false | Instead of only downloading missing databases, download everything again and overwrite. |
