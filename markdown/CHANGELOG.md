@@ -41,7 +41,7 @@ These improvements in the code and standardization of namings throughout the pip
 
 * In order to keeps things the least complex possible and to make the pipeline less confusing, the pipeline has been reconfigured in order to properly use it, in all workflow types (for multiple samples at once or just one) through the samplesheet.
     + Because of that, we removed the possibility to pass the input reads via the command line and now, the files input data files, must always be set inside the samplesheet, even if analysing only one sample.
-    + Read more at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
+    + Read more at: https://bacannot.readthedocs.io/en/latest/samplesheet
     + Check the template samplesheet at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
     + The samplesheet is given with the parameter `--input`
 * Due to the implementation above, the folowing parameters are now deprecated, since they are now set inside the YAML file:
@@ -149,13 +149,13 @@ Fixed a very small problem that was holding up the execution of flye and unicycl
 * Plasmid annotation
     + The Platon software has been added to aid in the prediction of plasmid sequences, together with plasmidfinder.
 * Custom annotation
-    + The possibility to perform additional annotations using user's custom nucleotide gene databases has been added with the `--custom_db` parameter. The proper configuration of these databases are documented at: https://bacannot.readthedocs.io/en/latest/custom-db.html
+    + The possibility to perform additional annotations using user's custom nucleotide gene databases has been added with the `--custom_db` parameter. The proper configuration of these databases are documented at: https://bacannot.readthedocs.io/en/latest/custom-db
 * Multiple genome analysis
-    + The possibility to perform the annotation of multiple genomes at once has been added with the `--in_yaml` parameter which takes as input a samplesheet file in YAML format as described in the documentation at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
+    + The possibility to perform the annotation of multiple genomes at once has been added with the `--in_yaml` parameter which takes as input a samplesheet file in YAML format as described in the documentation at: https://bacannot.readthedocs.io/en/latest/samplesheet
 * Annotation from raw reads
     + The possibility to annotate genomes from raw reads have been added with the parameters `--sreads_single`, `--sreads_paired` and `--lreads` which takes as input raw sequencing reads from Illumina, Pacbio and ONT in FASTq format and uses it to assemble the genome with Unicycler or Flye (depending on the data availability) prior to the annotation step.
 * Bacannot shiny server
-    + A simple shiny server has been created and implemented with the `run_server.sh` bash script that loads the shiny app from a docker image that allows the user to quickly interrogate the annotation results via the JBrowse genome browser, the annotation reports and with a BLAST tool implemented in the server that enables users to quickly detect the presence of additional genes/sequences. Take a better look at: https://bacannot.readthedocs.io/en/latest/outputs.html
+    + A simple shiny server has been created and implemented with the `run_server.sh` bash script that loads the shiny app from a docker image that allows the user to quickly interrogate the annotation results via the JBrowse genome browser, the annotation reports and with a BLAST tool implemented in the server that enables users to quickly detect the presence of additional genes/sequences. Take a better look at: https://bacannot.readthedocs.io/en/latest/outputs
 
 ## v2.1
 

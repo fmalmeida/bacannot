@@ -146,11 +146,11 @@ To update databases you can either download a new one to a new directory. Remove
 
 ## Quickstart
 
-<a href="https://bacannot.readthedocs.io/en/latest/quickstart.html"><strong>Please refer to the quickstart page »</strong></a>
+<a href="https://bacannot.readthedocs.io/en/latest/quickstart"><strong>Please refer to the quickstart page »</strong></a>
 
 ### Overview of outputs
 
-A nice overview of the output directory structure and the main tools/features produced by the pipeline is provided at https://bacannot.readthedocs.io/en/latest/outputs.html.
+A nice overview of the output directory structure and the main tools/features produced by the pipeline is provided at https://bacannot.readthedocs.io/en/latest/outputs.
 
 ## Documentation
 
@@ -163,7 +163,7 @@ A nice overview of the output directory structure and the main tools/features pr
 
 ### Command line usage examples
 
-Command line executions are exemplified [in the manual](https://bacannot.readthedocs.io/en/latest/quickstart.html).
+Command line executions are exemplified [in the manual](https://bacannot.readthedocs.io/en/latest/quickstart).
 
 #### Using the configuration file
 
