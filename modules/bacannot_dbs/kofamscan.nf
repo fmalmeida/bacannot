@@ -11,7 +11,9 @@ process KOFAMSCAN_DB {
     wget --tries=10 ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz
     wget --tries=10 ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz
     gunzip ko_list.gz
-    tar xvzf profiles.tar.gz
+    chmod a+rw profiles.tar.gz ko_list
+    tar --same-owner -xvzf profiles.tar.gz
+    chown -R root:\$(id -g) profiles
     rm -rf profiles.tar.gz
 
     # for the sake of size and fastness
@@ -20,8 +22,5 @@ process KOFAMSCAN_DB {
         for dirs in *.hmm ; do
             if ! grep -qxFe "\$dirs" prokaryote.hal ; then rm -rf \$dirs ; fi; 
         done
-    
-    # chmod
-    chmod a+rw -R *
     """
 }
