@@ -1,6 +1,6 @@
 process MERGE_ANNOTATIONS {
   publishDir "${params.output}/${prefix}/gffs", mode: 'copy'
-  label = [ 'renv', 'process_medium' ]
+  label = [ 'renv', 'process_medium', 'error_retry' ]
   tag "${prefix}"
 
   input:
@@ -9,7 +9,7 @@ process MERGE_ANNOTATIONS {
   output:
   tuple val(prefix), path("${prefix}.gff")
   tuple val(prefix), path("transposable_elements_digis.gff")
-  tuple val(prefix), path("custom_database_*.gff"), optional: true
+  tuple val(prefix), path("custom_database_*.gff") optional: true
   path("*.gff")
 
   script:
