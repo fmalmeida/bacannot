@@ -22,9 +22,9 @@ After downloading it, we must create a samplesheet for the input data as describ
 
 ```yaml
 samplesheet: # this header is required
-    - id: ecoli
-      assembly: ecoli_ref.fna
-      resfinder: Escherichia coli
+  - id: ecoli
+    assembly: ecoli_ref.fna
+    resfinder: Escherichia coli
 ```
 
 !!! tip
