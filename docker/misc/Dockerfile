@@ -8,7 +8,7 @@ RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida
             git \
             'python=3.7' \
             'blast=2.12.0' \
-            'diamond=2.0.13' \
+            'diamond=2.0.15' \
             'bedtools=2.30' \
             'samtools=1.14' \
             'kma' \
@@ -56,3 +56,6 @@ ENV PATH=/work/digIS:$PATH
 # fix permissions
 RUN chmod 777 -R /work
 RUN chmod 777 -R /opt/conda/envs/antismash/lib/*/site-packages/antismash
+
+# fix antismash download script
+# RUN sed -i 's|ftp://|http://|g' /opt/conda/envs/antismash/lib/*/site-packages/antismash/download_databases.py
