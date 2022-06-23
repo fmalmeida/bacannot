@@ -2,6 +2,10 @@
 
 The tracking for changes started in v2.1
 
+## v3.1.1
+
+This version contains a quick fix spotted by @fetyj described in issue [#52](https://github.com/fmalmeida/bacannot/issues/52). Now the path to the argminer backup database is given as full path.
+
 ## v3.1
 
 In this version of the pipeline, N things have been added / changed:
