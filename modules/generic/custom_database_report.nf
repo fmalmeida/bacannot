@@ -23,7 +23,7 @@ process CUSTOM_DATABASE_REPORT {
   system("rm -f input.??") ;
   system("rm -f input.?") ;
 
-  ## Generate Resistance Report
+  ## Generate Report
   rmarkdown::render("report_custom_blast.Rmd", params = list(\
     blast_id = ${params.blast_custom_minid} , \
     blast_cov = ${params.blast_custom_mincov}, \
