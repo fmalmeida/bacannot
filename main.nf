@@ -52,11 +52,11 @@ workflow {
       Cheers.
       """)
     } else {
-      bacannot_db = file(params.bacannot_db)
+      bacannot_db = file(params.bacannot_db, checkIfExists: true)
     }
 
     // Load yaml
-    samplesheet_yaml = file(params.input)
+    samplesheet_yaml = file(params.input, checkIfExists: true)
     parameter_yaml = samplesheet_yaml.readLines().join("\n")
     new Yaml().load(parameter_yaml).each { k, v -> params[k] = v }
 
