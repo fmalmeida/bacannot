@@ -66,7 +66,7 @@ class WorkflowMain {
 
         // Download template samplesheet
         if (params.get_samplesheet) {
-            new File("bacannot_samplesheet.yaml").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/example_samplesheet.yml").getText())
+            new File("bacannot_samplesheet.yaml").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/example_samplesheet.yaml").getText())
             log.info """
             Samplesheet (bacannot_samplesheet.yml) file saved in working directory
             Nice code!
