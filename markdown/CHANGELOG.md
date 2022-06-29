@@ -9,6 +9,7 @@ This version contains:
 * A fix on the custom blast report file which had an wrong ifelse statement definition
 * Updated version of renv docker with fixed report Rmd
 * Addition of `checkIfExists` statements when loading file to make sure that user is pointing to files that exists and did not misspelled them
+* Fixed a small misspelling on example samplesheet url
 * A small fix on phigaro.nf module which was causing the pipeline to fail when its outputs were empty
 
 Thanks to @fetyj for spotting these issues.
