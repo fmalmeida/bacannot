@@ -59,12 +59,10 @@ check_lines <- function(x) {
 
 ## Read input documents
 custom_blast <- try(read.delim(params$custom_blast, header = TRUE), silent = TRUE)
-blast_gff    <- try(read.delim(params$blast_gff, header = FALSE), silent = TRUE)
-colnames(blast_gff) <-
-  c("Contig", "Source", "Feature", "Start", "End", "Score", "Strand", "Phase", "Attributes")
+blast_gff    <- try(read.delim(params$blast_gff, header = FALSE, col.names=c("Contig", "Source", "Feature", "Start", "End", "Score", "Strand", "Phase", "Attributes")), silent = TRUE)
 
 ## Check for emptyness
-if (class(custom_blast) == "try-error" ||
+if (class(blast_gff) == "try-error" ||
     check_lines(custom_blast) == 1) {
   custom_blast <- data.frame(
     matrix(ncol = 14, nrow = 0)
@@ -72,6 +70,8 @@ if (class(custom_blast) == "try-error" ||
   blast_gff <- data.frame(
     matrix(ncol = 9, nrow = 0)
   )
+  colnames(blast_gff) <-
+  c("Contig", "Source", "Feature", "Start", "End", "Score", "Strand", "Phase", "Attributes")
 } else {
   
   # read blast summary
@@ -91,6 +91,9 @@ if (class(custom_blast) == "try-error" ||
   blast_gff$`Query Protein ID` <- getAttributeField(blast_gff$Attributes, "ID", ";")
   blast_gff$`Prokka Annotation (Gene)` <- getAttributeField(blast_gff$Attributes, "gene", ";")
   blast_gff$`Prokka Annotation (Product)` <- getAttributeField(blast_gff$Attributes, "product", ";")
+  
+  blast_gff <- blast_gff %>%
+    select(`Query Protein ID`, `Prokka Annotation (Gene)`, `Prokka Annotation (Product)`, `Custom DB Acc`, `Custom DB Target`, `Custom DB Product`, Attributes)
 }
 ```
 
@@ -144,10 +147,7 @@ Using the software bedtools intersect, the BLAST results have been used to searc
 <br>
 <caption>(#tab:blast-gff-table) Annotation intersection of the `r params$blast_db` custom database BLAST results with the main pipeline results</caption>
 ```{r}
-blast <- blast_gff
-# Render dt
-datatable(blast %>%
-            select(`Query Protein ID`, `Prokka Annotation (Gene)`, `Prokka Annotation (Product)`, `Custom DB Acc`, `Custom DB Target`, `Custom DB Product`, Attributes),
+datatable(blast_gff,
           escape = FALSE,
           filter = 'top',
           options = list(pageLength = 5,

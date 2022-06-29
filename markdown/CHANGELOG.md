@@ -2,6 +2,18 @@
 
 The tracking for changes started in v2.1
 
+## v3.1.2
+
+This version contains:
+
+* A fix on the custom blast report file which had an wrong ifelse statement definition
+* Updated version of renv docker with fixed report Rmd
+* Addition of `checkIfExists` statements when loading file to make sure that user is pointing to files that exists and did not misspelled them
+* Fixed a small misspelling on example samplesheet url
+* A small fix on phigaro.nf module which was causing the pipeline to fail when its outputs were empty
+
+Thanks to @fetyj for spotting these issues.
+
 ## v3.1.1
 
 This version contains a quick fix spotted by @fetyj described in issue [#52](https://github.com/fmalmeida/bacannot/issues/52). Now the path to the argminer backup database is given as full path.

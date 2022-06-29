@@ -13,13 +13,13 @@ workflow PARSE_SAMPLESHEET {
       tuple(
         row.name, 
         row.entrypoint,
-        (row.fwd == "missing_pairFWD") ? row.fwd : file(row.fwd), 
-        (row.rev == "missing_pairREV") ? row.rev : file(row.rev),
-        (row.single == "missing_single") ? row.single : file(row.single), 
-        (row.lreads == "missing_lreads") ? row.lreads : file(row.lreads), 
+        (row.fwd == "missing_pairFWD") ? row.fwd : file(row.fwd, checkIfExists: true), 
+        (row.rev == "missing_pairREV") ? row.rev : file(row.rev, checkIfExists: true),
+        (row.single == "missing_single") ? row.single : file(row.single, checkIfExists: true), 
+        (row.lreads == "missing_lreads") ? row.lreads : file(row.lreads, checkIfExists: true), 
         row.lr_type,
-        (row.fast5 == "missing_fast5") ? row.fast5 : file(row.fast5), 
-        (row.assembly == "missing_assembly") ? row.assembly : file(row.assembly), 
+        (row.fast5 == "missing_fast5") ? row.fast5 : file(row.fast5, checkIfExists: true), 
+        (row.assembly == "missing_assembly") ? row.assembly : file(row.assembly, checkIfExists: true), 
         row.resfinder
       )
     }

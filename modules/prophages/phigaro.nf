@@ -1,7 +1,6 @@
 process PHIGARO {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
-    if (filename == "out.phg") null
-    else if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
+    if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "prophages/phigaro/$filename"
   }
   tag "${prefix}"
@@ -46,11 +45,12 @@ process PHIGARO {
       --not-open ;
 
   # change names
-  [ ! -s out.phg/assembly.phigaro.tsv  ] || mv out.phg/assembly.phigaro.tsv ${prefix}_phigaro.tsv ;
-  [ ! -s out.phg/assembly.phigaro.html ] || mv out.phg/assembly.phigaro.html ${prefix}_phigaro.html ;
+  [ ! -s out.phg/assembly.phigaro.tsv  ] || cp out.phg/assembly.phigaro.tsv ${prefix}_phigaro.tsv ;
+  [ ! -s out.phg/assembly.phigaro.html ] || cp out.phg/assembly.phigaro.html ${prefix}_phigaro.html ;
 
   # create BED
-  grep -v "taxonomy" ${prefix}_phigaro.tsv | \
-  awk 'BEGIN { FS = "\t"; OFS="\\t" } { print \$1,\$2,\$3 }' > ${prefix}_phigaro.bed
+  touch ${prefix}_phigaro.bed ;
+  [ ! -s out.phg/assembly.phigaro.html ] || grep -v "taxonomy" ${prefix}_phigaro.tsv | \\
+      awk 'BEGIN { FS = "\\t"; OFS="\\t" } { print \$1,\$2,\$3 }' > ${prefix}_phigaro.bed
   """
 }
