@@ -130,10 +130,10 @@ workflow BACANNOT {
 
       // First step -- Prokka or Bakta annotation
       if (params.use_bakta && params.bakta_db) {
-        bakta(parsed_inputs.annotation.mix(FLYE.out[1], UNICYCLER.out[1]))
+        bakta(parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]))
         annotation_out_ch = bakta.out
       } else {
-        PROKKA(parsed_inputs.annotation.mix(FLYE.out[1], UNICYCLER.out[1]), dbs_ch)
+        PROKKA(parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]), dbs_ch)
         annotation_out_ch = PROKKA.out
       }
 
