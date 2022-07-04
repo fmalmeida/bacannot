@@ -1,0 +1,189 @@
+---
+title: "The bacannot shiny parser"
+author: "Produced with bacannot"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    number_sections: false
+    syntax: espresso
+    self_contained: yes
+    theme: readable
+    toc: no
+    #code_folding: "show"
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+suppressMessages(library(shiny))
+suppressMessages(library(shinyFiles))
+suppressMessages(library(shinythemes))
+suppressMessages(library(dplyr))
+suppressMessages(library(stringr))
+suppressMessages(library(dbplyr))
+suppressMessages(library(RSQLite))
+suppressMessages(library(DT))
+suppressMessages(library(openxlsx))
+suppressMessages(library(glue))
+source("shiny_parser_func.R")
+
+# Check query name
+query_name <-
+  strsplit(basename(Sys.glob(file.path("/work/annotation/*.fna"))), split = ".fna")[[1]]
+
+# Add directory of static resources to Shiny's web server
+addResourcePath(prefix = "jbrowse", directoryPath = "/work/jbrowse/")
+addResourcePath(prefix = "jbrowse/data", directoryPath = "/work/jbrowse/data/")
+try(
+  addResourcePath(prefix = "jbrowse/data/GC_content.bw", directoryPath = "/work/jbrowse/data/GC_content.bw"),
+  silent = TRUE
+)
+try(
+  addResourcePath(prefix = "jbrowse/data/methylation.bw", directoryPath = "/work/jbrowse/data/methylation.bw"),
+  silent = TRUE
+)
+try(
+  addResourcePath(prefix = "reports", directoryPath = "/work/report_files/"),
+  silent = TRUE
+)
+try(
+  addResourcePath(prefix = "antiSMASH", directoryPath = "/work/antiSMASH"),
+  silent = TRUE
+)
+
+## start sequenceserver
+eval_sequence_server <- FALSE
+if (dir.exists("/work/SequenceServerDBs/")) {
+  eval_sequence_server <- TRUE
+}
+```
+
+```{css, echo=FALSE}
+body {
+  /* Normal  */
+  font-size: 12pt;
+  line-height: 1.5;
+}
+
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 9pt;
+    border-left: 5px solid #ec5800;
+}
+
+.table {
+  width: 100% !important;
+  text-align: center;
+  font-size: 10pt;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.main-container {
+  max-width: 95% !important;
+  max-height: 100% !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div.container {
+  width: 100%;
+  height: 100%;
+}
+```
+
+# Parsing _`r query_name`_ annotation results {.tabset .tabset-pills}
+
+## About
+
+Welcome to the bacannot shiny parser! This app enables users to interrogate and interact with the outputs produced by [bacannot pipeline](https://github.com/fmalmeida/bacannot).
+
+Current features:
+
+* Indexation of annotation reports
+* SQL database parsing
+* JBrowse navigation
+
+### Automatic annotation reports {#index}
+
+The bacannot pipeline automatically produces reports to summarize most of the steps and processes during genome annotation. These reports are indexed in the list below so users can rapidly navigate through them.
+
+```{r results='asis'}
+# Read files
+files_list <- list.files("/work/report_files/custom_databases", full.names=TRUE)
+files_list <- gsub(files_list, pattern = "/work/report_files/", replacement = "reports/")
+
+# Cat reports
+for (file in list.files("/work/report_files/", full.names = FALSE, include.dirs = FALSE)) {
+
+  # get names
+  if (grepl("resistance", file)) {
+    name <- "Report of resistance features"
+    # cat
+    cat(paste("* [", trimws(name), "](reports/", trimws(file), ")", sep = ''), sep = '\n')
+  }
+  if (grepl("virulence", file)) {
+    name <- "Report of virulence features"
+    # cat
+    cat(paste("* [", trimws(name), "](reports/", trimws(file), ")", sep = ''), sep = '\n')
+  }
+  if (grepl("MGEs", file)) {
+    name <- "Report of MGEs features"
+    # cat
+    cat(paste("* [", trimws(name), "](reports/", trimws(file), ")", sep = ''), sep = '\n')
+  }
+  if (grepl("general", file)) {
+    name <- "Report of general features"
+    # cat
+    cat(paste("* [", trimws(name), "](reports/", trimws(file), ")", sep = ''), sep = '\n')
+  }
+}
+if (length(files_list) > 0) {
+  string.list <- as.list(files_list)
+  cat("* Reports of custom database annotations:\n")
+  for (report_file in string.list) {
+   cat(paste("\t* [Report: ", trimws(basename(report_file), which = 'both'),
+             "](", trimws(report_file, which = 'both'), ")"), sep = '\n')
+  }
+}
+
+if (file.exists("/work/antiSMASH/index.html")) {
+  cat("* [antiSMASH (secondary metabolites) report](antiSMASH/index.html)")
+}
+```
+
+### JBrowse {#jbrowse}
+
+* [Open JBrowse genome browser](jbrowse/index.html)
+
+## SQL querying {#sqlparser}
+
+```{r, echo=FALSE}
+parse_sql(DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
+```
+
+## Blast the genome (for annotation intersection)
+
+```{r results='asis', eval=eval_sequence_server}
+cat("
+This tab is a custom implementation of BLAST using its tabular output in order to provide a easy way for users to query the genome and automatically search for intersections (with [bedtools intersect](https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html)) between the blast results and the genome annotation. This results does not enable the visualization of the alignment. For that, users must use the blast implemented with SequenceServer in the next tab.
+")
+```
+
+```{r, echo=FALSE}
+genome_blast(genome = Sys.glob(file.path("/work/annotation/*.fna")),
+             nucl = Sys.glob(file.path("/work/annotation/*.ffn")),
+             prot = Sys.glob(file.path("/work/annotation/*.faa")),
+             sqldb = DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
+```
+
+```{r results='asis', eval=eval_sequence_server}
+cat("
+## SequenceServer Blast (for visualization of alignments)
+
+This tab is an implementation of BLAST alignments against the genome, the genes or the proteome using the [SequenceServer](https://sequenceserver.com/) tool. It is meant to provide a way for users to rapidly visualize the alignments against the query genome. This tool does not provide a way to quickly scan the annotation for intersections with the BLAST results. For that, we have implemented a custom blast in the previous tab.
+
+<iframe src=\"http://localhost:4567/\" style=\"width:100%; height:100vh;\"></iframe>
+")
+```

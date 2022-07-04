@@ -1,18 +1,11 @@
-process report {
+process REPORT {
   publishDir "${params.output}/${prefix}/report_files", mode: 'copy'
-  label 'renv'
+  label = [ 'renv', 'process_medium' ]
   tag "${prefix}"
 
   input:
-  tuple val(prefix), file(gff), file(draft), file("prokka_gff"), file(mlst), file(barrnap),
-        file(gc_bedGraph), file(gc_chrSizes), file(kofamscan), file(vfdb_blastn), file(victors_blastp),
-        file(amrfinder), file(resfinder_gff), file(rgi), file(iceberg_blastp), file(phast_blastp), file(phigaro_bed),
-        file(genomic_islands), file("methylation"), file("chr.sizes"), file(phispy_tsv),
-        file(digIS), file(antiSMASH), file(rgi_parsed), file(rgi_heatmap), 
-        file(argminer_out), file(iceberg_blastn), file(plasmids_tsv), file(resfinder_tab), 
-        file(resfinder_point), file(resfinder_phenotable), file(gi_image), file(phigaro_txt), 
-        file(platon_tsv), file(prokka_stats), file(keggsvg), file(refseq_masher_txt)
-
+  tuple val(prefix), file(prokka_stats), file(gff), file(barrnap), file(mlst), file(keggsvg), file(refseq_masher_txt), file(amrfinder), file(rgi), file(rgi_parsed), file(rgi_heatmap), file(argminer_out), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable), file(vfdb_blastn), file(victors_blastp), file(phigaro_txt), file(phispy_tsv), file(iceberg_blastp), file(iceberg_blastn), file(plasmids_tsv), file(platon_tsv), file(gi_image), file(phast_blastp), file(digIS)
+  
   output:
   file '*.html'
 

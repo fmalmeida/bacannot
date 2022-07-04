@@ -1,0 +1,7 @@
+*.nf linguist-language=nextflow
+*.config linguist-language=nextflow
+modules/** linguist-language=nextflow
+workflows/** linguist-language=nextflow
+#lib/** linguist-vendored
+bin/** linguist-vendored
+docker/renv/** linguist-vendored

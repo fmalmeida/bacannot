@@ -1,10 +1,10 @@
-process unicycler {
+process UNICYCLER {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else if (filename == "unicycler_${prefix}") "assembly"
     else null
   }
-  label 'unicycler'
+  label 'process_high'
   tag "${prefix}"
 
   input:
@@ -26,7 +26,12 @@ process unicycler {
   unicycler --version > unicycler_version.txt
 
   # Run unicycler
-  unicycler $paired_param $unpaired_param $lr_param -o unicycler_${prefix} -t ${params.threads} &> unicycler.log
+  unicycler \\
+    $paired_param \\
+    $unpaired_param \\
+    $lr_param \\
+    -o unicycler_${prefix} \\
+    -t $task.cpus &> unicycler.log
 
   # Save copy for annotation
   cp unicycler_${prefix}/assembly.fasta unicycler_${prefix}.fasta

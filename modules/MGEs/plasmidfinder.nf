@@ -1,17 +1,18 @@
-process plasmidfinder {
+process PLASMIDFINDER {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename == "plasmidfinder") "plasmids/$filename"
     else null
   }
   tag "${prefix}"
-  label 'main'
+  label = [ 'python', 'process_low' ]
 
   input:
   tuple val(prefix), file(genome)
+  file(bacannot_db)
 
   output:
-  tuple val(prefix), file("plasmidfinder") // Get everything
-  tuple val(prefix), file("plasmidfinder/results_tab.tsv") // Get the main result
+  tuple val(prefix), path("plasmidfinder")
+  tuple val(prefix), path("plasmidfinder/results_tab.tsv")
 
   script:
   """
@@ -21,7 +22,13 @@ process plasmidfinder {
 
   # Run plasmidfinder
   mkdir plasmidfinder ;
-  plasmidfinder.py -i $genome -o plasmidfinder -l \$mincov -t \$minid -x
+  plasmidfinder.py \\
+      -i $genome \\
+      -o plasmidfinder \\
+      -l \$mincov \\
+      -t \$minid \\
+      -x \\
+      --databasePath ${bacannot_db}/plasmidfinder_db
 
   # Remove tmp
   rm -rf plasmidfinder/tmp

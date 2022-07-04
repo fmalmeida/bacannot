@@ -1,13 +1,14 @@
-process amrfinder {
+process AMRFINDER {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else "resistance/AMRFinderPlus/$filename"
   }
   tag "${prefix}"
-  label 'main'
+  label = [ 'misc', 'process_medium' ]
 
   input:
   tuple val(prefix), file(proteins)
+  file(bacannot_db)
 
   output:
   // Outputs must be linked to each prefix (tag)
@@ -17,16 +18,29 @@ process amrfinder {
   file("amrfinder_version.txt")
 
   script:
+  resistance_minid  = params.blast_resistance_minid / 100.00
+  resistance_mincov = params.blast_resistance_mincov / 100.00
   """
   # Get tool version
   amrfinder --version > amrfinder_version.txt ;
 
-  # Run amrfinder
-  CONDA_PREFIX=/opt/conda
-  amrfinder -p $proteins --plus -o AMRFinder_complete.tsv --threads ${params.threads} \
-  --ident_min \$(echo "scale=2; ${params.blast_resistance_minid}/100" | bc -l ) \
-  --coverage_min \$(echo "scale=2; ${params.blast_resistance_mincov}/100" | bc -l ) \
-  --name ${prefix} --protein_output ${prefix}_args.faa --database /opt/conda/share/amrfinderplus/data/latest ;
-  awk -F '\t' '{ if (\$3 != "") { print } }' AMRFinder_complete.tsv | grep -v "VIRULENCE" > AMRFinder_resistance-only.tsv ;
+  # run amrfinder
+  amrfinder \\
+      -p $proteins \\
+      --plus \\
+      -o AMRFinder_complete.tsv \\
+      --threads $task.cpus \\
+      --ident_min ${resistance_minid} \\
+      --coverage_min ${resistance_mincov} \\
+      --name ${prefix} \\
+      --protein_output ${prefix}_args.faa \\
+      --database ${bacannot_db}/amrfinder_db/latest
+  
+  # filter results
+  awk \\
+      -F '\t' \\
+      '{ if (\$3 != "") { print } }' \\
+      AMRFinder_complete.tsv | \\
+      grep -v "VIRULENCE" > AMRFinder_resistance-only.tsv ;
   """
 }

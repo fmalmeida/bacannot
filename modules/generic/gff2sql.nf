@@ -1,10 +1,10 @@
-process create_sql {
+process CREATE_SQL {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf(".sqlite") > 0) "sqldb/$filename"
     else "$filename"
   }
   tag "${prefix}"
-  label 'renv'
+  label = [ 'renv', 'process_medium' ]
 
   input:
     tuple val(prefix), file(gff), file(genes_nt), file(genes_aa), file(genome), file("digIS.gff"), file("digIS.fa"), file("digIS.faa")

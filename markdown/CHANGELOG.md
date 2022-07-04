@@ -2,13 +2,62 @@
 
 The tracking for changes started in v2.1
 
+## v3.1.2
+
+This version contains:
+
+* A fix on the custom blast report file which had an wrong ifelse statement definition
+* Updated version of renv docker with fixed report Rmd
+* Addition of `checkIfExists` statements when loading file to make sure that user is pointing to files that exists and did not misspelled them
+* Fixed a small misspelling on example samplesheet url
+* A small fix on phigaro.nf module which was causing the pipeline to fail when its outputs were empty
+
+Thanks to @fetyj for spotting these issues.
+
+## v3.1.1
+
+This version contains a quick fix spotted by @fetyj described in issue [#52](https://github.com/fmalmeida/bacannot/issues/52). Now the path to the argminer backup database is given as full path.
+
+## v3.1
+
+In this version of the pipeline, N things have been added / changed:
+
+1. In order to diminish docker image sizes and to avoid problems with its download hanging and being limited, the databases are not anymore available inside the images. Users must first download the databases with the parameter `--get_dbs`.
+    * See https://bacannot.readthedocs.io/en/master/quickstart/#bacannot-databases
+2. Since the databases are now downloaded by the pipeline and saved in the user machine, the pipeline now requires the database path as input. E.g. `--bacannot_db ./bacannot_dbs`.
+    * See https://bacannot.readthedocs.io/en/master/quickstart/#run-the-pipeline
+3. The pipeline now does not have a default profile set, and users must use either `-profile docker` or `-profile singularity`, otherwise it will try to load tools from your system and will surely fail.
+4. In previous versions, the pipeline only accepted custom gene databases for additional annotation in nucleotide fasta. Now, the pipeline also accepts protein fastas. Be aware that headers must be properly formatted. Additionally, the pipeline now also accepts a list of `NCBI protein IDs` as additional database with `--ncbi_proteins`. Using it, the pipeline will download the protein sequences and format the databases automatically.
+    * See https://bacannot.readthedocs.io/en/master/custom-db/
+5. Finally, the pipeline have been reestructured to use and benefit more from the incredible nf-core framework.
+
+## v3.0.1
+
+### additions
+
+In this version of the pipeline, two things have been added:
+
+1. A small dataset with _Haemophilus influenzae_ to provide a `quicktest` profile that runs in 10~20 min.
+2. A new github action to test the upcoming changes for each new PR using this available `quicktest`.
+
+### fixes/changes/improvements
+
+These improvements in the code and standardization of namings throughout the pipeline have been made possible thanks to the awesome contributions of [@abhi18av](https://github.com/abhi18av).
+
+1. The config files have been splitout into smaller ones and placed inside a `conf` directory to keep things more organized (PR [#43](https://github.com/fmalmeida/bacannot/pull/43))
+2. The names of channels and modules in the pipeline have been changed so they are more standardized and more similar to how it is used for nextflow pipelines in general, so it is easier to read and understand (PR [#45](https://github.com/fmalmeida/bacannot/pull/45))
+
+### comments
+
+> Nothing has changed in terms of how tools are called and used, thus the docker image still the same. In fact, patch/fix releases (x.x.x) will always use the docker from breaking/features release (x.x)
+
 ## v3.0
 
 ### input configuration
 
 * In order to keeps things the least complex possible and to make the pipeline less confusing, the pipeline has been reconfigured in order to properly use it, in all workflow types (for multiple samples at once or just one) through the samplesheet.
     + Because of that, we removed the possibility to pass the input reads via the command line and now, the files input data files, must always be set inside the samplesheet, even if analysing only one sample.
-    + Read more at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
+    + Read more at: https://bacannot.readthedocs.io/en/latest/samplesheet
     + Check the template samplesheet at: https://github.com/fmalmeida/bacannot/blob/master/example_samplesheet.yaml
     + The samplesheet is given with the parameter `--input`
 * Due to the implementation above, the folowing parameters are now deprecated, since they are now set inside the YAML file:
@@ -116,13 +165,13 @@ Fixed a very small problem that was holding up the execution of flye and unicycl
 * Plasmid annotation
     + The Platon software has been added to aid in the prediction of plasmid sequences, together with plasmidfinder.
 * Custom annotation
-    + The possibility to perform additional annotations using user's custom nucleotide gene databases has been added with the `--custom_db` parameter. The proper configuration of these databases are documented at: https://bacannot.readthedocs.io/en/latest/custom-db.html
+    + The possibility to perform additional annotations using user's custom nucleotide gene databases has been added with the `--custom_db` parameter. The proper configuration of these databases are documented at: https://bacannot.readthedocs.io/en/latest/custom-db
 * Multiple genome analysis
-    + The possibility to perform the annotation of multiple genomes at once has been added with the `--in_yaml` parameter which takes as input a samplesheet file in YAML format as described in the documentation at: https://bacannot.readthedocs.io/en/latest/samplesheet.html
+    + The possibility to perform the annotation of multiple genomes at once has been added with the `--in_yaml` parameter which takes as input a samplesheet file in YAML format as described in the documentation at: https://bacannot.readthedocs.io/en/latest/samplesheet
 * Annotation from raw reads
     + The possibility to annotate genomes from raw reads have been added with the parameters `--sreads_single`, `--sreads_paired` and `--lreads` which takes as input raw sequencing reads from Illumina, Pacbio and ONT in FASTq format and uses it to assemble the genome with Unicycler or Flye (depending on the data availability) prior to the annotation step.
 * Bacannot shiny server
-    + A simple shiny server has been created and implemented with the `run_server.sh` bash script that loads the shiny app from a docker image that allows the user to quickly interrogate the annotation results via the JBrowse genome browser, the annotation reports and with a BLAST tool implemented in the server that enables users to quickly detect the presence of additional genes/sequences. Take a better look at: https://bacannot.readthedocs.io/en/latest/outputs.html
+    + A simple shiny server has been created and implemented with the `run_server.sh` bash script that loads the shiny app from a docker image that allows the user to quickly interrogate the annotation results via the JBrowse genome browser, the annotation reports and with a BLAST tool implemented in the server that enables users to quickly detect the presence of additional genes/sequences. Take a better look at: https://bacannot.readthedocs.io/en/latest/outputs
 
 ## v2.1
 

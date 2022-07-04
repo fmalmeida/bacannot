@@ -1,7 +1,7 @@
-process gff2gbk {
+process GFF2GBK {
   publishDir "${params.output}/${prefix}/gbk", mode: 'copy'
-  label 'main'
   tag "${prefix}"
+  label = [ 'misc', 'process_ultralow' ]
 
   input:
   tuple val(prefix), file(gff), file(input)
@@ -10,7 +10,18 @@ process gff2gbk {
   file "*.genbank"
 
   """
-  seqret -sequence $input -feature -fformat gff -fopenfile $gff -osformat genbank \
-  -osname_outseq ${prefix} -ofdirectory_outseq gbk_file -auto
+  # Activate env
+  export PATH=/opt/conda/envs/antismash/bin:\$PATH
+
+  # Run emboss seqret
+  seqret \\
+    -sequence $input \\
+    -feature \\
+    -fformat gff \\
+    -fopenfile $gff \\
+    -osformat genbank \\
+    -osname_outseq ${prefix} \\
+    -ofdirectory_outseq gbk_file \\
+    -auto
   """
 }

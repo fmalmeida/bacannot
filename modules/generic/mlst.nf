@@ -1,28 +1,34 @@
-process mlst {
+process MLST {
    publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
      if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
      else "MLST/$filename"
    }
    tag "${prefix}"
-   label 'main'
+   label = [ 'perl', 'process_ultralow' ]
 
    input:
    tuple val(prefix), file(genome)
+   file(bacannot_db)
 
    output:
-   tuple val(prefix), file("${prefix}_mlst_analysis.txt") optional true
-   tuple val(prefix), file("${prefix}_novel_alleles.fasta") optional true
-   file('mlst_version.txt')
+   tuple val(prefix), path("${prefix}_mlst_analysis.txt")   optional true
+   tuple val(prefix), path("${prefix}_novel_alleles.fasta") optional true
+   path('mlst_version.txt')
 
    script:
    """
-   # activate env
-   source activate PERL_env ;
+   # update tool database
+   mlst_dir=\$(which mlst | sed 's/bin\\/mlst//g')
+   cp ${bacannot_db}/mlst_db/* -r \${mlst_dir}/db/pubmlst/
+   ( cd \$mlst_dir/scripts && ./mlst-make_blast_db )
 
    # Save mlst tool version
    mlst --version > mlst_version.txt ;
 
-   # Run mlst
-   mlst --quiet --novel ${prefix}_novel_alleles.fasta $genome > ${prefix}_mlst_analysis.txt
+   # run mlst
+   mlst \\
+       --quiet \\
+       --novel ${prefix}_novel_alleles.fasta \\
+       $genome > ${prefix}_mlst_analysis.txt
    """
 }

@@ -1,10 +1,10 @@
-process flye {
+process FLYE {
   publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
     if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
     else if (filename == "flye_${prefix}") "assembly"
     else null
   }
-  label 'flye'
+  label 'process_high'
   tag "${prefix}"
 
   input:
@@ -23,7 +23,11 @@ process flye {
   flye -v > flye_version.txt ;
 
   # Run flye
-  flye ${lr} $lreads --plasmids --out-dir flye_${prefix} --threads ${params.threads} &> flye.log ;
+  flye \\
+    ${lr} \\
+    $lreads \\
+    --out-dir flye_${prefix} \\
+    --threads $task.cpus &> flye.log ;
 
   # Save a copy for annotation
   cp flye_${prefix}/assembly.fasta flye_${prefix}.fasta

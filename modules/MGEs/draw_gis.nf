@@ -1,10 +1,11 @@
-process draw_GIs {
+process DRAW_GIS {
   publishDir "${params.output}/${prefix}/genomic_islands", mode: 'copy', saveAs: { filename ->
     if (filename == "plots") "$filename"
     else null
   }
   tag "${prefix}"
-  label 'main'
+  label = [ 'misc', 'process_ultralow' ]
+  
 
   input:
   tuple val(prefix), file(gff), file(gis_bed)
@@ -16,18 +17,22 @@ process draw_GIs {
 
   script:
   """
-  # Create output directories
-  mkdir -p plots plots/id_label plots/product_label ;
+  # create output directories
+  mkdir \\
+    -p plots \\
+    plots/id_label \\
+    plots/product_label ;
 
-  # Get required files
-  cp /work/bscripts/draw_gis.sh . ;
-  cp /work/bscripts/input.fofn . ;
+  # draw genomic islands
+  draw_gis.sh \\
+    -i $gis_bed \\
+    -g $gff \\
+    -f \$(which input.fofn) ;
 
-  # Draw genomic islands
-  ./draw_gis.sh -i $gis_bed -g $gff -f input.fofn ;
-
-  # Get one image
+  # get one image
   name=\$(ls plots/product_label | head -n 1)
-  [[ \$(ls plots/product_label/) ]] && cp "plots/product_label/\${name}" ./teste.png || echo "empty" ;
+  [[ \$(ls plots/product_label/) ]] && \\
+    cp "plots/product_label/\${name}" ./teste.png || \\
+    echo "empty" ;
   """
 }

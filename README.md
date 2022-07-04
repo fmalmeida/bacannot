@@ -1,11 +1,15 @@
 <img src="images/lOGO_3.png" width="300px">
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3627669.svg)](https://doi.org/10.5281/zenodo.3627669)
+[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.3627669-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.3627669)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/fmalmeida/bacannot?include_prereleases&label=Latest%20release)](https://github.com/fmalmeida/bacannot/releases)
 [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest)
-[![Dockerhub](https://img.shields.io/badge/Docker-fmalmeida/bacannot-informational)](https://hub.docker.com/r/fmalmeida/bacannot)
-[![Nextflow version](https://img.shields.io/badge/Nextflow%20>=-v20.07-important)](https://www.nextflow.io/docs/latest/getstarted.html)
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
+[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
+[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
+[![Follow on Twitter](http://img.shields.io/badge/twitter-%40fmarquesalmeida-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/fmarquesalmeida)
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/github.com/fmalmeida/bacannot)
 
 <p align="center">
 
@@ -31,7 +35,7 @@ Its main steps are:
 
 | Analysis steps | Used software or databases |
 | :------------- | :------------------------- |
-| Genome assembly (if raw reads are given) |  [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
+| Genome assembly (if raw reads are given) | [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
 | Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
 | Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
 | rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
@@ -40,15 +44,18 @@ Its main steps are:
 | Annotation of secondary metabolites | [antiSMASH](https://docs.antismash.secondarymetabolites.org/) |
 | Methylation annotation | [Nanopolish](https://github.com/jts/nanopolish) |
 | Annotation of antimicrobial (AMR) genes | [AMRFinderPlus](https://github.com/ncbi/amr/wiki), [ARGminer](https://bench.cs.vt.edu/argminer), [Resfinder](https://cge.cbs.dtu.dk/services/ResFinder/) and [RGI](https://github.com/arpcard/rgi) |
-| Annotation of virulence genes |  [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
-| Prophage sequences and genes annotation | [PHASTER](https://phaster.ca/) database, [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) |
-| Annotation of integrative and conjugative elements | [ICEberg](https://academic.oup.com/nar/article/47/D1/D660/5165266) |
+| Annotation of virulence genes | [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
+| Prophage sequences and genes annotation | [PHASTER](http://phast.wishartlab.com/), [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) |
+| Annotation of integrative and conjugative elements | [ICEberg](http://db-mml.sjtu.edu.cn/ICEberg/) |
+| Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
 | _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
 | Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
-| Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
+| Custom annotation from formatted FASTA or NCBI protein IDs | [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
-| Renderization of results in a Genome Browser | [JBrowse](http://jbrowse.org/) |
+| Genome Browser renderization | [JBrowse](http://jbrowse.org/) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/), [Shiny](https://shiny.rstudio.com/) and [SequenceServer](https://sequenceserver.com/) |
+
+🎯 In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
 
 ### Release notes
 
@@ -81,51 +88,69 @@ These images have been kept separate to not create massive Docker image and to a
 1. If you don't have it already install [Docker](https://docs.docker.com/) in your computer.
     * After installed, you need to download the required Docker images
 
-    * Required
-          
-          docker pull fmalmeida/bacannot:v3.0         # Main image for core annotations
-          docker pull fmalmeida/bacannot:v3.0_renv    # R packages for reports
-          docker pull fmalmeida/bacannot:jbrowse      # JBrowse software
-    
-    * Optional
-          
-          docker pull fmalmeida/bacannot:kofamscan    # If user wants KO annotation
-          docker pull fmalmeida/bacannot:antismash    # If user wants antismash annotation
-          docker pull fmalmeida/bacannot:server       # If user wants to open the shiny parser
+    ```bash
+    docker pull fmalmeida/bacannot:v3.1_misc    ;
+    docker pull fmalmeida/bacannot:v3.1_perlenv ;
+    docker pull fmalmeida/bacannot:v3.1_pyenv   ;
+    docker pull fmalmeida/bacannot:v3.1_renv    ;
+    docker pull fmalmeida/bacannot:jbrowse      ;
+    ```
 
-🔥 Nextflow can also automatically handle images download on the fly when executed. However, some servers may hang the download due to the image size (view below).
+🔥 Nextflow can also automatically handle images download on the fly when executed. If docker has exceeded its download limit rates, please try again in a few hours.
 
-❗ If the download of `fmalmeida/bacannot:v3.0` image keeps hanging due to its size, download `fmalmeida/bacannot:main_tools` first. It is the core of the versioned tag and it will help on the download by creating some cache.
-
-2. Install Nextflow (version 20.07 or higher):
+2. Install Nextflow (version 20.10 or higher):
 
        curl -s https://get.nextflow.io | bash
 
 3. Give it a try:
 
-       nextflow run fmalmeida/bacannot --help
+       nextflow run fmalmeida/bacannot -profile docker --help
+
+🔥 To run the pipeline now users **need** to pass the `-profile docker` or `-profile singularity` parameter explicitely. The pipeline does not load it automatically anymore.
 
 🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
-### Maintaining databases up-to-date
+### Downloading and updating databases
 
-To use the most up-to-date databases users must run `docker pull fmalmeida/bacannot:v3.0` before running the pipeline. We try to keep this image updated every three months if they pass execution tests after built.
+Bacannot databases are not inside the docker images anymore to avoid huge images and problems with conexions and limit rates with dockerhub.
 
-A custom script is provided to allow users to update the database image any time, if desired.
-
+To get a copy of required bacannot databases users must:
 ```bash
-bash <(wget -O - -o /dev/null https://github.com/fmalmeida/bacannot/raw/master/bin/update_database_image.sh)
+# Download pipeline databases
+nextflow run fmalmeida/bacannot --get_dbs --output bacannot_dbs -profile <docker/singularity>
 ```
 
-> This command line will trigger a custom script that downloads the databases and build the main docker image.
+This will produce a directory like this:
+
+```bash
+bacannot_dbs
+├── amrfinder_db
+├── antismash_db
+├── argminer_db
+├── card_db
+├── iceberg_db
+├── kofamscan_db
+├── mlst_db
+├── phast_db
+├── phigaro_db
+├── pipeline_info
+├── plasmidfinder_db
+├── platon_db
+├── prokka_db
+├── resfinder_db
+├── vfdb_db
+└── victors_db
+```
+
+To update databases you can either download a new one to a new directory. Remove the database you want to get a new one from the root bacannot dir and use the same command above to save in the same directory (the pipeline will only try to download missing databases). Or, you can use the parameter `--force_update` to download everything again.
 
 ## Quickstart
 
-<a href="https://bacannot.readthedocs.io/en/latest/quickstart.html"><strong>Please refer to the quickstart page »</strong></a>
+<a href="https://bacannot.readthedocs.io/en/latest/quickstart"><strong>Please refer to the quickstart page »</strong></a>
 
 ### Overview of outputs
 
-A nice overview of the output directory structure and the main tools/features produced by the pipeline is provided at https://bacannot.readthedocs.io/en/latest/outputs.html.
+A nice overview of the output directory structure and the main tools/features produced by the pipeline is provided at https://bacannot.readthedocs.io/en/latest/outputs.
 
 ## Documentation
 
@@ -135,12 +160,10 @@ A nice overview of the output directory structure and the main tools/features pr
 
 * Complete command line explanation of parameters:
     + `nextflow run fmalmeida/bacannot --help`
-* See usage examples in the command line:
-    + `nextflow run fmalmeida/bacannot --examples`
 
 ### Command line usage examples
 
-Command line executions are exemplified [in the manual](https://bacannot.readthedocs.io/en/latest/examples.html).
+Command line executions are exemplified [in the manual](https://bacannot.readthedocs.io/en/latest/quickstart).
 
 #### Using the configuration file
 
@@ -196,6 +219,14 @@ It will result in the following:
 
 ## Citation
 
-Please cite this pipeline using our Zenodo tag or directly via the github url.
+To cite this tool please refer to our [Zenodo tag](https://doi.org/10.5281/zenodo.3627669).
 
-Please, do not forget to cite the software that were used whenever you use its outputs. See [the list of tools](markdown/list_of_tools.md).
+This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [GPLv3](https://github.com/fmalmeida/bacannot/blob/master/LICENSE).
+
+> The nf-core framework for community-curated bioinformatics pipelines.
+>
+> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
+>
+> Nat Biotechnol. 2020 Feb 13. doi: 10.1038/s41587-020-0439-x.
+
+In addition, users are encouraged to cite the programs used in this pipeline whenever they are used. Links to resources of tools and data used in this pipeline are in [the list of tools](markdown/list_of_tools.md).
