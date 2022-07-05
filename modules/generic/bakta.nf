@@ -1,11 +1,11 @@
-process bakta {
+process BAKTA {
     publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
       if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
       else if (filename == "annotation") "$filename"
       else null
     }
     tag "${prefix}"
-    container 'oschwengers/bakta'
+    label = [ 'misc', 'process_high' ]
 
     input:
     tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), file(assembly), val(resfinder_species)
@@ -28,17 +28,16 @@ process bakta {
     script:
     """
     # Save bakta version
-    bakta -v &> bakta_version.txt ;
+    bakta --version &> bakta_version.txt ;
 
     # Run bakta
     bakta \\
         --output annotation \\
-        --threads ${params.threads} \\
+        --threads $task.cpus \\
         --min-contig-length 200 \\
         --prefix ${prefix} \\
-        --genus '' \\
-        --species '' \\
-        --strain \"${prefix}\" \\
+        --strain '${prefix}' \\
+        --db $bakta_db \\
         $assembly
     """
 }

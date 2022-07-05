@@ -14,6 +14,9 @@ include { REFSEQ_MASHER } from '../modules/generic/mash.nf'
 // Prokka annotation
 include { PROKKA } from '../modules/generic/prokka.nf'
 
+// Bakta annotation
+include { BAKTA } from '../modules/generic/bakta.nf'
+
 // MLST annotation
 include { MLST } from '../modules/generic/mlst.nf'
 
@@ -129,9 +132,12 @@ workflow BACANNOT {
       FLYE( parsed_inputs.flye_ch )
 
       // First step -- Prokka or Bakta annotation
-      if (params.use_bakta && params.bakta_db) {
-        bakta(parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]))
-        annotation_out_ch = bakta.out
+      if (params.bakta_db) {
+        BAKTA(
+          parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]),
+          file(params.bakta_db, checkIfExists: true)  
+        )
+        annotation_out_ch = BAKTA.out
       } else {
         PROKKA(parsed_inputs.annotation_ch.mix(FLYE.out[1], UNICYCLER.out[1]), dbs_ch)
         annotation_out_ch = PROKKA.out
