@@ -22,7 +22,7 @@ process BAKTA {
     tuple val(prefix), file("annotation/${prefix}.ffn") // gene nt sequences
     tuple val(prefix), file("annotation/${prefix}.fna"), file("${lreads}"), file("${fast5}") // For methylation calling
     tuple val(prefix), file("annotation/${prefix}.fna"), val("${resfinder_species}") // For resfinder
-    tuple val(prefix), file("annotation/${prefix}.tsv") // bakta stats
+    tuple val(prefix), file("annotation/${prefix}.txt") // bakta stats
     file('bakta_version.txt') // Save bakta version
 
     script:
