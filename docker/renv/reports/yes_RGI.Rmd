@@ -14,7 +14,7 @@ The results obtained with RGI tool are summarized in the heatmap produced by the
 # Merge data.frame with GFF
 rgi_tsv <- rgi_parsed
 colnames(rgi_tsv) <- c("Protein ID", "Cut_Off", "Product", "ARO", "Drug Class", "Resistance Mechanism", "AMR Gene Family")
-rgi_tsv <- merge.data.frame(gff, rgi_tsv, by.x = "Prokka_ID", by.y = "Protein ID", all.y = TRUE, all.x = FALSE)
+rgi_tsv <- merge.data.frame(gff, rgi_tsv, by.x = "Generic_ID", by.y = "Protein ID", all.y = TRUE, all.x = FALSE)
 
 # Get CARD metadata
 aro_index <- read.csv("aro_index.tsv", sep = "\t")
@@ -33,8 +33,8 @@ rgi_tsv$CVTERM.ID <- card_url(rgi_tsv$CVTERM.ID)
 
 # Produce Table
 rgi_tsv %>%
-  select(Prokka_ID, Product, `AMR Gene Family`, `Drug Class`, `Resistance Mechanism`, CVTERM.ID, `Query Protein Coordinates`, `Cut_Off`) %>%
-  arrange(`Query Protein Coordinates`, `Prokka_ID`) %>%
+  select(Generic_ID, Product, `AMR Gene Family`, `Drug Class`, `Resistance Mechanism`, CVTERM.ID, `Query Protein Coordinates`, `Cut_Off`) %>%
+  arrange(`Query Protein Coordinates`, `Generic_ID`) %>%
   datatable(escape = FALSE,
           filter = 'top',
           options = list(pageLength = 5,

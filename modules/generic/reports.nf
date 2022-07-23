@@ -44,6 +44,7 @@ process REPORT {
     resfinder_tab = "$resfinder_tab", \
     resfinder_pointfinder = "$resfinder_point", \
     resfinder_phenotype = "$resfinder_phenotable", \
+    generic_annotator   = "${generic_annotator}", \
     gff = "$gff")) ;
 
   ## Generate Virulence Report

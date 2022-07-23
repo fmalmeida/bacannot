@@ -133,7 +133,7 @@ datatable(mlst_txt,
 
 [`r str_to_title(params$generic_annotator)`](`r annotator_url`) is generic prokaryotic genome annotation tool that produces standards-compliant output files.
 
-```{r kegg_svg, echo=FALSE, results='asis', eval=prokka_not_null}
+```{r prokka_msg, echo=FALSE, results='asis', eval=prokka_not_null}
 > In bacannot, the prokka database is incremented with TIGRFAM's hmm [hosted at NCBI](https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/).
 ```
 
