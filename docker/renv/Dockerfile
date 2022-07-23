@@ -26,12 +26,11 @@ RUN DEBIAN_FRONTEND=noninteractive Rscript /work/rscripts/installPack.R && \
 # METADATA and REPORTS
 # Add local files
 ADD reports /work/reports
-RUN rm /work/reports/aro_index.tsv /work/reports/victors_metadata.tsv
 
 # Download Victors metadata
 RUN apt-get install -y wget && \
 			cd /work/reports && \
-			wget "http://www.phidias.us/victors/export_text.php?c_mc_pathogen_id=&c_phi_function=Virulence%20factor&c_mc_victor_name=&c_gene_locus_tag=&db_type=gene_gi&db_id=&c_max_tmhmm_PredHel=1&c_max_tmhmm_PredHel_check=&c_min_spaan_score_check=&c_min_spaan_score=0.51&keywords=&c_human_alignment=&c_mouse_alignment=&c_localization[]=Any&cog_cat_id[]=" -O /work/reports/victors_metadata.tsv
+			( wget "http://www.phidias.us/victors/export_text.php?c_mc_pathogen_id=&c_phi_function=Virulence%20factor&c_mc_victor_name=&c_gene_locus_tag=&db_type=gene_gi&db_id=&c_max_tmhmm_PredHel=1&c_max_tmhmm_PredHel_check=&c_min_spaan_score_check=&c_min_spaan_score=0.51&keywords=&c_human_alignment=&c_mouse_alignment=&c_localization[]=Any&cog_cat_id[]=" -O /work/reports/new_victors_metadata.tsv && cat /work/reports/new_victors_metadata.tsv > /work/reports/victors_metadata.tsv ) || ( echo "using backup" )
 
 # Download CARD metadata
 RUN cd /work/reports && \

@@ -42,6 +42,7 @@ ENV CONDA_PREFIX=/opt/conda
 # get a copy of argminer database
 WORKDIR /work
 COPY argminer_bkp/argminer.fasta /work/argminer.fasta
+COPY victors_bkp/victors_06-2022.fasta /work/victors.fasta
 
 # get a copy of resfinder
 RUN git clone -b master https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
