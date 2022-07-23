@@ -10,6 +10,7 @@ process REPORT {
   file '*.html'
 
   script:
+  def generic_annotator = (params.bakta_db) ? "bakta" : "prokka"
   """
   #!/usr/bin/env Rscript
 
@@ -22,7 +23,8 @@ process REPORT {
 
   ## Generate generic Report
   rmarkdown::render("report_general.Rmd" , \
-  params = list( prokka  = "annotation_stats.tsv", \
+  params = list( generic_annotation  = "annotation_stats.tsv", \
+                 generic_annotator   = "${generic_annotator}", \
                  kegg    = "$keggsvg", \
                  barrnap = "$barrnap", \
                  mlst    = "$mlst", \

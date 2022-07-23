@@ -28,6 +28,7 @@ suppressMessages(library(knitr))
 suppressMessages(library(DT))
 suppressMessages(library(ballgown))
 suppressMessages(library(stringr))
+suppressMessages(library(dplyr))
 
 # Line checker
 check_lines <- function(x) {
@@ -35,7 +36,11 @@ check_lines <- function(x) {
 }
 
 # Load data
-generic_annotation_txt <- try(read.delim(params$generic_annotation, header = FALSE, sep = ":"), silent = TRUE)
+if (params$generic_annotator == "bakta") {
+  generic_annotation_txt <- try(read.delim(params$generic_annotation, header = FALSE, sep = ":"), silent = TRUE) %>% filter(!V1=="Sequence(s)") %>% filter(!V1=="Annotation") %>% filter(!V1=="Bakta")
+} else {
+  generic_annotation_txt <- try(read.delim(params$generic_annotation, header = FALSE, sep = ":"), silent = TRUE)
+}
 mlst_txt <- try(read.delim(params$mlst, header = FALSE), silent = TRUE)
 barrnap_gff <- try(gffRead(params$barrnap), silent = TRUE)
 if (class(barrnap_gff) != 'try-error' &

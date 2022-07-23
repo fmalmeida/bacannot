@@ -34,7 +34,7 @@ rgi_tsv$CVTERM.ID <- card_url(rgi_tsv$CVTERM.ID)
 # Produce Table
 rgi_tsv %>%
   select(Prokka_ID, Product, `AMR Gene Family`, `Drug Class`, `Resistance Mechanism`, CVTERM.ID, `Query Protein Coordinates`, `Cut_Off`) %>%
-  arrange(8,1) %>%
+  arrange(`Query Protein Coordinates`, `Prokka_ID`) %>%
   datatable(escape = FALSE,
           filter = 'top',
           options = list(pageLength = 5,
