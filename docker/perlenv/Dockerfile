@@ -6,6 +6,7 @@ ENV IMAGE=perl
 # Install the conda environment
 RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda --force-reinstall --update-deps --no-channel-priority \
 	'prokka>=1.14' \
+	'hmmer=3.1b2' \
 	barrnap \
 	mlst \
 	islandpath \
