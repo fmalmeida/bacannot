@@ -36,6 +36,8 @@ def load_resfinder(input):
     # Get results
     res_df = pd.read_csv(input, sep='\t', comment='#')
     res_df = res_df.sort_values(by=['Contig', 'Position in contig']).reset_index(drop=True)
+    res_df.drop_duplicates(inplace=True) # sometimes resfinder has the same gene in different categories
+    res_df = res_df.reset_index(drop=True)
 
     # Subset information
     for index, line in res_df.iterrows():
@@ -64,7 +66,7 @@ def load_resfinder(input):
 ############
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='v1.0 by Felipe Marques de Almeida')
+    arguments = docopt(__doc__, version='v1.1 by Felipe Marques de Almeida')
 
     # Main pipe: resfinder to gff
     if arguments['--input']:
