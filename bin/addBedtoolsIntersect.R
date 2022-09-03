@@ -65,11 +65,11 @@ if (file.info(opt$txt)$size > 0) {
   colnames(bedtools_intersect) <- c("seqname1", "source1", "feature1", "start1", "end1", "score1", "strand1", "frame1", "attributes1",
                      "seqname2", "source2", "feature2", "start2", "end2", "score2", "strand2", "frame2", "attributes2",
                      "len")
-  bedtools_intersect = bedtools_intersect[order(bedtools_intersect[,'attributes1'],-bedtools_intersect[,'len']),]
-  bedtools_intersect = bedtools_intersect[!duplicated(bedtools_intersect$attributes1),]
   
   # Create a column in the intersection file with ids
   bedtools_intersect$ID <- getAttributeField(bedtools_intersect$attributes2, "ID", ";")
+  bedtools_intersect = bedtools_intersect[order(bedtools_intersect[,'ID'],-bedtools_intersect[,'len']),]
+  bedtools_intersect = bedtools_intersect[!duplicated(bedtools_intersect$ID),]
   
   # save ids
   ids <- bedtools_intersect$ID
