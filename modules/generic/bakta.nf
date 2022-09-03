@@ -27,6 +27,9 @@ process BAKTA {
 
     script:
     """
+    # download amrfinder db if not available
+    [ ! -d ${bakta_db}/amrfinderplus-db ] && amrfinder_update --database ${bakta_db}/amrfinderplus-db
+
     # Save bakta version
     bakta --version &> bakta_version.txt ;
 
