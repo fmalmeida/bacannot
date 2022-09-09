@@ -90,7 +90,7 @@ process MERGE_ANNOTATIONS {
   #### Custom Blast databases
   for file in ${custom_databases.join(" ")} ;
   do
-    if [ -s \$file ]
+    if [ ! \$(cat \$file | wc -l) -eq 0 ]
     then
       db=\${file%%_custom_db.gff} ;
       bedtools intersect -a \${file} -b ${prefix}.gff -wo > bedtools_intersected.txt ;
