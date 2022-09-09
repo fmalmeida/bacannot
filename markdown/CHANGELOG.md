@@ -2,6 +2,14 @@
 
 The tracking for changes started in v2.1
 
+## v3.1.3 [9-September-2022]
+
+Main changes:
+
+* Hmmer version has been fixed in docker image to allow usage of PGAP HMM on prokka annotation
+* Bakta has been added as an option instead of prokka, if desired. Bakta database has to been downloaded manually.
+* All the annotation summarisation and reporting modules have been updated to understand when users use Prokka or Bakta.
+
 ## v3.1.2
 
 This version contains:
