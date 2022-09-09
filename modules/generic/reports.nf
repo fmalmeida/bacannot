@@ -4,12 +4,13 @@ process REPORT {
   tag "${prefix}"
 
   input:
-  tuple val(prefix), file(prokka_stats), file(gff), file(barrnap), file(mlst), file(keggsvg), file(refseq_masher_txt), file(amrfinder), file(rgi), file(rgi_parsed), file(rgi_heatmap), file(argminer_out), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable), file(vfdb_blastn), file(victors_blastp), file(phigaro_txt), file(phispy_tsv), file(iceberg_blastp), file(iceberg_blastn), file(plasmids_tsv), file(platon_tsv), file(gi_image), file(phast_blastp), file(digIS)
+  tuple val(prefix), file('annotation_stats.tsv'), file(gff), file(barrnap), file(mlst), file(keggsvg), file(refseq_masher_txt), file(amrfinder), file(rgi), file(rgi_parsed), file(rgi_heatmap), file(argminer_out), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable), file(vfdb_blastn), file(victors_blastp), file(phigaro_txt), file(phispy_tsv), file(iceberg_blastp), file(iceberg_blastn), file(plasmids_tsv), file(platon_tsv), file(gi_image), file(phast_blastp), file(digIS)
   
   output:
   file '*.html'
 
   script:
+  def generic_annotator = (params.bakta_db) ? "bakta" : "prokka"
   """
   #!/usr/bin/env Rscript
 
@@ -22,7 +23,8 @@ process REPORT {
 
   ## Generate generic Report
   rmarkdown::render("report_general.Rmd" , \
-  params = list( prokka  = "$prokka_stats", \
+  params = list( generic_annotation  = "annotation_stats.tsv", \
+                 generic_annotator   = "${generic_annotator}", \
                  kegg    = "$keggsvg", \
                  barrnap = "$barrnap", \
                  mlst    = "$mlst", \
@@ -42,6 +44,7 @@ process REPORT {
     resfinder_tab = "$resfinder_tab", \
     resfinder_pointfinder = "$resfinder_point", \
     resfinder_phenotype = "$resfinder_phenotable", \
+    generic_annotator   = "${generic_annotator}", \
     gff = "$gff")) ;
 
   ## Generate Virulence Report

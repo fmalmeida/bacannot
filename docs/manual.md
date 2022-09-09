@@ -63,6 +63,18 @@ The pipeline accepts as input two other input files types that are used to perfo
 
     In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
 
+## Bakta annotation
+
+!!! info "Using Bakta"
+
+    If desired, users can use [`bakta`](https://github.com/oschwengers/bakta) instead of `prokka` to perform the core generic annotation of their prokaryotic genomes. For that, users must simply [download and store bakta database](https://github.com/oschwengers/bakta#database-download) in their machine, and pass its path to `bacannot` with the `--bakta_db` parameter.
+
+    We opted for having it like this because bakta database is quite big.
+
+| <div style="width:160px">Parameter</div> | Required | Default | Description |
+| :--------------------------------------- | :------- | :------ | :---------- |
+| `--bakta_db`      | :material-close: | NA | Path to bakta database. If given, bacannot will use bakta instead of prokka. |
+
 ## Resfinder annotation
 
 The use of this parameter sets a default value for input samples. If a sample has a different value given inside the samplesheet, the pipeline will use, for that sample, the value found inside the [samplesheet](samplesheet.md#).

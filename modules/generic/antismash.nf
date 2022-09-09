@@ -17,6 +17,8 @@ process ANTISMASH {
   path("*_version.txt")
 
   script:
+  def gbk_suffix = (params.bakta_db) ? "gbff" : "gbk"
+  def gbk_prefix = "${genbank.baseName}" - "${gbk_suffix}"
   """
   # Activate env
   export PATH=/opt/conda/envs/antismash/bin:\$PATH
@@ -36,14 +38,13 @@ process ANTISMASH {
   cd antiSMASH ;
 
   # produce gff from main results
-  genbank="${genbank}"
   seqret \\
-    -sequence \${genbank} \\
+    -sequence ${gbk_prefix}.gbk \\
     -feature \\
     -fformat genbank \\
-    -fopenfile \${genbank} \\
+    -fopenfile ${gbk_prefix}.gbk \\
     -osformat gff \\
-    -osname_outseq \${genbank%%.gbk} \\
+    -osname_outseq ${gbk_prefix} \\
     -auto ;
 
   # get the locus tags annotated as list
@@ -60,6 +61,6 @@ process ANTISMASH {
   grep \\
     -w \\
     -f gene_ids.lst \\
-    \${genbank%%.gbk}.gff > regions.gff ;
+    ${gbk_prefix}.gff > regions.gff ;
   """
 }

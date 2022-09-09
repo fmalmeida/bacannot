@@ -23,13 +23,13 @@ cat(paste("\t-", string.list), sep = '\n')
 <caption>(#tab:ncbi-amr-resistance-genes) Resistance genes annotated from NCBI AMR curated database using AMRfinderplus</caption>
 ```{r ncbi-amr-resistance-genes}
 # Merge tables
-tab2 <- merge.data.frame(gff, tab, by.x = "Prokka_ID", by.y = "Protein.identifier", all.y = TRUE, all.x = FALSE)
+tab2 <- merge.data.frame(gff, tab, by.x = "Generic_ID", by.y = "Protein.identifier", all.y = TRUE, all.x = FALSE)
 tab2$Accession.of.closest.sequence <- amrfinder_url(tab2$Accession.of.closest.sequence)
 
 # Produce Table
 tab2 %>%
-  select(Element.type, Element.subtype, Prokka_ID, Gene.symbol, Sequence.name, Class, Subclass, Method, Accession.of.closest.sequence, `Query Protein Coordinates`) %>%
-  dplyr::arrange(Element.type, Prokka_ID) %>%
+  select(Element.type, Element.subtype, Generic_ID, Gene.symbol, Sequence.name, Class, Subclass, Method, Accession.of.closest.sequence, `Query Protein Coordinates`) %>%
+  dplyr::arrange(Element.type, Generic_ID) %>%
   datatable(escape = FALSE,
             filter = 'top',
             colnames = c("Resistance type", "Resistance subtype", "Query protein", "Gene", "Product", "Resistance Class", "Resistance subclass", "Detection method", "Ref. Accession", "Genomic coordinates"),
@@ -48,7 +48,7 @@ tab2 %>%
 ```{r ncbi-resistome-png, fig.align='center', fig.show='hold', fig.cap="Resistome Predicted using NCBI's AMRFinderplus", out.width="35%"}
 ## Grab AMR
 amr <- tab2 %>%
-  select(Prokka_ID, Subclass)
+  select(Generic_ID, Subclass)
 amr <- plyr::count(amr, "Subclass")
 
 ## Plot
