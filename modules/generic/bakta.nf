@@ -42,5 +42,10 @@ process BAKTA {
         --strain '${prefix}' \\
         --db $bakta_db \\
         $assembly
+    
+    # fix fasta headers
+    cut -f 1 -d ' ' annotation/${prefix}.fna > tmp.fa
+    cat tmp.fa > annotation/${prefix}.fna
+    rm tmp.fa
     """
 }
