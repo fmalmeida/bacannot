@@ -15,7 +15,8 @@ process MERGE_ANNOTATIONS {
   script:
   """
   # Rename gff and remove sequence entries
-  grep "ID=" prokka_gff > ${prefix}.gff ;
+  # bakta has region entries
+  awk '\$3 == "CDS"' prokka_gff | grep "ID=" > ${prefix}.gff ;
 
   ## Increment GFF with custom annotations
   ### VFDB

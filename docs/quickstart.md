@@ -82,3 +82,7 @@ nextflow run fmalmeida/bacannot -profile docker,quicktest --bacannot_db ./bacann
 !!! info ""
 
     Unfortunately, due to file sizes, we could not provide fast5 files for users to check on the methylation step.
+
+### Annotation with bakta
+
+User can also perform the core generic annotation with bakta instead of prokka. Please read [the manual](manual#bakta-annotation).

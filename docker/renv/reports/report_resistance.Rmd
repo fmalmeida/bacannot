@@ -8,6 +8,7 @@ params:
   query:
   amrfinder:
   gff:
+  generic_annotator:
   rgitool:
   rgiparsed:
   rgi_heatmap:
@@ -93,16 +94,25 @@ check_lines <- function(x) {
   return(ifelse(identical(as.integer(nrow(x)), integer(0)), 0, nrow(x)))
 }
 
+if (params$generic_annotator == "prokka") {
+  annotator_url <- "https://github.com/tseemann/prokka"
+  prokka_not_null <- TRUE
+}
+if (params$generic_annotator == "bakta") {
+  annotator_url <- "https://github.com/oschwengers/bakta"
+  prokka_not_null <- FALSE
+}
+
 #####################
 ### Loading files ###
 #####################
 
-# Prokka GFF
+# Generic Annotation GFF
 gff <- try(gffRead(params$gff), silent = TRUE)
 ## Adding IDs and coordinates to the GFF
 gff$`Query Protein Coordinates` <- paste(gff$seqname, ":", gff$start, "-", gff$end, sep = "")
-gff$Prokka_ID <- getAttributeField(gff$attributes, "ID", ";")
-gff$`Prokka Product` <- getAttributeField(gff$attributes, "product", ";")
+gff$Generic_ID <- getAttributeField(gff$attributes, "ID", ";")
+gff$`Generic Annotation Product` <- getAttributeField(gff$attributes, "product", ";")
 
 # Amrfinder
 amrtsv <- try(read.delim(params$amrfinder) %>% select(2,3,4,5,6,7,8,9,10,16), silent = TRUE)
@@ -232,18 +242,23 @@ All the predictions were passed through a user defined threshold for minimum cov
 ```{r, argminer_conditional_block_2, echo=FALSE, results='asis', eval=argminer_null, child='no_argminer.Rmd'}
 ```
 
-## Prokka
+## `r str_to_title(params$generic_annotator)`
 
-Additionally, Prokka generically annotates a few proteins that are related to any type of resistance. One must take caution when evaluating this result because this annotation can be very generic and therefore not so meaningful. Because it uses hmms, sometimes the annotation of genes can be based on a single detected motif thus its results must be checked whether they are correctly annotated and/or functional. These are showed in Table \@ref(tab:prokka-general-resistance).
+Additionally, `r str_to_title(params$generic_annotator)` generically annotates a few proteins that are related to any type of resistance. These are showed in Table \@ref(tab:general-resistance).
 
-<caption>(#tab:prokka-general-resistance) Generic annotation of resistance determinants by Prokka</caption>
-```{r prokka-general-resistance, echo=FALSE}
+
+```{r prokka_msg, echo=FALSE, results='asis', eval=prokka_not_null}
+> One must take caution when evaluating this result because this annotation can be very generic and therefore not so meaningful. Because it uses hmms, sometimes the annotation of genes can be based on a single detected motif thus its results must be checked whether they are correctly annotated and/or functional.
+```
+
+<caption>(#tab:general-resistance) Generic annotation of resistance determinants by `r str_to_title(params$generic_annotator)`</caption>
+```{r general-resistance, echo=FALSE}
 gff %>%
   filter(str_detect(attributes, "resistance|Resistance")) %>%
-  select("seqname", "start", "end", `Prokka Product`, "attributes") %>%
+  select("seqname", "start", "end", `Generic Annotation Product`, "attributes") %>%
   datatable(escape = FALSE,
           filter = 'top',
-          colnames = c("Contig", "Start", "End", "Prokka Product", "Description"),
+          colnames = c("Contig", "Start", "End", "Generic Annotation Product", "Description"),
           options = list(pageLength = 5,
                          lengthMenu = c(5, 10, 15, 20, 50),
                          dom='flrtBip',

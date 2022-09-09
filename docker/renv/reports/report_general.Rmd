@@ -3,7 +3,8 @@ title: "Generic annotation"
 author: "Produced with bacannot pipeline"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 params:
-  prokka:
+  generic_annotation:
+  generic_annotator:
   kegg:
   barrnap:
   mlst:
@@ -26,6 +27,8 @@ suppressMessages(library(magrittr))
 suppressMessages(library(knitr))
 suppressMessages(library(DT))
 suppressMessages(library(ballgown))
+suppressMessages(library(stringr))
+suppressMessages(library(dplyr))
 
 # Line checker
 check_lines <- function(x) {
@@ -33,7 +36,11 @@ check_lines <- function(x) {
 }
 
 # Load data
-prokka_txt <- try(read.delim(params$prokka, header = FALSE, sep = ":"), silent = TRUE)
+if (params$generic_annotator == "bakta") {
+  generic_annotation_txt <- try(read.delim(params$generic_annotation, header = FALSE, sep = ":"), silent = TRUE) %>% filter(!V1=="Sequence(s)") %>% filter(!V1=="Annotation") %>% filter(!V1=="Bakta")
+} else {
+  generic_annotation_txt <- try(read.delim(params$generic_annotation, header = FALSE, sep = ":"), silent = TRUE)
+}
 mlst_txt <- try(read.delim(params$mlst, header = FALSE), silent = TRUE)
 barrnap_gff <- try(gffRead(params$barrnap), silent = TRUE)
 if (class(barrnap_gff) != 'try-error' &
@@ -49,6 +56,15 @@ if (file.exists(params$kegg)) {
   kegg_svg <- params$kegg
 } else {
   kegg_not_null <- FALSE
+}
+
+if (params$generic_annotator == "prokka") {
+  annotator_url <- "https://github.com/tseemann/prokka"
+  prokka_not_null <- TRUE
+}
+if (params$generic_annotator == "bakta") {
+  annotator_url <- "https://github.com/oschwengers/bakta"
+  prokka_not_null <- FALSE
 }
 
 # DT options
@@ -70,7 +86,7 @@ dt_opt_lst <- list(pageLength = 1,
 
 ## About
 
-This report was built to summarise in a report the results of the most generic annotation contents, which are: Prokka, Barrnap, mlst, KofamScan and refseq_masher. If you'd like to see any other result included in this report please flag an [enhancement issue on Github](https://github.com/fmalmeida/bacannot/issues).
+This report was built to summarise in a report the results of the most generic annotation contents, which are: `r str_to_title(params$generic_annotator)`, Barrnap, mlst, KofamScan and refseq_masher. If you'd like to see any other result included in this report please flag an [enhancement issue on Github](https://github.com/fmalmeida/bacannot/issues).
 
 ## RefSeq Masher
 
@@ -113,15 +129,17 @@ datatable(mlst_txt,
         )
 ```
 
-## Prokka
+## `r str_to_title(params$generic_annotator)`
 
-[Prokka](https://github.com/tseemann/prokka) is rapid prokaryotic genome annotation tool that quickly produces standards-compliant output files.
+[`r str_to_title(params$generic_annotator)`](`r annotator_url`) is generic prokaryotic genome annotation tool that produces standards-compliant output files.
 
+```{r prokka_msg, echo=FALSE, results='asis', eval=prokka_not_null}
 > In bacannot, the prokka database is incremented with TIGRFAM's hmm [hosted at NCBI](https://ftp.ncbi.nlm.nih.gov/hmm/TIGRFAMs/release_15.0/).
+```
 
-```{r prokka_stats, echo=FALSE}
-df <- data.frame(prokka_txt[,-1])
-rownames(df) <- prokka_txt[,1]
+```{r generic_stats, echo=FALSE}
+df <- data.frame(generic_annotation_txt[,-1])
+rownames(df) <- generic_annotation_txt[,1]
 datatable(t(df),
           escape = FALSE,
           filter = 'top',
