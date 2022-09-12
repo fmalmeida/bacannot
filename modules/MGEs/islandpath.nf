@@ -19,7 +19,7 @@ process ISLANDPATH {
   touch ${prefix}_predicted_GIs.bed ;
   for file in \$(ls *.gbk); do \
     touch \${file%%.gbk}_GIs.txt ;
-    grep -q "CDS" \$file && \\
+    ( sed '/CDS.*::.*0/d' \$file | grep -q "CDS" ) && \\
         islandpath \\
         \$file \\
         \${file%%.gbk}_GIs.txt 2> dimob.err ;
