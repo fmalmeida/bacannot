@@ -246,10 +246,7 @@ All the predictions were passed through a user defined threshold for minimum cov
 
 Additionally, `r str_to_title(params$generic_annotator)` generically annotates a few proteins that are related to any type of resistance. These are showed in Table \@ref(tab:general-resistance).
 
-
-```{r prokka_msg, echo=FALSE, results='asis', eval=prokka_not_null}
-> One must take caution when evaluating this result because this annotation can be very generic and therefore not so meaningful. Because it uses hmms, sometimes the annotation of genes can be based on a single detected motif thus its results must be checked whether they are correctly annotated and/or functional.
-```
+> When using Prokka, one must take caution when evaluating this result because this annotation can be very generic and therefore not so meaningful. Because it only uses hmms, sometimes the annotation of genes can be based on a single detected motif thus its results must be checked whether they are correctly annotated and/or functional.
 
 <caption>(#tab:general-resistance) Generic annotation of resistance determinants by `r str_to_title(params$generic_annotator)`</caption>
 ```{r general-resistance, echo=FALSE}
