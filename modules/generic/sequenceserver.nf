@@ -8,10 +8,10 @@ process SEQUENCESERVER {
     tuple val(prefix), file(genome), file(genes), file(proteins)
 
     output:
-    file("*")
-    file("${genome}")
-    file("${genes}")
-    file("${proteins}")
+    path("*")          , emit: all
+    path("${genome}")  , emit: genome
+    path("${genes}")   , emit: genes
+    path("${proteins}"), emit: proteins
 
     script:
     """

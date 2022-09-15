@@ -8,11 +8,10 @@ process CUSTOM_DATABASE {
   each file(customDB)
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), val("${customDB.baseName}"), path("${prefix}_${customDB.baseName}*.summary.txt")
-  tuple val(prefix), path("${customDB.baseName}_custom_db.gff")
-  path('*.txt') // Grab all
-  path(customDB)
+  tuple val(prefix), val("${customDB.baseName}"), path("${prefix}_${customDB.baseName}*.summary.txt"), emit: summary
+  tuple val(prefix), path("${customDB.baseName}_custom_db.gff")                                      , emit: gff
+  path('*.txt')                                                                                      , emit: all
+  path(customDB)                                                                                     , emit: db
 
   script:
   """

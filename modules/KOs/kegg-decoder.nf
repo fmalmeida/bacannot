@@ -7,9 +7,8 @@ process KEGG_DECODER {
   tuple val(prefix), path('input_mapper.txt')
 
   output:
-  // Grab all outputs
-  path("*") // Get all files to input directory
-  tuple val(prefix), path("*.svg") // get svg
+  path("*")                       , emit: all     // Get all files to input directory
+  tuple val(prefix), path("*.svg"), emit: results // get svg
 
   script:
   """

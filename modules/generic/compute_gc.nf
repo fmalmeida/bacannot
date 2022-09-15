@@ -6,8 +6,7 @@ process COMPUTE_GC {
   tuple val(prefix), file(genome)
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), path("input_GC_500_bps.sorted.bedGraph"), path("input.sizes")
+  tuple val(prefix), path("input_GC_500_bps.sorted.bedGraph"), path("input.sizes"), emit: results
 
   script:
   """

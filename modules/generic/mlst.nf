@@ -11,9 +11,9 @@ process MLST {
    file(bacannot_db)
 
    output:
-   tuple val(prefix), path("${prefix}_mlst_analysis.txt")   optional true
-   tuple val(prefix), path("${prefix}_novel_alleles.fasta") optional true
-   path('mlst_version.txt')
+   tuple val(prefix), path("${prefix}_mlst_analysis.txt")   optional true, emit: results
+   tuple val(prefix), path("${prefix}_novel_alleles.fasta") optional true, emit: alleles
+   path('mlst_version.txt')                                              , emit: version
 
    script:
    """

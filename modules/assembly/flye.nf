@@ -11,10 +11,10 @@ process FLYE {
   tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)
 
   output:
-  file "flye_${prefix}" // Saves all files
+  path "flye_${prefix}", emit: all // Saves all files
   // Keep tuple structure to mixing channels
-  tuple val("${prefix}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), file("${lreads}"), val("${lr_type}"), file("${fast5}"), file("flye_${prefix}.fasta"), val("${resfinder_species}")
-  file('flye_version.txt')
+  tuple val("${prefix}"), val("${entrypoint}"), val("${sread1}"), val("${sread2}"), val("${sreads}"), path("${lreads}"), val("${lr_type}"), path("${fast5}"), path("flye_${prefix}.fasta"), val("${resfinder_species}"), emit: results
+  path('flye_version.txt'), emit: version
 
   script:
   lr = (lr_type == 'nanopore') ? '--nano-raw' : '--pacbio-raw'

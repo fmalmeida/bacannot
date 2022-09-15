@@ -12,10 +12,9 @@ process DIGIS {
   tuple val(prefix), path(genome), path(genbank)
 
   output:
-  // Grab results
-  file("digIS")
-  tuple val(prefix), path("digIS/results/${prefix}.gff")
-  tuple val(prefix), path("${prefix}_IS.gff"), path("digIS/results/fastas/${prefix}_IS.fa"), path("digIS/results/fastas/${prefix}_IS.faa")
+  path("digIS")                                         , emit: all
+  tuple val(prefix), path("digIS/results/${prefix}.gff"), emit: gff
+  tuple val(prefix), path("${prefix}_IS.gff"), path("digIS/results/fastas/${prefix}_IS.fa"), path("digIS/results/fastas/${prefix}_IS.faa"), emit: gff_and_sequences
 
   script:
   """

@@ -8,12 +8,11 @@ process RESFINDER {
   file(bacannot_db)
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("resfinder/ResFinder_results_tab.txt")
-  tuple val(prefix), file("resfinder/PointFinder_results.txt")
-  tuple val(prefix), file("resfinder/args_pheno_table.txt")
-  tuple val(prefix), file("resfinder/results_tab.gff")
-  file("resfinder/*") // Grab everything
+  tuple val(prefix), path("resfinder/ResFinder_results_tab.txt"), emit: results
+  tuple val(prefix), path("resfinder/PointFinder_results.txt")  , emit: pointfinder_results
+  tuple val(prefix), path("resfinder/args_pheno_table.txt")     , emit: pheno_table
+  tuple val(prefix), path("resfinder/results_tab.gff")          , emit: gff
+  path("resfinder/*")                                           , emit: all
 
   when:
   (resfinder_species && resfinder_species != "missing_resfinder")
