@@ -11,8 +11,8 @@ process DRAW_GIS {
   tuple val(prefix), file(gff), file(gis_bed)
 
   output:
-  tuple val(prefix), file("plots")     optional true, emit: all
-  tuple val(prefix), file("teste.png") optional true, emit: example
+  tuple val(prefix), file("plots")    , emit: all     optional true
+  tuple val(prefix), file("teste.png"), emit: example optional true
 
   script:
   """

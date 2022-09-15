@@ -7,10 +7,10 @@ process MERGE_ANNOTATIONS {
   tuple val(prefix), file('prokka_gff'), file(kofamscan), file(vfdb), file(victors), file(amrfinder), file(resfinder), file(rgi), file(iceberg), file(phast), file('digis_gff'), file(custom_databases)
 
   output:
-  tuple val(prefix), path("${prefix}.gff")                      , emit: gff
-  tuple val(prefix), path("transposable_elements_digis.gff")    , emit: digis_gff
-  tuple val(prefix), path("custom_database_*.gff") optional true, emit: customdb_gff
-  path("*.gff")                                                 , emit: all
+  tuple val(prefix), path("${prefix}.gff")                  , emit: gff
+  tuple val(prefix), path("transposable_elements_digis.gff"), emit: digis_gff
+  tuple val(prefix), path("custom_database_*.gff")          , emit: customdb_gff optional true
+  path("*.gff")                                             , emit: all
 
   script:
   """

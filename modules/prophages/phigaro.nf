@@ -11,10 +11,10 @@ process PHIGARO {
   file(bacannot_db)
 
   output:
-  tuple val(prefix), path("${prefix}_phigaro.tsv")               , emit: tsv
-  tuple val(prefix), path("${prefix}_phigaro.bed")               , emit: bed
-  tuple val(prefix), path("${prefix}_phigaro.html") optional true, emit: html
-  path('phigaro_version.txt')                                    , emit: version
+  tuple val(prefix), path("${prefix}_phigaro.tsv") , emit: tsv
+  tuple val(prefix), path("${prefix}_phigaro.bed") , emit: bed
+  tuple val(prefix), path("${prefix}_phigaro.html"), emit: html optional true
+  path('phigaro_version.txt')                      , emit: version
 
   script:
   """
