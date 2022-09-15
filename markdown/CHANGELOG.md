@@ -2,6 +2,11 @@
 
 The tracking for changes started in v2.1
 
+## v3.1.5 [??]
+
+* Fixes https://github.com/fmalmeida/bacannot/issues/64 reported by @fmalmeida, which highlights that the resfinder annotation were sometimes being duplicated because a single gene had intersection to more then one CDS regions, but, only one being "true".
+  - To solve such issue, intersections are now sorted by length, and only the first occurence (per gene) is kept.
+
 ## v3.1.4 [13-September-2022]
 
 * Fixes https://github.com/fmalmeida/bacannot/issues/62 reported by @rujinlong, where Island-Path tool was failling because it was running on genbank files with no true CDS. This was hapenning because Bakta writes in the comments that the GBK has 0 CDS and, at first, the module was selecting GBK by checking if the CDS string was there. It has now been modified to also work with Bakta.
