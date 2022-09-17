@@ -13,17 +13,17 @@ process BAKTA {
 
     output:
     // Grab all outputs
-    file "annotation"
+    path "annotation", emit: all
     // Outputs must be linked to each prefix (tag)
-    tuple val(prefix), file("annotation/${prefix}.gff3") // annotation in gff format
-    tuple val(prefix), file("annotation/${prefix}.gbff") // annotation in gbk format
-    tuple val(prefix), file("annotation/${prefix}.fna") // renamed genome
-    tuple val(prefix), file("annotation/${prefix}.faa") // gene aa sequences
-    tuple val(prefix), file("annotation/${prefix}.ffn") // gene nt sequences
-    tuple val(prefix), file("annotation/${prefix}.fna"), file("${lreads}"), file("${fast5}") // For methylation calling
-    tuple val(prefix), file("annotation/${prefix}.fna"), val("${resfinder_species}") // For resfinder
-    tuple val(prefix), file("annotation/${prefix}.txt") // bakta stats
-    file('bakta_version.txt') // Save bakta version
+    tuple val(prefix), path("annotation/${prefix}.gff3"), emit: gff // annotation in gff format
+    tuple val(prefix), path("annotation/${prefix}.gbff"), emit: gbk // annotation in gbk format
+    tuple val(prefix), path("annotation/${prefix}.fna") , emit: genome // renamed genome
+    tuple val(prefix), path("annotation/${prefix}.faa") , emit: proteins // gene aa sequences
+    tuple val(prefix), path("annotation/${prefix}.ffn") , emit: genes // gene nt sequences
+    tuple val(prefix), path("annotation/${prefix}.fna"), path("${lreads}"), path("${fast5}"), emit: genome_with_fast5 // For methylation calling
+    tuple val(prefix), path("annotation/${prefix}.fna"), val("${resfinder_species}"), emit: genome_with_species // For resfinder
+    tuple val(prefix), path("annotation/${prefix}.txt") , emit: summary // bakta stats
+    path('bakta_version.txt'), emit: version // Save bakta version
 
     script:
     """

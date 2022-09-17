@@ -8,9 +8,8 @@ process ARGMINER {
   file(bacannot_db)
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("${prefix}_argminer_blastp_onGenes.summary.txt")
-  file('*.txt') // Grab summaries
+  tuple val(prefix), path("${prefix}_argminer_blastp_onGenes.summary.txt"), emit: summary
+  path('*.txt')                                                           , emit: all
 
   script:
   """

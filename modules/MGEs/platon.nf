@@ -12,9 +12,9 @@ process PLATON {
   file(bacannot_db)
 
   output:
-  path("platon")
-  tuple val(prefix), path("platon/${prefix}.tsv")
-  path("platon_version.txt")
+  path("platon")                                 , emit: all
+  tuple val(prefix), path("platon/${prefix}.tsv"), emit: results
+  path("platon_version.txt")                     , emit: version
 
   script:
   """

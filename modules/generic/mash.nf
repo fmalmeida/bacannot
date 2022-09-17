@@ -10,9 +10,8 @@ process REFSEQ_MASHER {
   tuple val(prefix), path(genome)
 
   output:
-  // Grab results
-  tuple val(prefix), path("refseq_masher_results.txt")
-  path("*_version.txt")
+  tuple val(prefix), path("refseq_masher_results.txt"), emit: results
+  path("*_version.txt")                               , emit: version
 
   script:
   """

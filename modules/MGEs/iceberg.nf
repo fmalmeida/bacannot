@@ -9,11 +9,10 @@ process ICEBERG {
   file(bacannot_db)
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("${prefix}_iceberg_blastp_onGenes.summary.txt")
-  tuple val(prefix), file("${prefix}_iceberg_blastp_onGenes.txt")
-  tuple val(prefix), file("${prefix}_iceberg_blastn_onGenome.summary.txt")
-  file('*.txt') // Grab all
+  tuple val(prefix), path("${prefix}_iceberg_blastp_onGenes.summary.txt") , emit: genes_summary
+  tuple val(prefix), path("${prefix}_iceberg_blastp_onGenes.txt")         , emit: results
+  tuple val(prefix), path("${prefix}_iceberg_blastn_onGenome.summary.txt"), emit: genome_summary
+  path('*.txt')                                                           , emit: all
 
   script:
   """

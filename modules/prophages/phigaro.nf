@@ -11,11 +11,10 @@ process PHIGARO {
   file(bacannot_db)
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), path("${prefix}_phigaro.tsv")
-  tuple val(prefix), path("${prefix}_phigaro.bed")
-  tuple val(prefix), path("${prefix}_phigaro.html") optional true
-  path('phigaro_version.txt')
+  tuple val(prefix), path("${prefix}_phigaro.tsv") , emit: tsv
+  tuple val(prefix), path("${prefix}_phigaro.bed") , emit: bed
+  tuple val(prefix), path("${prefix}_phigaro.html"), emit: html optional true
+  path('phigaro_version.txt')                      , emit: version
 
   script:
   """

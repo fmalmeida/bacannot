@@ -11,11 +11,10 @@ process AMRFINDER {
   file(bacannot_db)
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("AMRFinder_resistance-only.tsv")
-  tuple val(prefix), file("AMRFinder_complete.tsv")
-  file("${prefix}_args.faa")
-  file("amrfinder_version.txt")
+  tuple val(prefix), path("AMRFinder_resistance-only.tsv"), emit: resistance_results
+  tuple val(prefix), path("AMRFinder_complete.tsv")       , emit: complete_results
+  path("${prefix}_args.faa")                              , emit: proteins
+  path("amrfinder_version.txt")                           , emit: version
 
   script:
   resistance_minid  = params.blast_resistance_minid / 100.00

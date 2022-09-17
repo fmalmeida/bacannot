@@ -11,9 +11,9 @@ process PHISPY {
   tuple val(prefix), file(input)
 
   output:
-  tuple val(prefix), path("PhiSpy")
-  tuple val(prefix), path("PhiSpy/prophage.tsv")
-  tuple val(prefix), path("phispy_version.txt")
+  tuple val(prefix), path("PhiSpy")             , emit: all
+  tuple val(prefix), path("PhiSpy/prophage.tsv"), emit: results
+  tuple val(prefix), path("phispy_version.txt") , emit: version
 
   script:
   """
