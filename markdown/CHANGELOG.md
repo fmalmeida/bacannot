@@ -2,7 +2,7 @@
 
 The tracking for changes started in v2.1
 
-## v3.1.5 [??]
+## v3.1.5 [17-September-2022]
 
 * Fixes https://github.com/fmalmeida/bacannot/issues/64 reported by @fmalmeida, which highlights that the resfinder annotation were sometimes being duplicated because a single gene had intersection to more then one CDS regions, but, only one being "true".
   - To solve such issue, intersections are now sorted by length, and only the first occurence (per gene) is kept.
