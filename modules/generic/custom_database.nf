@@ -24,6 +24,16 @@ process CUSTOM_DATABASE {
   fi
 
   # Step 2 - Execute blast
+  if [[ \${blast_cmd} == "blastn" ]]
+  then
+      ## In case the blast dabase throw error below:
+      ## BLAST Database error: No alias or index file found for nucleotide database
+      makeblastdb \\
+          -dbtype nucl \\
+          -in ${customDB} \\
+          -out ${customDB} ;
+  fi
+
   run_blasts.py \\
       \${blast_cmd} \\
       --query ${genome} \\
@@ -31,11 +41,11 @@ process CUSTOM_DATABASE {
       --minid ${params.blast_custom_minid} \\
       --mincov ${params.blast_custom_mincov} \\
       --threads $task.cpus \\
-      --out ${prefix}_${customDB.baseName}_\${blast_cmd}.txt \\
-      > ${prefix}_${customDB.baseName}_\${blast_cmd}.summary.txt ;
+      --out ${prefix}_${customDB.baseName}_\${blast_cmd}_onGenome.txt \\
+      > ${prefix}_${customDB.baseName}_\${blast_cmd}_onGenome.summary.txt ;
 
   # Step 3 - Produce custom gff
-  tail -n+2 ${prefix}_${customDB.baseName}_\${blast_cmd}.summary.txt | \\
+  tail -n+2 ${prefix}_${customDB.baseName}_\${blast_cmd}_onGenome.summary.txt | \\
   awk \\
     -v source="${customDB.baseName}" \\
     -F'\\t' \\
