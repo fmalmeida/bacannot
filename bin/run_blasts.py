@@ -146,8 +146,8 @@ def summary(output):
         db=line["sseqid"].split('~~~')[0]
         gene=line["sseqid"].split('~~~')[1]
         acc=line["sseqid"].split('~~~')[2]
-        prodc=line["sseqid"].split('~~~')[3]
-        desc=line["sseqid"].split('~~~')[4]
+        prodc=line["sseqid"].split('~~~')[3].split(' ')[0]
+        desc=' '.join(line["stitle"].split('~~~')[3].split(' ')[1:-1])
         # Subject coverage
         cov=round((100 * (line["length"] - line["gaps"]) / line["slen"]), 2)
         # Identity
