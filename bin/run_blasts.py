@@ -146,8 +146,16 @@ def summary(output):
         db=line["sseqid"].split('~~~')[0]
         gene=line["sseqid"].split('~~~')[1]
         acc=line["sseqid"].split('~~~')[2]
-        prodc=line["sseqid"].split('~~~')[3].split(' ')[0]
-        desc=' '.join(line["stitle"].split('~~~')[3].split(' ')[1:-1])
+
+        if len(line["sseqid"].split('~~~')) == 5:
+            prodc=line["sseqid"].split('~~~')[3]
+            desc=line["sseqid"].split('~~~')[4]
+        else:
+            prodc=line["sseqid"].split('~~~')[3].split(' ')[0]
+            try:
+                desc=' '.join(line["stitle"].split('~~~')[3].split(' ')[1:-1])
+            except:
+                desc='Not found'
         # Subject coverage
         cov=round((100 * (line["length"] - line["gaps"]) / line["slen"]), 2)
         # Identity
