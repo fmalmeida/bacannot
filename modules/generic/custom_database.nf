@@ -34,6 +34,16 @@ process CUSTOM_DATABASE {
           -out ${customDB} ;
   fi
 
+  if [[ \${blast_cmd} == "tblastn" ]]
+  then
+      ## In case the blast dabase throw error below:
+      ## BLAST Database error: No alias or index file found for nucleotide database
+      makeblastdb \\
+          -dbtype prot \\
+          -in ${customDB} \\
+          -out ${customDB} ;
+  fi
+
   run_blasts.py \\
       \${blast_cmd} \\
       --query ${genome} \\
