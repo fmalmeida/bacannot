@@ -297,7 +297,7 @@ workflow BACANNOT {
       // Render reports
       if (params.custom_db || params.ncbi_proteins) {
         CUSTOM_DATABASE_REPORT( 
-          CUSTOM_DATABASE.out.summary.join( MERGE_ANNOTATIONS.out.gff, remainder:true ) 
+          CUSTOM_DATABASE.out.summary.join( MERGE_ANNOTATIONS.out.customdb_gff, remainder:true ) 
         )
       }
       REPORT(
