@@ -89,10 +89,10 @@ These images have been kept separate to not create massive Docker image and to a
     * After installed, you need to download the required Docker images
 
     ```bash
-    docker pull fmalmeida/bacannot:v3.1_misc    ;
-    docker pull fmalmeida/bacannot:v3.1_perlenv ;
-    docker pull fmalmeida/bacannot:v3.1_pyenv   ;
-    docker pull fmalmeida/bacannot:v3.1_renv    ;
+    docker pull fmalmeida/bacannot:v3.2_misc    ;
+    docker pull fmalmeida/bacannot:v3.2_perlenv ;
+    docker pull fmalmeida/bacannot:v3.2_pyenv   ;
+    docker pull fmalmeida/bacannot:v3.2_renv    ;
     docker pull fmalmeida/bacannot:jbrowse      ;
     ```
 
