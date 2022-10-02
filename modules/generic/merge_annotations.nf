@@ -7,10 +7,10 @@ process MERGE_ANNOTATIONS {
   tuple val(prefix), file('prokka_gff'), file(kofamscan), file(vfdb), file(victors), file(amrfinder), file(resfinder), file(rgi), file(iceberg), file(phast), file('digis_gff'), file(custom_databases)
 
   output:
-  tuple val(prefix), path("${prefix}.gff")
-  tuple val(prefix), path("transposable_elements_digis.gff")
-  tuple val(prefix), path("custom_database_*.gff") optional true
-  path("*.gff")
+  tuple val(prefix), path("${prefix}.gff")                  , emit: gff
+  tuple val(prefix), path("transposable_elements_digis.gff"), emit: digis_gff
+  tuple val(prefix), path("custom_database_*.gff")          , emit: customdb_gff optional true
+  path("*.gff")                                             , emit: all
 
   script:
   """
@@ -81,7 +81,7 @@ process MERGE_ANNOTATIONS {
   #### Resfinder
   if [ ! \$(cat $resfinder | wc -l) -eq 0 ]
   then
-    bedtools intersect -a $resfinder -b ${prefix}.gff -wo > resfinder_intersected.txt ;
+    bedtools intersect -a $resfinder -b ${prefix}.gff -wo | sort -k19,19 -r | awk -F '\\t' '!seen[\$9]++' > resfinder_intersected.txt ;
     addBedtoolsIntersect.R -g ${prefix}.gff -t resfinder_intersected.txt --type Resistance --source Resfinder -o ${prefix}.gff ;
     grep "Resfinder" ${prefix}.gff > resistance_resfinder.gff ;
     rm -f resfinder_intersected.txt ;
@@ -93,7 +93,7 @@ process MERGE_ANNOTATIONS {
     if [ ! \$(cat \$file | wc -l) -eq 0 ]
     then
       db=\${file%%_custom_db.gff} ;
-      bedtools intersect -a \${file} -b ${prefix}.gff -wo > bedtools_intersected.txt ;
+      bedtools intersect -a \${file} -b ${prefix}.gff -wo | sort -k19,19 -r | awk -F '\\t' '!seen[\$9]++' > bedtools_intersected.txt ;
       addBedtoolsIntersect.R -g ${prefix}.gff -t bedtools_intersected.txt --type "CDS" --source "\${db}" -o ${prefix}.gff ;
       grep "\${db}" ${prefix}.gff > custom_database_\${db}.gff ;
       rm -f bedtools_intersected.txt ;

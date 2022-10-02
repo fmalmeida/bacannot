@@ -7,8 +7,7 @@ process ISLANDPATH {
   tuple val(prefix), file("annotation.gbk")
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), path("${prefix}_predicted_GIs.bed")
+  tuple val(prefix), path("${prefix}_predicted_GIs.bed"), emit: results
 
   script:
   """

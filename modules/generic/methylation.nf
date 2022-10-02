@@ -10,12 +10,11 @@ process CALL_METHYLATION {
   tuple val(prefix), file(draft), file(reads), file(fast5)
 
   output:
-  // Grab all outputs
-  file "*_calls.tsv" optional true
-  file "*_frequency.tsv" optional true
-  tuple val(prefix), file("methylation_frequency.bedGraph") optional true
-  tuple val(prefix), file("chr.sizes") optional true
-  file('nanopolish_version.txt')
+  path "*_calls.tsv"                                       , emit: results     optional true
+  path "*_frequency.tsv"                                   , emit: frequencies optional true
+  tuple val(prefix), path("methylation_frequency.bedGraph"), emit: bedgraph    optional true
+  tuple val(prefix), path("chr.sizes")                     , emit: chr_sizes   optional true
+  path('nanopolish_version.txt')                           , emit: version
 
   when:
   // When an entry does not exist, it is created as 'input'

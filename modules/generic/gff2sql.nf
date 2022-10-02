@@ -10,8 +10,8 @@ process CREATE_SQL {
     tuple val(prefix), file(gff), file(genes_nt), file(genes_aa), file(genome), file("digIS.gff"), file("digIS.fa"), file("digIS.faa")
 
   output:
-    file "${prefix}.sqlite"
-    file "run_server.sh"
+  path "${prefix}.sqlite", emit: results
+  path "run_server.sh"   , emit: script
 
   script:
   """

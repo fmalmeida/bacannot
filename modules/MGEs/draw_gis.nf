@@ -11,9 +11,8 @@ process DRAW_GIS {
   tuple val(prefix), file(gff), file(gis_bed)
 
   output:
-  // Outputs must be linked to each prefix (tag)
-  tuple val(prefix), file("plots")     optional true
-  tuple val(prefix), file("teste.png") optional true
+  tuple val(prefix), file("plots")    , emit: all     optional true
+  tuple val(prefix), file("teste.png"), emit: example optional true
 
   script:
   """

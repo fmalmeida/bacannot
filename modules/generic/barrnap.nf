@@ -10,9 +10,9 @@ process BARRNAP {
    tuple val(prefix), file(genome)
 
    output:
-   tuple val(prefix), path("${prefix}_rRNA.gff")
-   tuple val(prefix), path("${prefix}_rRNA.fa")
-   path('barrnap_version.txt')
+   tuple val(prefix), path("${prefix}_rRNA.gff"), emit: gff
+   tuple val(prefix), path("${prefix}_rRNA.fa") , emit: fasta
+   path('barrnap_version.txt')                  , emit: version
 
    script:
    """

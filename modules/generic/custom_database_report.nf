@@ -10,7 +10,7 @@ process CUSTOM_DATABASE_REPORT {
   tuple val(prefix), val(customDB), file(custom_blast), file(custom_gff)
 
   output:
-  file '*.html'
+  path '*.html', emit: results
 
   script:
   """

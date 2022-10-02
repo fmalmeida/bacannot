@@ -11,10 +11,9 @@ process ANTISMASH {
   file(bacannot_db)
 
   output:
-  // Grab results
-  tuple val(prefix), path("antiSMASH/regions.gff")
-  path("antiSMASH")
-  path("*_version.txt")
+  tuple val(prefix), path("antiSMASH/regions.gff"), emit: gff
+  path("antiSMASH")                               , emit: all
+  path("*_version.txt")                           , emit: version
 
   script:
   def gbk_suffix = (params.bakta_db) ? "gbff" : "gbk"

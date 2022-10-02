@@ -7,7 +7,7 @@ process GFF2GBK {
   tuple val(prefix), file(gff), file(input)
 
   output:
-  file "*.genbank"
+  path "*.genbank", emit: results
 
   """
   # Activate env

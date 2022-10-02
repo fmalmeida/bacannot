@@ -5,7 +5,7 @@ process GET_NCBI_PROTEIN {
   file(ncbi_accs)
 
   output:
-  path("ncbi_protein.faa")
+  path("ncbi_protein.faa"), emit: proteins
 
   script:
   """
