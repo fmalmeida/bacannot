@@ -334,13 +334,11 @@ workflow BACANNOT {
         annotation_out_ch.genome
         .join( annotation_out_ch.gff )
         .join( amrfinder_output_ch, remainder: true )
-        .map{ it ->
-          sample = it[0]
-          contig = it[1]
-          it.remove(0)
-          it.remove(0)
-
-          [ sample, contig, it ]
+        .map{
+          it ->
+            sample = it[0]
+            it.remove(0)
+            [ sample, it ]
         }
       CIRCOS( circos_input_ch, file( "$projectDir/assets/circos_template/*" ) ) // sub-workflow
 

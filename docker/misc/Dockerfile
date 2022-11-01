@@ -47,7 +47,7 @@ COPY victors_bkp/victors_06-2022.fasta /work/victors.fasta
 # get a copy of resfinder
 RUN conda create -y -n resfinder \
       -c bioconda -c anaconda -c conda-forge -c defaults \
-      'resfinder>=4.1' docopt
+      'resfinder>=4.1' docopt pandas
 
 # get a copy of digis
 RUN git clone -b master https://github.com/janka2012/digIS.git
