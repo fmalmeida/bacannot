@@ -38,7 +38,6 @@ process CARD_RGI {
       --output_file RGI_${prefix}_unfiltered \\
       --input_type protein \\
       --num_threads $task.cpus \\
-      --exclude_nudge \\
       --clean ;
 
   ## filtering by identity
