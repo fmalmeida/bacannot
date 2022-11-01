@@ -2,42 +2,43 @@
  * Include modules (Execution setup)
  */
 
-include { UNICYCLER              } from '../modules/assembly/unicycler.nf'
-include { FLYE                   } from '../modules/assembly/flye.nf'
-include { REFSEQ_MASHER          } from '../modules/generic/mash.nf'
-include { PROKKA                 } from '../modules/generic/prokka.nf'
-include { BAKTA                  } from '../modules/generic/bakta.nf'
-include { MLST                   } from '../modules/generic/mlst.nf'
-include { BARRNAP                } from '../modules/generic/barrnap.nf'
-include { COMPUTE_GC             } from '../modules/generic/compute_gc.nf'
-include { KOFAMSCAN              } from '../modules/KOs/kofamscan.nf'
-include { KEGG_DECODER           } from '../modules/KOs/kegg-decoder.nf'
-include { PLASMIDFINDER          } from '../modules/MGEs/plasmidfinder.nf'
-include { PLATON                 } from '../modules/MGEs/platon.nf'
-include { VFDB                   } from '../modules/virulence/vfdb.nf'
-include { VICTORS                } from '../modules/virulence/victors.nf'
-include { PHAST                  } from '../modules/prophages/phast.nf'
-include { PHIGARO                } from '../modules/prophages/phigaro.nf'
-include { PHISPY                 } from '../modules/prophages/phispy.nf'
-include { ICEBERG                } from '../modules/MGEs/iceberg.nf'
-include { ISLANDPATH             } from '../modules/MGEs/islandpath.nf'
-include { DRAW_GIS               } from '../modules/MGEs/draw_gis.nf'
-include { DIGIS                  } from '../modules/MGEs/digIS.nf'
-include { ARGMINER               } from '../modules/resistance/argminer.nf'
-include { RESFINDER              } from '../modules/resistance/resfinder.nf'
-include { AMRFINDER              } from '../modules/resistance/amrfinder.nf'
-include { CARD_RGI               } from '../modules/resistance/rgi_annotation.nf'
-include { CALL_METHYLATION       } from '../modules/generic/methylation.nf'
-include { CUSTOM_DATABASE        } from '../modules/generic/custom_database.nf'
-include { CUSTOM_DATABASE_REPORT } from '../modules/generic/custom_database_report.nf'
-include { GET_NCBI_PROTEIN       } from '../modules/generic/ncbi_protein.nf'
-include { MERGE_ANNOTATIONS      } from '../modules/generic/merge_annotations.nf'
-include { GFF2GBK                } from '../modules/generic/gff2gbk.nf'
-include { CREATE_SQL             } from '../modules/generic/gff2sql.nf'
-include { JBROWSE                } from '../modules/generic/jbrowse.nf'
-include { REPORT                 } from '../modules/generic/reports.nf'
-include { SEQUENCESERVER         } from '../modules/generic/sequenceserver.nf'
-include { ANTISMASH              } from '../modules/generic/antismash.nf'
+include { UNICYCLER              } from '../modules/assembly/unicycler'
+include { FLYE                   } from '../modules/assembly/flye'
+include { REFSEQ_MASHER          } from '../modules/generic/mash'
+include { PROKKA                 } from '../modules/generic/prokka'
+include { BAKTA                  } from '../modules/generic/bakta'
+include { MLST                   } from '../modules/generic/mlst'
+include { BARRNAP                } from '../modules/generic/barrnap'
+include { COMPUTE_GC             } from '../modules/generic/compute_gc'
+include { KOFAMSCAN              } from '../modules/KOs/kofamscan'
+include { KEGG_DECODER           } from '../modules/KOs/kegg-decoder'
+include { PLASMIDFINDER          } from '../modules/MGEs/plasmidfinder'
+include { PLATON                 } from '../modules/MGEs/platon'
+include { VFDB                   } from '../modules/virulence/vfdb'
+include { VICTORS                } from '../modules/virulence/victors'
+include { PHAST                  } from '../modules/prophages/phast'
+include { PHIGARO                } from '../modules/prophages/phigaro'
+include { PHISPY                 } from '../modules/prophages/phispy'
+include { ICEBERG                } from '../modules/MGEs/iceberg'
+include { ISLANDPATH             } from '../modules/MGEs/islandpath'
+include { DRAW_GIS               } from '../modules/MGEs/draw_gis'
+include { DIGIS                  } from '../modules/MGEs/digIS'
+include { ARGMINER               } from '../modules/resistance/argminer'
+include { RESFINDER              } from '../modules/resistance/resfinder'
+include { AMRFINDER              } from '../modules/resistance/amrfinder'
+include { CARD_RGI               } from '../modules/resistance/rgi_annotation'
+include { CALL_METHYLATION       } from '../modules/generic/methylation'
+include { CUSTOM_DATABASE        } from '../modules/generic/custom_database'
+include { CUSTOM_DATABASE_REPORT } from '../modules/generic/custom_database_report'
+include { GET_NCBI_PROTEIN       } from '../modules/generic/ncbi_protein'
+include { MERGE_ANNOTATIONS      } from '../modules/generic/merge_annotations'
+include { GFF2GBK                } from '../modules/generic/gff2gbk'
+include { CREATE_SQL             } from '../modules/generic/gff2sql'
+include { JBROWSE                } from '../modules/generic/jbrowse'
+include { REPORT                 } from '../modules/generic/reports'
+include { SEQUENCESERVER         } from '../modules/generic/sequenceserver'
+include { ANTISMASH              } from '../modules/generic/antismash'
+include { CIRCOS                 } from '../workflows/circos'
 
 /*
     DEF WORKFLOW
@@ -327,5 +328,20 @@ workflow BACANNOT {
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
       )
+
+      // Render circos plots
+      circos_input_ch =
+        annotation_out_ch.genome
+        .join( annotation_out_ch.gff )
+        .join( amrfinder_output_ch, remainder: true )
+        .map{ it ->
+          sample = it[0]
+          contig = it[1]
+          it.remove(0)
+          it.remove(0)
+
+          [ sample, contig, it ]
+        }
+      CIRCOS( circos_input_ch, file( "$projectDir/assets/circos_template/*" ) ) // sub-workflow
 
 }
