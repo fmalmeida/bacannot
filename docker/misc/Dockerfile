@@ -45,9 +45,9 @@ COPY argminer_bkp/argminer.fasta /work/argminer.fasta
 COPY victors_bkp/victors_06-2022.fasta /work/victors.fasta
 
 # get a copy of resfinder
-RUN git clone -b master https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
-      chmod a+rwx -R resfinder
-ENV PATH=/work/resfinder:$PATH
+RUN conda create -y -n resfinder \
+      -c bioconda -c anaconda -c conda-forge -c defaults \
+      'resfinder>=4.1' docopt
 
 # get a copy of digis
 RUN git clone -b master https://github.com/janka2012/digIS.git

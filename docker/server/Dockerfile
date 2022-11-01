@@ -17,13 +17,19 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libcurl4-openssl-dev \
     libssl-dev \
     r-bioc-biostrings \
-    r-bioc-iranges \
-    ncbi-blast+
+    r-bioc-iranges
 
 ## update system libraries
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get clean
+
+## install ncbi-blast
+RUN wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.13.0/ncbi-blast-2.13.0+-x64-linux.tar.gz && \
+    tar zxvf ncbi-blast-2.13.0+-x64-linux.tar.gz && \
+    rm ncbi-blast-2.13.0+-x64-linux.tar.gz && \
+    mv ./ncbi-blast-2.13.0+/bin/* /usr/local/bin/ && \
+    rm -rf ./ncbi-blast-2.13.0+/
 
 # Set workdir
 WORKDIR /app
