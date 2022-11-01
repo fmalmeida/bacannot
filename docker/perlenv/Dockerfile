@@ -1,10 +1,11 @@
 FROM nfcore/base
-LABEL authors="Felipe Almeida" \
-      description="Docker image containing perl-based bacannot tools"
+LABEL authors="Felipe Almeida"
+LABEL description="Docker image containing perl-based bacannot tools"
 ENV IMAGE=perl
 
 # Install the conda environment
-RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda --force-reinstall --update-deps --no-channel-priority \
+RUN conda install \
+	-c bioconda -c defaults -c conda-forge -c anaconda --force-reinstall --update-deps --no-channel-priority \
 	'prokka>=1.14' \
 	'hmmer=3.1b2' \
 	barrnap \
@@ -13,7 +14,8 @@ RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda --force-rei
 	'python>3' \
 	perl-bioperl \
 	perl-bioperl-core \
-	perl-digest-sha1
+	perl-digest-sha1 \
+	circos
 
 # Fix perl -- prokka
 RUN conda update -y prokka
