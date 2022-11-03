@@ -11,7 +11,7 @@ process ANTISMASH {
   file(bacannot_db)
 
   output:
-  tuple val(prefix), path("antiSMASH/regions.gff"), emit: gff
+  tuple val(prefix), path("antiSMASH/regions.gff"), emit: gff, optional: true
   path("antiSMASH")                               , emit: all
   path("*_version.txt")                           , emit: version
 
@@ -47,19 +47,24 @@ process ANTISMASH {
     -auto ;
 
   # get the locus tags annotated as list
-  grep \\
-    "locus_tag" \\
-    *region*gbk | \\
-    cut \\
-    -f 2 \\
-    -d "=" | \\
-    tr -d '"' | \\
-    sort -u > gene_ids.lst ;
+  # only when results exist
+  if ls *region*gbk 1> /dev/null 2>&1; then
 
-  # subset regions GFF from main GFF for JBrowse
-  grep \\
-    -w \\
-    -f gene_ids.lst \\
-    ${gbk_prefix}.gff > regions.gff ;
+    grep \\
+      "locus_tag" \\
+      *region*gbk | \\
+      cut \\
+      -f 2 \\
+      -d "=" | \\
+      tr -d '"' | \\
+      sort -u > gene_ids.lst ;
+
+    # subset regions GFF from main GFF for JBrowse
+    grep \\
+      -w \\
+      -f gene_ids.lst \\
+      ${gbk_prefix}.gff > regions.gff ;
+  
+  fi
   """
 }
