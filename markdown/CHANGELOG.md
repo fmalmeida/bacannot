@@ -2,6 +2,12 @@
 
 The tracking for changes started in v2.1
 
+## v3.1.6 [7-November-2022]
+
+* Fixes https://github.com/fmalmeida/bacannot/issues/71 reported by @fetyj, which highlights that antismash module was failing when outputs for a sample were empty.
+  - To solve this issue, the module was updated as such the antismash main results is now optional instead of being required, and 'gff conversion' steps are done only when it's results are not empty.
+  - PR: https://github.com/fmalmeida/bacannot/pull/72
+
 ## v3.1.5 [17-September-2022]
 
 * Fixes https://github.com/fmalmeida/bacannot/issues/64 reported by @fmalmeida, which highlights that the resfinder annotation were sometimes being duplicated because a single gene had intersection to more then one CDS regions, but, only one being "true".
