@@ -13,6 +13,7 @@ process AMRFINDER {
   output:
   tuple val(prefix), path("AMRFinder_resistance-only.tsv"), emit: resistance_results
   tuple val(prefix), path("AMRFinder_complete.tsv")       , emit: complete_results
+  tuple val(prefix), path("*")                            , emit: all
   path("${prefix}_args.faa")                              , emit: proteins
   path("amrfinder_version.txt")                           , emit: version
 

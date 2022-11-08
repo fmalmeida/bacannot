@@ -14,6 +14,7 @@ process CALL_METHYLATION {
   path "*_frequency.tsv"                                   , emit: frequencies optional true
   tuple val(prefix), path("methylation_frequency.bedGraph"), emit: bedgraph    optional true
   tuple val(prefix), path("chr.sizes")                     , emit: chr_sizes   optional true
+  tuple val(prefix), path("*")                             , emit: all
   path('nanopolish_version.txt')                           , emit: version
 
   when:

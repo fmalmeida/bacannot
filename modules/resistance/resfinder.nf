@@ -12,7 +12,7 @@ process RESFINDER {
     tuple val(prefix), path("resfinder/PointFinder_results.txt")  , emit: pointfinder_results
     tuple val(prefix), path("resfinder/args_pheno_table.txt")     , emit: pheno_table
     tuple val(prefix), path("resfinder/results_tab.gff")          , emit: gff
-    path("resfinder/*")                                           , emit: all
+    tuple val(prefix), path("resfinder")                          , emit: all
 
     when:
     (resfinder_species && resfinder_species != "missing_resfinder")

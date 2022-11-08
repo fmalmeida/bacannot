@@ -12,7 +12,7 @@ process CARD_RGI {
   path(bacannot_db)
 
   output:
-  path "*RGI_${prefix}*"                                  , emit: all         optional true 
+  tuple val(prefix), path("*RGI_${prefix}*")              , emit: all         optional true 
   tuple val(prefix), path("Parsed_RGI_${prefix}_hits.txt"), emit: parsed_hits optional true
   tuple val(prefix), path("RGI_${prefix}.txt")            , emit: raw_hits    optional true 
   tuple val(prefix), path("heatmap/RGI*heatmap*.png")     , emit: heatmap_png optional true
