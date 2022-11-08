@@ -38,6 +38,7 @@ include { JBROWSE                } from '../modules/generic/jbrowse'
 include { REPORT                 } from '../modules/generic/reports'
 include { SEQUENCESERVER         } from '../modules/generic/sequenceserver'
 include { ANTISMASH              } from '../modules/generic/antismash'
+include { SUMMARY                } from '../modules/generic/summary'
 include { CIRCOS                 } from '../workflows/circos'
 
 /*
@@ -95,9 +96,11 @@ workflow BACANNOT {
       if (params.skip_kofamscan == false) {
         KOFAMSCAN( annotation_out_ch.proteins, dbs_ch )
         KEGG_DECODER( KOFAMSCAN.out.results )
+        kofamscan_all_ch    = KOFAMSCAN.out.all
         kofamscan_output_ch = KOFAMSCAN.out.results
         kegg_decoder_svg_ch = KEGG_DECODER.out.results
       } else {
+        kofamscan_all_ch    = Channel.empty()
         kofamscan_output_ch = Channel.empty()
         kegg_decoder_svg_ch = Channel.empty()
       }
@@ -110,13 +113,17 @@ workflow BACANNOT {
       if (params.skip_plasmid_search == false) {  
         // plasmidfinder
         PLASMIDFINDER( annotation_out_ch.genome, dbs_ch )
+        plasmidfinder_all_ch    = PLASMIDFINDER.out.all
         plasmidfinder_output_ch = PLASMIDFINDER.out.results
         // platon
         PLATON( annotation_out_ch.genome, dbs_ch )
         platon_output_ch = PLATON.out.results
+        platon_all_ch    = PLATON.out.all
       } else {
+        plasmidfinder_all_ch    = Channel.empty()
         plasmidfinder_output_ch = Channel.empty()
         platon_output_ch        = Channel.empty()
+        platon_all_ch           = Channel.empty()
       }
 
       // IslandPath software
@@ -127,12 +134,16 @@ workflow BACANNOT {
         // VFDB
         VFDB( annotation_out_ch.genes, dbs_ch )
         vfdb_output_ch = VFDB.out.results
+        vfdb_all_ch    = VFDB.out.all
         // Victors db
         VICTORS( annotation_out_ch.proteins, dbs_ch )
         victors_output_ch = VICTORS.out.results
+        victors_all_ch    = VFDB.out.all
       } else {
+        vfdb_all_ch       = Channel.empty()
         vfdb_output_ch    = Channel.empty()
         victors_output_ch = Channel.empty()
+        victors_all_ch    = Channel.empty()
       }
 
       // Prophage search
@@ -140,17 +151,23 @@ workflow BACANNOT {
         // PHAST db
         PHAST( annotation_out_ch.proteins, dbs_ch )
         phast_output_ch = PHAST.out.results
+        phast_all_ch    = PHAST.out.all
         // Phigaro software
         PHIGARO( annotation_out_ch.genome, dbs_ch )
         phigaro_output_tsv_ch = PHIGARO.out.tsv
         phigaro_output_bed_ch = PHIGARO.out.bed
+        phigaro_all_ch        = PHIGARO.out.all
         // PhiSpy
         PHISPY( annotation_out_ch.gbk )
         phispy_output_ch = PHISPY.out.results
+        phispy_all_ch    = PHISPY.out.all
       } else {
+        phast_all_ch          = Channel.empty()
         phast_output_ch       = Channel.empty()
+        phigaro_all_ch        = Channel.empty()
         phigaro_output_tsv_ch = Channel.empty()
         phigaro_output_bed_ch = Channel.empty()
+        phispy_all_ch         = Channel.empty()
         phispy_output_ch      = Channel.empty()
       }
 
@@ -160,7 +177,9 @@ workflow BACANNOT {
         ICEBERG( annotation_out_ch.proteins, annotation_out_ch.genome, dbs_ch )
         iceberg_output_blastp_ch   = ICEBERG.out.results
         iceberg_output_blastn_ch   = ICEBERG.out.genome_summary
+        iceberg_all_ch             = ICEBERG.out.all
       } else {
+        iceberg_all_ch             = Channel.empty()
         iceberg_output_blastp_ch   = Channel.empty()
         iceberg_output_blastn_ch   = Channel.empty()
       }
@@ -170,26 +189,34 @@ workflow BACANNOT {
         // AMRFinderPlus
         AMRFINDER( annotation_out_ch.proteins, dbs_ch )
         amrfinder_output_ch = AMRFINDER.out.resistance_results
+        amrfinder_all_ch    = AMRFINDER.out.all
         // CARD-RGI
         CARD_RGI( annotation_out_ch.proteins, dbs_ch )
+        rgi_all_ch           = CARD_RGI.out.all
         rgi_output_ch        = CARD_RGI.out.raw_hits
         rgi_output_parsed_ch = CARD_RGI.out.parsed_hits
         rgi_heatmap_ch       = CARD_RGI.out.heatmap_png
         // ARGMiner
         ARGMINER( annotation_out_ch.proteins, dbs_ch )
         argminer_output_ch = ARGMINER.out.summary
+        argminer_all_ch    = ARGMINER.out.all
         // Resfinder
         RESFINDER( annotation_out_ch.genome_with_species, dbs_ch )
+        resfinder_all_ch                  = RESFINDER.out.all
         resfinder_output_tab_ch           = RESFINDER.out.results
         resfinder_output_pointfinder_ch   = RESFINDER.out.pointfinder_results
         resfinder_phenotable_ch           = RESFINDER.out.pheno_table
         resfinder_gff_ch                  = RESFINDER.out.gff
       } else {
+        rgi_all_ch                        = Channel.empty()
         rgi_output_ch                     = Channel.empty()
         rgi_output_parsed_ch              = Channel.empty()
         rgi_heatmap_ch                    = Channel.empty()
+        amrfinder_all_ch                  = Channel.empty()
         amrfinder_output_ch               = Channel.empty()
+        argminer_all_ch                   = Channel.empty()
         argminer_output_ch                = Channel.empty()
+        resfinder_all_ch                  = Channel.empty()
         resfinder_output_tab_ch           = Channel.empty()
         resfinder_output_pointfinder_ch   = Channel.empty()
         resfinder_phenotable_ch           = Channel.empty()
@@ -216,8 +243,10 @@ workflow BACANNOT {
       // antiSMASH
       if (params.skip_antismash == false) {
         ANTISMASH( annotation_out_ch.gbk, dbs_ch )
+        antismash_all_ch    = ANTISMASH.out.all
         antismash_output_ch = ANTISMASH.out.gff
       } else {
+        antismash_all_ch    = Channel.empty()
         antismash_output_ch = Channel.empty()
       }
 
@@ -229,14 +258,17 @@ workflow BACANNOT {
       )
 
       // custom databases annotation
-      ch_custom_databases_annotations = Channel.empty()
       if (params.custom_db || params.ncbi_proteins) {
         GET_NCBI_PROTEIN( ncbi_accs )
         CUSTOM_DATABASE(
           annotation_out_ch.gff.join( annotation_out_ch.genome ),
           custom_db.mix( GET_NCBI_PROTEIN.out.proteins )
         )
-        ch_custom_databases_annotations = CUSTOM_DATABASE.out.gff.groupTuple()
+        ch_custom_annotations     = CUSTOM_DATABASE.out.gff.groupTuple()
+        ch_custom_annotations_all = CUSTOM_DATABASE.out.all.groupTuple()
+      } else {
+        ch_custom_annotations     = Channel.empty()
+        ch_custom_annotations_all = Channel.empty()
       }
 
       /*
@@ -253,7 +285,7 @@ workflow BACANNOT {
           .join(iceberg_output_blastp_ch,        remainder: true)
           .join(phast_output_ch,                 remainder: true)
           .join(DIGIS.out.gff,                   remainder: true)
-          .join(ch_custom_databases_annotations, remainder: true) 
+          .join(ch_custom_annotations,           remainder: true) 
       )
 
       /*
@@ -327,6 +359,34 @@ workflow BACANNOT {
           .join( DRAW_GIS.out.example,            remainder: true )
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
+      )
+
+      //
+      // Generate annotation JSON summary
+      //
+      SUMMARY( 
+        annotation_out_ch.all
+        .join( MLST.out.all             , remainder: true )
+        .join( BARRNAP.out.all          , remainder: true )
+        .join( kofamscan_all_ch         , remainder: true )
+        .join( plasmidfinder_all_ch     , remainder: true )
+        .join( platon_all_ch            , remainder: true )
+        .join( ISLANDPATH.out.results   , remainder: true )
+        .join( vfdb_all_ch              , remainder: true )
+        .join( victors_all_ch           , remainder: true )
+        .join( phast_all_ch             , remainder: true )
+        .join( phigaro_all_ch           , remainder: true )
+        .join( phispy_all_ch            , remainder: true )
+        .join( iceberg_all_ch           , remainder: true )
+        .join( amrfinder_all_ch         , remainder: true )
+        .join( rgi_all_ch               , remainder: true )
+        .join( argminer_all_ch          , remainder: true )
+        .join( resfinder_all_ch         , remainder: true )
+        .join( CALL_METHYLATION.out.all , remainder: true )
+        .join( REFSEQ_MASHER.out.results, remainder: true )
+        .join( DIGIS.out.all            , remainder: true )
+        .join( antismash_all_ch         , remainder: true )
+        .join( MERGE_ANNOTATIONS.out.all, remainder: true )
       )
 
       // Render circos plots
