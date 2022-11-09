@@ -39,6 +39,7 @@ include { REPORT                 } from '../modules/generic/reports'
 include { SEQUENCESERVER         } from '../modules/generic/sequenceserver'
 include { ANTISMASH              } from '../modules/generic/antismash'
 include { SUMMARY                } from '../modules/generic/summary'
+include { MERGE_SUMMARIES        } from '../modules/generic/merge_summaries'
 include { CIRCOS                 } from '../workflows/circos'
 
 /*
@@ -388,12 +389,16 @@ workflow BACANNOT {
         .join( antismash_all_ch         , remainder: true )
         .join( MERGE_ANNOTATIONS.out.all, remainder: true )
       )
+      MERGE_SUMMARIES(
+        SUMMARY.out.summaries.map{ it[1] }.collect()
+      )
 
       // Render circos plots
       circos_input_ch =
         annotation_out_ch.genome
         .join( annotation_out_ch.gff )
         .join( amrfinder_output_ch, remainder: true )
+        .join( SUMMARY.out.summaries )
         .map{
           it ->
             sample = it[0]
