@@ -54,6 +54,9 @@ RUN git clone -b master https://github.com/janka2012/digIS.git
 COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
 ENV PATH=/work/digIS:$PATH
 
+# install jq
+RUN apt-get update && apt-get install -y jq
+
 # fix permissions
 RUN chmod 777 -R /work
 RUN chmod 777 -R /opt/conda/envs/antismash/lib/*/site-packages/antismash
