@@ -7,7 +7,7 @@ process SUMMARY {
     input:
     tuple val(prefix), 
     file(annotation), file(stageAs: "results/${prefix}/MLST/*"), 
-    file(stageAs: "results/${prefix}/rRNA/*"), file(kofamscan), 
+    file(stageAs: "results/${prefix}/rRNA/*"), file(stageAs: "results/${prefix}/*"), 
     file(stageAs: "results/${prefix}/plasmids/*"), file(stageAs: "results/${prefix}/plasmids/*"), 
     file(stageAs: "results/${prefix}/genomic_islands/*"), file(stageAs: "results/${prefix}/virulence/vfdb/*"),
     file(stageAs: "results/${prefix}/virulence/victors/*"), file(stageAs: "results/${prefix}/prophages/phast_db/*"),
