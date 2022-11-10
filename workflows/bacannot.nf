@@ -396,15 +396,19 @@ workflow BACANNOT {
       // Render circos plots
       circos_input_ch =
         annotation_out_ch.genome
-        .join( annotation_out_ch.gff )
-        .join( amrfinder_output_ch, remainder: true )
-        .join( SUMMARY.out.summaries )
+        .join( annotation_out_ch.gff, remainder: true )
+        .join( amrfinder_output_ch  , remainder: true )
+        .join( SUMMARY.out.summaries, remainder: true )
         .map{
           it ->
             sample = it[0]
             it.remove(0)
             [ sample, it ]
         }
-      CIRCOS( circos_input_ch, file( "$projectDir/assets/circos_template/*" ) ) // sub-workflow
+      CIRCOS( 
+        circos_input_ch, 
+        file( "$projectDir/assets/circos_template/*" ),
+        PLASMIDFINDER.out.results
+      ) // sub-workflow
 
 }
