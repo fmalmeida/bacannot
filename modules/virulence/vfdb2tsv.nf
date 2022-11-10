@@ -1,22 +1,20 @@
-process AMRFINDER2TSV {
+process VFDB2TSV {
     tag "$prefix"
 
     label = [ 'renv', 'process_low' ]
 
     input:
     tuple val(prefix), path(inputs)
-    path(aro_tsv)
 
     output:
-    tuple val(prefix), path("identified_amrfinderplus_genes.tsv"), emit: args, optional: true
+    tuple val(prefix), path("identified_vfdb_genes.tsv"), emit: genes, optional: true
 
     script:
     def annotation_summary = inputs[3]
     """
-    amrfinder2tsv.R \
+    vfdb2tsv.R \
         --input $annotation_summary \
-        --output identified_amrfinderplus_genes.tsv \
-        --aro $aro_tsv \
+        --output identified_vfdb_genes.tsv \
         --sample $prefix
     """
 }
