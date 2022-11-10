@@ -11,6 +11,8 @@ process MAKE_KARYOTYPE {
 
     shell:
     '''
+    source activate bioawk
+    
     while read -r FASTA FASTA_PREFIX FASTA_COLOR ; do
 
         name="$(basename $FASTA)" ;

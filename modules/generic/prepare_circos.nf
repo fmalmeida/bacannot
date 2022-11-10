@@ -12,6 +12,7 @@ process PREPARE_CIRCOS {
     shell:
     '''
     # prepare amrfinderplus genes
+    touch amrfinder.txt amrfinder_text.txt
     if [ -s identified_amrfinderplus_genes.tsv ]; then
         tail -n+2 \\
             identified_amrfinderplus_genes.tsv | \\
@@ -22,6 +23,7 @@ process PREPARE_CIRCOS {
     fi
 
     # prepare vfdb genes
+    touch vfdb.txt vfdb_text.txt
     if [ -s identified_vfdb_genes.tsv ]; then
         tail -n+2 \\
             identified_vfdb_genes.tsv | \\
@@ -32,6 +34,7 @@ process PREPARE_CIRCOS {
     fi
 
     # prepare plasmidfinder loci
+    touch plasmidfinder.txt plasmidfinder_text.txt
     find \\
         -L . \\
         -name 'results_tab.tsv' | \\
