@@ -56,5 +56,8 @@ process PREPARE_CIRCOS {
         fi
 
     fi
+
+    # collapse labels
+    cat *_text.txt > all_labels.txt
     '''
 }
