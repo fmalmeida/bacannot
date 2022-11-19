@@ -10,22 +10,22 @@ RUN conda install \
 	'hmmer=3.1b2' \
 	barrnap \
 	mlst \
-	islandpath \
+	'islandpath>=1.0.6' \
 	'python>3' \
-	perl-bioperl \
-	perl-bioperl-core \
+	'perl>=5.26' \
+	'perl-bioperl>=1.7.8' \
 	perl-digest-sha1 \
+	perl-app-cpanminus \
+	perl-local-lib \
 	circos
+ENV PERL5LIB="/opt/conda/lib/perl5/site_perl"
 
 # Fix perl -- prokka
-RUN conda update -y prokka
-RUN apt-get update -y && apt-get install -y build-essential
-RUN cpanm Bio::SearchIO::hmmer3 --force
-
-# Fix perl -- bioperl
-RUN cpanm Cache::FileCache --force
-RUN cpanm Bio::DB::GenPept --force
-RUN cpanm Bio::Perl --force
+RUN apt-get update -y && apt-get install -y build-essential libexpat1-dev
+RUN cpanm Test::Needs --force --reinstall
+RUN cpanm Test::RequiresInternet Test::NoWarnings  --force --reinstall
+RUN conda install -c conda-forge -y 'perl-xml-parser>2.44'
+RUN cpanm XML::Twig Bio::Perl --force --reinstall || true
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
