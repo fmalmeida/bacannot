@@ -125,6 +125,16 @@ Users can give fasta files (nucl or prot) properly formatted or a text file cont
 | :--------------------------------------- | :------- | :------ | :---------- |
 | `--bedtools_merge_distance` | :material-close: | NA | Minimum number of required overlapping bases to merge genes. By default it is not executed. |
 
+## Non-core tools versions
+
+Users can now select the version of the non-core tools Bakta, Unicyler and Flye. These tools now have a parameter which controls which tag, thus version, from quay.io to use.
+
+| Parameter | Default | Description |
+| :-------- | :------ | :---------- |
+| `--bakta_version`     | 1.6.1--pyhdfd78af_0   | Bakta tool version     |
+| `--flye_version`      | 2.9--py39h39abbe0_0   | Flye tool version      |
+| `--unicycler_version` | 0.4.8--py38h8162308_3 | Unicycler tool version |
+
 ## Max job request options
 
 Set the top limit for requested resources for any single job. If you are running on a smaller system, a pipeline step requesting more resources than are available may cause the Nextflow to stop the run with an error. These options allow you to cap the maximum resources requested by any single job so that the pipeline will run on your system.

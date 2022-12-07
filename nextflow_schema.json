@@ -174,7 +174,7 @@
                 "plasmids_minid": {
                     "type": "number",
                     "description": "Identity threshold for plasmid annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -183,7 +183,7 @@
                 "plasmids_mincov": {
                     "type": "number",
                     "description": "overage threshold for plasmid annotation",
-                    "default": 60,
+                    "default": 60.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -192,7 +192,7 @@
                 "blast_virulence_minid": {
                     "type": "number",
                     "description": "Identity threshold for virulence factors annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -201,7 +201,7 @@
                 "blast_virulence_mincov": {
                     "type": "number",
                     "description": "overage threshold for virulence factors annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -210,7 +210,7 @@
                 "blast_resistance_minid": {
                     "type": "number",
                     "description": "Identity threshold for resistance genes annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -219,7 +219,7 @@
                 "blast_resistance_mincov": {
                     "type": "number",
                     "description": "overage threshold for resistance genes annotation",
-                    "default": 90,
+                    "default": 90.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -228,7 +228,7 @@
                 "blast_MGEs_minid": {
                     "type": "number",
                     "description": "Identity threshold for ICEs and prophages annotation",
-                    "default": 85,
+                    "default": 85.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -237,7 +237,7 @@
                 "blast_MGEs_mincov": {
                     "type": "number",
                     "description": "overage threshold for ICEs and prophages annotation",
-                    "default": 85,
+                    "default": 85.0,
                     "minimum": 0,
                     "maximum": 100,
                     "help_text": "Must be between 0 and 100",
@@ -267,7 +267,7 @@
                 "blast_custom_minid": {
                     "type": "number",
                     "description": "Min. identity % for the annotation using user's custom database",
-                    "default": 65,
+                    "default": 65.0,
                     "minimum": 0,
                     "maximum": 100,
                     "hidden": true
@@ -275,7 +275,7 @@
                 "blast_custom_mincov": {
                     "type": "number",
                     "description": "Min. gene/subject coverage % for the annotation using user's custom database",
-                    "default": 65,
+                    "default": 65.0,
                     "minimum": 0,
                     "maximum": 100,
                     "hidden": true
@@ -329,6 +329,21 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "unicycler_version": {
+                    "type": "string",
+                    "description": "Select quay.io image tag for tool",
+                    "default": "0.4.8--py38h8162308_3"
+                },
+                "flye_version": {
+                    "type": "string",
+                    "description": "Select quay.io image tag for tool",
+                    "default": "2.9--py39h39abbe0_0"
+                },
+                "bakta_version": {
+                    "type": "string",
+                    "description": "Select quay.io image tag for tool",
+                    "default": "1.6.1--pyhdfd78af_0"
                 }
             }
         },
