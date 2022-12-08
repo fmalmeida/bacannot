@@ -2,9 +2,16 @@
 
 The tracking for changes started in v2.1
 
+## v3.1.7 [6-December-2022]
+
+* Fixes https://github.com/fmalmeida/bacannot/issues/75 reported by @sunitj, who highlighted that bakta tool required an update.
+* Now, as a consequence, the non-core tools, namely Bakta, Flye and Unicycler that are used only when required in particular cases now have a parameter to control the version of the tool desired.
+  * These non-default tools are used with bioconda images from quay.io, now they have parameters `--bakta_version`, `--unicycler_version` and `--flye_version` that allows users to control the version (from quay.io) used.
+* PR: https://github.com/fmalmeida/bacannot/pull/76
+
 ## v3.1.6 [7-November-2022]
 
-* Fixes https://github.com/fmalmeida/bacannot/issues/71 reported by @fetyj, which highlights that antismash module was failing when outputs for a sample were empty.
+* Fixes https://github.com/fmalmeida/bacannot/issues/71 reported by @fetyj, who highlights that antismash module was failing when outputs for a sample were empty.
   - To solve this issue, the module was updated as such the antismash main results is now optional instead of being required, and 'gff conversion' steps are done only when it's results are not empty.
   - PR: https://github.com/fmalmeida/bacannot/pull/72
 
