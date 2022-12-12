@@ -143,8 +143,16 @@ if (length(files_list) > 0) {
   string.list <- as.list(files_list)
   cat("* Reports of custom database annotations:\n")
   for (report_file in string.list) {
-   cat(paste("\t* [Report: ", trimws(basename(report_file), which = 'both'),
-             "](", trimws(report_file, which = 'both'), ")", sep = ''), sep = '\n')
+  cat(
+    paste(
+      "\t* [Report: ", trimws(basename(report_file), which = 'both'),
+      "](", 
+      trimws(report_file, which = 'both'), 
+      ")", 
+      sep = ''
+    ), 
+    sep = '\n'
+  )
   }
 }
 
@@ -172,10 +180,12 @@ This tab is a custom implementation of BLAST using its tabular output in order t
 ```
 
 ```{r, echo=FALSE}
-genome_blast(genome = Sys.glob(file.path("/work/annotation/*.fna")),
-             nucl = Sys.glob(file.path("/work/annotation/*.ffn")),
-             prot = Sys.glob(file.path("/work/annotation/*.faa")),
-             sqldb = DBI::dbConnect(RSQLite::SQLite(), Sys.glob(file.path("/work/sqldb/*.sqlite"))))
+genome_blast(
+  genome = Sys.glob(file.path("/work/annotation/*.fna")),
+  nucl = Sys.glob(file.path("/work/annotation/*.ffn")),
+  prot = Sys.glob(file.path("/work/annotation/*.faa")),
+  sqldb = DBI::dbConnect( RSQLite::SQLite(), Sys.glob( file.path("/work/sqldb/*.sqlite") ) )
+)
 ```
 
 ```{r results='asis', eval=eval_sequence_server}
