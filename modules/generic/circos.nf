@@ -1,5 +1,5 @@
-process PLOT {
-    publishDir "${params.output}/${prefix}/CIRCOS", mode: 'copy', saveAs: { filename ->
+process CIRCOS {
+    publishDir "${params.output}/${prefix}/circos", mode: 'copy', saveAs: { filename ->
         if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
         else "$filename"
     }
@@ -8,37 +8,43 @@ process PLOT {
     label = [ 'perl', 'process_low' ]
 
     input:
-    tuple val(prefix), path(inputs, stageAs: 'sample/*') // all inputs required by circos
-    path(circos_conf, stageAs: 'conf/*')
+    tuple val(prefix), path(inputs)
 
     output:
-    path("per_contig")
-    path("whole_genome")
+    path("*")
 
-    shell:
-    '''
-    # per contig
-    while read contig ; do
+    script:
+    def genome = inputs[0]
+    def gff    = inputs[1]
 
-        mkdir -p per_contig/${contig}   ;
-        mkdir per_contig/${contig}/data ;
-        cp -r conf per_contig/${contig} ;
-        
-        for file in $(ls sample/*) ; do
+    """
+    echo "${genome},${prefix},dgrey" > input.fofn
 
-            name=$(basename $file) ;
-            grep $contig $file > per_contig/${contig}/data/${name} || touch per_contig/${contig}/data/${name} ;
-        
-        done ;
+    plot_circos \\
+        --fofn input.fofn \\
+        --skip_links \\
+        --bacannot \\
+        --minlen ${params.circos_min_len} \\
+        --outdir PLOT
+    
+    ( cd PLOT/conf && touch mges.txt )
 
-        ( cd per_contig/${contig} && circos -conf conf/template.conf ) ;
+    plot_circos --gff2labels "" "" ID black <( awk '\$7=="+"' ${gff} ) > PLOT/conf/forward_features.txt
 
-    done < <( cat sample/skew.txt | cut -f 1 | sort -u )
+    plot_circos --gff2labels "" "" ID dgreen <( awk '\$7=="-"' ${gff} ) > PLOT/conf/reverse_features.txt
+    
+    plot_circos --gff2labels "" "" ID dorange <( awk '\$3 ~ /rRNA/' ${gff} ) > PLOT/conf/rrna.txt
+    
+    plot_circos --gff2labels "" "" ID dpurple <( awk '\$3 ~ /tRNA/' ${gff} ) > PLOT/conf/trna.txt
 
-    # normal one
-    mkdir whole_genome             ;
-    cp -r sample whole_genome/data ;
-    cp -r conf whole_genome        ;
-    ( cd whole_genome && circos -conf conf/template.conf ) ;
-    '''
+    plot_circos --gff2labels "" "" "NDARO:Gene_Name" black <( awk '\$2 ~ /AMRFinderPlus/' ${gff} ) > PLOT/conf/bacannot_labels.txt
+
+    plot_circos --gff2labels "" "" "VFDB:Product" black <( awk '\$2 ~ /VFDB/' ${gff} ) \\
+        sed -e 's/[//g' -e 's/_(VF.* //g' > PLOT/conf/bacannot_labels.txt
+    
+    mv PLOT/* .
+    rm -rf PLOT
+    cd conf
+    circos
+    """
 }

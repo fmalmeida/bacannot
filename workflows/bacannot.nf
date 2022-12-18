@@ -40,7 +40,7 @@ include { SEQUENCESERVER         } from '../modules/generic/sequenceserver'
 include { ANTISMASH              } from '../modules/generic/antismash'
 include { SUMMARY                } from '../modules/generic/summary'
 include { MERGE_SUMMARIES        } from '../modules/generic/merge_summaries'
-include { CIRCOS                 } from '../workflows/circos'
+include { CIRCOS                 } from '../modules/generic/circos'
 
 /*
     DEF WORKFLOW
@@ -396,19 +396,15 @@ workflow BACANNOT {
       // Render circos plots
       circos_input_ch =
         annotation_out_ch.genome
-        .join( annotation_out_ch.gff, remainder: true )
-        .join( amrfinder_output_ch  , remainder: true )
-        .join( SUMMARY.out.summaries, remainder: true )
+        .join( MERGE_ANNOTATIONS.out.gff, remainder: true )
         .map{
           it ->
             sample = it[0]
             it.remove(0)
             [ sample, it ]
         }
-      CIRCOS( 
-        circos_input_ch, 
-        file( "$projectDir/assets/circos_template/*" ),
-        PLASMIDFINDER.out.results
-      ) // sub-workflow
+      CIRCOS(
+        circos_input_ch
+      )
 
 }

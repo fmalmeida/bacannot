@@ -5,7 +5,8 @@ ENV IMAGE=perl
 
 # Install the conda environment
 RUN conda install \
-	-c bioconda -c defaults -c conda-forge -c anaconda --force-reinstall --update-deps --no-channel-priority \
+	-c bioconda -c defaults -c conda-forge -c anaconda -c r -c falmeida \
+	--force-reinstall --update-deps --no-channel-priority \
 	'prokka>=1.14' \
 	'hmmer=3.1b2' \
 	barrnap \
@@ -17,7 +18,7 @@ RUN conda install \
 	perl-digest-sha1 \
 	perl-app-cpanminus \
 	perl-local-lib \
-	circos
+	'easy_circos>=0.3'
 ENV PERL5LIB="/opt/conda/lib/perl5/site_perl"
 
 # Fix perl -- prokka

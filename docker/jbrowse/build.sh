@@ -1,1 +1,1 @@
-../../bin/build_image.sh $1
+docker build -t fmalmeida/bacannot:jbrowse .

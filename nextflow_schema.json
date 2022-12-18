@@ -36,11 +36,9 @@
                 "bacannot_db": {
                     "type": "string",
                     "description": "Path for root directory containing required bacannot databases",
-                    "default": "null"
                 },
                 "bakta_db": {
                     "type": "string",
-                    "default": "null",
                     "help_text": "If this parameter is set, the pipeline will perform starting annotation with Bakta instead of Prokka.",
                     "description": "Path for pre-built bakta database"
                 }
