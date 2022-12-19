@@ -2,6 +2,24 @@
 
 The tracking for changes started in v2.1
 
+## v3.2 [19-December-2022]
+
+* Fixes https://github.com/fmalmeida/bacannot/issues/68 reported by @lam-c
+    + required a small fix in the scripts used to generated the shiny app
+    + thus, new docker image
+* Fixes https://github.com/fmalmeida/bacannot/issues/70
+    + Adds a `CIRCOS` plot of main annotation results
+    + For now it is very minimum and **will** be gradually enhancement in following versions. It contains:
+        - forward features
+        - reverse features
+        - rRNA
+        - tRNA
+        - AMRFinderPlus and VFDB annotated genes (as labels)
+        - PhiSpy annotated prophages
+        - GC Skew
+
+> Updates are som many that requires new pipeline feature version, to `3.2` and therefore new docker images.
+
 ## v3.1.7 [6-December-2022]
 
 * Fixes https://github.com/fmalmeida/bacannot/issues/75 reported by @sunitj, who highlighted that bakta tool required an update.
