@@ -53,6 +53,7 @@ Its main steps are:
 | Custom annotation from formatted FASTA or NCBI protein IDs | [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
 | Genome Browser renderization | [JBrowse](http://jbrowse.org/) |
+| Circos plot generation | [easy_circos](https://easy_circos.readthedocs.io/en/latest/index.html) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/), [Shiny](https://shiny.rstudio.com/) and [SequenceServer](https://sequenceserver.com/) |
 
 🎯 In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
@@ -89,10 +90,10 @@ These images have been kept separate to not create massive Docker image and to a
     * After installed, you need to download the required Docker images
 
     ```bash
-    docker pull fmalmeida/bacannot:v3.1_misc    ;
-    docker pull fmalmeida/bacannot:v3.1_perlenv ;
-    docker pull fmalmeida/bacannot:v3.1_pyenv   ;
-    docker pull fmalmeida/bacannot:v3.1_renv    ;
+    docker pull fmalmeida/bacannot:v3.2_misc    ;
+    docker pull fmalmeida/bacannot:v3.2_perlenv ;
+    docker pull fmalmeida/bacannot:v3.2_pyenv   ;
+    docker pull fmalmeida/bacannot:v3.2_renv    ;
     docker pull fmalmeida/bacannot:jbrowse      ;
     ```
 

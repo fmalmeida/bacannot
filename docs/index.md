@@ -39,6 +39,7 @@ The pipeline's main steps are:
 | Custom annotation from formatted FASTA or NCBI protein IDs | [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
 | Genome Browser renderization | [JBrowse](http://jbrowse.org/) |
+| Circos plot generation | [easy_circos](https://easy_circos.readthedocs.io/en/latest/index.html) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/), [Shiny](https://shiny.rstudio.com/) and [SequenceServer](https://sequenceserver.com/) |
 
 !!! note "Quickstart"

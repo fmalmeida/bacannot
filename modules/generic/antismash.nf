@@ -12,7 +12,7 @@ process ANTISMASH {
 
   output:
   tuple val(prefix), path("antiSMASH/regions.gff"), emit: gff, optional: true
-  path("antiSMASH")                               , emit: all
+  tuple val(prefix), path("antiSMASH")            , emit: all
   path("*_version.txt")                           , emit: version
 
   script:

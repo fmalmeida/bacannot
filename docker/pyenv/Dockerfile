@@ -11,10 +11,12 @@ RUN conda install -y \
       phispy \
       plasmidfinder \
       'python>=3.7' \
-      refseq_masher
+      refseq_masher \
+      'gsl==2.7'
 RUN conda install -c conda-forge -y 'mamba>=0.21'
 RUN mamba create -n rgi -c bioconda -c defaults -c conda-forge -c anaconda 'rgi>=5.2.1'
 RUN mamba create -n phigaro -c bioconda -c defaults -c conda-forge -c anaconda phigaro
+RUN mamba create -n falmeida-py -c falmeida -c bioconda -c defaults -c conda-forge -c anaconda 'falmeida-py>=0.9'
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda

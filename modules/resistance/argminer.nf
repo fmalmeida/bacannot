@@ -9,7 +9,7 @@ process ARGMINER {
 
   output:
   tuple val(prefix), path("${prefix}_argminer_blastp_onGenes.summary.txt"), emit: summary
-  path('*.txt')                                                           , emit: all
+  tuple val(prefix), path('*.txt')                                        , emit: all
 
   script:
   """

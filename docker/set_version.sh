@@ -1,1 +1,1 @@
-export NEW_VERSION=v3.1
+export NEW_VERSION=v3.2

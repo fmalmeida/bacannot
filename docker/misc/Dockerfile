@@ -25,16 +25,19 @@ RUN conda create -y -n digIS -c bioconda -c defaults -c conda-forge -c anaconda 
 		conda clean -afy
 
 # Create env for antismash
-RUN conda create -y -n antismash -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority 'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl && \
-            rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
-		conda clean -afy
+RUN conda create -y -n antismash \
+      -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority \
+      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl && \
+      rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
+	conda clean -afy
 
 # Install pip packages
 RUN pip install docopt pandas tabulate numpy bcbio-gff cgecore gitpython setuptools python-dateutil 'biopython==1.78'
 
 # Install KEGGDecoder
 RUN conda create -n KEGGDecoder python=3.6 && \
-      conda run -n KEGGDecoder python3 -m pip install KEGGDecoder
+      conda run -n KEGGDecoder python3 -m pip install KEGGDecoder && \
+	conda clean -afy
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
@@ -45,14 +48,24 @@ COPY argminer_bkp/argminer.fasta /work/argminer.fasta
 COPY victors_bkp/victors_06-2022.fasta /work/victors.fasta
 
 # get a copy of resfinder
-RUN git clone -b master https://git@bitbucket.org/genomicepidemiology/resfinder.git && \
-      chmod a+rwx -R resfinder
-ENV PATH=/work/resfinder:$PATH
+RUN conda create -y -n resfinder \
+      -c bioconda -c anaconda -c conda-forge -c defaults \
+      'resfinder>=4.1' docopt pandas && \
+	conda clean -afy
 
 # get a copy of digis
 RUN git clone -b master https://github.com/janka2012/digIS.git
 COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
 ENV PATH=/work/digIS:$PATH
+
+# install jq
+RUN apt-get update && apt-get install -y jq
+
+# install bioawk
+RUN conda create -y -n bioawk \
+      -c bioconda -c anaconda -c conda-forge -c defaults \
+      bioawk && \
+	conda clean -afy
 
 # fix permissions
 RUN chmod 777 -R /work

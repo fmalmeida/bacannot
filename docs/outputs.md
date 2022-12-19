@@ -20,6 +20,7 @@ After a successful execution, you will have something like this:
 │       ├── assembly          # Assembly files (when raw reads are given)
 │       ├── annotation        # Prokka annotation files
 │       ├── antiSMASH         # antiSMASH secondary annotation files
+│       ├── circos            # circos conf files
 │       ├── digIS             # Insertion sequences predicted with digIS
 |       ├── gbk               # Gbk files produced from the resulting GFF
 |       ├── gffs              # A copy of the main GFF files produced during the annotation
@@ -147,3 +148,73 @@ In its the last page, the server provides an implementation of [SequenceServer](
 <center>
   <img src="../images/bacannot_server_blast_sequenceserver.png" width="85%">
 </center>
+
+## Circos plot
+
+The automatic circos plot has been generated with the aid of `easy_circos` package. For now it is very minimal but already creates a sketch that allows users to further customize and play with the [`circos`](http://circos.ca/) visualization tool.
+
+* For now, it only contains:
+    - forward features
+    - reverse features
+    - rRNA
+    - tRNA
+    - AMRFinderPlus and VFDB annotated genes (as labels)
+    - PhiSpy annotated prophages
+    - GC Skew
+
+The pipeline will autatically generate a plot like the following:
+
+<center>
+  <img src="../images/example_circos.png" width="55%">
+</center>
+
+### Configuration files
+
+The output directory looks like this:
+
+```bash
+circos/
+├── concatenated_genomes.fasta
+├── conf
+│   ├── bacannot_labels.txt
+│   ├── circos.conf
+│   ├── circos.png
+│   ├── circos.sequences.txt
+│   ├── circos.svg
+│   ├── forward_features.txt
+│   ├── GC_skew.txt
+│   ├── links_concatenated_colored_no_intrachr.txt
+│   ├── links_concatenated_colored.txt
+│   ├── mges.txt
+│   ├── reverse_features.txt
+│   ├── rrna.txt
+│   └── trna.txt
+└── input.fofn
+```
+
+For now, the pipeline generates a single plot with all the available contigs. However, users can freely play with the data to customize at their heart's content. These are meant to be only a start. The master piece for such is `circos.conf` which will allow you to play with your data.
+
+For example, supposing you have a very fragmented assembly and only want to see one contig in your plot. In that case, you should look at lines 7-10 in the config file. By default you will have this:
+
+```bash
+# Show all chromosomes in karyotype file. By default, this is
+# true. If you want to explicitly specify which chromosomes
+# to draw, set this to 'no' and use the 'chromosomes' parameter.
+chromosomes_display_default = yes
+```
+
+But, by changing to:
+
+```bash
+# Show all chromosomes in karyotype file. By default, this is
+# true. If you want to explicitly specify which chromosomes
+# to draw, set this to 'no' and use the 'chromosomes' parameter.
+chromosomes_display_default = no
+chromosomes = contig_1
+```
+
+and running the `circos` tooling again, you will render a plot with only that contig. So, have fun, and use this as a start to customize your visualizations!
+
+!!! note
+
+  To understand more about `circos` configurations please refer to the tooling manual: http://circos.ca/

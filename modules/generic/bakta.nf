@@ -13,7 +13,7 @@ process BAKTA {
 
     output:
     // Grab all outputs
-    path "annotation", emit: all
+    tuple val(prefix), path("annotation"), emit: all
     // Outputs must be linked to each prefix (tag)
     tuple val(prefix), path("annotation/${prefix}.gff3"), emit: gff // annotation in gff format
     tuple val(prefix), path("annotation/${prefix}.gbff"), emit: gbk // annotation in gbk format

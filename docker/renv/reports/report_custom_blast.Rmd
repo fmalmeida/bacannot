@@ -62,8 +62,7 @@ custom_blast <- try(read.delim(params$custom_blast, header = TRUE), silent = TRU
 blast_gff    <- try(read.delim(params$blast_gff, header = FALSE, col.names=c("Contig", "Source", "Feature", "Start", "End", "Score", "Strand", "Phase", "Attributes")), silent = TRUE)
 
 ## Check for emptyness
-if (class(blast_gff) == "try-error" ||
-    check_lines(custom_blast) == 1) {
+if ( class(blast_gff) == "try-error" || check_lines(custom_blast) == 0 ) {
   custom_blast <- data.frame(
     matrix(ncol = 14, nrow = 0)
   )

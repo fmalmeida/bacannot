@@ -12,7 +12,7 @@ process KOFAMSCAN {
 
   output:
   // Grab all outputs
-  path("KOfamscan"), emit: all
+  tuple val(prefix), path("KOfamscan"), emit: all
   tuple val(prefix), path("KOfamscan/${prefix}_ko_forKEGGMapper.txt"), emit: results
 
   script:

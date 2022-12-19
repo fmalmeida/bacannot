@@ -10,7 +10,7 @@ process PHAST {
   output:
   tuple val(prefix), path("${prefix}_phast_blastp_onGenes.summary.txt"), emit: summary
   tuple val(prefix), path("${prefix}_phast_blastp_onGenes.txt")        , emit: results
-  path('*.txt')                                                        , emit: all
+  tuple val(prefix), path('*.txt')                                     , emit: all
 
   script:
   """

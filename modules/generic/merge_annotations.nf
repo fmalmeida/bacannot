@@ -10,7 +10,7 @@ process MERGE_ANNOTATIONS {
   tuple val(prefix), path("${prefix}.gff")                  , emit: gff
   tuple val(prefix), path("transposable_elements_digis.gff"), emit: digis_gff
   tuple val(prefix), path("custom_database_*.gff")          , emit: customdb_gff optional true
-  path("*.gff")                                             , emit: all
+  tuple val(prefix), path("*.gff")                          , emit: all
 
   script:
   """

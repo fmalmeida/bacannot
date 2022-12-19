@@ -64,14 +64,16 @@ if (class(victors_blast) != 'try-error' & check_lines(victors_blast) > 0) {
 
 # DT options
 # Lists
-dt_opt_lst <- list(pageLength = 5,
-                         lengthMenu = c(5, 10, 15, 20, 50),
-                         dom='flrtBip',
-                         buttons = c('copy', 'csv', 'excel', 'colvis'),
-                         scrollX = TRUE,
-                         fixedColumns = FALSE,
-                         autoWidth = TRUE,
-                         columnDefs = list(list(className = 'dt-body-left', targets = c(0,1,2,3,5))))
+dt_opt_lst <- list(
+  pageLength = 5,
+  lengthMenu = c(5, 10, 15, 20, 50),
+  dom='flrtBip',
+  buttons = c('copy', 'csv', 'excel', 'colvis'),
+  scrollX = TRUE,
+  fixedColumns = FALSE,
+  autoWidth = TRUE,
+  columnDefs = list( list( className = 'dt-body-left', targets = c(0,1,2,3,5) ) )
+  )
 ```
 
 # `r params$query` virulence report {.tabset .tabset-pills}
