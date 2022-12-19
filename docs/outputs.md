@@ -154,13 +154,13 @@ In its the last page, the server provides an implementation of [SequenceServer](
 The automatic circos plot has been generated with the aid of `easy_circos` package. For now it is very minimal but already creates a sketch that allows users to further customize and play with the [`circos`](http://circos.ca/) visualization tool.
 
 * For now, it only contains:
-  - forward features
-  - reverse features
-  - rRNA
-  - tRNA
-  - AMRFinderPlus and VFDB annotated genes (as labels)
-  - PhiSpy annotated prophages
-  - GC Skew
+    - forward features
+    - reverse features
+    - rRNA
+    - tRNA
+    - AMRFinderPlus and VFDB annotated genes (as labels)
+    - PhiSpy annotated prophages
+    - GC Skew
 
 The pipeline will autatically generate a plot like the following:
 
