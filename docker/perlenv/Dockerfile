@@ -27,6 +27,7 @@ RUN cpanm Test::Needs --force --reinstall
 RUN cpanm Test::RequiresInternet Test::NoWarnings  --force --reinstall
 RUN conda install -c conda-forge -y 'perl-xml-parser>2.44'
 RUN cpanm XML::Twig Bio::Perl --force --reinstall || true
+RUN apt-get install -y libtiff5
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
