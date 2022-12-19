@@ -162,7 +162,7 @@ The automatic circos plot has been generated with the aid of `easy_circos` packa
     - PhiSpy annotated prophages
     - GC Skew
 
-The pipeline will autatically generate a plot like the following:
+The pipeline will automatically generate a plot like the following:
 
 <center>
   <img src="../images/example_circos.png" width="55%">
