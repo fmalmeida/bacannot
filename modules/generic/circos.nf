@@ -26,7 +26,6 @@ process CIRCOS {
         --fofn input.fofn \\
         --skip_links \\
         --bacannot \\
-        --minlen ${params.circos_min_len} \\
         --outdir PLOT
     
     ( cd PLOT/conf && touch mges.txt )
