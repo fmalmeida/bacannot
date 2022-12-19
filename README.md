@@ -53,6 +53,7 @@ Its main steps are:
 | Custom annotation from formatted FASTA or NCBI protein IDs | [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
 | Genome Browser renderization | [JBrowse](http://jbrowse.org/) |
+| Circos plot generation | [easy-circos](https://easy-circos.readthedocs.io/en/latest/index.html) |
 | Renderization of automatic reports and shiny app for results interrogation | [R Markdown](https://rmarkdown.rstudio.com/), [Shiny](https://shiny.rstudio.com/) and [SequenceServer](https://sequenceserver.com/) |
 
 🎯 In order to increase the accuracy of prokka annotation, this pipeline includes an additional HMM database to prokka's defaults. It can be either TIGRFAM (smaller but curated) or PGAP (bigger comprehensive NCBI database that contains TIGRFAM).
