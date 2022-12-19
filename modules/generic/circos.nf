@@ -8,14 +8,16 @@ process CIRCOS {
     label = [ 'perl', 'process_low' ]
 
     input:
-    tuple val(prefix), path(inputs)
+    tuple val(prefix), path(inputs, stageAs: 'results*')
 
     output:
     path("*")
 
     script:
-    def genome = inputs[0]
-    def gff    = inputs[1]
+    def genome     = 'results1'
+    def gff        = 'results2'
+    def merged_gff = 'results3'
+    def phispy     = 'results4'
 
     """
     echo "${genome},${prefix},dgrey" > input.fofn
@@ -37,10 +39,12 @@ process CIRCOS {
     
     plot_circos --gff2labels "" "" ID dpurple <( awk '\$3 ~ /tRNA/' ${gff} ) > PLOT/conf/trna.txt
 
-    plot_circos --gff2labels "" "" "NDARO:Gene_Name" black <( awk '\$2 ~ /AMRFinderPlus/' ${gff} ) > PLOT/conf/bacannot_labels.txt
+    plot_circos --gff2labels "" "" "NDARO:Gene_Name" black <( awk '\$2 ~ /AMRFinderPlus/' ${merged_gff} ) > PLOT/conf/bacannot_labels.txt
 
-    plot_circos --gff2labels "" "" "VFDB:Product" black <( awk '\$2 ~ /VFDB/' ${gff} ) \\
-        sed -e 's/[//g' -e 's/_(VF.* //g' > PLOT/conf/bacannot_labels.txt
+    plot_circos --gff2labels "" "" "VFDB:Product" black <( awk '\$2 ~ /VFDB/' ${merged_gff} ) \\
+        sed -e 's/[//g' -e 's/_(VF.* //g' >> PLOT/conf/bacannot_labels.txt
+    
+    plot_circos --gff2labels "" "" "ID" dred $phispy > PLOT/conf/mges.txt
     
     mv PLOT/* .
     rm -rf PLOT

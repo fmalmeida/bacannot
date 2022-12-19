@@ -396,7 +396,9 @@ workflow BACANNOT {
       // Render circos plots
       circos_input_ch =
         annotation_out_ch.genome
+        .join( annotation_out_ch.gff    , remainder: true )
         .join( MERGE_ANNOTATIONS.out.gff, remainder: true )
+        .join( PHISPY.out.gff           , remainder: true )
         .map{
           it ->
             sample = it[0]
