@@ -70,6 +70,7 @@ RUN conda create -y -n bioawk \
 # fix permissions
 RUN chmod 777 -R /work
 RUN chmod 777 -R /opt/conda/envs/antismash/lib/*/site-packages/antismash
+RUN chmod 777 -R /opt/conda/envs/resfinder
 
 # fix antismash download script
 # RUN sed -i 's|ftp://|http://|g' /opt/conda/envs/antismash/lib/*/site-packages/antismash/download_databases.py
