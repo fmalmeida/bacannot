@@ -33,6 +33,16 @@ samplesheet: # this header is required
 
 ### Bacannot databases
 
+Bacannot databases are not inside the docker images anymore to avoid huge images and problems with connections and limit rates with dockerhub.
+
+#### Pre-formatted
+
+Users can directly download pre-formatted databases from Zenodo: https://doi.org/10.5281/zenodo.7615811
+
+Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
+
+#### I want to generate a new formatted database
+
 ```{bash .annotate hl_lines="5"}
 # Download pipeline databases
 nextflow run fmalmeida/bacannot \
