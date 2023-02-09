@@ -4,7 +4,12 @@ process AMRFINDER {
     else "resistance/AMRFinderPlus/$filename"
   }
   tag "${prefix}"
-  label = [ 'misc', 'process_medium' ]
+  label = [ 'process_medium' ]
+
+  conda "bioconda::ncbi-amrfinderplus=3.10.21"
+    container "${ workflow.containerEngine == 'singularity' ?
+        'https://depot.galaxyproject.org/singularity/ncbi-amrfinderplus:3.10.21--h17dc2d4_0' :
+        'quay.io/biocontainers/ncbi-amrfinderplus:3.10.21--h17dc2d4_0' }"
 
   input:
   tuple val(prefix), file(proteins)

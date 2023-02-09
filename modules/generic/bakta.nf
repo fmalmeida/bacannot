@@ -1,11 +1,16 @@
 process BAKTA {
     publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
-      if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
-      else if (filename == "annotation") "$filename"
-      else null
+        if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
+        else if (filename == "annotation") "$filename"
+        else null
     }
     tag "${prefix}"
-    label = [ 'misc', 'process_medium', 'error_retry' ]
+    label = [ 'process_medium', 'error_retry' ]
+
+    conda "bioconda::bakta=1.6.1"
+    container "${ workflow.containerEngine == 'singularity' ?
+        'https://depot.galaxyproject.org/singularity/bakta:1.6.1--pyhdfd78af_0' :
+        'quay.io/biocontainers/bakta:1.6.1--pyhdfd78af_0' }"
 
     input:
     tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), file(assembly), val(resfinder_species)

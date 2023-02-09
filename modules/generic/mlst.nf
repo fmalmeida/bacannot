@@ -1,10 +1,15 @@
 process MLST {
     publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
-      if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
-      else "MLST/$filename"
+        if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
+        else "MLST/$filename"
     }
     tag "${prefix}"
-    label = [ 'perl', 'process_ultralow' ]
+    label = [ 'process_ultralow' ]
+
+    conda "bioconda::mlst=2.19.0"
+    container "${ workflow.containerEngine == 'singularity' ?
+        'https://depot.galaxyproject.org/singularity/mlst:2.19.0--hdfd78af_1' :
+        'quay.io/biocontainers/mlst:2.19.0--hdfd78af_1' }"
 
     input:
     tuple val(prefix), file(genome)

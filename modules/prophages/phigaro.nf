@@ -4,7 +4,12 @@ process PHIGARO {
     else "prophages/phigaro/$filename"
   }
   tag "${prefix}"
-  label = [ 'python', 'process_medium' ]
+  label = [ 'process_medium' ]
+
+  conda "bioconda::phigaro=2.3.0"
+    container "${ workflow.containerEngine == 'singularity' ?
+        'https://depot.galaxyproject.org/singularity/phigaro:2.3.0--pyh7b7c402_0' :
+        'quay.io/biocontainers/phigaro:2.3.0--pyh7b7c402_0' }"
 
   input:
   tuple val(prefix), file("assembly.fasta")
@@ -18,10 +23,7 @@ process PHIGARO {
   path('phigaro_version.txt')                      , emit: version
 
   script:
-  """
-  # activate env
-  source activate phigaro
-  
+  """  
   # get tool version
   phigaro -V > phigaro_version.txt ;
 
