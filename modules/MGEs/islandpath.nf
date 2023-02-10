@@ -2,6 +2,8 @@ process ISLANDPATH {
   publishDir "${params.output}/${prefix}/genomic_islands", mode: 'copy'
   tag "${prefix}"
   label = [ 'process_low' ]
+  errorStrategy = 'retry'
+  maxRetries    = 5
 
   conda "bioconda::platon=1.6"
     container "${ workflow.containerEngine == 'singularity' ?

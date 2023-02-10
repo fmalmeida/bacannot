@@ -1,7 +1,7 @@
 process SUMMARY {
     publishDir "${params.output}/${prefix}", mode: 'copy'
     tag "${prefix}"
-    label = [ 'python', 'process_low' ]
+    label = [ 'misc', 'process_low' ]
     
 
     input:

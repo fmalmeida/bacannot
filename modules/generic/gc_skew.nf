@@ -1,7 +1,7 @@
 process GC_SKEW {
     tag "$prefix"
 
-    label = [ 'python', 'process_low' ]
+    label = [ 'misc', 'process_low' ]
 
     input:
     tuple val(prefix), path(inputs)

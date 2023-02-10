@@ -4,7 +4,7 @@ process KOFAMSCAN {
     else "$filename"
   }
   tag "${prefix}"
-  label = [ 'process_high' ]
+  label = [ 'process_high', 'error_retry' ]
 
   conda "bioconda::kofamscan=1.3.0"
     container "${ workflow.containerEngine == 'singularity' ?
