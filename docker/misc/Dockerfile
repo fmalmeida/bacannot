@@ -1,43 +1,44 @@
 FROM nfcore/base
 LABEL authors="Felipe Almeida" \
       description="Docker image containing any-based bacannot tools"
+ENV CHANNELS='-c bioconda -c defaults -c conda-forge -c anaconda -c falmeida'
+
+# install mamba
+RUN conda update -n base -c defaults conda && conda install -c conda-forge -y 'mamba>=1.0'
 
 # Install the conda environment
-RUN conda install -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --force-reinstall --update-deps --no-channel-priority \
-            curl \
-            git \
-            'python=3.7' \
-            'blast=2.12.0' \
-            'diamond=2.0.15' \
-            'bedtools=2.30' \
-            'samtools=1.14' \
-            'kma' \
-            'kofamscan' \
-            'ncbi-amrfinderplus' \
-            'nanopolish' \
-            'biopython==1.78' \
-            gff-toolbox \
-            seqkit && \
-      conda clean -afy
+RUN mamba install -y ${CHANNELS} \
+      'python>=3.7' \
+      'blast>=2.12' \
+      'diamond>=2.0.15' \
+      'bedtools>=2.30' \
+      'samtools' \
+      'kma' \
+      'nanopolish' \
+      'biopython==1.78' \
+      gff-toolbox \
+      seqkit \
+      bioawk \
+      'easy_circos>=0.3' \
+      jq && \
+      mamba clean -afy
 
 # Create env for digIS
-RUN conda create -y -n digIS -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority 'hmmer==3.1b2' 'biopython==1.77' nomkl && \
-		conda clean -afy
-
-# Create env for antismash
-RUN conda create -y -n antismash \
-      -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida --no-channel-priority \
-      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl && \
-      rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
-	conda clean -afy
+RUN mamba create -y ${CHANNELS} \
+      -n digIS \
+      --no-channel-priority \
+      'hmmer==3.1b2' 'biopython==1.77' nomkl && \
+	mamba clean -afy
 
 # Install pip packages
-RUN pip install docopt pandas tabulate numpy bcbio-gff cgecore gitpython setuptools python-dateutil 'biopython==1.78'
+# RUN pip install docopt pandas tabulate numpy bcbio-gff cgecore gitpython setuptools python-dateutil 'biopython==1.78'
 
 # Install KEGGDecoder
-RUN conda create -n KEGGDecoder python=3.6 && \
+RUN mamba create \
+      -n KEGGDecoder \
+      python=3.6 && \
       conda run -n KEGGDecoder python3 -m pip install KEGGDecoder && \
-	conda clean -afy
+	mamba clean -afy
 
 # set CONDA_PREFIX
 ENV CONDA_PREFIX=/opt/conda
@@ -48,8 +49,7 @@ COPY argminer_bkp/argminer.fasta /work/argminer.fasta
 COPY victors_bkp/victors_06-2022.fasta /work/victors.fasta
 
 # get a copy of resfinder
-RUN conda create -y -n resfinder \
-      -c bioconda -c anaconda -c conda-forge -c defaults \
+RUN conda create -y -n resfinder ${CHANNELS} \
       'resfinder>=4.1' docopt pandas && \
 	conda clean -afy
 
@@ -58,19 +58,13 @@ RUN git clone -b master https://github.com/janka2012/digIS.git
 COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
 ENV PATH=/work/digIS:$PATH
 
-# install jq
-RUN apt-get update && apt-get install -y jq
-
-# install bioawk
-RUN conda create -y -n bioawk \
-      -c bioconda -c anaconda -c conda-forge -c defaults \
-      bioawk && \
-	conda clean -afy
+# Create env for antismash
+RUN mamba create -y -n antismash ${CHANNELS} \
+      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl && \
+      rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
+	mamba clean -afy
 
 # fix permissions
 RUN chmod 777 -R /work
 RUN chmod 777 -R /opt/conda/envs/antismash/lib/*/site-packages/antismash
 RUN chmod 777 -R /opt/conda/envs/resfinder
-
-# fix antismash download script
-# RUN sed -i 's|ftp://|http://|g' /opt/conda/envs/antismash/lib/*/site-packages/antismash/download_databases.py
