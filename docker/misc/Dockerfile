@@ -20,6 +20,7 @@ RUN mamba install -y ${CHANNELS} \
       seqkit \
       bioawk \
       'easy_circos>=0.3' \
+      'falmeida-py>=1.0' \
       jq && \
       mamba clean -afy
 
@@ -49,9 +50,9 @@ COPY argminer_bkp/argminer.fasta /work/argminer.fasta
 COPY victors_bkp/victors_06-2022.fasta /work/victors.fasta
 
 # get a copy of resfinder
-RUN conda create -y -n resfinder ${CHANNELS} \
+RUN mamba create -y -n resfinder ${CHANNELS} \
       'resfinder>=4.1' docopt pandas && \
-	conda clean -afy
+	mamba clean -afy
 
 # get a copy of digis
 RUN git clone -b master https://github.com/janka2012/digIS.git

@@ -25,7 +25,6 @@ process SUMMARY {
     """
     mkdir -p results/${prefix}/annotation
     ln -rs annotation/* results/${prefix}/annotation
-    source activate falmeida-py
     falmeida-py bacannot2json -i results -o ${prefix}_summary.json
     """
 }
