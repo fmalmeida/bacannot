@@ -20,6 +20,7 @@ include { PHAST                  } from '../modules/prophages/phast'
 include { PHIGARO                } from '../modules/prophages/phigaro'
 include { PHISPY                 } from '../modules/prophages/phispy'
 include { ICEBERG                } from '../modules/MGEs/iceberg'
+include { INTEGRON_FINDER        } from '../modules/MGEs/integron_finder'
 include { ISLANDPATH             } from '../modules/MGEs/islandpath'
 include { DRAW_GIS               } from '../modules/MGEs/draw_gis'
 include { DIGIS                  } from '../modules/MGEs/digIS'
@@ -127,8 +128,13 @@ workflow BACANNOT {
         platon_all_ch           = Channel.empty()
       }
 
+      // TODO: Maybe add in MGE optional?
+
       // IslandPath software
       ISLANDPATH( annotation_out_ch.gbk )
+
+      // Integron_finder software
+      INTEGRON_FINDER( annotation_out_ch.genome )
 
       // Virulence search
       if (params.skip_virulence_search == false) {     
