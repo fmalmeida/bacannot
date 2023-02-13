@@ -6,10 +6,10 @@ process AMRFINDER {
   tag "${prefix}"
   label = [ 'process_medium' ]
 
-  conda "bioconda::ncbi-amrfinderplus=3.10.21"
+  conda "bioconda::ncbi-amrfinderplus=3.11.2"
     container "${ workflow.containerEngine == 'singularity' ?
-        'https://depot.galaxyproject.org/singularity/ncbi-amrfinderplus:3.10.21--h17dc2d4_0' :
-        'quay.io/biocontainers/ncbi-amrfinderplus:3.10.21--h17dc2d4_0' }"
+        'https://depot.galaxyproject.org/singularity/ncbi-amrfinderplus:3.11.2--h17dc2d4_0' :
+        'quay.io/biocontainers/ncbi-amrfinderplus:3.11.2--h17dc2d4_0' }"
 
   input:
   tuple val(prefix), file(proteins)
