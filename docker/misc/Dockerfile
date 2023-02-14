@@ -66,9 +66,8 @@ RUN conda create -y -n antismash -c bioconda -c conda-forge \
 	mamba clean -afy
 
 # fix bioperl
-RUN mamba create -n perl -y perl-bioperl perl-app-cpanminus && \
-      source activate perl && \
-      PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
+RUN mamba create -n perl -y -c bioconda -c conda-forge perl-bioperl perl-app-cpanminus
+RUN conda run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
 
 # fix permissions
 RUN chmod 777 -R /work
