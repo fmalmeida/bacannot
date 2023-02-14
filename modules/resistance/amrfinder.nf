@@ -8,8 +8,8 @@ process AMRFINDER {
 
   conda "bioconda::ncbi-amrfinderplus=3.11.2"
     container "${ workflow.containerEngine == 'singularity' ?
-        'https://depot.galaxyproject.org/singularity/ncbi-amrfinderplus:3.11.2--h17dc2d4_0' :
-        'quay.io/biocontainers/ncbi-amrfinderplus:3.11.2--h17dc2d4_0' }"
+        'docker://ncbi/amr:3.11.2-2022-12-19.1' :
+        'ncbi/amr:3.11.2-2022-12-19.1' }"
 
   input:
   tuple val(prefix), file(proteins)

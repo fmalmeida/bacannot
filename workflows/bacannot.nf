@@ -21,6 +21,7 @@ include { PHIGARO                } from '../modules/prophages/phigaro'
 include { PHISPY                 } from '../modules/prophages/phispy'
 include { ICEBERG                } from '../modules/MGEs/iceberg'
 include { INTEGRON_FINDER        } from '../modules/MGEs/integron_finder'
+include { INTEGRON_FINDER_2GFF   } from '../modules/MGEs/integron_finder_2gff'
 include { ISLANDPATH             } from '../modules/MGEs/islandpath'
 include { DRAW_GIS               } from '../modules/MGEs/draw_gis'
 include { DIGIS                  } from '../modules/MGEs/digIS'
@@ -135,6 +136,7 @@ workflow BACANNOT {
 
       // Integron_finder software
       INTEGRON_FINDER( annotation_out_ch.genome )
+      INTEGRON_FINDER_2GFF( INTEGRON_FINDER.out.gbk.groupTuple() )
 
       // Virulence search
       if (params.skip_virulence_search == false) {     
@@ -292,7 +294,8 @@ workflow BACANNOT {
           .join(iceberg_output_blastp_ch,        remainder: true)
           .join(phast_output_ch,                 remainder: true)
           .join(DIGIS.out.gff,                   remainder: true)
-          .join(ch_custom_annotations,           remainder: true) 
+          .join(ch_custom_annotations,           remainder: true)
+          .join(INTEGRON_FINDER_2GFF.out.gff,    remainder: true)
       )
 
       /*

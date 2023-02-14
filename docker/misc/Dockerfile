@@ -61,9 +61,14 @@ ENV PATH=/work/digIS:$PATH
 
 # Create env for antismash
 RUN mamba create -y -n antismash ${CHANNELS} \
-      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl && \
+      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl 'conda-forge::pyscss' && \
       rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 	mamba clean -afy
+
+# fix bioperl
+RUN mamba create -n perl -y perl-bioperl perl-app-cpanminus && \
+      source activate perl && \
+      PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
 
 # fix permissions
 RUN chmod 777 -R /work

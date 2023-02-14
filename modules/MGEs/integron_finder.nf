@@ -15,7 +15,8 @@ process INTEGRON_FINDER {
     tuple val(prefix), file(genome)
 
     output:
-    tuple val(prefix), path("*"), emit: all
+    tuple val(prefix), path("*")                      , emit: all
+    tuple val(prefix), path("${prefix}_integrons.gbk"), emit: gbk, optional: true
     path("integronfinder_version.txt")
 
     script:
@@ -33,5 +34,14 @@ process INTEGRON_FINDER {
         --cpu $task.cpus \\
         $args \\
         $genome
+    
+    # move results
+    mv Results_Integron_Finder_${prefix}/* .   ;
+    rm -rf Results_Integron_Finder_${prefix}/* ;
+    
+    # convert to gff if available
+    for gbk in \$(ls *.gbk) ; do
+        cat \$gbk >> ${prefix}_integrons.gbk ;
+    done
     """
 }

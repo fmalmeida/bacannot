@@ -4,7 +4,7 @@ process MERGE_ANNOTATIONS {
   tag "${prefix}"
 
   input:
-  tuple val(prefix), file('prokka_gff'), file(kofamscan), file(vfdb), file(victors), file(amrfinder), file(resfinder), file(rgi), file(iceberg), file(phast), file('digis_gff'), file(custom_databases)
+  tuple val(prefix), file('prokka_gff'), file(kofamscan), file(vfdb), file(victors), file(amrfinder), file(resfinder), file(rgi), file(iceberg), file(phast), file('digis_gff'), file(custom_databases), file(integron_finder)
 
   output:
   tuple val(prefix), path("${prefix}.gff")                  , emit: gff
@@ -107,6 +107,22 @@ process MERGE_ANNOTATIONS {
     ( cat digis_gff | sed 's/id=/ID=/g' > transposable_elements_digis.gff && rm digis_gff ) ;
     cat ${prefix}.gff transposable_elements_digis.gff | bedtools sort > tmp.out.gff ;
     ( cat tmp.out.gff > ${prefix}.gff && rm tmp.out.gff );
+  fi
+
+  ### integron_finder results
+  if [ ! \$(cat $integron_finder | wc -l) -eq 0 ]
+  then
+    bedtools intersect \
+      -a $integron_finder -b ${prefix}.gff -wo | \
+      sort -k19,19 -r | \
+      awk -F '\\t' '!seen[\$9]++' > integron_finder_intersected.txt ;
+    addBedtoolsIntersect.R \
+      -g ${prefix}.gff \
+      -t integron_finder_intersected.txt \
+      --type Integron \
+      --source Integron_Finder \
+      -o ${prefix}.gff ;
+    rm -f integron_finder_intersected.txt ;
   fi
   """
 }
