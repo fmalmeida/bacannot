@@ -60,8 +60,8 @@ COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
 ENV PATH=/work/digIS:$PATH
 
 # Create env for antismash
-RUN mamba create -y -n antismash ${CHANNELS} \
-      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl 'conda-forge::pyscss' && \
+RUN conda create -y -n antismash -c bioconda -c conda-forge \
+      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl && \
       rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 	mamba clean -afy
 
