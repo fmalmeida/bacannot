@@ -21,6 +21,8 @@ RUN mamba install -y ${CHANNELS} \
       bioawk \
       'easy_circos>=0.3' \
       'falmeida-py>=1.0' \
+      emboss \
+      libtiff \
       jq && \
       mamba clean -afy
 
@@ -61,7 +63,7 @@ ENV PATH=/work/digIS:$PATH
 
 # Create env for antismash
 RUN conda create -y -n antismash -c bioconda -c conda-forge \
-      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' emboss nomkl && \
+      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
       rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 	mamba clean -afy
 
