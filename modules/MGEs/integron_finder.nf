@@ -4,7 +4,7 @@ process INTEGRON_FINDER {
         else "${prefix}/integron_finder/$filename"
     }
     tag "${prefix}"
-    label = [ 'process_low' ]
+    label = [ 'process_medium' ]
 
     conda "bioconda::integron_finder=2.0.1"
         container "${ workflow.containerEngine == 'singularity' ?
