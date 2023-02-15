@@ -136,7 +136,7 @@ workflow BACANNOT {
 
       // Integron_finder software
       INTEGRON_FINDER( annotation_out_ch.genome )
-      INTEGRON_FINDER_2GFF( INTEGRON_FINDER.out.gbk.groupTuple() )
+      INTEGRON_FINDER_2GFF( INTEGRON_FINDER.out.gbk )
 
       // Virulence search
       if (params.skip_virulence_search == false) {     
