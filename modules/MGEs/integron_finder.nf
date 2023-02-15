@@ -36,8 +36,8 @@ process INTEGRON_FINDER {
         $genome
     
     # move results
-    mv Results_Integron_Finder_${prefix}/* .   ;
-    rm -rf Results_Integron_Finder_${prefix}/* ;
+    mv Results_Integron_Finder_${prefix}/* . ;
+    rm -rf Results_Integron_Finder_${prefix} ;
     
     # convert to gff if available
     for gbk in \$(ls *.gbk) ; do
