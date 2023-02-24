@@ -370,6 +370,7 @@ workflow BACANNOT {
           .join( DRAW_GIS.out.example,            remainder: true )
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
+          .join( INTEGRON_FINDER_2GFF.out.gff,    remainder: true )
       )
 
       //

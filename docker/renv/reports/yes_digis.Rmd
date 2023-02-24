@@ -11,7 +11,7 @@ Insertions sequences have been predicted with [digIS](https://github.com/janka20
 > The program is executed **with** the GenBank annotation
 
 <br>
-<caption>(#tab:write-table-ices-full) Insertions sequences predicted by digIS in GFF format.</caption>
+<caption>(#tab:write-table-digis-full) Insertions sequences predicted by digIS in GFF format.</caption>
 ```{r}
 datatable(digis_gff,
           escape = FALSE,
