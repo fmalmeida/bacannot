@@ -23,6 +23,7 @@ process MERGE_ANNOTATIONS {
   if [ ! \$(cat $vfdb | wc -l) -le 1 ]
   then
     addBlast2Gff.R -i $vfdb -g ${prefix}.gff -o ${prefix}.gff -d VFDB -t Virulence ;
+    grep "VFDB" ${prefix}.gff > virulence_vfdb.gff ;
   fi
 
   ### Victors
@@ -52,12 +53,14 @@ process MERGE_ANNOTATIONS {
   if [ ! \$(cat $iceberg | wc -l) -le 1 ]
   then
     addBlast2Gff.R -i $iceberg -g ${prefix}.gff -o ${prefix}.gff -d ICEberg -t ICE ;
+    grep "ICEberg" ${prefix}.gff > ices_iceberg.gff ;
   fi
 
   ### Prophages
   if [ ! \$(cat $phast | wc -l) -le 1 ]
   then
     addBlast2Gff.R -i $phast -g ${prefix}.gff -o ${prefix}.gff -d PHAST -t Prophage ;
+    grep "PHAST" ${prefix}.gff > prophages_phast.gff ;
   fi
 
   ### Resistance
@@ -65,12 +68,14 @@ process MERGE_ANNOTATIONS {
   if [ ! \$(cat $rgi | wc -l) -le 1 ]
   then
     addRGI2gff.R -g ${prefix}.gff -i $rgi -o ${prefix}.gff ;
+    grep "CARD" ${prefix}.gff > resistance_card.gff ;
   fi
 
   #### AMRFinderPlus
   if [ ! \$(cat $amrfinder | wc -l) -le 1 ]
   then 
     addNCBIamr2Gff.R -g ${prefix}.gff -i $amrfinder -o ${prefix}.gff -t Resistance -d AMRFinderPlus ;
+    grep "AMRFinderPlus" ${prefix}.gff > resistance_amrfinderplus.gff ;
   fi
 
   #### Resfinder
@@ -78,6 +83,7 @@ process MERGE_ANNOTATIONS {
   then
     bedtools intersect -a $resfinder -b ${prefix}.gff -wo | sort -k19,19 -r | awk -F '\\t' '!seen[\$9]++' > resfinder_intersected.txt ;
     addBedtoolsIntersect.R -g ${prefix}.gff -t resfinder_intersected.txt --type Resistance --source Resfinder -o ${prefix}.gff ;
+    grep "Resfinder" ${prefix}.gff > resistance_resfinder.gff ;
     rm -f resfinder_intersected.txt ;
   fi
 
@@ -104,28 +110,9 @@ process MERGE_ANNOTATIONS {
   fi
 
   ### integron_finder results
-  if [ ! \$(cat $integron_finder | wc -l) -eq 0 ]
-  then
-    bedtools intersect \
-      -a $integron_finder -b ${prefix}.gff -wo | \
-      sort -k19,19 -r | \
-      awk -F '\\t' '!seen[\$9]++' > integron_finder_intersected.txt ;
-    addBedtoolsIntersect.R \
-      -g ${prefix}.gff \
-      -t integron_finder_intersected.txt \
-      --type Integron \
-      --source Integron_Finder \
-      -o ${prefix}.gff ;
-    rm -f integron_finder_intersected.txt ;
-  fi
-
-  # subset GFFs
-  grep "VFDB" ${prefix}.gff            > virulence_vfdb.gff           ;
-  grep "ICEberg" ${prefix}.gff         > ices_iceberg.gff             ;
-  grep "PHAST" ${prefix}.gff           > prophages_phast.gff          ;
-  grep "CARD" ${prefix}.gff            > resistance_card.gff          ;
-  grep "AMRFinderPlus" ${prefix}.gff   > resistance_amrfinderplus.gff ;
-  grep "Resfinder" ${prefix}.gff       > resistance_resfinder.gff     ;
-  grep "Integron_Finder" ${prefix}.gff > integron_finder.gff          ;
+  ### integrons are unique / complete elements and should not be intersected
+  cat ${prefix}.gff $integron_finder | bedtools sort > tmp.gff ;
+  cat tmp.gff > ${prefix}.gff
+  rm tmp.gff
   """
 }

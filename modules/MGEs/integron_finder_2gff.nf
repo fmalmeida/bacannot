@@ -1,5 +1,5 @@
 process INTEGRON_FINDER_2GFF {
-    publishDir "${params.output}", mode: 'copy'
+    publishDir "${params.output}/${prefix}/integron_finder", mode: 'copy'
     tag "${prefix}"
     label = [ 'misc', 'process_low' ]
 
@@ -7,7 +7,7 @@ process INTEGRON_FINDER_2GFF {
     tuple val(prefix), file(gbk)
 
     output:
-    tuple val(prefix), path("${prefix}_integrons.gff"), emit: gff, optional: true
+    tuple val(prefix), path("${prefix}_integrons.gff"), emit: gff
 
     script:
     def args = task.ext.args ?: ''
@@ -17,7 +17,8 @@ process INTEGRON_FINDER_2GFF {
     for gbk in \$(ls *.gbk) ; do
         conda run -n perl bp_genbank2gff3 \$gbk -o - | \
             grep 'integron_id' | \
-            sed 's|ID=.*integron_id=|ID=|g' >> ${prefix}_integrons.gff
+            sed 's|ID=.*integron_id=|ID=|g' | \
+            sed 's/GenBank/Integron_Finder/g' >> ${prefix}_integrons.gff
     done
     """
 }

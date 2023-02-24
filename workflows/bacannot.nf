@@ -335,6 +335,7 @@ workflow BACANNOT {
           .join( MERGE_ANNOTATIONS.out.digis_gff                 )
           .join( antismash_output_ch,            remainder: true )
           .join( MERGE_ANNOTATIONS.out.customdb_gff.groupTuple(), remainder: true )
+          .join( INTEGRON_FINDER_2GFF.out.gff,   remainder: true )
       )
 
       // Render reports
