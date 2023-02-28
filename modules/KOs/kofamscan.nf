@@ -7,9 +7,9 @@ process KOFAMSCAN {
   label = [ 'process_high', 'error_retry' ]
 
   conda "bioconda::kofamscan=1.3.0"
-    container "${ workflow.containerEngine == 'singularity' ?
-        'https://depot.galaxyproject.org/singularity/kofamscan:1.3.0--hdfd78af_2' :
-        'quay.io/biocontainers/kofamscan:1.3.0--hdfd78af_2' }"
+  container "${ workflow.containerEngine == 'singularity' ?
+      'https://depot.galaxyproject.org/singularity/kofamscan:1.3.0--hdfd78af_2' :
+      'quay.io/biocontainers/kofamscan:1.3.0--hdfd78af_2' }"
 
   input:
   tuple val(prefix), file('proteins.faa')

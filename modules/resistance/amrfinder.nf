@@ -7,9 +7,9 @@ process AMRFINDER {
   label = [ 'process_medium' ]
 
   conda "bioconda::ncbi-amrfinderplus=3.11.2"
-    container "${ workflow.containerEngine == 'singularity' ?
-        'docker://ncbi/amr:3.11.2-2022-12-19.1' :
-        'ncbi/amr:3.11.2-2022-12-19.1' }"
+  container "${ workflow.containerEngine == 'singularity' ?
+      'docker://ncbi/amr:3.11.2-2022-12-19.1' :
+      'ncbi/amr:3.11.2-2022-12-19.1' }"
 
   input:
   tuple val(prefix), file(proteins)

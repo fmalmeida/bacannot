@@ -6,9 +6,9 @@ process ISLANDPATH {
   maxRetries    = 5
 
   conda "bioconda::platon=1.6"
-    container "${ workflow.containerEngine == 'singularity' ?
-        'https://depot.galaxyproject.org/singularity/islandpath:1.0.6--hdfd78af_0' :
-        'quay.io/biocontainers/islandpath:1.0.6--hdfd78af_0' }"
+  container "${ workflow.containerEngine == 'singularity' ?
+      'https://depot.galaxyproject.org/singularity/islandpath:1.0.6--hdfd78af_0' :
+      'quay.io/biocontainers/islandpath:1.0.6--hdfd78af_0' }"
 
   input:
   tuple val(prefix), file("annotation.gbk")

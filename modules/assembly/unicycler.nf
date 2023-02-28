@@ -8,9 +8,9 @@ process UNICYCLER {
   tag "${prefix}"
 
   conda "bioconda::unicycler=0.4.8"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/unicycler:0.4.8--py38h8162308_3' :
-        'quay.io/biocontainers/unicycler:0.4.8--py38h8162308_3' }"
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+      'https://depot.galaxyproject.org/singularity/unicycler:0.4.8--py38h8162308_3' :
+      'quay.io/biocontainers/unicycler:0.4.8--py38h8162308_3' }"
 
   input:
   tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)

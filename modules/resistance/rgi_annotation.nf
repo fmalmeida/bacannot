@@ -8,9 +8,9 @@ process CARD_RGI {
   label = [ 'process_medium' ]
 
   conda "bioconda::rgi=5.2.1"
-    container "${ workflow.containerEngine == 'singularity' ?
-        'https://depot.galaxyproject.org/singularity/rgi:5.2.1--pyhdfd78af_1' :
-        'quay.io/biocontainers/rgi:5.2.1--pyhdfd78af_1' }"
+  container "${ workflow.containerEngine == 'singularity' ?
+      'https://depot.galaxyproject.org/singularity/rgi:5.2.1--pyhdfd78af_1' :
+      'quay.io/biocontainers/rgi:5.2.1--pyhdfd78af_1' }"
 
   input:
   tuple val(prefix), path(input)
