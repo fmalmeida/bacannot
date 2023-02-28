@@ -16,7 +16,8 @@ process SUMMARY {
     file(stageAs: "results/${prefix}/resistance/RGI/*"), file(stageAs: "results/${prefix}/resistance/ARGMiner/*"),
     file(stageAs: "results/${prefix}/resistance/*"), file(stageAs: "results/${prefix}/methylations/*"),
     file(stageAs: "results/${prefix}/refseq_masher/*"), file(stageAs: "results/${prefix}/*"),
-    file(stageAs: "results/${prefix}/*"), file(stageAs: "results/${prefix}/gffs/*")
+    file(stageAs: "results/${prefix}/*"), file(stageAs: "results/${prefix}/gffs/*"),
+    file(stageAs: "results/${prefix}/integron_finder/*")
 
     output:
     tuple val(prefix), path("${prefix}_summary.json"), emit: summaries
