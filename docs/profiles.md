@@ -11,7 +11,7 @@ Note that some form of configuration will be needed so that Nextflow knows how t
 
 The pipeline have "standard profiles" set to run the workflows with either **docker** or **singularity** using the [local executor](https://www.nextflow.io/docs/latest/executor.html), which is nextflow's default executor and basically runs the pipeline processes in the computer where Nextflow is launched.
 
-If you need to run the pipeline using another executor such as sge, lsf, slurm, etc. you can take a look at [nextflow's manual page](https://www.nextflow.io/docs/latest/executor.html) to proper configure one in a new custom profile set in your personal copy of [MpGAP config file](https://github.com/fmalmeida/phylogram/blob/master/nextflow.config) and take advantage that nextflow allows multiple profiles to be used at once, e.g. `-profile docker,sge`.
+If you need to run the pipeline using another executor such as sge, lsf, slurm, etc. you can take a look at [nextflow's manual page](https://www.nextflow.io/docs/latest/executor.html) to proper configure one in a new custom profile set in your personal copy of [MpGAP config file](https://github.com/fmalmeida/bacannot/blob/master/nextflow.config) and take advantage that nextflow allows multiple profiles to be used at once, e.g. `-profile docker,sge`.
 
 !!! note
 
@@ -27,5 +27,5 @@ If you are using `singularity` and are persistently observing issues downloading
 
 ```bash
 # run
-nextflow run fmalmeida/phylogram -profile singularity [OPTIONS]
+nextflow run fmalmeida/bacannot -profile singularity [OPTIONS]
 ```

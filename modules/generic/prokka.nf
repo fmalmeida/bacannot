@@ -5,7 +5,12 @@ process PROKKA {
       else null
     }
     tag "${prefix}"
-    label = [ 'perl', 'process_medium' ]
+    label = [ 'process_medium' ]
+
+    conda "bioconda::prokka=1.14.6"
+    container "${ workflow.containerEngine == 'singularity' ?
+        'https://depot.galaxyproject.org/singularity/prokka:1.14.6--pl5321hdfd78af_4' :
+        'quay.io/biocontainers/prokka:1.14.6--pl5321hdfd78af_4' }"
 
     input:
     tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), file(assembly), val(resfinder_species)

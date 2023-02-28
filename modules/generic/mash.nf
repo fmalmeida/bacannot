@@ -4,7 +4,12 @@ process REFSEQ_MASHER {
     else "refseq_masher/$filename"
   }
   tag "${prefix}"
-  label = [ 'python', 'process_low' ]
+  label = [ 'process_low' ]
+
+  conda "bioconda::refseq_masher=0.1.2"
+  container "${ workflow.containerEngine == 'singularity' ?
+      'https://depot.galaxyproject.org/singularity/refseq_masher:0.1.2--py_0' :
+      'quay.io/biocontainers/refseq_masher:0.1.2--py_0' }"
 
   input:
   tuple val(prefix), path(genome)

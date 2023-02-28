@@ -47,6 +47,7 @@ Its main steps are:
 | Annotation of virulence genes | [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
 | Prophage sequences and genes annotation | [PHASTER](http://phast.wishartlab.com/), [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) |
 | Annotation of integrative and conjugative elements | [ICEberg](http://db-mml.sjtu.edu.cn/ICEberg/) |
+| Annotation of bacterial integrons | [Integron Finder](https://github.com/gem-pasteur/Integron_Finder) |
 | Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
 | _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
 | Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
@@ -90,14 +91,12 @@ These images have been kept separate to not create massive Docker image and to a
     * After installed, you need to download the required Docker images
 
     ```bash
-    docker pull fmalmeida/bacannot:v3.2_misc    ;
-    docker pull fmalmeida/bacannot:v3.2_perlenv ;
-    docker pull fmalmeida/bacannot:v3.2_pyenv   ;
-    docker pull fmalmeida/bacannot:v3.2_renv    ;
-    docker pull fmalmeida/bacannot:jbrowse      ;
+    docker pull fmalmeida/bacannot:v3.3_misc ;
+    docker pull fmalmeida/bacannot:v3.3_renv ;
+    docker pull fmalmeida/bacannot:jbrowse   ;
     ```
 
-🔥 Nextflow can also automatically handle images download on the fly when executed. If docker has exceeded its download limit rates, please try again in a few hours.
+🔥 Nextflow can also automatically handle images download on the fly when executed. All the other docker images from biocontainers are downloaded automatically. If docker has exceeded its download limit rates, please try again in a few hours.
 
 2. Install Nextflow (version 20.10 or higher):
 

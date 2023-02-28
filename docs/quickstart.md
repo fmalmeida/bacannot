@@ -53,7 +53,7 @@ nextflow run fmalmeida/bacannot \
 
 !!! important "About profiles"
     
-    Users **must** select one of the available profiles: docker or singularity. Conda may come in near future. Please read more about how to [proper select NF profiles](profiles.md#)
+    Users **must** select one of the available profiles: docker or singularity. Conda may come in future. Please read more about how to [proper select NF profiles](profiles.md#)
 
 ## Run the pipeline
 

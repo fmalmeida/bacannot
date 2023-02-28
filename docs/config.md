@@ -69,11 +69,16 @@ params {
   bedtools_merge_distance = null
 
           /*
+           * Bakta optional
+           */
+// If user set path to an existing bakta database, the pipeline will use bakta instead of prokka
+  bakta_db  = null
+
+          /*
            * Prokka optional parameters
            */
-// Do not use PGAP (NCBI) database?
+// Include comprehensive PGAP hmm database in prokka annotation instead of TIGRFAM.
 // PGAP is big and using it may have higher running times but better results
-// To do not use it, set the following to true
   prokka_use_pgap = false
 
 // Annotation mode: Archaea|Bacteria|Mitochondria|Viruses (default 'Bacteria')
@@ -106,8 +111,7 @@ params {
            *
            * Which means: false will allow its execution
            * while true will create a barrier and skip a process.
-
-*/
+           */
 // (NOT RUN?) Plasmids annotation (controls PlasmidFinder execution)
   skip_plasmid_search = false
 
@@ -179,8 +183,18 @@ params {
 // User's custom database coverage threshold
   blast_custom_mincov = 65
 
+          /*
+           * Resources allocation configuration
+           * Defaults only, expecting to be overwritten
+           */
+// Select versions of bioconda quay.io additional tools
+// Tools that are not part of the core of the pipeline,
+// but can eventually be used by users
+  unicycler_version = '0.4.8--py38h8162308_3'
+  flye_version      = '2.9--py39h39abbe0_0'
+  bakta_version     = '1.6.1--pyhdfd78af_0'
+
 // Max resource options
-// Defaults only, expecting to be overwritten
   max_memory                 = '20.GB'
   max_cpus                   = 16
   max_time                   = '40.h'

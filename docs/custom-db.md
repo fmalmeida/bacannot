@@ -6,7 +6,7 @@ Although simple, the files must follow some formatting rules in order to make it
 
 ## Files in FASTA (`--custom_db`)
 
-Sequence headers must follow a 5-field rule separated by "~~~" and spaces. The first 4 fields must be separated by "~~~" and the last one by one space, as exemplified below:
+Sequence headers must follow a 5-field rule separated by "\~\~\~" and spaces. The first 4 fields must be separated by "\~\~\~" and the last one by one space, as exemplified below:
 
 ```bash
 # Sequence header

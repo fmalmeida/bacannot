@@ -5,7 +5,7 @@ process CIRCOS {
     }
     tag "$prefix"
 
-    label = [ 'perl', 'process_low' ]
+    label = [ 'misc', 'process_low' ]
 
     input:
     tuple val(prefix), path(inputs, stageAs: 'results*')
