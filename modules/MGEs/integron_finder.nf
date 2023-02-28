@@ -7,9 +7,9 @@ process INTEGRON_FINDER {
     label = [ 'process_medium' ]
 
     conda "bioconda::integron_finder=2.0.1"
-        container "${ workflow.containerEngine == 'singularity' ?
-            'https://depot.galaxyproject.org/singularity/integron_finder:2.0.1--pyhdfd78af_0' :
-            'quay.io/biocontainers/integron_finder:2.0.1--pyhdfd78af_0' }"
+    container "${ workflow.containerEngine == 'singularity' ?
+        'https://depot.galaxyproject.org/singularity/integron_finder:2.0.1--pyhdfd78af_0' :
+        'quay.io/biocontainers/integron_finder:2.0.1--pyhdfd78af_0' }"
 
     input:
     tuple val(prefix), file(genome)
