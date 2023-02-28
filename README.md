@@ -112,7 +112,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 ### Downloading and updating databases
 
-Bacannot databases are not inside the docker images anymore to avoid huge images and problems with conexions and limit rates with dockerhub.
+Bacannot databases are not inside the docker images anymore to avoid huge images and problems with connections and limit rates with dockerhub.
 
 To get a copy of required bacannot databases users must:
 ```bash
