@@ -106,7 +106,7 @@ These images have been kept separate to not create massive Docker image and to a
 
        nextflow run fmalmeida/bacannot -profile docker --help
 
-🔥 To run the pipeline now users **need** to pass the `-profile docker` or `-profile singularity` parameter explicitely. The pipeline does not load it automatically anymore.
+🔥 To run the pipeline now users **need** to pass the `-profile docker` or `-profile singularity` parameter explicitly. The pipeline does not load it automatically anymore.
 
 🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
@@ -114,7 +114,16 @@ These images have been kept separate to not create massive Docker image and to a
 
 Bacannot databases are not inside the docker images anymore to avoid huge images and problems with connections and limit rates with dockerhub.
 
-To get a copy of required bacannot databases users must:
+#### Pre-formatted
+
+Users can directly download pre-formatted databases from Zenodo: https://doi.org/10.5281/zenodo.7615811
+
+Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
+
+#### I want to generate a new formatted database
+
+To download and format a copy of required bacannot databases users can execute the following:
+
 ```bash
 # Download pipeline databases
 nextflow run fmalmeida/bacannot --get_dbs --output bacannot_dbs -profile <docker/singularity>
@@ -142,7 +151,7 @@ bacannot_dbs
 └── victors_db
 ```
 
-To update databases you can either download a new one to a new directory. Remove the database you want to get a new one from the root bacannot dir and use the same command above to save in the same directory (the pipeline will only try to download missing databases). Or, you can use the parameter `--force_update` to download everything again.
+> To update databases you can either download a new one to a new directory. Remove the database you want to get a new one from the root bacannot dir and use the same command above to save in the same directory (the pipeline will only try to download missing databases). Or, you can use the parameter `--force_update` to download everything again.
 
 ## Quickstart
 
