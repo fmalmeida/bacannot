@@ -1,14 +1,15 @@
 FROM nfcore/base
 LABEL authors="Felipe Almeida" \
       description="Docker image containing any-based bacannot tools"
-ENV CHANNELS='-c bioconda -c defaults -c conda-forge -c anaconda -c falmeida'
 
 # install mamba
 RUN conda update -n base -c defaults conda && conda install -c conda-forge -y 'mamba>=1.0'
 
 # Install the conda environment
-RUN mamba install -y ${CHANNELS} \
-      'python>=3.7' \
+RUN mamba install -y \
+      -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
+      --no-channel-priority \
+      'conda-forge::python>=3.10' \
       'blast>=2.12' \
       'diamond>=2.0.15' \
       'bedtools>=2.30' \
@@ -20,14 +21,16 @@ RUN mamba install -y ${CHANNELS} \
       seqkit \
       bioawk \
       'easy_circos>=0.3' \
-      'falmeida-py>=1.0' \
+      'falmeida-py>=1.1' \
+      'conda-forge::openssl>=1.1.1' \
       emboss \
       libtiff \
       jq && \
       mamba clean -afy
 
 # Create env for digIS
-RUN mamba create -y ${CHANNELS} \
+RUN mamba create -y \
+      -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       -n digIS \
       --no-channel-priority \
       'hmmer==3.1b2' 'biopython==1.77' nomkl && \
@@ -52,7 +55,8 @@ COPY argminer_bkp/argminer.fasta /work/argminer.fasta
 COPY victors_bkp/victors_06-2022.fasta /work/victors.fasta
 
 # get a copy of resfinder
-RUN mamba create -y -n resfinder ${CHANNELS} \
+RUN mamba create -y -n resfinder \
+      -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       'resfinder>=4.1' docopt pandas && \
 	mamba clean -afy
 
@@ -70,6 +74,9 @@ RUN conda create -y -n antismash -c bioconda -c conda-forge \
 # fix bioperl
 RUN mamba create -n perl -y -c bioconda -c conda-forge perl-bioperl perl-app-cpanminus perl-yaml
 RUN conda run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
+
+# fix python
+RUN python3 -m pip install cryptography==38.0.4
 
 # fix permissions
 RUN chmod 777 -R /work
