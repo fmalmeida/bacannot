@@ -38,6 +38,9 @@ process BAKTA {
     # Save bakta version
     bakta --version &> bakta_version.txt ;
 
+    # clean headers char limit
+    awk '{ if (\$0 ~ />/) print substr(\$0,1,21) ; else print \$0 }' $assembly > cleaned_header.fasta
+
     # Run bakta
     bakta \\
         --output annotation \\
@@ -46,7 +49,7 @@ process BAKTA {
         --prefix ${prefix} \\
         --strain '${prefix}' \\
         --db $bakta_db \\
-        $assembly
+        cleaned_header.fasta
     
     # fix fasta headers
     cut -f 1 -d ' ' annotation/${prefix}.fna > tmp.fa
