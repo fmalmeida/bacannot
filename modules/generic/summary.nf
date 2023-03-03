@@ -26,6 +26,7 @@ process SUMMARY {
     """
     mkdir -p results/${prefix}/annotation
     ln -rs annotation/* results/${prefix}/annotation
+    sed -i 's/s:/:/g' results/${prefix}/annotation/${prefix}.txt
     falmeida-py bacannot2json -i results -o ${prefix}_summary.json
     """
 }
