@@ -336,7 +336,7 @@
         "bakta_version": {
           "type": "string",
           "description": "Select quay.io image tag for tool",
-          "default": "1.6.1--pyhdfd78af_0"
+          "default": "1.7.0--pyhdfd78af_1"
         }
       }
     },
