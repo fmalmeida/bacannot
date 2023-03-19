@@ -4,7 +4,7 @@ process REPORT {
   tag "${prefix}"
 
   input:
-  tuple val(prefix), file('annotation_stats.tsv'), file(gff), file(barrnap), file(mlst), file(keggsvg), file(refseq_masher_txt), file(amrfinder), file(rgi), file(rgi_parsed), file(rgi_heatmap), file(argminer_out), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable), file(vfdb_blastn), file(victors_blastp), file(phigaro_txt), file(phispy_tsv), file(iceberg_blastp), file(iceberg_blastn), file(plasmids_tsv), file(platon_tsv), file(gi_image), file(phast_blastp), file(digIS), file(integronfinder)
+  tuple val(prefix), file('annotation_stats.tsv'), file(gff), file(barrnap), file(mlst), file(keggsvg), file(refseq_masher_txt), file(amrfinder), file(rgi), file(rgi_parsed), file(rgi_heatmap), file(argminer_out), file(resfinder_tab), file(resfinder_point), file(resfinder_phenotable), file(vfdb_blastn), file(victors_blastp), file(phigaro_txt), file(phispy_tsv), file(iceberg_blastp), file(iceberg_blastn), file(plasmids_tsv), file(platon_tsv), file(mobsuite_tsv), file(gi_image), file(phast_blastp), file(digIS), file(integronfinder)
   
   output:
   path '*.html', emit: results
@@ -77,6 +77,7 @@ process REPORT {
       ice_genome_blast = "$iceberg_blastn", \
       plasmid_finder_tab = "$plasmids_tsv", \
       platon_tsv = "$platon_tsv", \
+      mobsuite_tsv = "$mobsuite_tsv", \
       query = "${prefix}", \
       gi_image = "$gi_image", \
       digis = "$digIS", \

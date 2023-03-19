@@ -13,6 +13,7 @@ params:
   phispy_tsv:
   plasmid_finder_tab:
   platon_tsv:
+  mobsuite_tsv:
   gi_image:
   digis:
   integronfinder:

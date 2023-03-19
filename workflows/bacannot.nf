@@ -14,6 +14,7 @@ include { KOFAMSCAN              } from '../modules/KOs/kofamscan'
 include { KEGG_DECODER           } from '../modules/KOs/kegg-decoder'
 include { PLASMIDFINDER          } from '../modules/MGEs/plasmidfinder'
 include { PLATON                 } from '../modules/MGEs/platon'
+include { MOBSUITE               } from '../modules/MGEs/mob_suite'
 include { VFDB                   } from '../modules/virulence/vfdb'
 include { VICTORS                } from '../modules/virulence/victors'
 include { PHAST                  } from '../modules/prophages/phast'
@@ -122,11 +123,15 @@ workflow BACANNOT {
         PLATON( annotation_out_ch.genome, dbs_ch )
         platon_output_ch = PLATON.out.results
         platon_all_ch    = PLATON.out.all
+        // mob suite
+        MOBSUITE( annotation_out_ch.genome )
+        mobsuite_output_ch = MOBSUITE.out.results
       } else {
         plasmidfinder_all_ch    = Channel.empty()
         plasmidfinder_output_ch = Channel.empty()
         platon_output_ch        = Channel.empty()
         platon_all_ch           = Channel.empty()
+        mobsuite_output_ch      = Channel.empty()
       }
 
       // TODO: Maybe add in MGE optional?
@@ -367,6 +372,7 @@ workflow BACANNOT {
           .join( iceberg_output_blastn_ch,        remainder: true )
           .join( plasmidfinder_output_ch,         remainder: true )
           .join( platon_output_ch,                remainder: true )
+          .join( mobsuite_output_ch,              remainder: true )
           .join( DRAW_GIS.out.example,            remainder: true )
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
