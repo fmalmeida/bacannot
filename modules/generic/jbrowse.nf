@@ -4,7 +4,7 @@ process JBROWSE {
   tag "${prefix}"
 
   input:
-  tuple val(prefix), file(merged_gff), file(draft), file("prokka_gff"), file(barrnap), file(gc_bedGraph), file(gc_chrSizes), file(resfinder_gff), file(phigaro), file(genomic_islands), file("methylation"), file("chr.sizes"), file(phispy_tsv), file(digIS_gff), file(antiSMASH), file(custom_annotations)
+  tuple val(prefix), file(merged_gff), file(draft), file("prokka_gff"), file(barrnap), file(gc_bedGraph), file(gc_chrSizes), file(resfinder_gff), file(phigaro), file(genomic_islands), file("methylation"), file("chr.sizes"), file(phispy_tsv), file(digIS_gff), file(antiSMASH), file(custom_annotations), file(integron_finder)
 
   output:
   path "*", emit: results
@@ -29,6 +29,7 @@ process JBROWSE {
     -S chr.sizes \\
     -R $resfinder_gff \\
     -d $digIS_gff \\
-    -A $antiSMASH
+    -A $antiSMASH \\
+    -i $integron_finder
   """
 }

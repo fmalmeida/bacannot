@@ -15,6 +15,7 @@ params:
   platon_tsv:
   gi_image:
   digis:
+  integronfinder:
   query: 
   gff: 
 output:
@@ -70,6 +71,16 @@ if (class(digis_gff) != 'try-error' & check_lines(digis_gff) > 0) {
 } else {
   digis_not_null <- FALSE
   digis_null <- TRUE
+}
+
+## Read Integron Finder GFF
+integronfinder_gff <- try(gffRead(params$integronfinder), silent = TRUE)
+if (class(integronfinder_gff) != 'try-error' & check_lines(integronfinder_gff) > 0) {
+  integronfinder_not_null <- TRUE
+  integronfinder_null <- FALSE
+} else {
+  integronfinder_not_null <- FALSE
+  integronfinder_null <- TRUE
 }
 
 ## Read PHAST documents
@@ -177,6 +188,8 @@ In this context, this pipeline is capable of automatically annotating some mobil
     + IslandPath-DIMOB is a standalone software to predict genomic islands in bacterial and archaeal genomes based on the presence of dinucleotide biases and mobility genes.
 8. [digIS](https://github.com/janka2012/digIS).
     + digIS is a command-line tool for detection of insertion sequences (IS) in prokaryotic genomes.
+9. [Integron Finder](https://github.com/gem-pasteur/Integron_Finder).
+    + a command line tool to identity integrons in DNA sequences
 
 ### Prediction thresholds
 
@@ -231,4 +244,12 @@ knitr::include_graphics(gi_image)
 ```
 
 ```{r, digis_conditional_block_2, echo=FALSE, results='asis', eval=digis_null, child='no_digis.Rmd'}
+```
+
+## Integron detection
+
+```{r, integronfinder_conditional_block, echo=FALSE, results='asis', eval=integronfinder_not_null, child='yes_integronfinder.Rmd'}
+```
+
+```{r, integronfinder_conditional_block_2, echo=FALSE, results='asis', eval=integronfinder_null, child='no_integronfinder.Rmd'}
 ```

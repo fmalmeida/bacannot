@@ -10,9 +10,6 @@ process GFF2GBK {
   path "*.genbank", emit: results
 
   """
-  # Activate env
-  export PATH=/opt/conda/envs/antismash/bin:\$PATH
-
   # Run emboss seqret
   seqret \\
     -sequence $input \\

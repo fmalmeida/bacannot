@@ -5,7 +5,12 @@ process PLATON {
     else null
   }
   tag "${prefix}"
-  label = [ 'python', 'process_medium' ]
+  label = [ 'process_medium' ]
+
+  conda "bioconda::platon=1.6"
+  container "${ workflow.containerEngine == 'singularity' ?
+      'https://depot.galaxyproject.org/singularity/platon:1.6--pyhdfd78af_1' :
+      'quay.io/biocontainers/platon:1.6--pyhdfd78af_1' }"
 
   input:
   tuple val(prefix), file(genome)

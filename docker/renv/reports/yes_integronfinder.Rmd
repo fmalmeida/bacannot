@@ -1,0 +1,12 @@
+Integrons have been predicted with [Integron Finder](https://github.com/gem-pasteur/Integron_Finder). More information on how the software operates can be found in its [paper](https://www.mdpi.com/2076-2607/10/4/700).
+
+<br>
+<caption>(#tab:write-table-integronfinder-full) Integrons predicted by Integron Finder in GFF format.</caption>
+```{r}
+datatable(integronfinder_gff,
+          escape = FALSE,
+          filter = 'top',
+          options = dt_opt_lst,
+          extensions = 'Buttons',
+          rownames = F)
+```

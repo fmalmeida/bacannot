@@ -131,7 +131,7 @@ Users can now select the version of the non-core tools Bakta, Unicyler and Flye.
 
 | Parameter | Default | Description |
 | :-------- | :------ | :---------- |
-| `--bakta_version`     | 1.6.1--pyhdfd78af_0   | Bakta tool version     |
+| `--bakta_version`     | 1.7.0--pyhdfd78af_1   | Bakta tool version     |
 | `--flye_version`      | 2.9--py39h39abbe0_0   | Flye tool version      |
 | `--unicycler_version` | 0.4.8--py38h8162308_3 | Unicycler tool version |
 

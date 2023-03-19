@@ -1,7 +1,7 @@
 process SUMMARY {
     publishDir "${params.output}/${prefix}", mode: 'copy'
     tag "${prefix}"
-    label = [ 'python', 'process_low' ]
+    label = [ 'misc', 'process_low' ]
     
 
     input:
@@ -16,7 +16,8 @@ process SUMMARY {
     file(stageAs: "results/${prefix}/resistance/RGI/*"), file(stageAs: "results/${prefix}/resistance/ARGMiner/*"),
     file(stageAs: "results/${prefix}/resistance/*"), file(stageAs: "results/${prefix}/methylations/*"),
     file(stageAs: "results/${prefix}/refseq_masher/*"), file(stageAs: "results/${prefix}/*"),
-    file(stageAs: "results/${prefix}/*"), file(stageAs: "results/${prefix}/gffs/*")
+    file(stageAs: "results/${prefix}/*"), file(stageAs: "results/${prefix}/gffs/*"),
+    file(stageAs: "results/${prefix}/integron_finder/*")
 
     output:
     tuple val(prefix), path("${prefix}_summary.json"), emit: summaries
@@ -25,7 +26,7 @@ process SUMMARY {
     """
     mkdir -p results/${prefix}/annotation
     ln -rs annotation/* results/${prefix}/annotation
-    source activate falmeida-py
+    sed -i 's/s:/:/g' results/${prefix}/annotation/${prefix}.txt
     falmeida-py bacannot2json -i results -o ${prefix}_summary.json
     """
 }

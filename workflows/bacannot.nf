@@ -20,6 +20,8 @@ include { PHAST                  } from '../modules/prophages/phast'
 include { PHIGARO                } from '../modules/prophages/phigaro'
 include { PHISPY                 } from '../modules/prophages/phispy'
 include { ICEBERG                } from '../modules/MGEs/iceberg'
+include { INTEGRON_FINDER        } from '../modules/MGEs/integron_finder'
+include { INTEGRON_FINDER_2GFF   } from '../modules/MGEs/integron_finder_2gff'
 include { ISLANDPATH             } from '../modules/MGEs/islandpath'
 include { DRAW_GIS               } from '../modules/MGEs/draw_gis'
 include { DIGIS                  } from '../modules/MGEs/digIS'
@@ -127,8 +129,14 @@ workflow BACANNOT {
         platon_all_ch           = Channel.empty()
       }
 
+      // TODO: Maybe add in MGE optional?
+
       // IslandPath software
       ISLANDPATH( annotation_out_ch.gbk )
+
+      // Integron_finder software
+      INTEGRON_FINDER( annotation_out_ch.genome )
+      INTEGRON_FINDER_2GFF( INTEGRON_FINDER.out.gbk )
 
       // Virulence search
       if (params.skip_virulence_search == false) {     
@@ -286,7 +294,8 @@ workflow BACANNOT {
           .join(iceberg_output_blastp_ch,        remainder: true)
           .join(phast_output_ch,                 remainder: true)
           .join(DIGIS.out.gff,                   remainder: true)
-          .join(ch_custom_annotations,           remainder: true) 
+          .join(ch_custom_annotations,           remainder: true)
+          .join(INTEGRON_FINDER_2GFF.out.gff,    remainder: true)
       )
 
       /*
@@ -326,6 +335,7 @@ workflow BACANNOT {
           .join( MERGE_ANNOTATIONS.out.digis_gff                 )
           .join( antismash_output_ch,            remainder: true )
           .join( MERGE_ANNOTATIONS.out.customdb_gff.groupTuple(), remainder: true )
+          .join( INTEGRON_FINDER_2GFF.out.gff,   remainder: true )
       )
 
       // Render reports
@@ -360,6 +370,7 @@ workflow BACANNOT {
           .join( DRAW_GIS.out.example,            remainder: true )
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
+          .join( INTEGRON_FINDER_2GFF.out.gff,    remainder: true )
       )
 
       //
@@ -367,27 +378,28 @@ workflow BACANNOT {
       //
       SUMMARY( 
         annotation_out_ch.all
-        .join( MLST.out.all             , remainder: true )
-        .join( BARRNAP.out.all          , remainder: true )
-        .join( kofamscan_all_ch         , remainder: true )
-        .join( plasmidfinder_all_ch     , remainder: true )
-        .join( platon_all_ch            , remainder: true )
-        .join( ISLANDPATH.out.results   , remainder: true )
-        .join( vfdb_all_ch              , remainder: true )
-        .join( victors_all_ch           , remainder: true )
-        .join( phast_all_ch             , remainder: true )
-        .join( phigaro_all_ch           , remainder: true )
-        .join( phispy_all_ch            , remainder: true )
-        .join( iceberg_all_ch           , remainder: true )
-        .join( amrfinder_all_ch         , remainder: true )
-        .join( rgi_all_ch               , remainder: true )
-        .join( argminer_all_ch          , remainder: true )
-        .join( resfinder_all_ch         , remainder: true )
-        .join( CALL_METHYLATION.out.all , remainder: true )
-        .join( REFSEQ_MASHER.out.results, remainder: true )
-        .join( DIGIS.out.all            , remainder: true )
-        .join( antismash_all_ch         , remainder: true )
-        .join( MERGE_ANNOTATIONS.out.all, remainder: true )
+        .join( MLST.out.all                , remainder: true )
+        .join( BARRNAP.out.all             , remainder: true )
+        .join( kofamscan_all_ch            , remainder: true )
+        .join( plasmidfinder_all_ch        , remainder: true )
+        .join( platon_all_ch               , remainder: true )
+        .join( ISLANDPATH.out.results      , remainder: true )
+        .join( vfdb_all_ch                 , remainder: true )
+        .join( victors_all_ch              , remainder: true )
+        .join( phast_all_ch                , remainder: true )
+        .join( phigaro_all_ch              , remainder: true )
+        .join( phispy_all_ch               , remainder: true )
+        .join( iceberg_all_ch              , remainder: true )
+        .join( amrfinder_all_ch            , remainder: true )
+        .join( rgi_all_ch                  , remainder: true )
+        .join( argminer_all_ch             , remainder: true )
+        .join( resfinder_all_ch            , remainder: true )
+        .join( CALL_METHYLATION.out.all    , remainder: true )
+        .join( REFSEQ_MASHER.out.results   , remainder: true )
+        .join( DIGIS.out.all               , remainder: true )
+        .join( antismash_all_ch            , remainder: true )
+        .join( MERGE_ANNOTATIONS.out.all   , remainder: true )
+        .join( INTEGRON_FINDER_2GFF.out.gff, remainder: true )
       )
       MERGE_SUMMARIES(
         SUMMARY.out.summaries.map{ it[1] }.collect()

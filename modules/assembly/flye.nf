@@ -4,8 +4,13 @@ process FLYE {
     else if (filename == "flye_${prefix}") "assembly"
     else null
   }
-  label 'process_high'
+  label = [ 'process_high', 'error_retry' ]
   tag "${prefix}"
+
+  conda "bioconda::flye=2.9"
+  container "${ workflow.containerEngine == 'singularity' ?
+      'https://depot.galaxyproject.org/singularity/flye:2.9--py39h6935b12_1' :
+      'quay.io/biocontainers/flye:2.9--py39h6935b12_1' }"
 
   input:
   tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)
