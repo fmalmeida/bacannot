@@ -2,7 +2,6 @@ process SUMMARY {
     publishDir "${params.output}/${prefix}", mode: 'copy'
     tag "${prefix}"
     label = [ 'misc', 'process_low' ]
-    
 
     input:
     tuple val(prefix), 
@@ -17,7 +16,8 @@ process SUMMARY {
     file(stageAs: "results/${prefix}/resistance/*"), file(stageAs: "results/${prefix}/methylations/*"),
     file(stageAs: "results/${prefix}/refseq_masher/*"), file(stageAs: "results/${prefix}/*"),
     file(stageAs: "results/${prefix}/*"), file(stageAs: "results/${prefix}/gffs/*"),
-    file(stageAs: "results/${prefix}/integron_finder/*")
+    file(stageAs: "results/${prefix}/integron_finder/*"),
+    file(stageAs: "results/${prefix}/mob_suite/*")
 
     output:
     tuple val(prefix), path("${prefix}_summary.json"), emit: summaries

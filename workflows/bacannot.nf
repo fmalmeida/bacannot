@@ -406,6 +406,7 @@ workflow BACANNOT {
         .join( antismash_all_ch            , remainder: true )
         .join( MERGE_ANNOTATIONS.out.all   , remainder: true )
         .join( INTEGRON_FINDER_2GFF.out.gff, remainder: true )
+        .join( mobsuite_output_ch          , remainder: true )
       )
       MERGE_SUMMARIES(
         SUMMARY.out.summaries.map{ it[1] }.collect()
