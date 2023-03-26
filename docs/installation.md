@@ -27,7 +27,7 @@ docker pull fmalmeida/bacannot:v3.3_renv ;
 docker pull fmalmeida/bacannot:jbrowse   ;
 ```
 
-> The pipeline also uses other public images available in biocontainers
+> The pipeline also uses other public images available in biocontainers. All images can be downloaded on the fly, automatically be nextflow.
 
 !!! info "Using singularity"
 

@@ -31,7 +31,7 @@ After a successful execution, you will have something like this:
 |       ├── KOfamscan         # Results from annotation with KEGG database
 |       ├── methylations      # Methylated sites predicted with Nanopolish (if fast5 is given)
 |       ├── MLST              # MLST results with mlst pipeline
-|       ├── plasmids          # Plasmid annotation results from Platon and Plasmidfinder
+|       ├── plasmids          # Plasmid annotation results from Platon, Plasmidfinder and MOB Suite
 |       ├── prophages         # Prophage annotation results from PhiSpy, Phigaro and PHAST
 |       ├── refseq_masher     # Closest NCBI Resfseq genomes identified with refseq_masher
 |       ├── report_files      # Annotation reports in HTML format
@@ -60,10 +60,10 @@ Using both [KofamScan](https://github.com/takaram/kofam_scan) and [KEGGDecoder](
 
 Bacannot will use [R Markdown](https://rmarkdown.rstudio.com/) to produce automatic annotation reports. To date, the available reports are:
 
-* [Report of general annotation features](https://fmalmeida.github.io/reports/report_general.html)
-* [Report of Antimicrobial resistance (AMR) genes annotation](https://fmalmeida.github.io/reports/report_resistance.html)
-* [Report of virulence genes annotation](https://fmalmeida.github.io/reports/report_virulence.html)
-* [Report of mobile genetic elements annotation](https://fmalmeida.github.io/reports/report_MGEs.html)
+* [Report of general annotation features](./reports/report_general.html)
+* [Report of Antimicrobial resistance (AMR) genes annotation](./reports/report_resistance.html)
+* [Report of virulence genes annotation](./reports/report_virulence.html)
+* [Report of mobile genetic elements annotation](./reports/report_MGEs.html)
     * Including plasmids, prophages, ICEs and genomic islands.
 * Report of user's custom db annotations.
     * The quickstart does not produce an example, however, the report is similar to the ICEberg section in the MGE example report.
