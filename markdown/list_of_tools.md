@@ -18,7 +18,7 @@ These are the tools that wrapped inside bacannot. **Cite** the tools whenever yo
 | Annotation of integrative and conjugative elements | [ICEberg](http://db-mml.sjtu.edu.cn/ICEberg/) |
 | Annotation of bacterial integrons | [Integron Finder](https://github.com/gem-pasteur/Integron_Finder) |
 | Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
-| _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
+| _In silico_ detection and typing of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/), [Platon](https://github.com/oschwengers/platon) and [MOB-typer](https://github.com/phac-nml/mob-suite)|
 | Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
 | Custom annotation from formatted FASTA or NCBI protein IDs | [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
