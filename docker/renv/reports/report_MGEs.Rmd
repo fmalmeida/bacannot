@@ -13,6 +13,7 @@ params:
   phispy_tsv:
   plasmid_finder_tab:
   platon_tsv:
+  mobsuite_tsv:
   gi_image:
   digis:
   integronfinder:
@@ -48,10 +49,12 @@ check_lines <- function(x) {
 
 # Read plasmids
 plasmid_finder_tab <- try(read.csv(params$plasmid_finder_tab, sep = "\t"), silent = TRUE)
-platon_tsv <- try(read.csv(params$platon_tsv, sep = "\t"), silent = TRUE)
+platon_tsv         <- try(read.csv(params$platon_tsv, sep = "\t"), silent = TRUE)
+mobsuite_tsv       <- try(read.csv(params$mobsuite_tsv, sep = "\t", header=TRUE), silent = TRUE) # always have a line for chr
 if (
   (class(plasmid_finder_tab) != 'try-error' & check_lines(plasmid_finder_tab) > 0) |
-  (class(platon_tsv) != 'try-error' & check_lines(platon_tsv) > 0)
+  (class(platon_tsv) != 'try-error' & check_lines(platon_tsv) > 0) |
+  (class(mobsuite_tsv) != 'try-error' & check_lines(mobsuite_tsv) > 1)
   ) {
   plasmids_not_null <- TRUE
   plasmids_null <- FALSE
@@ -184,11 +187,14 @@ In this context, this pipeline is capable of automatically annotating some mobil
 6. [Platon](https://github.com/oschwengers/platon);
     + Platon detects plasmid contigs within bacterial draft genomes from WGS short-read assemblies.
     + Therefore, Platon analyzes the natural distribution biases of certain protein coding genes between chromosomes and plasmids.
-7. [IslandPath](https://github.com/brinkmanlab/islandpath).
+7. [MOB Suite](https://github.com/phac-nml/mob-suite);
+    + Software tools for clustering, reconstruction and typing of plasmids from draft assemblies.
+    + In the pipeline, only the typer tool is used.
+8. [IslandPath](https://github.com/brinkmanlab/islandpath).
     + IslandPath-DIMOB is a standalone software to predict genomic islands in bacterial and archaeal genomes based on the presence of dinucleotide biases and mobility genes.
-8. [digIS](https://github.com/janka2012/digIS).
+9. [digIS](https://github.com/janka2012/digIS).
     + digIS is a command-line tool for detection of insertion sequences (IS) in prokaryotic genomes.
-9. [Integron Finder](https://github.com/gem-pasteur/Integron_Finder).
+10. [Integron Finder](https://github.com/gem-pasteur/Integron_Finder).
     + a command line tool to identity integrons in DNA sequences
 
 ### Prediction thresholds

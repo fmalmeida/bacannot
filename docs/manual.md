@@ -88,7 +88,7 @@ The use of this parameter sets a default value for input samples. If a sample ha
 | <div style="width:180px">Parameter</div> | Required | Default | Description |
 | :--------------------------------------- | :------- | :------ | :---------- |
 | `--skip_virulence_search` | :material-close: | false | Tells whether not to run virulence factors annotation. It skips both vfdb and victors annotation |
-| `--skip_plasmid_search` | :material-close: | false | Tells whether not to run plasmid detection modules |
+| `--skip_plasmid_search` | :material-close: | false | Tells whether not to run plasmid detection/typing modules |
 | `--skip_resistance_search` | :material-close: | false | Tells whether not to run resistance genes annotation modules |
 | `--skip_iceberg_search` | :material-close: | false | Tells whether not to run mobile genetic elements annotation with ICEberg |
 | `--skip_prophage_search` | :material-close: | false | Tells whether not to run prophage annotation modules |
