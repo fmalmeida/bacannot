@@ -1,7 +1,7 @@
 process PLASMIDFINDER_DB {
     publishDir "${params.output}", mode: 'copy', overwrite: "$params.force_update"
     label = [ 'db_download', 'process_ultralow' ]
-   
+
     output:
     file("*")
 
