@@ -6,11 +6,6 @@ process MLST {
     tag "${prefix}"
     label = [ 'process_ultralow' ]
 
-    conda "bioconda::mlst=2.19.0"
-    container "${ workflow.containerEngine == 'singularity' ?
-        'https://depot.galaxyproject.org/singularity/mlst:2.19.0--hdfd78af_1' :
-        'quay.io/biocontainers/mlst:2.19.0--hdfd78af_1' }"
-
     input:
     tuple val(prefix), file(genome)
     file(bacannot_db)

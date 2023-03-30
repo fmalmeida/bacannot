@@ -1,6 +1,5 @@
 process PREPARE_CIRCOS {
     tag "$prefix"
-
     label = [ 'misc', 'process_low' ]
 
     input:

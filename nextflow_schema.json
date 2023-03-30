@@ -331,7 +331,7 @@
         "flye_version": {
           "type": "string",
           "description": "Select quay.io image tag for tool",
-          "default": "2.9--py39h39abbe0_0"
+          "default": "2.9--py39h6935b12_1"
         },
         "bakta_version": {
           "type": "string",

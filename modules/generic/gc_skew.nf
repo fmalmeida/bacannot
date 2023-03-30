@@ -1,6 +1,5 @@
 process GC_SKEW {
     tag "$prefix"
-
     label = [ 'misc', 'process_low' ]
 
     input:
