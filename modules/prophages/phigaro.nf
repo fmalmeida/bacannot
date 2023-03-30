@@ -6,11 +6,6 @@ process PHIGARO {
   tag "${prefix}"
   label = [ 'process_medium' ]
 
-  conda "bioconda::phigaro=2.3.0"
-  container "${ workflow.containerEngine == 'singularity' ?
-      'https://depot.galaxyproject.org/singularity/phigaro:2.3.0--pyh7b7c402_0' :
-      'quay.io/biocontainers/phigaro:2.3.0--pyh7b7c402_0' }"
-
   input:
   tuple val(prefix), file("assembly.fasta")
   file(bacannot_db)

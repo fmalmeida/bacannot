@@ -7,11 +7,6 @@ process PHISPY {
   tag "${prefix}"
   label = [ 'process_medium' ]
 
-  conda "bioconda::phispy=4.2.21"
-  container "${ workflow.containerEngine == 'singularity' ?
-      'https://depot.galaxyproject.org/singularity/phispy:4.2.21--py39h7cff6ad_0' :
-      'quay.io/biocontainers/phispy:4.2.21--py39h7cff6ad_0' }"
-
   input:
   tuple val(prefix), file(input)
 

@@ -1,6 +1,5 @@
 process AMRFINDER2TSV {
     tag "$prefix"
-
     label = [ 'renv', 'process_low' ]
 
     input:
