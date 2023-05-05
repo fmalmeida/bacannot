@@ -19,7 +19,7 @@ nextflow pull fmalmeida/bacannot
 
 ## Downloading docker images
 
-The docker images used by the pipeline are:
+The custom docker images used by the pipeline are:
 
 ```bash
 docker pull fmalmeida/bacannot:v3.2_misc    ;
@@ -29,9 +29,11 @@ docker pull fmalmeida/bacannot:v3.2_renv    ;
 docker pull fmalmeida/bacannot:jbrowse      ;
 ```
 
+> The pipeline also uses other public images available in biocontainers. All images can be downloaded on the fly, automatically be nextflow.
+
 !!! info "Using singularity"
 
-    Docker and singularity images are downloaded on the fly. Be sure to properly set `NXF_SINGULARITY_LIBRARYDIR` env variable to a writable directory if using Singularity. This will make that the downloaded images are resuable through different executions. Read more at: https://www.nextflow.io/docs/latest/singularity.html#singularity-docker-hub
+    **Docker and singularity images are downloaded on the fly**. Be sure to properly set `NXF_SINGULARITY_LIBRARYDIR` env variable to a writable directory if using Singularity. This will make that the downloaded images are reusable through different executions. Read more at: https://www.nextflow.io/docs/latest/singularity.html#singularity-docker-hub
 
     For example, to download the images for docker you may:
 

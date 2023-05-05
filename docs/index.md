@@ -23,7 +23,7 @@ The pipeline's main steps are:
 | :------------- | :------------------------- |
 | Genome assembly (if raw reads are given) | [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
 | Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
-| Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) |
+| Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) or [Bakta](https://github.com/oschwengers/bakta) |
 | rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
 | Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |
 | KEGG KO annotation and visualization | [KofamScan](https://github.com/takaram/kofam_scan) and [KEGGDecoder](https://github.com/bjtully/BioData/tree/master/KEGGDecoder) |
