@@ -6,14 +6,23 @@ process KOFAMSCAN_DB {
     file("*")
 
     script:
+    if (workflow.containerEngine != 'singularity') {
+        chmod_cmd = 'chmod a+rw profiles.tar.gz ko_list'
+        chown_cmd = 'chown -R root:\$(id -g) profiles'
+        tar_cmd   = '--same-owner'
+    } else {
+        chmod_cmd = ''
+        chown_cmd = ''
+        tar_cmd   = ''
+    }
     """
     # download kofamscan database
     wget --tries=10 ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz
     wget --tries=10 ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz
     gunzip ko_list.gz
-    chmod a+rw profiles.tar.gz ko_list
-    tar --same-owner -xvzf profiles.tar.gz
-    chown -R root:\$(id -g) profiles
+    $chmod_cmd
+    tar $tar_cmd -xvzf profiles.tar.gz
+    $chown_cmd
     rm -rf profiles.tar.gz
 
     # for the sake of size and fastness
