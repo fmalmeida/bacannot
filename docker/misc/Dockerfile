@@ -9,11 +9,10 @@ RUN conda update -n base -c defaults conda && conda install -c conda-forge -y 'm
 RUN mamba install -y \
       -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       --no-channel-priority \
-      'conda-forge::python>=3.10' \
+      'conda-forge::python>=3.7' \
       'blast>=2.12' \
       'diamond>=2.0.15' \
       'bedtools>=2.30' \
-      'samtools' \
       'kma' \
       'nanopolish' \
       'biopython==1.78' \
@@ -27,6 +26,8 @@ RUN mamba install -y \
       libtiff \
       jq && \
       mamba clean -afy
+# Install samtools
+RUN apt-get update -y && apt-get install -y samtools
 
 # Create env for digIS
 RUN mamba create -y \
@@ -68,7 +69,7 @@ ENV PATH=/work/digIS:$PATH
 # Create env for antismash
 RUN conda create -y -n antismash -c bioconda -c conda-forge \
       'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
-      rm -r /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
+      rm -rf /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 	mamba clean -afy
 
 # fix bioperl
