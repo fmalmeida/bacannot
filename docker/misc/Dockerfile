@@ -3,7 +3,9 @@ LABEL authors="Felipe Almeida" \
       description="Docker image containing any-based bacannot tools"
 
 # install mamba
-RUN conda update -n base -c defaults conda && conda install -c conda-forge -y 'mamba>=1.0'
+RUN conda update -n root conda --yes && \
+      conda update -n base conda --yes && \
+      conda install -c conda-forge -y 'mamba>=1.4'
 
 # Install the conda environment
 RUN mamba install -y \
@@ -16,7 +18,6 @@ RUN mamba install -y \
       'kma' \
       'nanopolish' \
       'biopython==1.78' \
-      gff-toolbox \
       seqkit \
       bioawk \
       'easy_circos>=0.3' \
@@ -26,8 +27,15 @@ RUN mamba install -y \
       libtiff \
       jq && \
       mamba clean -afy
+
 # Install samtools
 RUN apt-get update -y && apt-get install -y samtools
+
+# Install gff-toolbox
+RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
+      cd gff-toolbox && \
+      python setup.py install && \
+      gff-toolbox -h
 
 # Create env for digIS
 RUN mamba create -y \
