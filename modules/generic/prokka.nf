@@ -9,7 +9,7 @@ process PROKKA {
 
     conda "bioconda::prokka=1.14.6"
     container "${ workflow.containerEngine == 'singularity' ?
-        'docker://quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_3' :
+        'https://depot.galaxyproject.org/singularity/prokka:1.14.6--pl5262hdfd78af_3' :
         'quay.io/biocontainers/prokka:1.14.6--pl5262hdfd78af_3' }"
 
     input:

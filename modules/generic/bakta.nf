@@ -9,7 +9,7 @@ process BAKTA {
 
     conda "bioconda::bakta=1.7.0"
     container "${ workflow.containerEngine == 'singularity' ?
-        'docker://quay.io/biocontainers/bakta:1.7.0--pyhdfd78af_1' :
+        'https://depot.galaxyproject.org/singularity/bakta:1.7.0--pyhdfd78af_1' :
         'quay.io/biocontainers/bakta:1.7.0--pyhdfd78af_1' }"
 
     input:
