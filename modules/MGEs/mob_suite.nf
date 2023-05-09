@@ -8,7 +8,7 @@ process MOBSUITE {
 
     conda "bioconda::mob_suite=3.1.4"
     container "${ workflow.containerEngine == 'singularity' ?
-        'https://depot.galaxyproject.org/singularity/mob_suite:3.1.4--pyhdfd78af_0' :
+        'docker://quay.io/biocontainers/mob_suite:3.1.4--pyhdfd78af_0' :
         'quay.io/biocontainers/mob_suite:3.1.4--pyhdfd78af_0' }"
 
     input:
