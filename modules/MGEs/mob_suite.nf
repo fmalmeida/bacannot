@@ -6,11 +6,6 @@ process MOBSUITE {
     tag "${prefix}"
     label = [ 'process_medium' ]
 
-    conda "bioconda::mob_suite=3.1.4"
-    container "${ workflow.containerEngine == 'singularity' ?
-        'docker://quay.io/biocontainers/mob_suite:3.1.4--pyhdfd78af_0' :
-        'quay.io/biocontainers/mob_suite:3.1.4--pyhdfd78af_0' }"
-
     input:
     tuple val(prefix), file(genome)
 
