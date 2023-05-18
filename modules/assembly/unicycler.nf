@@ -7,6 +7,11 @@ process UNICYCLER {
   label = [ 'process_high', 'error_retry' ]
   tag "${prefix}"
 
+  conda "bioconda::unicycler=0.5.0"
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+      'https://depot.galaxyproject.org/singularity/unicycler:0.5.0--py39h2add14b_2' :
+      'quay.io/biocontainers/unicycler:0.5.0--py39h2add14b_2' }"
+
   input:
   tuple val(prefix), val(entrypoint), file(sread1), file(sread2), file(sreads), file(lreads), val(lr_type), file(fast5), val(assembly), val(resfinder_species)
 

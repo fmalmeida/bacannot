@@ -16,6 +16,7 @@ include { ICEBERG_DB       } from '../modules/bacannot_dbs/iceberg.nf'
 include { PHAST_DB         } from '../modules/bacannot_dbs/phast.nf'
 include { KOFAMSCAN_DB     } from '../modules/bacannot_dbs/kofamscan.nf'
 include { ANTISMASH_DB     } from '../modules/bacannot_dbs/antismash.nf'
+include { GET_ZENODO_DB    } from '../modules/bacannot_dbs/get_zenodo.nf'
 
 /*
     DEF WORKFLOW
@@ -23,21 +24,25 @@ include { ANTISMASH_DB     } from '../modules/bacannot_dbs/antismash.nf'
 
 workflow CREATE_DBS {
 
-    download_db("prokka", "PROKKA_DB")
-    download_db("mlst", "MLST_DB")
-    download_db("kofamscan", "KOFAMSCAN_DB")
-    download_db("card", "CARD_DB")
-    download_db("resfinder", "RESFINDER_DB")
-    download_db("amrfinder", "AMRFINDER_DB")
-    download_db("argminer", "ARGMINER_DB")
-    download_db("platon", "PLATON_DB")
-    download_db("plasmidfinder", "PLASMIDFINDER_DB")
-    download_db("phigaro", "PHIGARO_DB")
-    download_db("phast", "PHAST_DB")
-    download_db("vfdb", "VFDB_DB")
-    download_db("victors", "VICTORS_DB")
-    download_db("iceberg", "ICEBERG_DB")
-    download_db("antismash", "ANTISMASH_DB")
+    if ( params.get_dbs && !params.get_zenodo_db ) {
+        download_db("prokka", "PROKKA_DB")
+        download_db("mlst", "MLST_DB")
+        download_db("kofamscan", "KOFAMSCAN_DB")
+        download_db("card", "CARD_DB")
+        download_db("resfinder", "RESFINDER_DB")
+        download_db("amrfinder", "AMRFINDER_DB")
+        download_db("argminer", "ARGMINER_DB")
+        download_db("platon", "PLATON_DB")
+        download_db("plasmidfinder", "PLASMIDFINDER_DB")
+        download_db("phigaro", "PHIGARO_DB")
+        download_db("phast", "PHAST_DB")
+        download_db("vfdb", "VFDB_DB")
+        download_db("victors", "VICTORS_DB")
+        download_db("iceberg", "ICEBERG_DB")
+        download_db("antismash", "ANTISMASH_DB")
+    } else if ( !params.get_dbs && params.get_zenodo_db ) {
+        GET_ZENODO_DB()
+    }
 
 }
 
