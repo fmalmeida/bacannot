@@ -87,6 +87,9 @@ RUN conda run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
 # fix python
 RUN python3 -m pip install cryptography==38.0.4
 
+# install get zenodo
+RUN pip3 install zenodo_get
+
 # fix permissions
 RUN chmod 777 -R /work
 RUN chmod 777 -R /opt/conda/envs/antismash/lib/*/site-packages/antismash
