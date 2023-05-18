@@ -14,5 +14,6 @@ process GET_ZENODO_DB {
 
     # organize data
     tar zxvf *.tar.gz && rm *.tar.gz
+    rm -rf \$( find . -name 'pipeline_info' )
     """
 }
