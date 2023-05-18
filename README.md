@@ -96,7 +96,7 @@ These images have been kept separate to not create massive Docker image and to a
     docker pull fmalmeida/bacannot:jbrowse   ;
     ```
 
-🔥 Nextflow can also automatically handle images download on the fly when executed. All the other docker images from biocontainers are downloaded automatically. If docker has exceeded its download limit rates, please try again in a few hours.
+🔥 Nextflow can also automatically handle images download on the fly when executed. All the other docker images from **biocontainers** are downloaded automatically. If docker has exceeded its download limit rates, please try again in a few hours.
 
 2. Install Nextflow (version 20.10 or higher):
 
@@ -119,6 +119,12 @@ Bacannot databases are not inside the docker images anymore to avoid huge images
 Users can directly download pre-formatted databases from Zenodo: https://doi.org/10.5281/zenodo.7615811
 
 Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
+
+A module to download the latest pre-formatted database has also been made available:
+```bash
+# Download pipeline pre-built databases
+nextflow run fmalmeida/bacannot --get_zenodo_db --output ./ -profile <docker/singularity>
+```
 
 #### I want to generate a new formatted database
 

@@ -36,7 +36,7 @@ include { CREATE_DBS        } from './workflows/bacannot_dbs.nf'
 
 workflow {
 
-  if (params.get_dbs) {
+  if (params.get_dbs || params.get_zenodo_db) {
     CREATE_DBS()
   } else {
     if (params.input) {
