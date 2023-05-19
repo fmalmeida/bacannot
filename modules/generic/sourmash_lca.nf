@@ -19,7 +19,7 @@ process SOURMASH_LCA {
     when: !params.skip_sourmash
 
     script:
-    def lca_db = "${bacannot_dbs}/sourmash_db/genbank-k${kmer}.lca.json.gz"
+    def lca_db = "${bacannot_dbs}/sourmash_db/genbank-${kmer}.lca.json.gz"
     """
     # get version file
     sourmash --version > sourmash_version.txt
@@ -41,6 +41,6 @@ process SOURMASH_LCA {
     sourmash \\
         lca summarize \\
         --db ${lca_db} \\
-        --query some-genome.fa.gz.sig > ${genome}_sourmash.summary.txt
+        --query ${genome}.sig > ${genome}_sourmash.summary.txt
     """
 }
