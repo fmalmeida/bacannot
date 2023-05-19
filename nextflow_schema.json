@@ -298,6 +298,16 @@
           "description": "Download template config for parameters",
           "fa_icon": "fas fa-question-circle"
         },
+        "get_docker_config": {
+          "type": "boolean",
+          "description": "Download template docker config for containers.",
+          "fa_icon": "fas fa-question-circle"
+        },
+        "get_singularity_config": {
+          "type": "boolean",
+          "description": "Download template singularity config for containers.",
+          "fa_icon": "fas fa-question-circle"
+        },
         "get_samplesheet": {
           "type": "boolean",
           "fa_icon": "fas fa-question-circle",
