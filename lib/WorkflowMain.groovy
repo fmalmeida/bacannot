@@ -74,6 +74,30 @@ class WorkflowMain {
             System.exit(0)
         }
 
+        // Download docker config
+        if (params.get_docker_config) {
+            new File("docker.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/conf/docker.config").getText())
+            log.info """
+            docker.config file saved in working directory
+            After configuration, run:
+              nextflow run fmalmeida/bacannot -c ./docker.config
+            Nice code
+            """.stripIndent()
+            System.exit(0)
+        }
+
+        // Download singularity config
+        if (params.get_singularity_config) {
+            new File("singularity.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/conf/singularity.config").getText())
+            log.info """
+            singularity.config file saved in working directory
+            After configuration, run:
+              nextflow run fmalmeida/bacannot -c ./singularity.config
+            Nice code
+            """.stripIndent()
+            System.exit(0)
+        }
+
         // Validate workflow parameters via the JSON schema
         if (params.validate_params) {
             NfcoreSchema.validateParameters(workflow, params, log)

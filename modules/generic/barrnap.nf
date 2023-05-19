@@ -6,11 +6,6 @@ process BARRNAP {
     tag "${prefix}"
     label = [ 'process_low' ]
 
-    conda "bioconda::barrnap=0.9"
-    container "${ workflow.containerEngine == 'singularity' ?
-        'https://depot.galaxyproject.org/singularity/barrnap:0.9--hdfd78af_4  ' :
-        'quay.io/biocontainers/barrnap:0.9--hdfd78af_4' }"
-
     input:
     tuple val(prefix), file(genome)
 

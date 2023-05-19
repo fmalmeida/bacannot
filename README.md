@@ -190,6 +190,17 @@ Create a configuration file in your working directory:
 
       nextflow run fmalmeida/bacannot --get_config
 
+##### Overwrite container versions with config
+
+The pipeline uses pre-set docker and singularity configuration files to set all the containers and versions of images that should be used by each module in the pipeline.
+
+Although not recommended, one can use these configuration files to change the version of specific tools if desired.
+
+To download these configs one can:
+
+      nextflow run fmalmeida/bacannot --get_docker_config
+      nextflow run fmalmeida/bacannot --get_singularity_config
+
 ### Interactive graphical configuration and execution
 
 #### Via NF tower launchpad (good for cloud env execution)

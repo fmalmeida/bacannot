@@ -4,7 +4,6 @@ process CIRCOS {
         else "$filename"
     }
     tag "$prefix"
-
     label = [ 'misc', 'process_low' ]
 
     input:

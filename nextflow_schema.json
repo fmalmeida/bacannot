@@ -11,10 +11,16 @@
       "default": "",
       "properties": {
         "get_dbs": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Download and build all the required databases on the fly (get today's version)"
         },
         "force_update": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Should we overwriting existing databases if any?"
+        },
+        "get_zenodo_db": {
+          "type": "boolean",
+          "description": "Download latest pre-built databases from Zenodo?"
         }
       }
     },
@@ -167,7 +173,7 @@
         "plasmids_minid": {
           "type": "number",
           "description": "Identity threshold for plasmid annotation",
-          "default": 90.0,
+          "default": 90,
           "minimum": 0,
           "maximum": 100,
           "help_text": "Must be between 0 and 100",
@@ -176,7 +182,7 @@
         "plasmids_mincov": {
           "type": "number",
           "description": "overage threshold for plasmid annotation",
-          "default": 60.0,
+          "default": 60,
           "minimum": 0,
           "maximum": 100,
           "help_text": "Must be between 0 and 100",
@@ -185,7 +191,7 @@
         "blast_virulence_minid": {
           "type": "number",
           "description": "Identity threshold for virulence factors annotation",
-          "default": 90.0,
+          "default": 90,
           "minimum": 0,
           "maximum": 100,
           "help_text": "Must be between 0 and 100",
@@ -194,7 +200,7 @@
         "blast_virulence_mincov": {
           "type": "number",
           "description": "overage threshold for virulence factors annotation",
-          "default": 90.0,
+          "default": 90,
           "minimum": 0,
           "maximum": 100,
           "help_text": "Must be between 0 and 100",
@@ -203,7 +209,7 @@
         "blast_resistance_minid": {
           "type": "number",
           "description": "Identity threshold for resistance genes annotation",
-          "default": 90.0,
+          "default": 90,
           "minimum": 0,
           "maximum": 100,
           "help_text": "Must be between 0 and 100",
@@ -212,7 +218,7 @@
         "blast_resistance_mincov": {
           "type": "number",
           "description": "overage threshold for resistance genes annotation",
-          "default": 90.0,
+          "default": 90,
           "minimum": 0,
           "maximum": 100,
           "help_text": "Must be between 0 and 100",
@@ -221,7 +227,7 @@
         "blast_MGEs_minid": {
           "type": "number",
           "description": "Identity threshold for ICEs and prophages annotation",
-          "default": 85.0,
+          "default": 85,
           "minimum": 0,
           "maximum": 100,
           "help_text": "Must be between 0 and 100",
@@ -230,7 +236,7 @@
         "blast_MGEs_mincov": {
           "type": "number",
           "description": "overage threshold for ICEs and prophages annotation",
-          "default": 85.0,
+          "default": 85,
           "minimum": 0,
           "maximum": 100,
           "help_text": "Must be between 0 and 100",
@@ -260,7 +266,7 @@
         "blast_custom_minid": {
           "type": "number",
           "description": "Min. identity % for the annotation using user's custom database",
-          "default": 65.0,
+          "default": 65,
           "minimum": 0,
           "maximum": 100,
           "hidden": true
@@ -268,7 +274,7 @@
         "blast_custom_mincov": {
           "type": "number",
           "description": "Min. gene/subject coverage % for the annotation using user's custom database",
-          "default": 65.0,
+          "default": 65,
           "minimum": 0,
           "maximum": 100,
           "hidden": true
@@ -290,6 +296,16 @@
         "get_config": {
           "type": "boolean",
           "description": "Download template config for parameters",
+          "fa_icon": "fas fa-question-circle"
+        },
+        "get_docker_config": {
+          "type": "boolean",
+          "description": "Download template docker config for containers.",
+          "fa_icon": "fas fa-question-circle"
+        },
+        "get_singularity_config": {
+          "type": "boolean",
+          "description": "Download template singularity config for containers.",
           "fa_icon": "fas fa-question-circle"
         },
         "get_samplesheet": {
@@ -331,7 +347,7 @@
         "flye_version": {
           "type": "string",
           "description": "Select quay.io image tag for tool",
-          "default": "2.9--py39h39abbe0_0"
+          "default": "2.9--py39h6935b12_1"
         },
         "bakta_version": {
           "type": "string",

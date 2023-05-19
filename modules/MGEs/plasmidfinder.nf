@@ -6,11 +6,6 @@ process PLASMIDFINDER {
   tag "${prefix}"
   label = [ 'process_low' ]
 
-  conda "bioconda::plasmidfinder=2.1.6"
-  container "${ workflow.containerEngine == 'singularity' ?
-      'https://depot.galaxyproject.org/singularity/plasmidfinder:2.1.6--py310hdfd78af_1' :
-      'quay.io/biocontainers/plasmidfinder:2.1.6--py310hdfd78af_1' }"
-
   input:
   tuple val(prefix), file(genome)
   file(bacannot_db)
