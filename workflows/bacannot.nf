@@ -5,6 +5,7 @@
 include { UNICYCLER              } from '../modules/assembly/unicycler'
 include { FLYE                   } from '../modules/assembly/flye'
 include { REFSEQ_MASHER          } from '../modules/generic/mash'
+include { SOURMASH_LCA           } from '../modules/generic/sourmash_lca'
 include { PROKKA                 } from '../modules/generic/prokka'
 include { BAKTA                  } from '../modules/generic/bakta'
 include { MLST                   } from '../modules/generic/mlst'
@@ -250,6 +251,12 @@ workflow BACANNOT {
 
       // species identification
       REFSEQ_MASHER( annotation_out_ch.genome )
+      SOURMASH_LCA (
+        dbs_ch,
+        annotation_out_ch.genome,
+        params.sourmash_scale,
+        params.sourmash_kmer
+      )
 
       // IS identification
       DIGIS( annotation_out_ch.genome.join(annotation_out_ch.gbk) )
