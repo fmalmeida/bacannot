@@ -90,6 +90,9 @@ RUN python3 -m pip install cryptography==38.0.4
 # install get zenodo
 RUN pip3 install zenodo_get
 
+# install unzip
+RUN apt-get install -y unzip
+
 # fix permissions
 RUN chmod 777 -R /work
 RUN chmod 777 -R /opt/conda/envs/antismash/lib/*/site-packages/antismash
