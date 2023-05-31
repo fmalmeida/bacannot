@@ -12,17 +12,23 @@ process GET_NCBI_GENOME {
 
     script:
     """
-    # download and format ncbi protein entries for custom blastp
-    for biosample in \$(cat ${ncbi_accs}) ; do \\
+    # download genomes from ncbi
+    for biosample in \$( cat ${ncbi_accs} | sort -u ) ; do
 
-        acc=\$(esearch -db biosample -query \${biosample} | elink -target assembly | esummary | xtract -pattern DocumentSummary -element Genbank | tr -d '\\n' | tr -d '') && \\
+        export acc=\$(esearch -db biosample -query \${biosample} | elink -target assembly | esummary | xtract -pattern DocumentSummary -element Genbank | tr -d '\\n' | tr -d '')
+        echo \${biosample} -- \${acc}
         curl -OJX GET \\
             "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/\${acc}/download?include_annotation_type=GENOME_FASTA&filename=\${acc}.zip" \\
-            -H "Accept: application/zip" && \\
-        unzip \${acc}.zip && \\
-        mv ncbi_dataset/data/*/*.fna . && \\
-        rm -rf ncbi_dataset *.zip ;
+            -H "Accept: application/zip"
 
+    done
+
+    # unzip files
+    for file in *.zip ; do
+        rm -rf ncbi_dataset *.md *.txt && \\
+        unzip -u \$file && \\
+        mv ncbi_dataset/data/*/*.fna . && \\
+        rm -rf ncbi_dataset *.md *.txt
     done
     """
 }
