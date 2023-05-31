@@ -1,5 +1,5 @@
 process GET_NCBI_GENOME {
-    publishDir "${params.output}/closest_genomes", mode: 'copy'
+    publishDir "${params.output}/sourmash_all/closest_genomes", mode: 'copy'
     label = [ 'misc', 'process_low' ]
 
     input:

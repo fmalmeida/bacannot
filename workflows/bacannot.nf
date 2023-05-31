@@ -6,6 +6,7 @@ include { UNICYCLER              } from '../modules/assembly/unicycler'
 include { FLYE                   } from '../modules/assembly/flye'
 include { REFSEQ_MASHER          } from '../modules/generic/mash'
 include { SOURMASH_LCA           } from '../modules/generic/sourmash_lca'
+include { SOURMASH_ALL           } from '../modules/generic/sourmash_all'
 include { PROKKA                 } from '../modules/generic/prokka'
 include { BAKTA                  } from '../modules/generic/bakta'
 include { MLST                   } from '../modules/generic/mlst'
@@ -268,7 +269,14 @@ workflow BACANNOT {
         .unique()
         .collectFile()
       )
-      // annotation_out_ch.genome.collect() 
+      SOURMASH_ALL(
+        annotation_out_ch.genome
+        .map{ it[1] }
+        .mix( GET_NCBI_GENOME.out.genomes )
+        .collect(),
+        params.sourmash_scale,
+        params.sourmash_kmer
+      )
 
       // IS identification
       DIGIS( annotation_out_ch.genome.join(annotation_out_ch.gbk) )
