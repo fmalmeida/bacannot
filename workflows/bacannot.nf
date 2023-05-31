@@ -35,6 +35,7 @@ include { CALL_METHYLATION       } from '../modules/generic/methylation'
 include { CUSTOM_DATABASE        } from '../modules/generic/custom_database'
 include { CUSTOM_DATABASE_REPORT } from '../modules/generic/custom_database_report'
 include { GET_NCBI_PROTEIN       } from '../modules/generic/ncbi_protein'
+include { GET_NCBI_GENOME        } from '../modules/generic/ncbi_genome'
 include { MERGE_ANNOTATIONS      } from '../modules/generic/merge_annotations'
 include { GFF2GBK                } from '../modules/generic/gff2gbk'
 include { CREATE_SQL             } from '../modules/generic/gff2sql'
@@ -257,6 +258,17 @@ workflow BACANNOT {
         params.sourmash_scale,
         params.sourmash_kmer
       )
+
+      // mashing against samples and close related genomes
+      GET_NCBI_GENOME(
+        REFSEQ_MASHER.out.results
+        .map { it[1] }
+        .splitCsv( sep: '\t', header: true )
+        .map{ "${it.biosample}\n" }
+        .unique()
+        .collectFile()
+      )
+      // annotation_out_ch.genome.collect() 
 
       // IS identification
       DIGIS( annotation_out_ch.genome.join(annotation_out_ch.gbk) )
