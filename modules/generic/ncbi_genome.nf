@@ -30,5 +30,11 @@ process GET_NCBI_GENOME {
         mv ncbi_dataset/data/*/*.fna . && \\
         rm -rf ncbi_dataset *.md *.txt
     done
+
+    # rename
+    for file in *.fna ; do
+        name=\$( echo \$file | cut -d '_' -f 1,2 ) ;
+        mv \$file \${name}.fna
+    done
     """
 }

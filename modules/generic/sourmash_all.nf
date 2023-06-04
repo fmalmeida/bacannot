@@ -23,14 +23,17 @@ process SOURMASH_ALL {
 
     # sketch input genomes
     mkdir signatures ;
-    for genome in genomes/* ; do
-        export name=\$( echo \${genome} | cut -f 2 -d '/' | cut -f 1,2 -d '_' ) ; 
-        sourmash \\
-            sketch dna \\
-            -p scaled=${scale},k=${kmer} \\
-            \${genome} \\
-            -o signatures/\${name}.sig ;
-    done
+    ( 
+        cd genomes && \\
+        for genome in * ; do
+            export name=\$( echo \${genome} | cut -f 2 -d '/' | cut -f 1,2 -d '_' ) ; 
+            sourmash \\
+                sketch dna \\
+                -p scaled=${scale},k=${kmer} \\
+                \${genome} \\
+                -o ../signatures/\${name}.sig ;
+        done ;
+    )
 
     # compare
     sourmash \\
@@ -40,9 +43,11 @@ process SOURMASH_ALL {
         -o sourmash_cmp
     
     # plot
+    sourmash plot --labels sourmash_cmp
     sourmash \\
         plot \\
         --pdf \\
+        --csv sourmash_plot.csv \\
         --labels sourmash_cmp
     """
 }
