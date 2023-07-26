@@ -4,7 +4,7 @@ process KOFAMSCAN {
     else "$filename"
   }
   tag "${prefix}"
-  label = [ 'misc', 'process_high' ]
+  label = [ 'process_high', 'error_retry' ]
 
   input:
   tuple val(prefix), file('proteins.faa')

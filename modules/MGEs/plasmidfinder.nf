@@ -4,7 +4,7 @@ process PLASMIDFINDER {
     else null
   }
   tag "${prefix}"
-  label = [ 'python', 'process_low' ]
+  label = [ 'process_low' ]
 
   input:
   tuple val(prefix), file(genome)

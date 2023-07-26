@@ -4,7 +4,7 @@ process PHIGARO {
     else "prophages/phigaro/$filename"
   }
   tag "${prefix}"
-  label = [ 'python', 'process_medium' ]
+  label = [ 'process_medium' ]
 
   input:
   tuple val(prefix), file("assembly.fasta")
@@ -18,10 +18,7 @@ process PHIGARO {
   path('phigaro_version.txt')                      , emit: version
 
   script:
-  """
-  # activate env
-  source activate phigaro
-  
+  """  
   # get tool version
   phigaro -V > phigaro_version.txt ;
 

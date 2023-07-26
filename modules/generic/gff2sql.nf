@@ -33,9 +33,6 @@ process CREATE_SQL {
 
   fi
 
-  # Save results with better name
-  mv /work/${prefix}.sqlite . ;
-
   # Save parser
   cp /work/bscripts/run_server.sh . ;
   """

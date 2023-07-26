@@ -1,7 +1,7 @@
 process VICTORS_DB {
     publishDir "${params.output}/victors_db", mode: 'copy', overwrite: "$params.force_update"
     label = [ 'db_download', 'process_ultralow' ]
-   
+
     output:
     file("*")
 

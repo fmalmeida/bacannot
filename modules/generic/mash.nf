@@ -4,7 +4,7 @@ process REFSEQ_MASHER {
     else "refseq_masher/$filename"
   }
   tag "${prefix}"
-  label = [ 'python', 'process_low' ]
+  label = [ 'process_low' ]
 
   input:
   tuple val(prefix), path(genome)

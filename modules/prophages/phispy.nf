@@ -5,7 +5,7 @@ process PHISPY {
     else null
   }
   tag "${prefix}"
-  label = [ 'python', 'process_medium' ]
+  label = [ 'process_medium' ]
 
   input:
   tuple val(prefix), file(input)

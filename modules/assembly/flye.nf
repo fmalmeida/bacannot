@@ -4,7 +4,7 @@ process FLYE {
     else if (filename == "flye_${prefix}") "assembly"
     else null
   }
-  label 'process_high'
+  label = [ 'process_high', 'error_retry' ]
   tag "${prefix}"
 
   input:

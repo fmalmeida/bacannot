@@ -1,7 +1,7 @@
 process PLATON_DB {
     publishDir "${params.output}/platon_db", mode: 'copy', overwrite: "$params.force_update"
     label = [ 'db_download', 'process_low' ]
-   
+
     output:
     file("*")
 
