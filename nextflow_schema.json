@@ -342,7 +342,7 @@
         "unicycler_version": {
           "type": "string",
           "description": "Select quay.io image tag for tool",
-          "default": "0.4.8--py38h8162308_3"
+          "default": "0.5.0--py310h6cc9453_3"
         },
         "flye_version": {
           "type": "string",

@@ -21,7 +21,7 @@ RUN mamba install -y \
       seqkit \
       bioawk \
       'easy_circos>=0.3' \
-      'falmeida-py>=1.2' \
+      'falmeida-py>=1.2.2' \
       'conda-forge::openssl>=1.1.1' \
       emboss \
       libtiff \
