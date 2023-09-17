@@ -2,10 +2,11 @@ FROM nfcore/base
 LABEL authors="Felipe Almeida" \
       description="Docker image containing any-based bacannot tools"
 
-# install mamba
-RUN conda update -n root conda --yes && \
-      conda update -n base conda --yes && \
-      conda install -c conda-forge -y 'mamba>=1.4'
+# install
+RUN conda install -n base -c conda-forge \
+      'conda==23.7.4' 'python=3.9' 'mamba>1' --yes && \
+      conda clean -afy
+RUN pip install --upgrade pip
 
 # Install the conda environment
 RUN mamba install -y \
@@ -20,8 +21,8 @@ RUN mamba install -y \
       'biopython==1.78' \
       seqkit \
       bioawk \
-      'easy_circos>=0.3' \
-      'falmeida-py>=1.2.2' \
+      'easy_circos==0.4' \
+      'falmeida-py==1.2.3' \
       'conda-forge::openssl>=1.1.1' \
       emboss \
       libtiff \
@@ -75,14 +76,15 @@ COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
 ENV PATH=/work/digIS:$PATH
 
 # Create env for antismash
-RUN conda create -y -n antismash -c bioconda -c conda-forge \
+RUN conda config --set ssl_verify False && \
+      mamba create -y -n antismash -c bioconda -c conda-forge \
       'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
       rm -rf /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 	mamba clean -afy
 
 # fix bioperl
 RUN mamba create -n perl -y -c bioconda -c conda-forge perl-bioperl perl-app-cpanminus perl-yaml
-RUN conda run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
+RUN mamba run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
 
 # fix python
 RUN python3 -m pip install cryptography==38.0.4
