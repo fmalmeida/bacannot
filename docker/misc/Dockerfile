@@ -4,7 +4,7 @@ LABEL authors="Felipe Almeida" \
 
 # install
 RUN conda install -n base -c conda-forge \
-      'conda==23.7.4' 'python=3.9' 'mamba>1' --yes && \
+      'conda>=5' 'python=3.8' 'mamba==1.4' --yes && \
       conda clean -afy
 RUN pip install --upgrade pip
 
@@ -12,7 +12,6 @@ RUN pip install --upgrade pip
 RUN mamba install -y \
       -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       --no-channel-priority \
-      'conda-forge::python>=3.7' \
       'blast>=2.12' \
       'diamond>=2.0.15' \
       'bedtools>=2.30' \
@@ -33,9 +32,10 @@ RUN mamba install -y \
 RUN apt-get update -y && apt-get install -y samtools
 
 # Install gff-toolbox
-RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
-      cd gff-toolbox && \
-      python setup.py install && \
+RUN git clone https://github.com/fmalmeida/gff-toolbox.git
+RUN cd gff-toolbox && \
+      python3 -m pip install --upgrade pip 'matplotlib==3.7.3' && \
+      python3 setup.py install && \
       gff-toolbox -h
 
 # Create env for digIS
@@ -76,14 +76,15 @@ COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
 ENV PATH=/work/digIS:$PATH
 
 # Create env for antismash
-RUN conda config --set ssl_verify False && \
-      mamba create -y -n antismash -c bioconda -c conda-forge \
-      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
+RUN mamba create -y -n antismash -c bioconda -c conda-forge \
+      'bioconda::antismash-lite>=6' 'anaconda::flask' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
       rm -rf /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 	mamba clean -afy
 
 # fix bioperl
-RUN mamba create -n perl -y -c bioconda -c conda-forge perl-bioperl perl-app-cpanminus perl-yaml
+RUN mamba create -n perl -y \
+      -c bioconda -c conda-forge -c anaconda -c defaults \
+      perl-bioperl perl-app-cpanminus perl-yaml
 RUN mamba run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
 
 # fix python
