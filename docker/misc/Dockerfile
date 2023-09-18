@@ -2,9 +2,8 @@ FROM nfcore/base
 LABEL authors="Felipe Almeida" \
       description="Docker image containing any-based bacannot tools"
 
-# install
-RUN conda install -n base -c conda-forge \
-      'conda>=5' 'python=3.8' 'mamba==1.4' --yes && \
+# install mamba
+RUN conda install -n base -c conda-forge 'mamba=1.5' --yes && \
       conda clean -afy
 RUN pip install --upgrade pip
 
@@ -12,6 +11,7 @@ RUN pip install --upgrade pip
 RUN mamba install -y \
       -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       --no-channel-priority \
+      'python=3.9' \
       'blast>=2.12' \
       'diamond>=2.0.15' \
       'bedtools>=2.30' \
@@ -21,12 +21,16 @@ RUN mamba install -y \
       seqkit \
       bioawk \
       'easy_circos==0.4' \
-      'falmeida-py==1.2.3' \
-      'conda-forge::openssl>=1.1.1' \
+      'conda-forge::openssl>=1.1' \
+      'pyproj=3.2' \
       emboss \
       libtiff \
       jq && \
       mamba clean -afy
+RUN git clone https://github.com/fmalmeida/pythonScripts.git && \
+      cd pythonScripts && \
+      pip install . && \
+      falmeida-py --help
 
 # Install samtools
 RUN apt-get update -y && apt-get install -y samtools
