@@ -5,10 +5,12 @@ The tracking for changes started in v2.1
 ## v3.3 [TBD]
 
 * [[#50](https://github.com/fmalmeida/bacannot/issues/50)] -- Add `Integron Finder` tool to the pipeline
-* [#69](https://github.com/fmalmeida/bacannot/issues/69) -- Change how tools use docker images in order to:
+* [[#69](https://github.com/fmalmeida/bacannot/issues/69)] -- Change how tools use docker images in order to:
     * make tools use public bioconda images whenever possible to allow easy addition of tools and avoid much conflicts in docker images
     * dimish the size and tools inside the docker images, the docker images now are only built to contain tools and all required for modules that cannot just use bioconda docker images.
+* [[#98](https://github.com/fmalmeida/bacannot/issues/98)] -- Add ICEberg and PHAST blastp results to json summary
 * Update unicycler docker image to latest '0.5.0--py310h6cc9453_3' to avoid errors originated from previous image containing buggy installation.
+
 ## v3.2 [19-December-2022]
 
 * Fixes https://github.com/fmalmeida/bacannot/issues/68 reported by @lam-c
