@@ -3,15 +3,15 @@ LABEL authors="Felipe Almeida" \
       description="Docker image containing any-based bacannot tools"
 
 # install mamba
-RUN conda update -n root conda --yes && \
-      conda update -n base conda --yes && \
-      conda install -c conda-forge -y 'mamba>=1.4'
+RUN conda install -n base -c conda-forge 'mamba=1.5' --yes && \
+      conda clean -afy
+RUN pip install --upgrade pip
 
 # Install the conda environment
 RUN mamba install -y \
       -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       --no-channel-priority \
-      'conda-forge::python>=3.7' \
+      'python=3.9' \
       'blast>=2.12' \
       'diamond>=2.0.15' \
       'bedtools>=2.30' \
@@ -20,21 +20,26 @@ RUN mamba install -y \
       'biopython==1.78' \
       seqkit \
       bioawk \
-      'easy_circos>=0.3' \
-      'falmeida-py>=1.2.2' \
-      'conda-forge::openssl>=1.1.1' \
+      'easy_circos==0.4' \
+      'conda-forge::openssl>=1.1' \
+      'pyproj=3.2' \
       emboss \
       libtiff \
       jq && \
       mamba clean -afy
+RUN git clone https://github.com/fmalmeida/pythonScripts.git && \
+      cd pythonScripts && \
+      pip install . && \
+      falmeida-py --help
 
 # Install samtools
 RUN apt-get update -y && apt-get install -y samtools
 
 # Install gff-toolbox
-RUN git clone https://github.com/fmalmeida/gff-toolbox.git && \
-      cd gff-toolbox && \
-      python setup.py install && \
+RUN git clone https://github.com/fmalmeida/gff-toolbox.git
+RUN cd gff-toolbox && \
+      python3 -m pip install --upgrade pip 'matplotlib==3.7.3' && \
+      python3 setup.py install && \
       gff-toolbox -h
 
 # Create env for digIS
@@ -75,14 +80,16 @@ COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
 ENV PATH=/work/digIS:$PATH
 
 # Create env for antismash
-RUN conda create -y -n antismash -c bioconda -c conda-forge \
-      'antismash>=6' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
+RUN mamba create -y -n antismash -c bioconda -c conda-forge \
+      'bioconda::antismash-lite>=6' 'anaconda::flask' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
       rm -rf /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 	mamba clean -afy
 
 # fix bioperl
-RUN mamba create -n perl -y -c bioconda -c conda-forge perl-bioperl perl-app-cpanminus perl-yaml
-RUN conda run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
+RUN mamba create -n perl -y \
+      -c bioconda -c conda-forge -c anaconda -c defaults \
+      perl-bioperl perl-app-cpanminus perl-yaml
+RUN mamba run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
 
 # fix python
 RUN python3 -m pip install cryptography==38.0.4
