@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 LABEL MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
 
@@ -13,7 +13,7 @@ RUN apt-get update && \
 
 ## Install R
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && \
-			DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y r-base r-base-core r-api-3.5
+			DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y r-base r-base-core
 
 ## Install R-packages
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \

@@ -9,6 +9,7 @@ The tracking for changes started in v2.1
     * make tools use public bioconda images whenever possible to allow easy addition of tools and avoid much conflicts in docker images
     * dimish the size and tools inside the docker images, the docker images now are only built to contain tools and all required for modules that cannot just use bioconda docker images.
 * [[#98](https://github.com/fmalmeida/bacannot/issues/98)] -- Add ICEberg and PHAST blastp results to json summary
+* [[#100](https://github.com/fmalmeida/bacannot/issues/100)] -- Update pipeline to use docker shasum instead of tags
 * Update unicycler docker image to latest '0.5.0--py310h6cc9453_3' to avoid errors originated from previous image containing buggy installation.
 
 ## v3.2 [19-December-2022]
