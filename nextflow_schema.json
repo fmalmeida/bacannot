@@ -34,6 +34,10 @@
           "type": "string",
           "description": "Path to input samplesheet"
         },
+        "enable_deduplication": {
+          "type": "boolean",
+          "description": "Execute deduplication on reads before assembly."
+        },
         "output": {
           "type": "string",
           "description": "Path for output directory",

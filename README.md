@@ -242,7 +242,11 @@ It will result in the following:
 2. The JBrowse wrapper in the shiny server is not capable of displaying the GC content and methylation plots when available. It can only display the simpler tracks. If the user wants to visualise and interrogate the GC or methylation tracks it must open the JBrowse outside from the shiny server. For that, two options are available:
     * You can navigate to the `jbrowse` directory under your sample's output folder and simply execute `http-server`. This command can be found at: https://www.npmjs.com/package/http-server
     * Or, you can download the [JBrowse Desktop app](https://jbrowse.org/docs/jbrowse_desktop.html) and, from inside the app, select the folder `jbrowse/data` that is available in your sample's output directory.
-3. If you face some weird error using v3.1, please, before opening a flag, try updating your docker image, we had some inconsistencies lately and this may be the source of the issue.
+3. If you face some weird error using v3.1 or v3.2, please, before opening a ticket, try updating your docker images, we had some inconsistencies lately and this may be the source of the issue.
+4. If facing an issue with the `BACANNOT:SUMMARY` module, identical or similar to the one reported in issue [[#96]](https://github.com/fmalmeida/bacannot/issues/96), please, before opening a ticket, try updating the python env docker image: `docker pull fmalmeida/bacannot:v3.2_pyenv`. The image has been recently updated to have the latest version of my python scripts, and that may solve the issue. If not, please open another.
+5. Sometimes, the `BACANNOT:UNICYCLER` may fail with different, random issues, that does not seem correct, or seem really very random. For example, saying that a read is not available, even though it is there. After some tracing, we realised that the unicycler 0.4.8 installation from conda, and the biocontainer form quay.io is causing this random problem. To solve this issue, please run with a newer version of the tool. This solves the issue in most cases: `--unicycler_version 0.5.0--py310h6cc9453_3`.
+    * Because `v3.2` is already tagged and frozen with Zenodo, we will not update it, thus, for this version, using the parameter to overwrite the tool version should be used.
+    * In `v3.3`, unicycler version will be defaulted to `0.5.0--py310h6cc9453_3`
 
 ## Citation
 
