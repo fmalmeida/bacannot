@@ -32,6 +32,7 @@ The pipeline accepts as input two other input files types that are used to perfo
 | <div style="width:100px">Parameter</div> | Required | Default | Description |
 | :--------------------------------------- | :------- | :------ | :---------- |
 | `--input`  | :material-check: | NA       | Input samplesheet describing all the samples to be analysed |
+| `--enable_deduplication` | :material-close: | false | Run deduplication command on input reads before assembly |
 | `--output` | :material-check: | results  |  Name of directory to store output values. A sub-directory for each genome will be created inside this main directory. |
 | `--bacannot_db` | :material-check: | NA | Path for root directory containing required bacannot databases |
 
