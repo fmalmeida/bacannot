@@ -192,7 +192,7 @@ params {
 // but can eventually be used by users
   unicycler_version = '0.4.8--py38h8162308_3'
   flye_version      = '2.9--py39h39abbe0_0'
-  bakta_version     = '1.6.1--pyhdfd78af_0'
+  bakta_version     = '1.7.0--pyhdfd78af_1'
 
 // Max resource options
   max_memory                 = '20.GB'

@@ -1,7 +1,6 @@
 process MERGE_SUMMARIES {
     publishDir "${params.output}", mode: 'copy'
     label = [ 'misc', 'process_low' ]
-    
 
     input:
     path(summaries)

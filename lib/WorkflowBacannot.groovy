@@ -10,8 +10,20 @@ class WorkflowBacannot {
     public static void initialise(params, log) {
 
         // input has been given and user does not want to download databases?
-        if (!params.input && !params.get_dbs) {
-            log.error "Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.yml'. Or select the download databases mode with --get_dbs."
+        if (!params.input && !params.get_dbs && !params.get_zenodo_db) {
+            log.error "Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.yml'. Or select the download databases mode with --get_dbs or --get_zenodo_db"
+            System.exit(1)
+        }
+
+        // using incompatible parameters?
+        if (params.input && (params.get_dbs || params.get_zenodo_db)) {
+            log.error "Not possible to run (--input) the pipeline and try to download databases (--get_dbs or --get_zenodo_db). Please do one or another."
+            System.exit(1)
+        }
+
+        // input has been given and user does not want to download databases?
+        if (params.get_dbs && params.get_zenodo_db) {
+            log.error "Please select either --get_dbs or --get_zenodo_db, not both at the same time."
             System.exit(1)
         }
 

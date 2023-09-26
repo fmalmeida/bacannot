@@ -1,6 +1,5 @@
 process MAKE_KARYOTYPE {
     tag "$prefix"
-
     label = [ 'misc', 'process_low' ]
 
     input:

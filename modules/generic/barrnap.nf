@@ -4,7 +4,7 @@ process BARRNAP {
       else "rRNA/$filename"
     }
     tag "${prefix}"
-    label = [ 'perl', 'process_low' ]
+    label = [ 'process_low' ]
 
     input:
     tuple val(prefix), file(genome)

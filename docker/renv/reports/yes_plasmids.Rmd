@@ -55,3 +55,29 @@ datatable(results,
           extensions = 'Buttons',
           rownames = F)
 ```
+
+### MOB suite (typer)
+
+[MOB-typer](https://github.com/phac-nml/mob-suite) provides _in silico_ predictions of the replicon family, relaxase type, mate-pair formation type and predicted transferability of the plasmid. Using a combination of biomarkers and MOB-cluster codes, it will also provide an observed host-range of your plasmid based on its replicon, relaxase and cluster assignment. This is combined with information mined from the literature to provide a prediction of the taxonomic rank at which the plasmid is likely to be stably maintained but it does not provide source attribution predictions.
+
+* The complete results can be found in the directory `plasmids/mob_suite` under the main output directory.
+
+<caption>(#tab:mobsuite-results) In silico typing of plasmids with MOB suite</caption>
+```{r}
+results <- mobsuite_tsv
+
+# Render dt
+datatable(results,
+          escape = FALSE,
+          filter = 'top',
+          options = list(pageLength = 5,
+                         lengthMenu = c(5, 10, 15, 20, 50),
+                         dom='flrtBip',
+                         buttons = c('copy', 'csv', 'excel', 'colvis'),
+                         scrollX = TRUE,
+                         fixedColumns = FALSE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(visible=FALSE, targets=c(1,2)))),
+          extensions = 'Buttons',
+          rownames = F)
+```

@@ -47,8 +47,9 @@ Its main steps are:
 | Annotation of virulence genes | [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
 | Prophage sequences and genes annotation | [PHASTER](http://phast.wishartlab.com/), [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) |
 | Annotation of integrative and conjugative elements | [ICEberg](http://db-mml.sjtu.edu.cn/ICEberg/) |
+| Annotation of bacterial integrons | [Integron Finder](https://github.com/gem-pasteur/Integron_Finder) |
 | Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
-| _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
+| _In silico_ detection and typing of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/), [Platon](https://github.com/oschwengers/platon) and [MOB-typer](https://github.com/phac-nml/mob-suite)|
 | Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
 | Custom annotation from formatted FASTA or NCBI protein IDs | [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |
@@ -90,14 +91,12 @@ These images have been kept separate to not create massive Docker image and to a
     * After installed, you need to download the required Docker images
 
     ```bash
-    docker pull fmalmeida/bacannot:v3.2_misc    ;
-    docker pull fmalmeida/bacannot:v3.2_perlenv ;
-    docker pull fmalmeida/bacannot:v3.2_pyenv   ;
-    docker pull fmalmeida/bacannot:v3.2_renv    ;
-    docker pull fmalmeida/bacannot:jbrowse      ;
+    docker pull fmalmeida/bacannot:v3.3_misc ;
+    docker pull fmalmeida/bacannot:v3.3_renv ;
+    docker pull fmalmeida/bacannot:jbrowse   ;
     ```
 
-🔥 Nextflow can also automatically handle images download on the fly when executed. If docker has exceeded its download limit rates, please try again in a few hours.
+🔥 Nextflow can also automatically handle images download on the fly when executed. All the other docker images from **biocontainers** are downloaded automatically. If docker has exceeded its download limit rates, please try again in a few hours.
 
 2. Install Nextflow (version 20.10 or higher):
 
@@ -120,6 +119,12 @@ Bacannot databases are not inside the docker images anymore to avoid huge images
 Users can directly download pre-formatted databases from Zenodo: https://doi.org/10.5281/zenodo.7615811
 
 Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
+
+A module to download the latest pre-formatted database has also been made available:
+```bash
+# Download pipeline pre-built databases
+nextflow run fmalmeida/bacannot --get_zenodo_db --output ./ -profile <docker/singularity>
+```
 
 #### I want to generate a new formatted database
 
@@ -184,6 +189,17 @@ Your configuration file is what will tell to the pipeline the type of data you h
 Create a configuration file in your working directory:
 
       nextflow run fmalmeida/bacannot --get_config
+
+##### Overwrite container versions with config
+
+The pipeline uses pre-set docker and singularity configuration files to set all the containers and versions of images that should be used by each module in the pipeline.
+
+Although not recommended, one can use these configuration files to change the version of specific tools if desired.
+
+To download these configs one can:
+
+      nextflow run fmalmeida/bacannot --get_docker_config
+      nextflow run fmalmeida/bacannot --get_singularity_config
 
 ### Interactive graphical configuration and execution
 

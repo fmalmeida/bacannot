@@ -1,8 +1,7 @@
 process SEQUENCESERVER {
     publishDir "${params.output}/${prefix}/SequenceServerDBs", mode: 'copy'
     tag "${prefix}"
-    label = [ 'server', 'process_ultralow' ]
-    
+    label = [ 'server', 'process_ultralow' ] 
 
     input:
     tuple val(prefix), file(genome), file(genes), file(proteins)

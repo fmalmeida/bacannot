@@ -5,7 +5,7 @@ process CARD_RGI {
     else "resistance/RGI/$filename"
   }
   tag "${prefix}"
-  label = [ 'python', 'process_medium' ]
+  label = [ 'process_medium' ]
 
   input:
   tuple val(prefix), path(input)
@@ -20,10 +20,7 @@ process CARD_RGI {
   path("*_version.txt")                                   , emit: version
 
   script:
-  """
-  # activate env
-  source activate rgi
-  
+  """  
   # load database
   rgi load --card_json ${bacannot_db}/card_db/card.json --local
 
