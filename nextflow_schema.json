@@ -63,15 +63,18 @@
       "properties": {
         "max_cpus": {
           "type": "integer",
-          "default": 16
+          "default": 16,
+          "description": "Maximum number of cpus a single module can use."
         },
         "max_memory": {
           "type": "string",
-          "default": "20.GB"
+          "default": "20.GB",
+          "description": "Maximum memory a single module can use."
         },
         "max_time": {
           "type": "string",
-          "default": "40.h"
+          "default": "40.h",
+          "description": "Maximum time a module can run."
         }
       }
     },
