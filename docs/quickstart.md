@@ -102,4 +102,4 @@ nextflow run fmalmeida/bacannot -profile docker,quicktest --bacannot_db ./bacann
 
 ### Annotation with bakta
 
-User can also perform the core generic annotation with bakta instead of prokka. Please read [the manual](manual#bakta-annotation).
+User can also perform the core generic annotation with bakta instead of prokka. Please read [the manual](manual.md#bakta-annotation).
