@@ -69,7 +69,10 @@ A module to download the latest pre-formatted database has also been made availa
 
 ```bash
 # Download pipeline pre-built databases
-nextflow run fmalmeida/bacannot --get_zenodo_db --output ./ -profile <docker/singularity>
+nextflow run fmalmeida/bacannot \
+    --get_zenodo_db \
+    --output ./ \
+    -profile <docker/singularity>
 ```
 
 ### I want to generate a new formatted database
