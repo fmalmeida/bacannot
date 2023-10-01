@@ -4,7 +4,7 @@ process MERGE_ANNOTATIONS {
   tag "${prefix}"
 
   input:
-  tuple val(prefix), file('prokka_gff'), file(kofamscan), file(vfdb), file(victors), file(amrfinder), file(resfinder), file(rgi), file(iceberg), file(phast), file('digis_gff'), file(custom_databases)
+  tuple val(prefix), file('prokka_gff'), file(kofamscan), file(vfdb), file(victors), file(amrfinder), file(resfinder), file(rgi), file(iceberg), file(phast), file('digis_gff'), file(custom_databases), file(integron_finder)
 
   output:
   tuple val(prefix), path("${prefix}.gff")                  , emit: gff
@@ -108,5 +108,11 @@ process MERGE_ANNOTATIONS {
     cat ${prefix}.gff transposable_elements_digis.gff | bedtools sort > tmp.out.gff ;
     ( cat tmp.out.gff > ${prefix}.gff && rm tmp.out.gff );
   fi
+
+  ### integron_finder results
+  ### integrons are unique / complete elements and should not be intersected
+  cat ${prefix}.gff $integron_finder | bedtools sort > tmp.gff ;
+  cat tmp.gff > ${prefix}.gff
+  rm tmp.gff
   """
 }

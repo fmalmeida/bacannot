@@ -26,11 +26,12 @@ After a successful execution, you will have something like this:
 |       ├── gffs              # A copy of the main GFF files produced during the annotation
 |       ├── genomic_islands   # Genomic Islands predicted with IslandPath-DIMOB
 |       ├── ICEs              # Results from ICEberg database annotation
+|       ├── integron_finder   # Results from Integron Finder tool annotation
 |       ├── jbrowse           # The files that set up the JBrowse genome browser
 |       ├── KOfamscan         # Results from annotation with KEGG database
 |       ├── methylations      # Methylated sites predicted with Nanopolish (if fast5 is given)
 |       ├── MLST              # MLST results with mlst pipeline
-|       ├── plasmids          # Plasmid annotation results from Platon and Plasmidfinder
+|       ├── plasmids          # Plasmid annotation results from Platon, Plasmidfinder and MOB Suite
 |       ├── prophages         # Prophage annotation results from PhiSpy, Phigaro and PHAST
 |       ├── refseq_masher     # Closest NCBI Resfseq genomes identified with refseq_masher
 |       ├── report_files      # Annotation reports in HTML format

@@ -14,7 +14,7 @@ Help()
 	echo "Simple help message for the utilization of this script"
 	echo "It takes the jbrowse data path and all the files that shall be plotted from bacannot"
 	echo
-	echo "Syntax: run_jbrowse.sh [-h|p|g|b|s|f|r|B|P|G|m|S|R|d|A]"
+	echo "Syntax: run_jbrowse.sh [-h|p|g|b|s|f|r|B|P|G|m|S|R|d|A|i]"
 	echo "options:"
 	echo
 	echo "h		Print this help"
@@ -32,59 +32,63 @@ Help()
 	echo "R		Path to Resfinder custom GFF"
 	echo "d     Path to digIS custom GFF"
 	echo "A     Path to antismash custom GFF"
+	echo "i     Path to Integron Finder custom GFF"
 	echo ""
 	echo
 }
 
 # Get the options
-while getopts "hp:g:b:s:f:r:B:P:G:m:S:R:d:A:" option; do
-   case $option in
-      h) # display Help
-         Help
-         exit;;
-p) # get genome prefix
-	 PREFIX="$OPTARG"
-	 ;;
-g) # get genome FASTA
-	 GENOME="$OPTARG"
-	 ;;
-b) # get GC bedgraph
-	 BEDGRAPH="$OPTARG"
-	 ;;
-s) # get chr sizes
-	 CHRSIZES="$OPTARG"
-	 ;;
-f) # get prokka gff
-	 PROKKAGFF="$OPTARG"
-	 ;;
-r) # get barrnap gff
-	 rRNAGFF="$OPTARG"
-	 ;;
-B) # get phigaro bed
-	 PHIGAROBED="$OPTARG"
-	 ;;
-P) # get phispy bed
-	 PHISPYBED="$OPTARG"
-	 ;;
-G) # get GIs bed
-	 GIBED="$OPTARG"
-	 ;;
-m) # get nanopolish methylation
-	 NANOMETHYL="$OPTARG"
-	 ;;
-S) # get nanopolish chr sizes
-	 NANOSIZES="$OPTARG"
-	 ;;
-R) # get resfinder GFF
-	 RESFINDERGFF="$OPTARG"
-	 ;;
-d) # get digIS GFF
-	 DIGISGFF="$OPTARG"
-	 ;;
-A) # get antismash GFF
-	 ANTISMASHGFF="$OPTARG"
-	 ;;
-   esac
+while getopts "hp:g:b:s:f:r:B:P:G:m:S:R:d:A:i:" option; do
+	case $option in
+	h) # display Help
+		Help
+		exit;;
+	p) # get genome prefix
+		PREFIX="$OPTARG"
+		;;
+	g) # get genome FASTA
+		GENOME="$OPTARG"
+		;;
+	b) # get GC bedgraph
+		BEDGRAPH="$OPTARG"
+		;;
+	s) # get chr sizes
+		CHRSIZES="$OPTARG"
+		;;
+	f) # get prokka gff
+		PROKKAGFF="$OPTARG"
+		;;
+	r) # get barrnap gff
+		rRNAGFF="$OPTARG"
+		;;
+	B) # get phigaro bed
+		PHIGAROBED="$OPTARG"
+		;;
+	P) # get phispy bed
+		PHISPYBED="$OPTARG"
+		;;
+	G) # get GIs bed
+		GIBED="$OPTARG"
+		;;
+	m) # get nanopolish methylation
+		NANOMETHYL="$OPTARG"
+		;;
+	S) # get nanopolish chr sizes
+		NANOSIZES="$OPTARG"
+		;;
+	R) # get resfinder GFF
+		RESFINDERGFF="$OPTARG"
+		;;
+	d) # get digIS GFF
+		DIGISGFF="$OPTARG"
+		;;
+	A) # get antismash GFF
+		ANTISMASHGFF="$OPTARG"
+		;;
+	i) # get integron finder GFF
+		INTEGRONFINDERGFF="$OPTARG"
+		;;
+	esac
 done
 
 # Main
@@ -313,7 +317,7 @@ remove-track.pl --trackLabel "${PREFIX} CARD-RGI resistance features" --dir data
 --trackLabel "${PREFIX} Resfinder resistance features" --out "data" --nameAttributes "Resfinder_gene,ID,Resfinder_phenotype" ;
 remove-track.pl --trackLabel "${PREFIX} Resfinder resistance features" --dir data &> /tmp/error
 [ ! -s $RESFINDERGFF ] || echo -E " { \"compress\" : 0, \
- 	\"displayMode\" : \"compact\", \
+	\"displayMode\" : \"compact\", \
 	\"key\" : \"${PREFIX} Resfinder resistance features\", \
 	\"category\" : \"Resistance annotation\", \
 	\"label\" : \"${PREFIX} Resfinder resistance features\", \
@@ -342,6 +346,22 @@ remove-track.pl --trackLabel "${PREFIX} ICE genes from ICEberg database" --dir d
 	\"nameAttributes\" : \"ICEberg_Target,ICEberg_Product,Name,ID,product\", \
 	\"urlTemplate\" : \"tracks/${PREFIX} ICE genes from ICEberg database/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 [ $(grep "ICEberg" $PROKKAGFF | wc -l) -eq 0 ] || rm -f iceberg ices ;
+
+## Integron Finder
+[ $(wc -l $INTEGRONFINDERGFF) -eq 0 ] || flatfile-to-json.pl --gff $INTEGRONFINDERGFF --key "${PREFIX} Annotated Integrons - Integron Finder" --trackType CanvasFeatures \
+--trackLabel "${PREFIX} Annotated Integrons - Integron Finder" --out "data" --nameAttributes "ID,integron_type" ;
+remove-track.pl --trackLabel "${PREFIX} Annotated Integrons - Integron Finder" --dir data &> /tmp/error
+[ $(wc -l $INTEGRONFINDERGFF) -eq 0 ] || echo -E " {  \"compress\" : 0, \
+\"displayMode\" : \"compact\", \
+	\"key\" : \"${PREFIX} Annotated Integrons - Integron Finder\", \
+	\"category\" : \"MGEs annotation\", \
+	\"label\" : \"${PREFIX} Annotated Integrons - Integron Finder\", \
+	\"storeClass\" : \"JBrowse/Store/SeqFeature/NCList\", \
+	\"style\" : { \"className\" : \"feature\", \"color\": \"#6db6d9\" }, \
+	\"trackType\" : \"CanvasFeatures\", \
+	\"type\" : \"CanvasFeatures\", \
+	\"nameAttributes\" : \"ID,integron_type\", \
+	\"urlTemplate\" : \"tracks/${PREFIX} Annotated Integrons - Integron Finder/{refseq}/trackData.json\" } " | add-track-json.pl  data/trackList.json
 
 ## PROPHAGES
 ### PHAST

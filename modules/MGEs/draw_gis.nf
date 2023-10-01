@@ -5,7 +5,6 @@ process DRAW_GIS {
   }
   tag "${prefix}"
   label = [ 'misc', 'process_ultralow' ]
-  
 
   input:
   tuple val(prefix), file(gff), file(gis_bed)

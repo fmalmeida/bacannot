@@ -4,7 +4,7 @@ process FLYE {
     else if (filename == "flye_${prefix}") "assembly"
     else null
   }
-  label 'process_high'
+  label = [ 'process_high', 'error_retry' ]
   tag "${prefix}"
 
   input:
@@ -18,14 +18,21 @@ process FLYE {
 
   script:
   lr = (lr_type == 'nanopore') ? '--nano-raw' : '--pacbio-raw'
+  dedup_lr = params.enable_deduplication ? 
+    "gunzip -cf $lreads | awk '{if(NR%4==1) \$0=sprintf(\"@1_%d\",(1+i++)); print;}' | gzip -c > ${prefix}_deduplicated_reads.fastq.gz" :
+    "ln -s $lreads ${prefix}_deduplicated_reads.fastq.gz"
+  
   """
   # Save flye version
   flye -v > flye_version.txt ;
 
+  # remove duplicate reads
+  $dedup_lr
+
   # Run flye
   flye \\
     ${lr} \\
-    $lreads \\
+    ${prefix}_deduplicated_reads.fastq.gz \\
     --out-dir flye_${prefix} \\
     --threads $task.cpus &> flye.log ;
 

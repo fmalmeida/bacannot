@@ -2,6 +2,20 @@
 
 The tracking for changes started in v2.1
 
+## v3.3 [01-October-2023]
+
+* [[#50](https://github.com/fmalmeida/bacannot/issues/50)] -- Add `Integron Finder` tool to the pipeline
+* [[#69](https://github.com/fmalmeida/bacannot/issues/69)] -- Change how tools use docker images in order to:
+    * make tools use public bioconda images whenever possible to allow easy addition of tools and avoid much conflicts in docker images
+    * dimish the size and tools inside the docker images, the docker images now are only built to contain tools and all required for modules that cannot just use bioconda docker images.
+* [[#81](https://github.com/fmalmeida/bacannot/issues/81)] -- Add `MOB Suite` tool to the pipeline
+* [[#85](https://github.com/fmalmeida/bacannot/issues/85)] -- Include checkup on header size for Prokka
+* [[#98](https://github.com/fmalmeida/bacannot/issues/98)] -- Add ICEberg and PHAST blastp results to json summary
+* [[#100](https://github.com/fmalmeida/bacannot/issues/100)] -- Update pipeline to use docker shasum instead of tags
+* [[#107](https://github.com/fmalmeida/bacannot/issues/107)] -- Add a parameter, `--enable_deduplication` for deduplicating input reads before assembly
+* Update unicycler docker image to latest '0.5.0--py310h6cc9453_3' to avoid errors originated from previous image containing buggy installation.
+* Other minor changes / updates highlited in [[#93](https://github.com/fmalmeida/bacannot/pull/93)]
+
 ## v3.2 [19-December-2022]
 
 * Fixes https://github.com/fmalmeida/bacannot/issues/68 reported by @lam-c

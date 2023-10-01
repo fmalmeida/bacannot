@@ -1,0 +1,1 @@
+Not a integron have been predicted with [Integron Finder](https://github.com/gem-pasteur/Integron_Finder). This might have happened either because your genome really do not have integron sequences or due to misassemblies. You can always try to run the online version of the tool: https://integronfinder.readthedocs.io/en/latest/user_guide/webserver.html

@@ -2,7 +2,7 @@
 
 <img src="./lab_logo.png" width="300px">
 
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.3627669-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.3627669)
+[![F1000 Paper](https://img.shields.io/badge/Citation%20F1000-10.12688/f1000research.139488.1-orange)](https://doi.org/10.12688/f1000research.139488.1)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/fmalmeida/bacannot?include_prereleases&label=Latest%20release)](https://github.com/fmalmeida/bacannot/releases)
 [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest)
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
@@ -10,6 +10,7 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
 [![Follow on Twitter](http://img.shields.io/badge/twitter-%40fmarquesalmeida-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/fmarquesalmeida)
+[![Zenodo Archive](https://img.shields.io/badge/Zenodo-Archive-blue)](https://doi.org/10.5281/zenodo.3627669)
 
 ## About
 
@@ -33,8 +34,9 @@ The pipeline's main steps are:
 | Annotation of virulence genes | [Victors](http://www.phidias.us/victors/) and [VFDB](http://www.mgc.ac.cn/VFs/main.htm) |
 | Prophage sequences and genes annotation | [PHASTER](http://phast.wishartlab.com/), [Phigaro](https://github.com/bobeobibo/phigaro) and [PhySpy](https://github.com/linsalrob/PhiSpy) |
 | Annotation of integrative and conjugative elements | [ICEberg](http://db-mml.sjtu.edu.cn/ICEberg/) |
+| Annotation of bacterial integrons | [Integron Finder](https://github.com/gem-pasteur/Integron_Finder) |
 | Focused detection of insertion sequences | [digIS](https://github.com/janka2012/digIS) |
-| _In silico_ detection of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/) and [Platon](https://github.com/oschwengers/platon) |
+| _In silico_ detection and typing of plasmids | [Plasmidfinder](https://cge.cbs.dtu.dk/services/PlasmidFinder/), [Platon](https://github.com/oschwengers/platon) and [MOB-typer](https://github.com/phac-nml/mob-suite)|
 | Prediction and visualization of genomic islands | [IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath) and [gff-toolbox](https://github.com/fmalmeida/gff-toolbox) |
 | Custom annotation from formatted FASTA or NCBI protein IDs | [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) |
 | Merge of annotation results | [bedtools](https://bedtools.readthedocs.io/en/latest/) |

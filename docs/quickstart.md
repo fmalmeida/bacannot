@@ -41,6 +41,13 @@ Users can directly download pre-formatted databases from Zenodo: https://doi.org
 
 Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
 
+A module to download the latest pre-formatted database has also been made available:
+
+```bash
+# Download pipeline pre-built databases
+nextflow run fmalmeida/bacannot --get_zenodo_db --output ./ -profile <docker/singularity>
+```
+
 #### I want to generate a new formatted database
 
 ```{bash .annotate hl_lines="5"}
@@ -95,4 +102,4 @@ nextflow run fmalmeida/bacannot -profile docker,quicktest --bacannot_db ./bacann
 
 ### Annotation with bakta
 
-User can also perform the core generic annotation with bakta instead of prokka. Please read [the manual](manual#bakta-annotation).
+User can also perform the core generic annotation with bakta instead of prokka. Please read [the manual](manual.md#bakta-annotation).

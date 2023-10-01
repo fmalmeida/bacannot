@@ -54,8 +54,8 @@ addTable <- function (con, sql, input) {
 
 # Loading SQL database driver
 drv <- dbDriver("SQLite")
-dbname <- file.path("/work", opt$out)
-con <- dbConnect(drv, dbname=dbname)
+print(opt$out)
+con <- dbConnect(drv, dbname=opt$out)
 
 #####################################
 ### First STEP load GENOME to sql ###

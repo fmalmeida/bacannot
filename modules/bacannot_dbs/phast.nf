@@ -1,7 +1,7 @@
 process PHAST_DB {
     publishDir "${params.output}/phast_db", mode: 'copy', overwrite: "$params.force_update"
     label = [ 'db_download', 'process_ultralow' ]
-   
+
     output:
     file("*")
 

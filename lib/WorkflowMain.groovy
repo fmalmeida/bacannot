@@ -10,7 +10,7 @@ class WorkflowMain {
     public static String citation(workflow) {
         return "If you use ${workflow.manifest.name} for your analysis please cite:\n\n" +
             "* The pipeline\n" +
-            "  https://doi.org/10.5281/zenodo.3627669\n\n" +
+            "  https://doi.org/10.12688/f1000research.139488.1\n\n" +
             "* The nf-core framework\n" +
             "  https://doi.org/10.1038/s41587-020-0439-x\n\n" +
             "* Software dependencies\n" +
@@ -70,6 +70,30 @@ class WorkflowMain {
             log.info """
             Samplesheet (bacannot_samplesheet.yml) file saved in working directory
             Nice code!
+            """.stripIndent()
+            System.exit(0)
+        }
+
+        // Download docker config
+        if (params.get_docker_config) {
+            new File("docker.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/conf/docker.config").getText())
+            log.info """
+            docker.config file saved in working directory
+            After configuration, run:
+              nextflow run fmalmeida/bacannot -c ./docker.config
+            Nice code
+            """.stripIndent()
+            System.exit(0)
+        }
+
+        // Download singularity config
+        if (params.get_singularity_config) {
+            new File("singularity.config").write(new URL ("https://github.com/fmalmeida/bacannot/raw/master/conf/singularity.config").getText())
+            log.info """
+            singularity.config file saved in working directory
+            After configuration, run:
+              nextflow run fmalmeida/bacannot -c ./singularity.config
+            Nice code
             """.stripIndent()
             System.exit(0)
         }
