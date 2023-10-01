@@ -195,7 +195,11 @@ It will result in the following:
 
 ## Citation
 
-To cite this tool please refer to our [Zenodo tag](https://doi.org/10.5281/zenodo.3627669).
+In order to cite this pipeline, please refer to:
+
+> Almeida FMd, Campos TAd and Pappas Jr GJ. Scalable and versatile container-based pipelines for de novo genome assembly and bacterial annotation. [version 1; peer review: awaiting peer review]. F1000Research 2023, 12:1205 (https://doi.org/10.12688/f1000research.139488.1)
+
+Additionally, archived versions of the pipeline are also found in [Zenodo](https://doi.org/10.5281/zenodo.3627669).
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [GPLv3](https://github.com/fmalmeida/bacannot/blob/master/LICENSE).
 
