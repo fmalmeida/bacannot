@@ -101,7 +101,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
-<a href="https://bacannot.readthedocs.io/en/latest/quickstart"><strong>Please refer to the installation page, for a complete guide on required images and databases. »</strong></a>
+<a href="https://bacannot.readthedocs.io/en/latest/installation"><strong>Please refer to the installation page, for a complete guide on required images and databases. »</strong></a>
 
 ## Quickstart
 
