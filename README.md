@@ -87,16 +87,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 ## Installation
 
-1. If you don't have it already install [Docker](https://docs.docker.com/) in your computer.
-    * After installed, you need to download the required Docker images
-
-    ```bash
-    docker pull fmalmeida/bacannot:v3.3_misc ;
-    docker pull fmalmeida/bacannot:v3.3_renv ;
-    docker pull fmalmeida/bacannot:jbrowse   ;
-    ```
-
-🔥 Nextflow can also automatically handle images download on the fly when executed. All the other docker images from **biocontainers** are downloaded automatically. If docker has exceeded its download limit rates, please try again in a few hours.
+1. If you don't have it already install either [Docker](https://docs.docker.com/) or [Singularity](https://docs.sylabs.io/guides/3.5/user-guide/index.html) in your computer.
 
 2. Install Nextflow (version 20.10 or higher):
 
@@ -110,54 +101,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
-### Downloading and updating databases
-
-Bacannot databases are not inside the docker images anymore to avoid huge images and problems with connections and limit rates with dockerhub.
-
-#### Pre-formatted
-
-Users can directly download pre-formatted databases from Zenodo: https://doi.org/10.5281/zenodo.7615811
-
-Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
-
-A module to download the latest pre-formatted database has also been made available:
-```bash
-# Download pipeline pre-built databases
-nextflow run fmalmeida/bacannot --get_zenodo_db --output ./ -profile <docker/singularity>
-```
-
-#### I want to generate a new formatted database
-
-To download and format a copy of required bacannot databases users can execute the following:
-
-```bash
-# Download pipeline databases
-nextflow run fmalmeida/bacannot --get_dbs --output bacannot_dbs -profile <docker/singularity>
-```
-
-This will produce a directory like this:
-
-```bash
-bacannot_dbs
-├── amrfinder_db
-├── antismash_db
-├── argminer_db
-├── card_db
-├── iceberg_db
-├── kofamscan_db
-├── mlst_db
-├── phast_db
-├── phigaro_db
-├── pipeline_info
-├── plasmidfinder_db
-├── platon_db
-├── prokka_db
-├── resfinder_db
-├── vfdb_db
-└── victors_db
-```
-
-> To update databases you can either download a new one to a new directory. Remove the database you want to get a new one from the root bacannot dir and use the same command above to save in the same directory (the pipeline will only try to download missing databases). Or, you can use the parameter `--force_update` to download everything again.
+<a href="https://bacannot.readthedocs.io/en/latest/quickstart"><strong>Please refer to the installation page, for a complete guide on required images and databases. »</strong></a>
 
 ## Quickstart
 
