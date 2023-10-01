@@ -63,15 +63,18 @@
       "properties": {
         "max_cpus": {
           "type": "integer",
-          "default": 16
+          "default": 16,
+          "description": "Maximum number of cpus a single module can use."
         },
         "max_memory": {
           "type": "string",
-          "default": "20.GB"
+          "default": "20.GB",
+          "description": "Maximum memory a single module can use."
         },
         "max_time": {
           "type": "string",
-          "default": "40.h"
+          "default": "40.h",
+          "description": "Maximum time a module can run."
         }
       }
     },
@@ -321,13 +324,6 @@
           "type": "number",
           "help_text": "Number of minimum overlapping base pairs required for merging\nNegative values, such as -20, means the number of required overlapping bases for merging.\nPositive values, such as 5, means the maximum distance accepted between features for merging.\nBy default (if Blank), this process is not executed. For execution the user needs to provide a value",
           "description": "Minimum overlapping base pairs required for merging"
-        },
-        "tracedir": {
-          "type": "string",
-          "description": "Directory to keep pipeline Nextflow logs and reports.",
-          "default": "${params.output}/pipeline_info",
-          "fa_icon": "fas fa-cogs",
-          "hidden": true
         },
         "validate_params": {
           "type": "boolean",
