@@ -82,7 +82,7 @@ ENV PATH=/work/digIS:$PATH
 
 # Create env for antismash
 RUN mamba create -y -n antismash -c bioconda -c conda-forge \
-      'bioconda::antismash>=6' 'anaconda::flask' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
+      'bioconda::antismash-lite>=6' 'anaconda::flask' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
       rm -rf /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
 	mamba clean -afy
 
