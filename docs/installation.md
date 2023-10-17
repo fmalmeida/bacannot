@@ -29,7 +29,7 @@ The images are defined like the following:
 ```bash
 ...
 withLabel: 'db_download|db_tools|misc' {
-    container = 'fmalmeida/bacannot@sha256:726e085f1bd71b47c2d8a38fd46d812aab7eb8978bab7bf3cde3aa2b7b3e0f2c'
+    container = 'fmalmeida/bacannot@sha256:bbc3d57bcd3b70c80d31b1257db5259dc34ea27605c348b566a309ae1a45b68c'
 }
 ...
 ```
@@ -37,7 +37,7 @@ withLabel: 'db_download|db_tools|misc' {
 And could be downloaded like this:
 
 ```bash
-docker pull fmalmeida/bacannot@sha256:726e085f1bd71b47c2d8a38fd46d812aab7eb8978bab7bf3cde3aa2b7b3e0f2c
+docker pull fmalmeida/bacannot@sha256:bbc3d57bcd3b70c80d31b1257db5259dc34ea27605c348b566a309ae1a45b68c
 ```
 
 > You would need to do it for each image.
