@@ -29,7 +29,6 @@ RUN mamba install -y \
       mamba clean -afy
 RUN git clone https://github.com/fmalmeida/pythonScripts.git && \
       cd pythonScripts && \
-      git checkout dev && \
       pip install . && \
       falmeida-py --help
 
