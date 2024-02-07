@@ -16,9 +16,9 @@ process INTEGRON_FINDER_2GFF {
     sed 's/0\\.\\./1\\.\\./g' $gbk > fixed.gbk
     
     # convert to gff if available
-    conda run -n perl bp_genbank2gff3 fixed.gbk -o - | \
-        grep 'integron_id' | \
-        sed 's|ID=.*integron_id=|ID=|g' | \
+    conda run -n perl bp_genbank2gff3 fixed.gbk -o - | \\
+        grep 'integron_id' | \\
+        sed 's|ID=.*integron_id=|ID=|g' | \\
         sed 's/GenBank/Integron_Finder/g' >> ${prefix}_integrons.gff
     """
 }
