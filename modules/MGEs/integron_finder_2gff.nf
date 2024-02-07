@@ -12,13 +12,13 @@ process INTEGRON_FINDER_2GFF {
     script:
     def args = task.ext.args ?: ''
     """    
+    # fix 0-based sequences
+    sed 's/0\\.\\./1\\.\\./g' $gbk > fixed.gbk
+    
     # convert to gff if available
-    touch ${prefix}_integrons.gff ;
-    for gbk in \$(ls *.gbk) ; do
-        conda run -n perl bp_genbank2gff3 \$gbk -o - | \
-            grep 'integron_id' | \
-            sed 's|ID=.*integron_id=|ID=|g' | \
-            sed 's/GenBank/Integron_Finder/g' >> ${prefix}_integrons.gff
-    done
+    conda run -n perl bp_genbank2gff3 fixed.gbk -o - | \
+        grep 'integron_id' | \
+        sed 's|ID=.*integron_id=|ID=|g' | \
+        sed 's/GenBank/Integron_Finder/g' >> ${prefix}_integrons.gff
     """
 }
