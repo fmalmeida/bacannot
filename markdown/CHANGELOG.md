@@ -2,6 +2,10 @@
 
 The tracking for changes started in v2.1
 
+## v3.3.2 [TBD]
+
+* [[#116](https://github.com/fmalmeida/bacannot/issues/116)] -- Small update to avoid having `integron_finder` gbks with start position as 0, since it breaks conversion to gff.
+
 ## v3.3.1 [29-October-2023]
 
 * [[#111](https://github.com/fmalmeida/bacannot/issues/111)] -- Updated `falmeida-py` package version to fix problem with missing key for Summary.
