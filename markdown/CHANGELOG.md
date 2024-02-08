@@ -2,7 +2,7 @@
 
 The tracking for changes started in v2.1
 
-## v3.3.2 [TBD]
+## v3.3.2 [09-February-2024]
 
 * [[#116](https://github.com/fmalmeida/bacannot/issues/116)] -- Small update to avoid having `integron_finder` gbks with start position as 0, since it breaks conversion to gff.
 
