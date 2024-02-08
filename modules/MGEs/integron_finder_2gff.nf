@@ -13,7 +13,7 @@ process INTEGRON_FINDER_2GFF {
     def args = task.ext.args ?: ''
     """    
     # fix 0-based sequences
-    sed 's/0\\.\\./1\\.\\./g' $gbk > fixed.gbk
+    sed -e 's/ 0\\.\\./ 1\\.\\./g' -e 's/complement(0\\.\\./complement(1\\.\\./g' $gbk > fixed.gbk
     
     # convert to gff if available
     conda run -n perl bp_genbank2gff3 fixed.gbk -o - | \\
