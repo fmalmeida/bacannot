@@ -2,6 +2,12 @@
 
 The tracking for changes started in v2.1
 
+## v3.3.3 [TBD]
+
+* [[#118](https://github.com/fmalmeida/bacannot/issues/116)]
+    * Add a parameter to allow user to skip `INTEGRON_FINDER` execution.
+    * Add a parameter to allow user to skip `CIRCOS` execution.
+
 ## v3.3.2 [09-February-2024]
 
 * [[#116](https://github.com/fmalmeida/bacannot/issues/116)] -- Small update to avoid having `integron_finder` gbks with start position as 0, since it breaks conversion to gff.
