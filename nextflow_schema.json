@@ -132,6 +132,12 @@
           "help_text": "If true, the process will be skipped!",
           "hidden": true
         },
+        "skip_circos": {
+          "type": "boolean",
+          "description": "Skip (do not run) circos?",
+          "help_text": "If true, the process will be skipped!",
+          "hidden": true
+        },
         "skip_plasmid_search": {
           "type": "boolean",
           "description": "Skip (do not run) plasmidfinder?",
@@ -153,6 +159,12 @@
         "skip_iceberg_search": {
           "type": "boolean",
           "description": "Skip (do not run) ICEs annotation?",
+          "help_text": "If true, the process will be skipped!",
+          "hidden": true
+        },
+        "skip_integron_finder": {
+          "type": "boolean",
+          "description": "Skip (do not run) integron finder?",
           "help_text": "If true, the process will be skipped!",
           "hidden": true
         },
