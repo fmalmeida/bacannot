@@ -80,7 +80,6 @@ Moreover, this pipeline has two complementary pipelines (also written in nextflo
     + https://docs.microsoft.com/pt-br/windows/wsl/install-win10
     + https://www.nextflow.io/docs/latest/getstarted.html
     + https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
-* Java 8
 * [Nextflow](https://www.nextflow.io/)
 * [Docker](https://docs.docker.com/get-docker/)
 
