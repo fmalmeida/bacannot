@@ -47,7 +47,7 @@ RUN mamba create -y \
       -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       -n digIS \
       --no-channel-priority \
-      'hmmer==3.1b2' 'biopython==1.77' nomkl && \
+      'hmmer==3.1b2' 'biopython==1.75' nomkl && \
 	mamba clean -afy
 
 # Install pip packages
@@ -72,18 +72,13 @@ COPY victors_bkp/victors_06-2022.fasta /work/victors.fasta
 RUN mamba create -y -n resfinder \
       -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       'resfinder>=4.1' docopt pandas && \
+      chmod 777 -R /opt/conda/envs/resfinder && \
 	mamba clean -afy
 
 # get a copy of digis
 RUN git clone -b master https://github.com/janka2012/digIS.git
 COPY custom_fix_grange_digis.py /work/digIS/src/common/grange.py
 ENV PATH=/work/digIS:$PATH
-
-# Create env for antismash
-RUN mamba create -y -n antismash -c bioconda -c conda-forge \
-      'bioconda::antismash-lite>=6' 'anaconda::flask' 'anaconda::jinja2' 'anaconda::markupsafe' nomkl && \
-      rm -rf /opt/conda/envs/antismash/lib/*/site-packages/antismash/databases && \
-	mamba clean -afy
 
 # fix bioperl
 RUN mamba create -n perl -y \
@@ -99,5 +94,3 @@ RUN pip3 install zenodo_get
 
 # fix permissions
 RUN chmod 777 -R /work
-RUN chmod 777 -R /opt/conda/envs/antismash/lib/**/site-packages/antismash
-RUN chmod 777 -R /opt/conda/envs/resfinder
