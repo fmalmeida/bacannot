@@ -26,7 +26,7 @@ process ANTISMASH_DB {
     ./local-install/bin/download-antismash-databases --database-dir ./
 
     # delete it
-    rm -rf ./local-install ./antismash-${antismash_version}
+    rm -rf ./local-install ./antismash-${antismash_version}*
     """
 
     else
