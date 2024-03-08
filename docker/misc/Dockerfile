@@ -7,17 +7,20 @@ RUN conda install -n base -c conda-forge 'mamba=1.5' --yes && \
       conda clean -afy
 RUN pip install --upgrade pip
 
+# Install ubuntu packages
+RUN apt-get update -y && apt-get install -y samtools libarchive13 build-essential
+
 # Install the conda environment
 RUN mamba install -y \
       -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       --no-channel-priority \
-      'python=3.9' \
+      'python>=3.9' \
       'blast>=2.12' \
       'diamond>=2.0.15' \
       'bedtools>=2.30' \
       'kma' \
       'nanopolish' \
-      'biopython==1.78' \
+      'biopython==1.83' \
       seqkit \
       bioawk \
       'easy_circos==0.4' \
@@ -27,18 +30,16 @@ RUN mamba install -y \
       libtiff \
       jq && \
       mamba clean -afy
+
+# install my custom scripts
 RUN git clone https://github.com/fmalmeida/pythonScripts.git && \
       cd pythonScripts && \
       pip install . && \
       falmeida-py --help
 
-# Install samtools
-RUN apt-get update -y && apt-get install -y samtools
-
 # Install gff-toolbox
 RUN git clone https://github.com/fmalmeida/gff-toolbox.git
 RUN cd gff-toolbox && \
-      python3 -m pip install --upgrade pip 'matplotlib==3.7.3' && \
       python3 setup.py install && \
       gff-toolbox -h
 
@@ -47,7 +48,7 @@ RUN mamba create -y \
       -c bioconda -c defaults -c conda-forge -c anaconda -c falmeida \
       -n digIS \
       --no-channel-priority \
-      'hmmer==3.1b2' 'biopython==1.75' nomkl && \
+      'hmmer==3.1b2' 'biopython==1.77' nomkl && \
 	mamba clean -afy
 
 # Install pip packages
@@ -87,7 +88,7 @@ RUN mamba create -n perl -y \
 RUN mamba run -n perl PERL5LIB= PERL_LOCAL_LIB_ROOT= cpanm Bio::Root::RootI
 
 # fix python
-RUN python3 -m pip install cryptography==38.0.4
+RUN python3 -m pip install cryptography==38.0.4 'biopython==1.83' 'matplotlib==3.7.3'
 
 # install get zenodo
 RUN pip3 install zenodo_get
