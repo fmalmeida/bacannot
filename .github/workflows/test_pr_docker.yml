@@ -2,7 +2,7 @@ name: Testing new PR with docker
 on:
   pull_request:
     branches: [master, dev]
-    types: [ ready_for_review, opened, synchronize, reopened ]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   run_nextflow:
