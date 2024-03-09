@@ -28,13 +28,15 @@ jobs:
 
     - name: Get database
       run: |
-        nextflow run main.nf -profile docker --get_zenodo_db --output ./zenodo_db --max_memory '6.GB' --max_cpus 2
+        nextflow run main.nf -profile docker --get_zenodo_db --output ./ --max_memory '6.GB' --max_cpus 2
+        nextflow run main.nf -profile docker --get_zenodo_db --output ./ --max_memory '6.GB' --max_cpus 2 -resume
+        nextflow run main.nf -profile docker --get_zenodo_db --output ./ --max_memory '6.GB' --max_cpus 2 -resume
         sudo rm -r work .nextflow*
         yes | docker system prune
 
     - name: Run quicktest profile
       run: |
-        nextflow run main.nf -profile docker,quicktest --bacannot_db $( realpath ./zenodo_db/bac* ) --output ./results --max_memory '6.GB' --max_cpus 2
+        nextflow run main.nf -profile docker,quicktest --bacannot_db $( realpath ./bac* ) --output ./results --max_memory '6.GB' --max_cpus 2
         sudo rm -r work .nextflow*
         yes | docker system prune
 
