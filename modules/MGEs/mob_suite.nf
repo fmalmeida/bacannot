@@ -1,7 +1,7 @@
 process MOBSUITE {
-    publishDir "${params.output}", mode: 'copy', saveAs: { filename ->
+    publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
         if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
-        else "${prefix}/plasmids/mob_suite/$filename"
+        else "plasmids/mob_suite/$filename"
     }
     tag "${prefix}"
     label = [ 'process_medium' ]
