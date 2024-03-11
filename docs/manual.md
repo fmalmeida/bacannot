@@ -96,6 +96,8 @@ The use of this parameter sets a default value for input samples. If a sample ha
 | `--skip_prophage_search` | :material-close: | false | Tells whether not to run prophage annotation modules |
 | `--skip_kofamscan` | :material-close: | false | Tells whether not to run KEGG orthology (KO) annotation with KofamScan |
 | `--skip_antismash` | :material-close: | false | Tells whether or not to run antiSMASH (secondary metabolite) annotation. AntiSMASH is executed using only its core annotation modules in order to keep it fast. |
+| `--skip_circos` | :material-close: | false | Tells whether or not to run the final `CIRCOS` module. When the input genome has many contigs, its results are not meaningful. |
+| `--skip_integron_finder` | :material-close: | false | Tells whether or not to run the integron finder tool. |
 
 ## Custom databases
 

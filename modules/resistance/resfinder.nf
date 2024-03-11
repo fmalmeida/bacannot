@@ -24,6 +24,7 @@ process RESFINDER {
     """
     # activate env
     source activate resfinder
+    export PATH=/opt/conda/envs/resfinder/lib/python3.12/site-packages/resfinder/:\$PATH
 
     # Run resfinder acquired resistance
     run_resfinder.py \\

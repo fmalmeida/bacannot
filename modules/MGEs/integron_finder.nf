@@ -1,7 +1,7 @@
 process INTEGRON_FINDER {
-    publishDir "${params.output}", mode: 'copy', saveAs: { filename ->
+    publishDir "${params.output}/${prefix}", mode: 'copy', saveAs: { filename ->
         if (filename.indexOf("_version.txt") > 0) "tools_versioning/$filename"
-        else "${prefix}/integron_finder/$filename"
+        else "integron_finder/$filename"
     }
     tag "${prefix}"
     label = [ 'process_medium' ]

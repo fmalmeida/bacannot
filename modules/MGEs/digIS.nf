@@ -18,14 +18,8 @@ process DIGIS {
 
   script:
   """
-  # activate env
-  source activate digIS
-
   # run digIS
-  python3 \$(which digIS_search.py) -i $genome -g $genbank -o digIS
-
-  # deactivate env
-  conda deactivate
+  conda run -n digIS python3 \$(which digIS_search.py) -i $genome -g $genbank -o digIS
 
   # parse digIS to get nucleotide and aminoacide
   # also put ids in uppercase
