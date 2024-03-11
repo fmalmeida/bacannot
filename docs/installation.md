@@ -52,7 +52,16 @@ docker pull fmalmeida/bacannot@sha256:bdb31637cacf99736656ab3b69f1f01ba1b5eb0267
     # apply this command to each image
     # just change the "/" and ":" for "-".
     # E.g. Image fmalmeida/bacannot:v3.3_misc becomes fmalmeida-bacannot-v3.3_misc.img
-    singularity pull --dir $NXF_SINGULARITY_LIBRARYDIR fmalmeida-bacannot-v3.3_misc.img docker://fmalmeida/bacannot:v3.3_misc
+    # for singularity --> prepare env variables
+    # remember to properly set NXF_SINGULARITY_LIBRARYDIR
+    # read more at https://www.nextflow.io/docs/latest/singularity.html#singularity-docker-hub
+    export NXF_SINGULARITY_LIBRARYDIR=<path in your machine>    # Set a path to your singularity storage dir
+    export NXF_SINGULARITY_CACHEDIR=<path in your machine>      # Set a path to your singularity cache dir
+    export SINGULARITY_CACHEDIR=<path in your machine>          # Set a path to your singularity cache dir
+
+    singularity pull \
+        --dir $NXF_SINGULARITY_LIBRARYDIR \
+        fmalmeida-bacannot-v3.3_misc.img docker://fmalmeida/bacannot:v3.3_misc
     ```
 
 ## Bacannot databases
@@ -90,9 +99,9 @@ nextflow run fmalmeida/bacannot \
 After that, you can run the pipeline with a testing dataset by selecting one of the available profiles: 
 
 1. Docker
-    * `nextflow run fmalmeida/mpgap -profile docker,test` --bacannot_db ./bacannot_dbs
+    * `nextflow run fmalmeida/mpgap -profile docker,test --bacannot_db ./bacannot_dbs`
 2. Singularity
-    * `nextflow run fmalmeida/mpgap -profile singularity,test` --bacannot_db ./bacannot_dbs
+    * `nextflow run fmalmeida/mpgap -profile singularity,test --bacannot_db ./bacannot_dbs`
 
 !!! note "About NF profiles"
 
