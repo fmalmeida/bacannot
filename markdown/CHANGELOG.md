@@ -2,7 +2,7 @@
 
 The tracking for changes started in v2.1
 
-## v3.3.3 [TBD]
+## v3.3.3 [11-March-2024]
 
 * [[#118](https://github.com/fmalmeida/bacannot/issues/116)]
     * Add a parameter to allow user to skip `INTEGRON_FINDER` execution.
