@@ -1,6 +1,6 @@
 <img src="images/lOGO_3.png" width="300px">
 
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.3627669-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.3627669)
+[![F1000 Paper](https://img.shields.io/badge/Citation%20F1000-10.12688/f1000research.139488.1-orange)](https://doi.org/10.12688/f1000research.139488.1)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/fmalmeida/bacannot?include_prereleases&label=Latest%20release)](https://github.com/fmalmeida/bacannot/releases)
 [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest)
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
@@ -8,6 +8,7 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![License](https://img.shields.io/badge/License-GPL%203-black)](https://github.com/fmalmeida/bacannot/blob/master/LICENSE)
 [![Follow on Twitter](http://img.shields.io/badge/twitter-%40fmarquesalmeida-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/fmarquesalmeida)
+[![Zenodo Archive](https://img.shields.io/badge/Zenodo-Archive-blue)](https://doi.org/10.5281/zenodo.3627669)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/github.com/fmalmeida/bacannot)
 
@@ -87,16 +88,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 ## Installation
 
-1. If you don't have it already install [Docker](https://docs.docker.com/) in your computer.
-    * After installed, you need to download the required Docker images
-
-    ```bash
-    docker pull fmalmeida/bacannot:v3.3_misc ;
-    docker pull fmalmeida/bacannot:v3.3_renv ;
-    docker pull fmalmeida/bacannot:jbrowse   ;
-    ```
-
-🔥 Nextflow can also automatically handle images download on the fly when executed. All the other docker images from **biocontainers** are downloaded automatically. If docker has exceeded its download limit rates, please try again in a few hours.
+1. If you don't have it already install either [Docker](https://docs.docker.com/) or [Singularity](https://docs.sylabs.io/guides/3.5/user-guide/index.html) in your computer.
 
 2. Install Nextflow (version 20.10 or higher):
 
@@ -110,54 +102,7 @@ These images have been kept separate to not create massive Docker image and to a
 
 🔥 Users can get let the pipeline always updated with: `nextflow pull fmalmeida/bacannot`
 
-### Downloading and updating databases
-
-Bacannot databases are not inside the docker images anymore to avoid huge images and problems with connections and limit rates with dockerhub.
-
-#### Pre-formatted
-
-Users can directly download pre-formatted databases from Zenodo: https://doi.org/10.5281/zenodo.7615811
-
-Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
-
-A module to download the latest pre-formatted database has also been made available:
-```bash
-# Download pipeline pre-built databases
-nextflow run fmalmeida/bacannot --get_zenodo_db --output ./ -profile <docker/singularity>
-```
-
-#### I want to generate a new formatted database
-
-To download and format a copy of required bacannot databases users can execute the following:
-
-```bash
-# Download pipeline databases
-nextflow run fmalmeida/bacannot --get_dbs --output bacannot_dbs -profile <docker/singularity>
-```
-
-This will produce a directory like this:
-
-```bash
-bacannot_dbs
-├── amrfinder_db
-├── antismash_db
-├── argminer_db
-├── card_db
-├── iceberg_db
-├── kofamscan_db
-├── mlst_db
-├── phast_db
-├── phigaro_db
-├── pipeline_info
-├── plasmidfinder_db
-├── platon_db
-├── prokka_db
-├── resfinder_db
-├── vfdb_db
-└── victors_db
-```
-
-> To update databases you can either download a new one to a new directory. Remove the database you want to get a new one from the root bacannot dir and use the same command above to save in the same directory (the pipeline will only try to download missing databases). Or, you can use the parameter `--force_update` to download everything again.
+<a href="https://bacannot.readthedocs.io/en/latest/installation"><strong>Please refer to the installation page, for a complete guide on required images and databases. »</strong></a>
 
 ## Quickstart
 
@@ -242,11 +187,19 @@ It will result in the following:
 2. The JBrowse wrapper in the shiny server is not capable of displaying the GC content and methylation plots when available. It can only display the simpler tracks. If the user wants to visualise and interrogate the GC or methylation tracks it must open the JBrowse outside from the shiny server. For that, two options are available:
     * You can navigate to the `jbrowse` directory under your sample's output folder and simply execute `http-server`. This command can be found at: https://www.npmjs.com/package/http-server
     * Or, you can download the [JBrowse Desktop app](https://jbrowse.org/docs/jbrowse_desktop.html) and, from inside the app, select the folder `jbrowse/data` that is available in your sample's output directory.
-3. If you face some weird error using v3.1, please, before opening a flag, try updating your docker image, we had some inconsistencies lately and this may be the source of the issue.
+3. If you face some weird error using v3.1 or v3.2, please, before opening a ticket, try updating your docker images, we had some inconsistencies lately and this may be the source of the issue.
+4. If facing an issue with the `BACANNOT:SUMMARY` module, identical or similar to the one reported in issue [[#96]](https://github.com/fmalmeida/bacannot/issues/96), please, before opening a ticket, try updating the python env docker image: `docker pull fmalmeida/bacannot:v3.2_pyenv`. The image has been recently updated to have the latest version of my python scripts, and that may solve the issue. If not, please open another.
+5. Sometimes, the `BACANNOT:UNICYCLER` may fail with different, random issues, that does not seem correct, or seem really very random. For example, saying that a read is not available, even though it is there. After some tracing, we realised that the unicycler 0.4.8 installation from conda, and the biocontainer form quay.io is causing this random problem. To solve this issue, please run with a newer version of the tool. This solves the issue in most cases: `--unicycler_version 0.5.0--py310h6cc9453_3`.
+    * Because `v3.2` is already tagged and frozen with Zenodo, we will not update it, thus, for this version, using the parameter to overwrite the tool version should be used.
+    * In `v3.3`, unicycler version will be defaulted to `0.5.0--py310h6cc9453_3`
 
 ## Citation
 
-To cite this tool please refer to our [Zenodo tag](https://doi.org/10.5281/zenodo.3627669).
+In order to cite this pipeline, please refer to:
+
+> Almeida FMd, Campos TAd and Pappas Jr GJ. Scalable and versatile container-based pipelines for de novo genome assembly and bacterial annotation. [version 1; peer review: awaiting peer review]. F1000Research 2023, 12:1205 (https://doi.org/10.12688/f1000research.139488.1)
+
+Additionally, archived versions of the pipeline are also found in [Zenodo](https://doi.org/10.5281/zenodo.3627669).
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [GPLv3](https://github.com/fmalmeida/bacannot/blob/master/LICENSE).
 

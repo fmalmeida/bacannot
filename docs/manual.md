@@ -29,9 +29,10 @@ The pipeline accepts as input two other input files types that are used to perfo
 
 ## Input/output options
 
-| <div style="width:100px">Parameter</div> | Required | Default | Description |
+| <div style="width:180px">Parameter</div> | Required | Default | Description |
 | :--------------------------------------- | :------- | :------ | :---------- |
 | `--input`  | :material-check: | NA       | Input samplesheet describing all the samples to be analysed |
+| `--enable_deduplication` | :material-close: | false | Run deduplication command on input reads before assembly. Only useful for samples where reads are given instead of a genome fasta. |
 | `--output` | :material-check: | results  |  Name of directory to store output values. A sub-directory for each genome will be created inside this main directory. |
 | `--bacannot_db` | :material-check: | NA | Path for root directory containing required bacannot databases |
 
@@ -45,6 +46,7 @@ The pipeline accepts as input two other input files types that are used to perfo
 | :--------------------------------------- | :------- | :------ | :---------- |
 | `--get_dbs`  | :material-close: | false  | Instead of running the analysis workflow, it will try to download required databases and save them in `--output` |
 | `--force_update` | :material-close: | false | Instead of only downloading missing databases, download everything again and overwrite. |
+| `--get_zenodo_db` | :material-close: | false | Download pre-built databases stored in zenodo. [See quickstart](quickstart.md#).
 
 !!! tip ""
     
@@ -94,6 +96,8 @@ The use of this parameter sets a default value for input samples. If a sample ha
 | `--skip_prophage_search` | :material-close: | false | Tells whether not to run prophage annotation modules |
 | `--skip_kofamscan` | :material-close: | false | Tells whether not to run KEGG orthology (KO) annotation with KofamScan |
 | `--skip_antismash` | :material-close: | false | Tells whether or not to run antiSMASH (secondary metabolite) annotation. AntiSMASH is executed using only its core annotation modules in order to keep it fast. |
+| `--skip_circos` | :material-close: | false | Tells whether or not to run the final `CIRCOS` module. When the input genome has many contigs, its results are not meaningful. |
+| `--skip_integron_finder` | :material-close: | false | Tells whether or not to run the integron finder tool. |
 
 ## Custom databases
 

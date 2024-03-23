@@ -143,8 +143,13 @@ workflow BACANNOT {
       ISLANDPATH( annotation_out_ch.gbk )
 
       // Integron_finder software
-      INTEGRON_FINDER( annotation_out_ch.genome )
-      INTEGRON_FINDER_2GFF( INTEGRON_FINDER.out.gbk )
+      if (!params.skip_integron_finder) {
+        INTEGRON_FINDER( annotation_out_ch.genome )
+        INTEGRON_FINDER_2GFF( INTEGRON_FINDER.out.gbk )
+        ch_integron_finder_gff = INTEGRON_FINDER_2GFF.out.gff
+      } else {
+        ch_integron_finder_gff = Channel.empty()
+      }
 
       // Virulence search
       if (params.skip_virulence_search == false) {     
@@ -327,7 +332,7 @@ workflow BACANNOT {
           .join(phast_output_ch,                 remainder: true)
           .join(DIGIS.out.gff,                   remainder: true)
           .join(ch_custom_annotations,           remainder: true)
-          .join(INTEGRON_FINDER_2GFF.out.gff,    remainder: true)
+          .join(ch_integron_finder_gff,          remainder: true)
       )
 
       /*
@@ -367,7 +372,7 @@ workflow BACANNOT {
           .join( MERGE_ANNOTATIONS.out.digis_gff                 )
           .join( antismash_output_ch,            remainder: true )
           .join( MERGE_ANNOTATIONS.out.customdb_gff.groupTuple(), remainder: true )
-          .join( INTEGRON_FINDER_2GFF.out.gff,   remainder: true )
+          .join( ch_integron_finder_gff,         remainder: true )
       )
 
       // Render reports
@@ -403,7 +408,7 @@ workflow BACANNOT {
           .join( DRAW_GIS.out.example,            remainder: true )
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
-          .join( INTEGRON_FINDER_2GFF.out.gff,    remainder: true )
+          .join( ch_integron_finder_gff,          remainder: true )
       )
 
       //
@@ -432,7 +437,7 @@ workflow BACANNOT {
         .join( DIGIS.out.all               , remainder: true )
         .join( antismash_all_ch            , remainder: true )
         .join( MERGE_ANNOTATIONS.out.all   , remainder: true )
-        .join( INTEGRON_FINDER_2GFF.out.gff, remainder: true )
+        .join( ch_integron_finder_gff      , remainder: true )
         .join( mobsuite_output_ch          , remainder: true )
       )
       MERGE_SUMMARIES(
@@ -440,19 +445,19 @@ workflow BACANNOT {
       )
 
       // Render circos plots
-      circos_input_ch =
-        annotation_out_ch.genome
-        .join( annotation_out_ch.gff    , remainder: true )
-        .join( MERGE_ANNOTATIONS.out.gff, remainder: true )
-        .join( PHISPY.out.gff           , remainder: true )
-        .map{
-          it ->
-            sample = it[0]
-            it.remove(0)
-            [ sample, it ]
-        }
-      CIRCOS(
-        circos_input_ch
-      )
+      if (!params.skip_circos) {
+        circos_input_ch =
+          annotation_out_ch.genome
+          .join( annotation_out_ch.gff    , remainder: true )
+          .join( MERGE_ANNOTATIONS.out.gff, remainder: true )
+          .join( PHISPY.out.gff           , remainder: true )
+          .map{
+            it ->
+              sample = it[0]
+              it.remove(0)
+              [ sample, it ]
+          }
+        CIRCOS( circos_input_ch )
+      }
 
 }

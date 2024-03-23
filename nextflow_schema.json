@@ -34,6 +34,10 @@
           "type": "string",
           "description": "Path to input samplesheet"
         },
+        "enable_deduplication": {
+          "type": "boolean",
+          "description": "Execute deduplication on reads before assembly."
+        },
         "output": {
           "type": "string",
           "description": "Path for output directory",
@@ -59,15 +63,18 @@
       "properties": {
         "max_cpus": {
           "type": "integer",
-          "default": 16
+          "default": 16,
+          "description": "Maximum number of cpus a single module can use."
         },
         "max_memory": {
           "type": "string",
-          "default": "20.GB"
+          "default": "20.GB",
+          "description": "Maximum memory a single module can use."
         },
         "max_time": {
           "type": "string",
-          "default": "40.h"
+          "default": "40.h",
+          "description": "Maximum time a module can run."
         }
       }
     },
@@ -146,6 +153,12 @@
           "help_text": "If true, the process will be skipped!",
           "hidden": true
         },
+        "skip_circos": {
+          "type": "boolean",
+          "description": "Skip (do not run) circos?",
+          "help_text": "If true, the process will be skipped!",
+          "hidden": true
+        },
         "skip_plasmid_search": {
           "type": "boolean",
           "description": "Skip (do not run) plasmidfinder?",
@@ -170,6 +183,12 @@
           "help_text": "If true, the process will be skipped!",
           "hidden": true
         },
+        "skip_integron_finder": {
+          "type": "boolean",
+          "description": "Skip (do not run) integron finder?",
+          "help_text": "If true, the process will be skipped!",
+          "hidden": true
+        },
         "skip_prophage_search": {
           "type": "boolean",
           "description": "Skip (do not run) prophage annotation?",
@@ -179,6 +198,12 @@
         "skip_kofamscan": {
           "type": "boolean",
           "description": "Skip (do not run) KO annotation?",
+          "help_text": "If true, the process will be skipped!",
+          "hidden": true
+        },
+        "skip_sourmash": {
+          "type": "boolean",
+          "description": "Skip (do not run) sourmash tool?",
           "help_text": "If true, the process will be skipped!",
           "hidden": true
         }
@@ -339,13 +364,6 @@
           "help_text": "Number of minimum overlapping base pairs required for merging\nNegative values, such as -20, means the number of required overlapping bases for merging.\nPositive values, such as 5, means the maximum distance accepted between features for merging.\nBy default (if Blank), this process is not executed. For execution the user needs to provide a value",
           "description": "Minimum overlapping base pairs required for merging"
         },
-        "tracedir": {
-          "type": "string",
-          "description": "Directory to keep pipeline Nextflow logs and reports.",
-          "default": "results/pipeline_info",
-          "fa_icon": "fas fa-cogs",
-          "hidden": true
-        },
         "validate_params": {
           "type": "boolean",
           "description": "Boolean whether to validate parameters against the schema at runtime",
@@ -363,9 +381,7 @@
         "unicycler_version": {
           "type": "string",
           "description": "Select quay.io image tag for tool",
-          "default": "0.4.8--py38h8162308_3",
-          "hidden": true,
-          "help_text": "Select a different version of tool based on the bioconda containers tag."
+          "default": "0.5.0--py310h6cc9453_3"
         },
         "flye_version": {
           "type": "string",

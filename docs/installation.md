@@ -19,17 +19,30 @@ nextflow pull fmalmeida/bacannot
 
 ## Downloading docker images
 
-The custom docker images used by the pipeline are:
+> The pipeline uses both custom and public images.
+> All images can be downloaded on the fly, automatically by nextflow, and this is the recommended way to do it.
+
+If you want to download it yourself, you can find all the images used in the pipeline described in the file [docker.config](https://github.com/fmalmeida/bacannot/blob/master/conf/docker.config) (for docker) and [singularity.config](https://github.com/fmalmeida/bacannot/blob/master/conf/singularity.config) (for singularity).
+
+The images are defined like the following:
 
 ```bash
-docker pull fmalmeida/bacannot:v3.3_misc ;
-docker pull fmalmeida/bacannot:v3.3_renv ;
-docker pull fmalmeida/bacannot:jbrowse   ;
+...
+withLabel: 'db_download|db_tools|misc' {
+    container = 'fmalmeida/bacannot@sha256:bdb31637cacf99736656ab3b69f1f01ba1b5eb026771d5c266b4c84e96153057'
+}
+...
 ```
 
-> The pipeline also uses other public images available in biocontainers. All images can be downloaded on the fly, automatically be nextflow.
+And could be downloaded like this:
 
-!!! info "Using singularity"
+```bash
+docker pull fmalmeida/bacannot@sha256:bdb31637cacf99736656ab3b69f1f01ba1b5eb026771d5c266b4c84e96153057
+```
+
+> You would need to do it for each image.
+
+!!! info "If using singularity"
 
     **Docker and singularity images are downloaded on the fly**. Be sure to properly set `NXF_SINGULARITY_LIBRARYDIR` env variable to a writable directory if using Singularity. This will make that the downloaded images are reusable through different executions. Read more at: https://www.nextflow.io/docs/latest/singularity.html#singularity-docker-hub
 
@@ -39,17 +52,56 @@ docker pull fmalmeida/bacannot:jbrowse   ;
     # apply this command to each image
     # just change the "/" and ":" for "-".
     # E.g. Image fmalmeida/bacannot:v3.3_misc becomes fmalmeida-bacannot-v3.3_misc.img
-    singularity pull --dir $NXF_SINGULARITY_LIBRARYDIR fmalmeida-bacannot-v3.3_misc.img docker://fmalmeida/bacannot:v3.3_misc
+    # for singularity --> prepare env variables
+    # remember to properly set NXF_SINGULARITY_LIBRARYDIR
+    # read more at https://www.nextflow.io/docs/latest/singularity.html#singularity-docker-hub
+    export NXF_SINGULARITY_LIBRARYDIR=<path in your machine>    # Set a path to your singularity storage dir
+    export NXF_SINGULARITY_CACHEDIR=<path in your machine>      # Set a path to your singularity cache dir
+    export SINGULARITY_CACHEDIR=<path in your machine>          # Set a path to your singularity cache dir
+
+    singularity pull \
+        --dir $NXF_SINGULARITY_LIBRARYDIR \
+        fmalmeida-bacannot-v3.3_misc.img docker://fmalmeida/bacannot:v3.3_misc
     ```
+
+## Bacannot databases
+
+Bacannot databases are not inside the docker images anymore to avoid huge images and problems with connections and limit rates with dockerhub.
+
+### Pre-formatted
+
+Users can directly download pre-formatted databases from Zenodo: https://doi.org/10.5281/zenodo.7615811
+
+Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
+
+A module to download the latest pre-formatted database has also been made available:
+
+```bash
+# Download pipeline pre-built databases
+nextflow run fmalmeida/bacannot \
+    --get_zenodo_db \
+    --output ./ \
+    -profile <docker/singularity>
+```
+
+### I want to generate a new formatted database
+
+```{bash .annotate hl_lines="5"}
+# Download pipeline databases
+nextflow run fmalmeida/bacannot \
+    --get_dbs \
+    --output bacannot_dbs \
+    -profile <docker/singularity>
+```
 
 ## Testing your installation
 
 After that, you can run the pipeline with a testing dataset by selecting one of the available profiles: 
 
 1. Docker
-    * `nextflow run fmalmeida/mpgap -profile docker,test`
+    * `nextflow run fmalmeida/mpgap -profile docker,test --bacannot_db ./bacannot_dbs`
 2. Singularity
-    * `nextflow run fmalmeida/mpgap -profile singularity,test`
+    * `nextflow run fmalmeida/mpgap -profile singularity,test --bacannot_db ./bacannot_dbs`
 
 !!! note "About NF profiles"
 

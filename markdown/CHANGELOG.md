@@ -2,12 +2,35 @@
 
 The tracking for changes started in v2.1
 
-## v3.3 [TBD]
+## v3.3.3 [11-March-2024]
+
+* [[#118](https://github.com/fmalmeida/bacannot/issues/116)]
+    * Add a parameter to allow user to skip `INTEGRON_FINDER` execution.
+    * Add a parameter to allow user to skip `CIRCOS` execution.
+* Split antismash docker image, and added some snippets to fix some workarounds to allow pipeline to run with singularity
+
+## v3.3.2 [09-February-2024]
+
+* [[#116](https://github.com/fmalmeida/bacannot/issues/116)] -- Small update to avoid having `integron_finder` gbks with start position as 0, since it breaks conversion to gff.
+
+## v3.3.1 [29-October-2023]
+
+* [[#111](https://github.com/fmalmeida/bacannot/issues/111)] -- Updated `falmeida-py` package version to fix problem with missing key for Summary.
+
+## v3.3 [01-October-2023]
 
 * [[#50](https://github.com/fmalmeida/bacannot/issues/50)] -- Add `Integron Finder` tool to the pipeline
-* [#69](https://github.com/fmalmeida/bacannot/issues/69) -- Change how tools use docker images in order to:
+* [[#69](https://github.com/fmalmeida/bacannot/issues/69)] -- Change how tools use docker images in order to:
     * make tools use public bioconda images whenever possible to allow easy addition of tools and avoid much conflicts in docker images
     * dimish the size and tools inside the docker images, the docker images now are only built to contain tools and all required for modules that cannot just use bioconda docker images.
+* [[#81](https://github.com/fmalmeida/bacannot/issues/81)] -- Add `MOB Suite` tool to the pipeline
+* [[#85](https://github.com/fmalmeida/bacannot/issues/85)] -- Include checkup on header size for Prokka
+* [[#98](https://github.com/fmalmeida/bacannot/issues/98)] -- Add ICEberg and PHAST blastp results to json summary
+* [[#100](https://github.com/fmalmeida/bacannot/issues/100)] -- Update pipeline to use docker shasum instead of tags
+* [[#107](https://github.com/fmalmeida/bacannot/issues/107)] -- Add a parameter, `--enable_deduplication` for deduplicating input reads before assembly
+* Update unicycler docker image to latest '0.5.0--py310h6cc9453_3' to avoid errors originated from previous image containing buggy installation.
+* Other minor changes / updates highlited in [[#93](https://github.com/fmalmeida/bacannot/pull/93)]
+
 ## v3.2 [19-December-2022]
 
 * Fixes https://github.com/fmalmeida/bacannot/issues/68 reported by @lam-c
