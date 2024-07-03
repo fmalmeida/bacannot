@@ -9,6 +9,8 @@ params:
   barrnap:
   mlst:
   refseq_masher:
+  sourmash_csv:
+  sourmash_png:
   query:
 output:
   bookdown::html_document2:
@@ -56,6 +58,13 @@ if (file.exists(params$kegg)) {
   kegg_svg <- params$kegg
 } else {
   kegg_not_null <- FALSE
+}
+sourmash_csv <- try(read.delim(params$sourmash_csv, header = TRUE), silent = TRUE)
+if (file.exists(params$kegg)) {
+  sourmash_not_null <- TRUE
+  sourmash_png <- params$sourmash_png
+} else {
+  sourmash_not_null <- FALSE
 }
 
 if (params$generic_annotator == "prokka") {
@@ -165,4 +174,7 @@ datatable(barrnap_gff,
 
 
 ```{r kegg_svg, echo=FALSE, results='asis', eval=kegg_not_null, child='yes_kegg.Rmd'}
+```
+
+```{r sourmash_svg, echo=FALSE, results='asis', eval=sourmash_not_null, child='yes_sourmash.Rmd'}
 ```
