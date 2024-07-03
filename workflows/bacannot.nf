@@ -258,7 +258,7 @@ workflow BACANNOT {
 
       // species identification
       REFSEQ_MASHER( annotation_out_ch.genome )
-      SOURMASH_LCA (
+      SOURMASH_LCA(
         dbs_ch,
         annotation_out_ch.genome,
         params.sourmash_scale,
@@ -408,7 +408,9 @@ workflow BACANNOT {
           .join( DRAW_GIS.out.example,            remainder: true )
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
-          .join( ch_integron_finder_gff,          remainder: true )
+          .join( ch_integron_finder_gff,          remainder: true ),
+        SOURMASH_ALL.out.csv.first(), // make value channel
+        SOURMASH_ALL.out.plot.first() // make value channel
       )
 
       //
