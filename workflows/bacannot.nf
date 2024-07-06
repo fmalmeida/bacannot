@@ -270,14 +270,13 @@ workflow BACANNOT {
         REFSEQ_MASHER.out.results
         .map { it[1] }
         .splitCsv( sep: '\t', header: true )
-        .map{ "${it.biosample}\n" }
+        .map{ "${it.biosample}" }
         .unique()
-        .collectFile()
       )
       SOURMASH_ALL(
         annotation_out_ch.genome
         .map{ it[1] }
-        .mix( GET_NCBI_GENOME.out.genomes )
+        .mix( GET_NCBI_GENOME.out.genomes.collect() )
         .collect(),
         params.sourmash_scale,
         params.sourmash_kmer
