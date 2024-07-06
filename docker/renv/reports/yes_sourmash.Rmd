@@ -1,6 +1,6 @@
 ## Sourmash
 
-[Sourmash](https://sourmash.readthedocs.io/en/latest/) is a command-line tool and Python/Rust library for metagenome analysis and genome comparison using k-mers. It supports the compositional analysis of metagenomes, rapid search of large sequence databases, and flexible taxonomic profiling with both NCBI and GTDB taxonomies (see our prepared databases for more information). sourmash works well with sequences 30kb or larger, including bacterial and viral genomes.
+[Sourmash](https://sourmash.readthedocs.io/en/latest/) is a command-line tool and Python/Rust library for metagenome analysis and genome comparison using k-mers. It supports the compositional analysis of metagenomes, rapid search of large sequence databases, and flexible taxonomic profiling with both NCBI and GTDB taxonomies. Sourmash works well with sequences 30kb or larger, including bacterial and viral genomes.
 
 In Bacannot, the sourmash tool was used for performing genome comparison and dendogram plot with all the genomes given as input, plus, all the 10 first genomes identified as closest to each genome based on refseq_masher results.
 
