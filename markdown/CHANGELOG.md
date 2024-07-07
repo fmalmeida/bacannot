@@ -2,9 +2,14 @@
 
 The tracking for changes started in v2.1
 
+## v3.4.0 [TBD]
+
+* [[#30](https://github.com/fmalmeida/bacannot/issues/30)]
+    * Add `sourmash` to workflow
+
 ## v3.3.3 [11-March-2024]
 
-* [[#118](https://github.com/fmalmeida/bacannot/issues/116)]
+* [[#118](https://github.com/fmalmeida/bacannot/issues/118)]
     * Add a parameter to allow user to skip `INTEGRON_FINDER` execution.
     * Add a parameter to allow user to skip `CIRCOS` execution.
 * Split antismash docker image, and added some snippets to fix some workarounds to allow pipeline to run with singularity

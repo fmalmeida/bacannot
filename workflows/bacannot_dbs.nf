@@ -1,22 +1,23 @@
 /*
  * Include modules
  */
-include { PROKKA_DB        } from '../modules/bacannot_dbs/prokka.nf'
-include { MLST_DB          } from '../modules/bacannot_dbs/mlst.nf'
-include { CARD_DB          } from '../modules/bacannot_dbs/card.nf'
-include { PLATON_DB        } from '../modules/bacannot_dbs/platon.nf'
-include { RESFINDER_DB     } from '../modules/bacannot_dbs/resfinder.nf'
-include { PLASMIDFINDER_DB } from '../modules/bacannot_dbs/plasmidfinder.nf'
-include { PHIGARO_DB       } from '../modules/bacannot_dbs/phigaro.nf'
-include { AMRFINDER_DB     } from '../modules/bacannot_dbs/amrfinder.nf'
-include { ARGMINER_DB      } from '../modules/bacannot_dbs/argminer.nf'
-include { VFDB_DB          } from '../modules/bacannot_dbs/vfdb.nf'
-include { VICTORS_DB       } from '../modules/bacannot_dbs/victors.nf'
-include { ICEBERG_DB       } from '../modules/bacannot_dbs/iceberg.nf'
-include { PHAST_DB         } from '../modules/bacannot_dbs/phast.nf'
-include { KOFAMSCAN_DB     } from '../modules/bacannot_dbs/kofamscan.nf'
-include { ANTISMASH_DB     } from '../modules/bacannot_dbs/antismash.nf'
-include { GET_ZENODO_DB    } from '../modules/bacannot_dbs/get_zenodo.nf'
+include { PROKKA_DB        } from '../modules/bacannot_dbs/prokka'
+include { MLST_DB          } from '../modules/bacannot_dbs/mlst'
+include { CARD_DB          } from '../modules/bacannot_dbs/card'
+include { PLATON_DB        } from '../modules/bacannot_dbs/platon'
+include { RESFINDER_DB     } from '../modules/bacannot_dbs/resfinder'
+include { PLASMIDFINDER_DB } from '../modules/bacannot_dbs/plasmidfinder'
+include { PHIGARO_DB       } from '../modules/bacannot_dbs/phigaro'
+include { AMRFINDER_DB     } from '../modules/bacannot_dbs/amrfinder'
+include { ARGMINER_DB      } from '../modules/bacannot_dbs/argminer'
+include { VFDB_DB          } from '../modules/bacannot_dbs/vfdb'
+include { VICTORS_DB       } from '../modules/bacannot_dbs/victors'
+include { ICEBERG_DB       } from '../modules/bacannot_dbs/iceberg'
+include { PHAST_DB         } from '../modules/bacannot_dbs/phast'
+include { KOFAMSCAN_DB     } from '../modules/bacannot_dbs/kofamscan'
+include { ANTISMASH_DB     } from '../modules/bacannot_dbs/antismash'
+include { GET_ZENODO_DB    } from '../modules/bacannot_dbs/get_zenodo'
+include { SOURMASH_DB      } from '../modules/bacannot_dbs/sourmash'
 
 /*
     DEF WORKFLOW
@@ -40,6 +41,7 @@ workflow CREATE_DBS {
         download_db("victors", "VICTORS_DB")
         download_db("iceberg", "ICEBERG_DB")
         download_db("antismash", "ANTISMASH_DB")
+        download_db("sourmash", "SOURMASH_DB")
     } else if ( !params.get_dbs && params.get_zenodo_db ) {
         GET_ZENODO_DB()
     }

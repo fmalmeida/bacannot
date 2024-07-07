@@ -119,6 +119,27 @@
       },
       "fa_icon": "fas fa-cog"
     },
+    "sourmash_optional_parameters": {
+      "title": "Sourmash optional parameters",
+      "type": "object",
+      "description": "Set parameters for sourmash analysis",
+      "default": "",
+      "properties": {
+        "sourmash_kmer": {
+          "type": "integer",
+          "default": 31,
+          "help_text": "Select which kmer size to run sourmash with. Options are: 21, 31 and 51.\nThe bigger the value, the more stringent the results are.",
+          "enum": [21, 31, 51],
+          "description": "Kmer size to run sourmash analysis"
+        },
+        "sourmash_scale": {
+          "type": "integer",
+          "default": 1000,
+          "description": "Scale to run sourmash analysis",
+          "help_text": "The scale define the size of the generated hashes. For example, scale=1000 in a 5MB genome will generate 5000 hashes. 1000 as scale is generally recommended by the tool's developers."
+        }
+      }
+    },
     "select_unselect_tasks_to_be_run": {
       "title": "Select/unselect tasks to be run",
       "type": "object",
@@ -177,6 +198,12 @@
         "skip_kofamscan": {
           "type": "boolean",
           "description": "Skip (do not run) KO annotation?",
+          "help_text": "If true, the process will be skipped!",
+          "hidden": true
+        },
+        "skip_sourmash": {
+          "type": "boolean",
+          "description": "Skip (do not run) sourmash tool?",
           "help_text": "If true, the process will be skipped!",
           "hidden": true
         }
@@ -359,12 +386,16 @@
         "flye_version": {
           "type": "string",
           "description": "Select quay.io image tag for tool",
-          "default": "2.9--py39h6935b12_1"
+          "default": "2.9--py39h6935b12_1",
+          "hidden": true,
+          "help_text": "Select a different version of tool based on the bioconda containers tag."
         },
         "bakta_version": {
           "type": "string",
           "description": "Select quay.io image tag for tool",
-          "default": "1.7.0--pyhdfd78af_1"
+          "default": "1.7.0--pyhdfd78af_1",
+          "hidden": true,
+          "help_text": "Select a different version of tool based on the bioconda containers tag."
         }
       }
     },
@@ -432,6 +463,9 @@
     },
     {
       "$ref": "#/definitions/resfinder_optional_process"
+    },
+    {
+      "$ref": "#/definitions/sourmash_optional_parameters"
     },
     {
       "$ref": "#/definitions/select_unselect_tasks_to_be_run"

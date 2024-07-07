@@ -5,6 +5,8 @@
 include { UNICYCLER              } from '../modules/assembly/unicycler'
 include { FLYE                   } from '../modules/assembly/flye'
 include { REFSEQ_MASHER          } from '../modules/generic/mash'
+include { SOURMASH_LCA           } from '../modules/generic/sourmash_lca'
+include { SOURMASH_ALL           } from '../modules/generic/sourmash_all'
 include { PROKKA                 } from '../modules/generic/prokka'
 include { BAKTA                  } from '../modules/generic/bakta'
 include { MLST                   } from '../modules/generic/mlst'
@@ -34,6 +36,7 @@ include { CALL_METHYLATION       } from '../modules/generic/methylation'
 include { CUSTOM_DATABASE        } from '../modules/generic/custom_database'
 include { CUSTOM_DATABASE_REPORT } from '../modules/generic/custom_database_report'
 include { GET_NCBI_PROTEIN       } from '../modules/generic/ncbi_protein'
+include { GET_NCBI_GENOME        } from '../modules/generic/ncbi_genome'
 include { MERGE_ANNOTATIONS      } from '../modules/generic/merge_annotations'
 include { GFF2GBK                } from '../modules/generic/gff2gbk'
 include { CREATE_SQL             } from '../modules/generic/gff2sql'
@@ -255,6 +258,29 @@ workflow BACANNOT {
 
       // species identification
       REFSEQ_MASHER( annotation_out_ch.genome )
+      SOURMASH_LCA(
+        dbs_ch,
+        annotation_out_ch.genome,
+        params.sourmash_scale,
+        params.sourmash_kmer
+      )
+
+      // mashing against samples and close related genomes
+      GET_NCBI_GENOME(
+        REFSEQ_MASHER.out.results
+        .map { it[1] }
+        .splitCsv( sep: '\t', header: true )
+        .map{ "${it.biosample}" }
+        .unique()
+      )
+      SOURMASH_ALL(
+        annotation_out_ch.genome
+        .map{ it[1] }
+        .mix( GET_NCBI_GENOME.out.genomes.collect() )
+        .collect(),
+        params.sourmash_scale,
+        params.sourmash_kmer
+      )
 
       // IS identification
       DIGIS( annotation_out_ch.genome.join(annotation_out_ch.gbk) )
@@ -381,7 +407,8 @@ workflow BACANNOT {
           .join( DRAW_GIS.out.example,            remainder: true )
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
-          .join( ch_integron_finder_gff,          remainder: true )
+          .join( ch_integron_finder_gff,          remainder: true ),
+        SOURMASH_ALL.out.plot.first() // make value channel
       )
 
       //

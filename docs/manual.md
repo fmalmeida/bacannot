@@ -85,6 +85,15 @@ The use of this parameter sets a default value for input samples. If a sample ha
 | :--------------------------------------- | :------- | :------ | :---------- |
 | `--resfinder_species` | :material-close: | NA | Resfinder species panel. It activates the resfinder annotation process using the given species panel. Check the available species at [their main page](https://cge.cbs.dtu.dk/services/ResFinder/) and in [their repository page](https://bitbucket.org/genomicepidemiology/resfinder/src/master/#usage). If your species is not available in Resfinder panels, you may use it with the "Other" panel (`--resfinder_species "Other"`). |
 
+## Sourmash comparison
+
+The parameteers below, configure how [sourmash](https://sourmash.readthedocs.io/en/latest/) is executed in the pipeline. They are relatively simple, and have sensible defaults.
+
+| <div style="width:160px">Parameter</div> | Required | Default | Description |
+| :--------------------------------------- | :------- | :------ | :---------- |
+| `--sourmash_kmer`  | :material-close: | 31   | Kmer size for sourmash genome comparison |
+| `--sourmash_scale` | :material-close: | 1000 | Scale for for sourmash genome comparison. A scale 1000 on a 5Mb genome will generate 5000 hashes. 1000 is generally recommended by the tool's developers |
+
 ## On/Off processes
 
 | <div style="width:180px">Parameter</div> | Required | Default | Description |
@@ -96,6 +105,7 @@ The use of this parameter sets a default value for input samples. If a sample ha
 | `--skip_prophage_search` | :material-close: | false | Tells whether not to run prophage annotation modules |
 | `--skip_kofamscan` | :material-close: | false | Tells whether not to run KEGG orthology (KO) annotation with KofamScan |
 | `--skip_antismash` | :material-close: | false | Tells whether or not to run antiSMASH (secondary metabolite) annotation. AntiSMASH is executed using only its core annotation modules in order to keep it fast. |
+| `--skip_sourmash` | :material-close: | false | Tells whether or not to run sourmash to compare input genomes and closest reference genomes |
 | `--skip_circos` | :material-close: | false | Tells whether or not to run the final `CIRCOS` module. When the input genome has many contigs, its results are not meaningful. |
 | `--skip_integron_finder` | :material-close: | false | Tells whether or not to run the integron finder tool. |
 

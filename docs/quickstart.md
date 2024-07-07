@@ -37,7 +37,7 @@ Bacannot databases are not inside the docker images anymore to avoid huge images
 
 #### Pre-formatted
 
-Users can directly download pre-formatted databases from Zenodo: https://doi.org/10.5281/zenodo.7615811
+Users can directly download pre-formatted databases from Zenodo: <https://doi.org/10.5281/zenodo.7615811>
 
 Useful for standardization and also overcoming known issues that may arise when formatting databases with `singularity` profile.
 
