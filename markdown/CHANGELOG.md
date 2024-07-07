@@ -2,10 +2,11 @@
 
 The tracking for changes started in v2.1
 
-## v3.4.0 [TBD]
+## v3.4.0 [07-July-2024]
 
 * [[#30](https://github.com/fmalmeida/bacannot/issues/30)]
     * Add `sourmash` to workflow
+* Updated pre-built database in <https://zenodo.org/doi/10.5281/zenodo.7615811>
 
 ## v3.3.3 [11-March-2024]
 
