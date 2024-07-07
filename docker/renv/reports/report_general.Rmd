@@ -9,7 +9,6 @@ params:
   barrnap:
   mlst:
   refseq_masher:
-  sourmash_csv:
   sourmash_png:
   query:
 output:
@@ -59,8 +58,8 @@ if (file.exists(params$kegg)) {
 } else {
   kegg_not_null <- FALSE
 }
-sourmash_csv <- try(read.delim(params$sourmash_csv, header = TRUE), silent = TRUE)
-if (file.exists(params$kegg)) {
+
+if (file.exists(params$sourmash_png)) {
   sourmash_not_null <- TRUE
   sourmash_png <- params$sourmash_png
 } else {

@@ -14,7 +14,6 @@ process SOURMASH_ALL {
     path "*"                       , emit: all
     path "sourmash_version.txt"    , emit: versions
     path "sourmash_cmp.matrix.png" , emit: plot
-    path "sourmash_plot.csv"       , emit: csv
 
     when: !params.skip_sourmash
 

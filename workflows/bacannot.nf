@@ -408,7 +408,6 @@ workflow BACANNOT {
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
           .join( ch_integron_finder_gff,          remainder: true ),
-        SOURMASH_ALL.out.csv.first(), // make value channel
         SOURMASH_ALL.out.plot.first() // make value channel
       )
 
