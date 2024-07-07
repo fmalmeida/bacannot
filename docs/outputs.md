@@ -15,6 +15,7 @@ After a successful execution, you will have something like this:
 # Directory tree from the running dir
 .
 ├── _ANNOTATION
+│   └── sourmash_all          # Sourmash results of genome comparison of all input genomes and all identified references
 |   └── ecoli_ref.fna
 │   └── ecoli
 │       ├── assembly          # Assembly files (when raw reads are given)
@@ -38,6 +39,7 @@ After a successful execution, you will have something like this:
 |       ├── resistance        # AMR annotation results from ARGminer, AMRFinderPlus, RGI and Resfinder
 |       ├── rRNA              # barrnap annotation results
 |       ├── SequenceServerDBs # SequenceServer pre-formatted databases to be used with SequenceServer blast application
+|       ├── sourmash          # Sourmash summary and signature file for the specific sample
 |       ├── SQLdb             # The SQLdb of the annotation used by the shiny server for rapid parsing
 |       ├── tools_versioning  # Versions of tools and databases used (whenever available)
 |       ├── virulence         # Virulence genes annotation results from Victors and VFDB databases

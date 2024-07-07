@@ -5,7 +5,7 @@ These are the tools that wrapped inside bacannot. **Cite** the tools whenever yo
 | Analysis steps | Used software or databases |
 | :------------- | :------------------------- |
 | Genome assembly (if raw reads are given) | [Flye](https://github.com/fenderglass/Flye) and [Unicycler](https://github.com/rrwick/Unicycler) |
-| Identification of closest 10 NCBI Refseq genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) |
+| Identification of closest 10 NCBI Refseq genomes and comparison of genomes | [RefSeq Masher](https://github.com/phac-nml/refseq_masher) and [Sourmash](https://sourmash.readthedocs.io/en/latest/) |
 | Generic annotation and gene prediction | [Prokka](https://github.com/tseemann/prokka) or [Bakta](https://github.com/oschwengers/bakta) |
 | rRNA prediction | [barrnap](https://github.com/tseemann/barrnap) |
 | Classification within multi-locus sequence types (STs) | [mlst](https://github.com/tseemann/mlst) |
