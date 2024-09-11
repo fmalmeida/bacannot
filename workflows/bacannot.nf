@@ -287,6 +287,10 @@ workflow BACANNOT {
           params.sourmash_scale,
           params.sourmash_kmer
         )
+
+        ch_sourmash_plot = SOURMASH_ALL.out.plot.first()
+      } else {
+        ch_sourmash_plot = []
       }
 
       //
@@ -419,7 +423,7 @@ workflow BACANNOT {
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
           .join( ch_integron_finder_gff,          remainder: true ),
-        SOURMASH_ALL.out.plot.first() // make value channel
+        ch_sourmash_plot
       )
 
       //
