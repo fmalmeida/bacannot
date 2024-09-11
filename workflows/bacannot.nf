@@ -258,29 +258,40 @@ workflow BACANNOT {
 
       // species identification
       REFSEQ_MASHER( annotation_out_ch.genome )
-      SOURMASH_LCA(
-        dbs_ch,
-        annotation_out_ch.genome,
-        params.sourmash_scale,
-        params.sourmash_kmer
-      )
 
-      // mashing against samples and close related genomes
-      GET_NCBI_GENOME(
-        REFSEQ_MASHER.out.results
-        .map { it[1] }
-        .splitCsv( sep: '\t', header: true )
-        .map{ "${it.biosample}" }
-        .unique()
-      )
-      SOURMASH_ALL(
-        annotation_out_ch.genome
-        .map{ it[1] }
-        .mix( GET_NCBI_GENOME.out.genomes.collect() )
-        .collect(),
-        params.sourmash_scale,
-        params.sourmash_kmer
-      )
+      //
+      // BEGIN: sourmash-related modules
+      //
+      if (!params.skip_sourmash) {
+        SOURMASH_LCA(
+          dbs_ch,
+          annotation_out_ch.genome,
+          params.sourmash_scale,
+          params.sourmash_kmer
+        )
+
+        // mashing against samples and close related genomes
+        GET_NCBI_GENOME(
+          REFSEQ_MASHER.out.results
+          .map { it[1] }
+          .splitCsv( sep: '\t', header: true )
+          .map{ "${it.biosample}" }
+          .unique()
+        )
+
+        SOURMASH_ALL(
+          annotation_out_ch.genome
+          .map{ it[1] }
+          .mix( GET_NCBI_GENOME.out.genomes.collect() )
+          .collect(),
+          params.sourmash_scale,
+          params.sourmash_kmer
+        )
+      }
+
+      //
+      // END: sourmash related modules
+      //
 
       // IS identification
       DIGIS( annotation_out_ch.genome.join(annotation_out_ch.gbk) )
