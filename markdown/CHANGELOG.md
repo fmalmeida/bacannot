@@ -2,6 +2,13 @@
 
 The tracking for changes started in v2.1
 
+## v3.4.1 [14-November-2024]
+
+* [[[#127](https://github.com/fmalmeida/bacannot/issues/127)]]
+    * Allow `GET_NCBI_MODULE` fail to be ignored, and adjust resources
+    * Add parameter to skip `sourmash` workflow
+    * Adjust file permissions in module `GET_NCBI_MODULE`
+
 ## v3.4.0 [07-July-2024]
 
 * [[#30](https://github.com/fmalmeida/bacannot/issues/30)]
