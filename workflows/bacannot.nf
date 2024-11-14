@@ -258,29 +258,44 @@ workflow BACANNOT {
 
       // species identification
       REFSEQ_MASHER( annotation_out_ch.genome )
-      SOURMASH_LCA(
-        dbs_ch,
-        annotation_out_ch.genome,
-        params.sourmash_scale,
-        params.sourmash_kmer
-      )
 
-      // mashing against samples and close related genomes
-      GET_NCBI_GENOME(
-        REFSEQ_MASHER.out.results
-        .map { it[1] }
-        .splitCsv( sep: '\t', header: true )
-        .map{ "${it.biosample}" }
-        .unique()
-      )
-      SOURMASH_ALL(
-        annotation_out_ch.genome
-        .map{ it[1] }
-        .mix( GET_NCBI_GENOME.out.genomes.collect() )
-        .collect(),
-        params.sourmash_scale,
-        params.sourmash_kmer
-      )
+      //
+      // BEGIN: sourmash-related modules
+      //
+      if (!params.skip_sourmash) {
+        SOURMASH_LCA(
+          dbs_ch,
+          annotation_out_ch.genome,
+          params.sourmash_scale,
+          params.sourmash_kmer
+        )
+
+        // mashing against samples and close related genomes
+        GET_NCBI_GENOME(
+          REFSEQ_MASHER.out.results
+          .map { it[1] }
+          .splitCsv( sep: '\t', header: true )
+          .map{ "${it.biosample}" }
+          .unique()
+        )
+
+        SOURMASH_ALL(
+          annotation_out_ch.genome
+          .map{ it[1] }
+          .mix( GET_NCBI_GENOME.out.genomes.collect() )
+          .collect(),
+          params.sourmash_scale,
+          params.sourmash_kmer
+        )
+
+        ch_sourmash_plot = SOURMASH_ALL.out.plot.first()
+      } else {
+        ch_sourmash_plot = []
+      }
+
+      //
+      // END: sourmash related modules
+      //
 
       // IS identification
       DIGIS( annotation_out_ch.genome.join(annotation_out_ch.gbk) )
@@ -408,7 +423,7 @@ workflow BACANNOT {
           .join( phast_output_ch,                 remainder: true )
           .join( MERGE_ANNOTATIONS.out.digis_gff                  )
           .join( ch_integron_finder_gff,          remainder: true ),
-        SOURMASH_ALL.out.plot.first() // make value channel
+        ch_sourmash_plot
       )
 
       //
