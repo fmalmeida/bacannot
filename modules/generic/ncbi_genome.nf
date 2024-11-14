@@ -35,5 +35,8 @@ process GET_NCBI_GENOME {
         name=\$( echo \$file | cut -d '_' -f 1,2 ) ;
         mv \$file \${name}.fna
     done
+
+    # fix permissions
+    chmod a+rw \${name}.fna
     """
 }
