@@ -22,6 +22,7 @@ process ARGMINER {
       --mincov ${params.blast_resistance_mincov} \\
       --threads $task.cpus \\
       --out ${prefix}_argminer_blastp_onGenes.txt \\
-      --2way > ${prefix}_argminer_blastp_onGenes.summary.txt ;
+      --2way | \\
+      sed -e 's/;//g' > ${prefix}_argminer_blastp_onGenes.summary.txt ;
   """
 }
