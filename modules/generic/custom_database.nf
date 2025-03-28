@@ -51,8 +51,8 @@ process CUSTOM_DATABASE {
         --minid ${params.blast_custom_minid} \\
         --mincov ${params.blast_custom_mincov} \\
         --threads $task.cpus \\
-        --out ${prefix}_${customDB.baseName}_\${blast_cmd}_onGenome.txt \\
-        > ${prefix}_${customDB.baseName}_\${blast_cmd}_onGenome.summary.txt ;
+        --out ${prefix}_${customDB.baseName}_\${blast_cmd}_onGenome.txt | 
+        sed -e 's/;//g' > ${prefix}_${customDB.baseName}_\${blast_cmd}_onGenome.summary.txt ;
 
     # Step 3 - Produce custom gff
     tail -n+2 ${prefix}_${customDB.baseName}_\${blast_cmd}_onGenome.summary.txt | \\
