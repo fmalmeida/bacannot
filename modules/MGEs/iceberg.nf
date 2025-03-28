@@ -30,7 +30,7 @@ process ICEBERG {
         --mincov ${params.blast_MGEs_mincov} \\
         --threads $task.cpus \\
         --out ${prefix}_iceberg_blastp_onGenes.txt --2way | \\
-    sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastp_onGenes.summary.txt ;
+    sed -e 's/GENE/ICEBERG_ID/g' -e 's/;//g' > ${prefix}_iceberg_blastp_onGenes.summary.txt ;
 
     ## Checking for full-length ICEs
     ### The blast db was throwing errors
@@ -46,6 +46,6 @@ process ICEBERG {
         --mincov 0 \\
         --threads $task.cpus \\
         --out ${prefix}_iceberg_blastn_onGenome.txt | \\
-    sed -e 's/GENE/ICEBERG_ID/g' > ${prefix}_iceberg_blastn_onGenome.summary.txt ;
+    sed -e 's/GENE/ICEBERG_ID/g' -e 's/;//g' > ${prefix}_iceberg_blastn_onGenome.summary.txt ;
     """
 }

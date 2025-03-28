@@ -24,6 +24,6 @@ process VICTORS {
       --threads $task.cpus \\
       --out ${prefix}_victors_blastp_onGenes.txt \\
       --2way | \\
-  sed -e 's/PRODUCT/VICTORS_ID/g' > ${prefix}_victors_blastp_onGenes.summary.txt ;
+  sed -e 's/PRODUCT/VICTORS_ID/g' -e 's/;//g' > ${prefix}_victors_blastp_onGenes.summary.txt ;
   """
 }

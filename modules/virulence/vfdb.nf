@@ -24,6 +24,6 @@ process VFDB {
       --threads $task.cpus \\
       --out ${prefix}_vfdb_blastn_onGenes.txt \\
       --2way | \\
-  sed -e 's/ACCESSION/VFDB_ID/g' > ${prefix}_vfdb_blastn_onGenes.summary.txt ;
+  sed -e 's/ACCESSION/VFDB_ID/g' -e 's/;//g' > ${prefix}_vfdb_blastn_onGenes.summary.txt ;
   """
 }
