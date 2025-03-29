@@ -7,6 +7,7 @@ The tracking for changes started in v2.1
 * [[[#131](https://github.com/fmalmeida/bacannot/issues/131)]]
     * Add a small sed command to correct wrong fasta headers from public databases
 * correct zenodo_get command to always download latest
+* correct channel parsing for generating html reports of custom databases
 
 ## v3.4.1 [14-November-2024]
 
