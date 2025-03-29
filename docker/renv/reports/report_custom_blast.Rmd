@@ -64,7 +64,7 @@ blast_gff    <- try(read.delim(params$blast_gff, header = FALSE, col.names=c("Co
 ## Check for emptyness
 if ( class(blast_gff) == "try-error" || check_lines(custom_blast) == 0 ) {
   custom_blast <- data.frame(
-    matrix(ncol = 14, nrow = 0)
+    matrix(ncol = 13, nrow = 0)
   )
   blast_gff <- data.frame(
     matrix(ncol = 9, nrow = 0)
