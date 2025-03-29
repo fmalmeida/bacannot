@@ -391,8 +391,17 @@ workflow BACANNOT {
 
       // Render reports
       if (params.custom_db || params.ncbi_proteins) {
+        // parse GFFs
+        custom_db_gffs_ch = 
+        MERGE_ANNOTATIONS.out.customdb_gff
+        .map{ id, file ->
+            def db = file.baseName.replaceAll('^custom_database_', '')
+            [ id, db, file ]
+        }
+
+        // report
         CUSTOM_DATABASE_REPORT( 
-          CUSTOM_DATABASE.out.summary.join( MERGE_ANNOTATIONS.out.customdb_gff, remainder:true ) 
+          CUSTOM_DATABASE.out.summary.join( custom_db_gffs_ch, by: [0, 1], remainder:true )
         )
       }
       REPORT(
