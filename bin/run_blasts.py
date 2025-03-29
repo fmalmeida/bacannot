@@ -151,9 +151,9 @@ def summary(output):
             prodc=line["sseqid"].split('~~~')[3]
             desc=line["sseqid"].split('~~~')[4]
         else:
-            prodc=line["sseqid"].split('~~~')[3].split(' ')[0]
+            prodc=line["sseqid"].split('~~~')[3].split(' ')[0].replace(' ', '')
             try:
-                desc=' '.join(line["stitle"].split('~~~')[3].split(' ')[1:-1])
+                desc=''.join(line["stitle"].split('~~~')[3])
             except:
                 desc='Not found'
         # Subject coverage
