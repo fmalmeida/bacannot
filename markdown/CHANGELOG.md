@@ -8,6 +8,7 @@ The tracking for changes started in v2.1
     * Add a small sed command to correct wrong fasta headers from public databases
 * correct zenodo_get command to always download latest
 * correct channel parsing for generating html reports of custom databases
+* correct description field of `run_blasts.py` script
 
 ## v3.4.1 [14-November-2024]
 
