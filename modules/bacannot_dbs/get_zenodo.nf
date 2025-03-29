@@ -10,7 +10,7 @@ process GET_ZENODO_DB {
     script:
     """
     # download database from zenodo
-    zenodo_get https://doi.org/10.5281/zenodo.7615811
+    zenodo_get 12674473
 
     # organize data
     tar zxvf *.tar.gz && rm *.tar.gz

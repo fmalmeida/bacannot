@@ -13,7 +13,7 @@ process PHAST_DB {
         sed -e 's/ >/ /g' -e 's/~ /~/g' | \\
         awk -F "~~~" ' { if (\$0 ~ />/) { gsub(" ", "_", \$2); print \$1 "~~~" \$2 "~~~" \$3 "~~~" \$4 "~~~" \$5 } else { print \$0 }}' | \\
         awk -F "~~~" ' { if (\$0 ~ />/) { gsub("-", "_", \$2); print \$1 "~~~" \$2 "~~~" \$3 "~~~" \$4 "~~~" \$5 } else { print \$0 }}' | \\
-        sed -e 's/~~~>/~~~/g' > sequences && \\
+        sed -e 's/~~~>/~~~/g' -e 's/;//g' > sequences && \\
         rm phast_prot.fasta && \\
         diamond makedb --in sequences -d diamond && \\
         makeblastdb -in sequences -title 'PHAST' -dbtype prot -logfile /dev/null

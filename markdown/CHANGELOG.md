@@ -2,6 +2,14 @@
 
 The tracking for changes started in v2.1
 
+## v3.4.2 [29-March-2025]
+
+* [[[#131](https://github.com/fmalmeida/bacannot/issues/131)]]
+    * Add a small sed command to correct wrong fasta headers from public databases
+* correct zenodo_get command to always download latest
+* correct channel parsing for generating html reports of custom databases
+* correct description field of `run_blasts.py` script
+
 ## v3.4.1 [14-November-2024]
 
 * [[[#127](https://github.com/fmalmeida/bacannot/issues/127)]]

@@ -23,6 +23,6 @@ process PHAST {
       --mincov ${params.blast_MGEs_mincov} \\
       --threads $task.cpus \\
       --out ${prefix}_phast_blastp_onGenes.txt --2way | \\
-  sed -e 's/PRODUCT/PHAST_ID/g' > ${prefix}_phast_blastp_onGenes.summary.txt ;
+  sed -e 's/PRODUCT/PHAST_ID/g' -e 's/;//g' > ${prefix}_phast_blastp_onGenes.summary.txt ;
   """
 }

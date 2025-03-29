@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-LABEL MAINTAINER Felipe Marques de Almeida <marques.felipe@aluno.unb.br>
+LABEL MAINTAINER="Felipe Marques de Almeida <marques.felipe@aluno.unb.br>"
 
 # Workdir
 WORKDIR /work
