@@ -10,10 +10,10 @@ process CALL_METHYLATION {
   tuple val(prefix), file(draft), file(reads), file(fast5)
 
   output:
-  path "*_calls.tsv"                                       , emit: results     optional true
-  path "*_frequency.tsv"                                   , emit: frequencies optional true
-  tuple val(prefix), path("methylation_frequency.bedGraph"), emit: bedgraph    optional true
-  tuple val(prefix), path("chr.sizes")                     , emit: chr_sizes   optional true
+  path "*_calls.tsv"                                       , emit: results,     optional: true
+  path "*_frequency.tsv"                                   , emit: frequencies, optional: true
+  tuple val(prefix), path("methylation_frequency.bedGraph"), emit: bedgraph,    optional: true
+  tuple val(prefix), path("chr.sizes")                     , emit: chr_sizes,   optional: true
   tuple val(prefix), path("*")                             , emit: all
   path('nanopolish_version.txt')                           , emit: version
 
