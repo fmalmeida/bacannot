@@ -12,8 +12,8 @@ process MLST {
 
     output:
     tuple val(prefix), path("*")                            , emit: all
-    tuple val(prefix), path("${prefix}_mlst_analysis.txt")  , emit: results optional true
-    tuple val(prefix), path("${prefix}_novel_alleles.fasta"), emit: alleles optional true
+    tuple val(prefix), path("${prefix}_mlst_analysis.txt")  , emit: results, optional: true
+    tuple val(prefix), path("${prefix}_novel_alleles.fasta"), emit: alleles, optional: true
     path('mlst_version.txt')                                , emit: version
 
     script:
