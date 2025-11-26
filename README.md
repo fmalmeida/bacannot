@@ -1,6 +1,6 @@
 <img src="images/lOGO_3.png" width="300px">
 
-[![F1000 Paper](h ttps://img.shields.io/badge/Citation%20F1000-10.12688/f1000research.139488.1-orange)](https://doi.org/10.12688/f1000research.139488.1)
+[![F1000 Paper](https://img.shields.io/badge/Citation%20F1000-10.12688/f1000research.139488.1-orange)](https://doi.org/10.12688/f1000research.139488.1)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/fmalmeida/bacannot?include_prereleases&label=Latest%20release)](https://github.com/fmalmeida/bacannot/releases)
 [![Documentation](https://img.shields.io/badge/Documentation-readthedocs-brightgreen)](https://bacannot.readthedocs.io/en/latest/?badge=latest)
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.10-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
