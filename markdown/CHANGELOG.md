@@ -6,7 +6,7 @@ The tracking for changes started in v2.1
 
 * [[[#136](https://github.com/fmalmeida/bacannot/issues/136)]]
     * Corrects syntax of optional tuplws for Nextflow 25.10 compatibility
-    * Thanks to @robertpark1228
+    * Thanks to [@robertpark1228](https://github.com/robertpark1228)
 
 ## v3.4.2 [29-March-2025]
 
