@@ -2,10 +2,15 @@
 
 The tracking for changes started in v2.1
 
+## v3.4.4 [22-January-2026]
+
+* [[[#120](https://github.com/fmalmeida/bacannot/issues/120)]]
+    Update integron_finder image that should contain fixes that have been reported in [[#118](https://github.com/fmalmeida/bacannot/issues/118)] regarding wrong negative genomic coordinates.
+
 ## v3.4.3 [26-November-2025]
 
 * [[[#136](https://github.com/fmalmeida/bacannot/issues/136)]]
-    * Corrects syntax of optional tuplws for Nextflow 25.10 compatibility
+    * Corrects syntax of optional tuples for Nextflow 25.10 compatibility
     * Thanks to [@robertpark1228](https://github.com/robertpark1228)
 
 ## v3.4.2 [29-March-2025]
