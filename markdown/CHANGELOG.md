@@ -5,7 +5,7 @@ The tracking for changes started in v2.1
 ## v3.4.4 [22-January-2026]
 
 * [[[#120](https://github.com/fmalmeida/bacannot/issues/120)]]
-    Update integron_finder image that should fixes that have been reported in [[#118](https://github.com/fmalmeida/bacannot/issues/118)] regarding wrong negative genomic coordinates.
+    Update integron_finder image that should contain fixes that have been reported in [[#118](https://github.com/fmalmeida/bacannot/issues/118)] regarding wrong negative genomic coordinates.
 
 ## v3.4.3 [26-November-2025]
 
